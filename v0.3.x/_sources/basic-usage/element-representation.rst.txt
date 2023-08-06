@@ -4,10 +4,10 @@ Element Representation
 The representation of finite field elements can be set to either their integer (`"int"`), polynomial (`"poly"`),
 or power (`"power"`) representation.
 
-In prime fields :math:`\mathrm{GF}(p)`, elements are integers in :math:`\{0, 1, \dots, p-1\}`. Their two useful representations
+In prime fields $\mathrm{GF}(p)$, elements are integers in $\{0, 1, \dots, p-1\}$. Their two useful representations
 are the integer and power representation.
 
-In extension fields :math:`\mathrm{GF}(p^m)`, elements are polynomials over :math:`\mathrm{GF}(p)` with degree less than :math:`m`.
+In extension fields $\mathrm{GF}(p^m)$, elements are polynomials over $\mathrm{GF}(p)$ with degree less than $m$.
 All element representations are useful. The polynomial representation allows *proper* representation of the element as a polynomial
 over its prime subfield. However, the integer representation is more compact for displaying large arrays.
 
@@ -58,17 +58,17 @@ The element representation can be permanently changed using the :func:`~galois.F
 Integer representation
 ----------------------
 
-The integer representation (the default) displays all finite field elements as integers in :math:`\{0, 1, \dots, p^m-1\}`.
+The integer representation (the default) displays all finite field elements as integers in $\{0, 1, \dots, p^m-1\}$.
 
-In prime fields, the integer representation is simply the integer element in :math:`\{0, 1, \dots, p-1\}`.
+In prime fields, the integer representation is simply the integer element in $\{0, 1, \dots, p-1\}$.
 
 .. ipython:: python
 
     GF = galois.GF(31)
     GF(11)
 
-In extension fields, the integer representation converts and element's degree-:math:`m-1` polynomial over :math:`\mathrm{GF}(p)` into
-its integer equivalent. The integer equivalent of a polynomial is a radix-:math:`p` integer of its coefficients, with the highest-degree
+In extension fields, the integer representation converts and element's degree-$m-1$ polynomial over $\mathrm{GF}(p)$ into
+its integer equivalent. The integer equivalent of a polynomial is a radix-$p$ integer of its coefficients, with the highest-degree
 coefficient as the most-significant digit and zero-degree coefficient as the least-significant digit.
 
 .. ipython:: python
@@ -84,9 +84,9 @@ coefficient as the most-significant digit and zero-degree coefficient as the lea
 Polynomial representation
 -------------------------
 
-The polynomial representation displays all finite field elements as polynomials over their prime subfield with degree less than :math:`m`.
+The polynomial representation displays all finite field elements as polynomials over their prime subfield with degree less than $m$.
 
-In prime fields :math:`m = 1`, therefore the polynomial representation is equivalent to the integer representation because the
+In prime fields $m = 1$, therefore the polynomial representation is equivalent to the integer representation because the
 polynomials all have degree 0.
 
 .. ipython:: python
@@ -116,7 +116,7 @@ This is useful, however it can become cluttered for large arrays.
 Power representation
 --------------------
 
-The power representation displays all finite field elements as powers of the field's primitive element :math:`\alpha`.
+The power representation displays all finite field elements as powers of the field's primitive element $\alpha$.
 
 .. slow-performance::
 
@@ -125,7 +125,7 @@ The power representation displays all finite field elements as powers of the fie
     take a while. However, when using :ref:`lookup tables <lookup-tables>` this representation is just as fast as
     the others.
 
-In prime fields, the elements are displayed as :math:`\{0, 1, \alpha, \alpha^2, \dots, \alpha^{p-2}\}`.
+In prime fields, the elements are displayed as $\{0, 1, \alpha, \alpha^2, \dots, \alpha^{p-2}\}$.
 
 .. ipython:: python
 
@@ -138,7 +138,7 @@ In prime fields, the elements are displayed as :math:`\{0, 1, \alpha, \alpha^2, 
     alpha = GF.primitive_element; alpha
     alpha ** 23
 
-In extension fields, the elements are displayed as :math:`\{0, 1, \alpha, \alpha^2, \dots, \alpha^{p^m-2}\}`.
+In extension fields, the elements are displayed as $\{0, 1, \alpha, \alpha^2, \dots, \alpha^{p^m-2}\}$.
 
 .. ipython:: python
 
@@ -165,8 +165,8 @@ The vector representation is accessed using the :func:`~galois.FieldArray.vector
     GF("x^2 + 2x + 2")
     GF("x^2 + 2x + 2").vector()
 
-An N-D array over :math:`\mathrm{GF}(p^m)` is converted to a (N + 1)-D array over :math:`\mathrm{GF}(p)` with the added dimension having
-size :math:`m`. The first value of the vector is the highest-degree coefficient.
+An N-D array over $\mathrm{GF}(p^m)$ is converted to a (N + 1)-D array over $\mathrm{GF}(p)$ with the added dimension having
+size $m$. The first value of the vector is the highest-degree coefficient.
 
 .. ipython:: python
 
@@ -188,7 +188,7 @@ NumPy displays arrays with a default line width of 75 characters. This is proble
 for arrays using the polynomial representation, where each element occupies a lot of space. This can be changed by modifying
 NumPy's print options.
 
-For example, below is a :math:`5 \times 5` matrix over :math:`\mathrm{GF}(3^5)` displayed in the polynomial representation.
+For example, below is a $5 \times 5$ matrix over $\mathrm{GF}(3^5)$ displayed in the polynomial representation.
 With the default line width, the array is quite difficult to read.
 
 .. ipython:: python

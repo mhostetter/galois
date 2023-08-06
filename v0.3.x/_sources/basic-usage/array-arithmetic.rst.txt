@@ -4,7 +4,7 @@ Array Arithmetic
 After creating a :obj:`~galois.FieldArray` subclass and one or two arrays, nearly any arithmetic operation can be
 performed using normal NumPy ufuncs or Python operators.
 
-In the sections below, the finite field :math:`\mathrm{GF}(3^5)` and arrays :math:`x` and :math:`y` are used.
+In the sections below, the finite field $\mathrm{GF}(3^5)$ and arrays $x$ and $y$ are used.
 
 .. ipython:: python
 
@@ -81,7 +81,7 @@ Expand any section for more details.
         np.multiply(x, 4)
         x + x + x + x
 
-    In finite fields :math:`\mathrm{GF}(p^m)`, the characteristic :math:`p` is the smallest value when multiplied by
+    In finite fields $\mathrm{GF}(p^m)$, the characteristic $p$ is the smallest value when multiplied by
     any non-zero field element that results in 0.
 
     .. ipython-with-reprs:: int,poly,power
@@ -168,7 +168,7 @@ Expand any section for more details.
 .. example:: Logarithm: `np.log(x)` or `x.log()`
     :collapsible:
 
-    Compute the logarithm base :math:`\alpha`, the primitive element of the field.
+    Compute the logarithm base $\alpha$, the primitive element of the field.
 
     .. ipython-with-reprs:: int,poly,power
 
@@ -177,7 +177,7 @@ Expand any section for more details.
         alpha = GF.primitive_element; alpha
         alpha ** z == y
 
-    Compute the logarithm base :math:`\beta`, a different primitive element of the field. See :func:`FieldArray.log`
+    Compute the logarithm base $\beta$, a different primitive element of the field. See :func:`FieldArray.log`
     for more details.
 
     .. ipython-with-reprs:: int,poly,power
@@ -291,8 +291,8 @@ Advanced arithmetic
 .. example:: FFT: `np.fft.fft(x)`
     :collapsible:
 
-    The Discrete Fourier Transform (DFT) of size :math:`n` over the finite field :math:`\mathrm{GF}(p^m)` exists when
-    there exists a primitive :math:`n`-th root of unity. This occurs when :math:`n\ |\ p^m - 1`.
+    The Discrete Fourier Transform (DFT) of size $n$ over the finite field $\mathrm{GF}(p^m)$ exists when
+    there exists a primitive $n$-th root of unity. This occurs when $n\ |\ p^m - 1$.
 
     .. ipython-with-reprs:: int,poly,power
 
@@ -309,8 +309,8 @@ Advanced arithmetic
 .. example:: Inverse FFT: `np.fft.ifft(X)`
     :collapsible:
 
-    The inverse Discrete Fourier Transform (DFT) of size :math:`n` over the finite field :math:`\mathrm{GF}(p^m)`
-    exists when there exists a primitive :math:`n`-th root of unity. This occurs when :math:`n\ |\ p^m - 1`.
+    The inverse Discrete Fourier Transform (DFT) of size $n$ over the finite field $\mathrm{GF}(p^m)$
+    exists when there exists a primitive $n$-th root of unity. This occurs when $n\ |\ p^m - 1$.
 
     .. ipython-with-reprs:: int,poly,power
 
