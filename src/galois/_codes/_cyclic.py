@@ -58,8 +58,8 @@ class _CyclicCode(_LinearCode):
         {},
         r"""
         Notes:
-            The message vector :math:`\mathbf{m}` is a member of :math:`\mathrm{GF}(q)^k`. The corresponding
-            message polynomial :math:`m(x)` is a degree-:math:`k` polynomial over :math:`\mathrm{GF}(q)`.
+            The message vector $\mathbf{m}$ is a member of $\mathrm{GF}(q)^k$. The corresponding
+            message polynomial $m(x)$ is a degree-$k$ polynomial over $\mathrm{GF}(q)$.
 
             .. math::
                 \mathbf{m} = [m_{k-1},\ \dots,\ m_1,\ m_0] \in \mathrm{GF}(q)^k
@@ -67,8 +67,8 @@ class _CyclicCode(_LinearCode):
             .. math::
                 m(x) = m_{k-1} x^{k-1} + \dots + m_1 x + m_0 \in \mathrm{GF}(q)[x]
 
-            The codeword vector :math:`\mathbf{c}` is a member of :math:`\mathrm{GF}(q)^n`. The corresponding
-            codeword polynomial :math:`c(x)` is a degree-:math:`n` polynomial over :math:`\mathrm{GF}(q)`.
+            The codeword vector $\mathbf{c}$ is a member of $\mathrm{GF}(q)^n$. The corresponding
+            codeword polynomial $c(x)$ is a degree-$n$ polynomial over $\mathrm{GF}(q)$.
 
             .. math::
                 \mathbf{c} = [c_{n-1},\ \dots,\ c_1,\ c_0] \in \mathrm{GF}(q)^n
@@ -113,8 +113,8 @@ class _CyclicCode(_LinearCode):
         {},
         r"""
         Notes:
-            The message vector :math:`\mathbf{m}` is a member of :math:`\mathrm{GF}(q)^k`. The corresponding
-            message polynomial :math:`m(x)` is a degree-:math:`k` polynomial over :math:`\mathrm{GF}(q)`.
+            The message vector $\mathbf{m}$ is a member of $\mathrm{GF}(q)^k$. The corresponding
+            message polynomial $m(x)$ is a degree-$k$ polynomial over $\mathrm{GF}(q)$.
 
             .. math::
                 \mathbf{m} = [m_{k-1},\ \dots,\ m_1,\ m_0] \in \mathrm{GF}(q)^k
@@ -122,9 +122,9 @@ class _CyclicCode(_LinearCode):
             .. math::
                 m(x) = m_{k-1} x^{k-1} + \dots + m_1 x + m_0 \in \mathrm{GF}(q)[x]
 
-            The codeword vector :math:`\mathbf{c}` is a member of :math:`\mathrm{GF}(q)^n`. The corresponding
-            codeword polynomial :math:`c(x)` is a degree-:math:`n` polynomial over :math:`\mathrm{GF}(q)`.
-            Each codeword polynomial :math:`c(x)` is divisible by the generator polynomial :math:`g(x)`.
+            The codeword vector $\mathbf{c}$ is a member of $\mathrm{GF}(q)^n$. The corresponding
+            codeword polynomial $c(x)$ is a degree-$n$ polynomial over $\mathrm{GF}(q)$.
+            Each codeword polynomial $c(x)$ is divisible by the generator polynomial $g(x)$.
 
             .. math::
                 \mathbf{c} = [c_{n-1},\ \dots,\ c_1,\ c_0] \in \mathrm{GF}(q)^n
@@ -158,11 +158,11 @@ class _CyclicCode(_LinearCode):
     @property
     def generator_poly(self) -> Poly:
         r"""
-        The generator polynomial :math:`g(x)` over :math:`\mathrm{GF}(q)`.
+        The generator polynomial $g(x)$ over $\mathrm{GF}(q)$.
 
         Notes:
-            Every codeword :math:`\mathbf{c}` can be represented as a degree-:math:`n` polynomial :math:`c(x)`.
-            Each codeword polynomial :math:`c(x)` is a multiple of :math:`g(x)`.
+            Every codeword $\mathbf{c}$ can be represented as a degree-$n$ polynomial $c(x)$.
+            Each codeword polynomial $c(x)$ is a multiple of $g(x)$.
 
         Group:
             Polynomials
@@ -175,7 +175,7 @@ class _CyclicCode(_LinearCode):
     @property
     def parity_check_poly(self) -> Poly:
         r"""
-        The parity-check polynomial :math:`h(x)`.
+        The parity-check polynomial $h(x)$.
 
         Notes:
             The parity-check polynomial is the generator polynomial of the dual code.
@@ -191,7 +191,7 @@ class _CyclicCode(_LinearCode):
     @property
     def roots(self) -> FieldArray:
         r"""
-        The :math:`d - 1` roots of the generator polynomial :math:`g(x)`.
+        The $d - 1$ roots of the generator polynomial $g(x)$.
 
         Group:
             Polynomials

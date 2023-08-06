@@ -17,24 +17,24 @@ from ..typing import PolyLike
 @export
 def is_primitive_element(element: PolyLike, irreducible_poly: Poly) -> bool:
     r"""
-    Determines if :math:`g` is a primitive element of the Galois field :math:`\mathrm{GF}(q^m)` with
-    degree-:math:`m` irreducible polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)`.
+    Determines if $g$ is a primitive element of the Galois field $\mathrm{GF}(q^m)$ with
+    degree-$m$ irreducible polynomial $f(x)$ over $\mathrm{GF}(q)$.
 
     Arguments:
-        element: An element :math:`g` of :math:`\mathrm{GF}(q^m)` is a polynomial over :math:`\mathrm{GF}(q)` with
-            degree less than :math:`m`.
-        irreducible_poly: The degree-:math:`m` irreducible polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)` that
-            defines the extension field :math:`\mathrm{GF}(q^m)`.
+        element: An element $g$ of $\mathrm{GF}(q^m)$ is a polynomial over $\mathrm{GF}(q)$ with
+            degree less than $m$.
+        irreducible_poly: The degree-$m$ irreducible polynomial $f(x)$ over $\mathrm{GF}(q)$ that
+            defines the extension field $\mathrm{GF}(q^m)$.
 
     Returns:
-        `True` if :math:`g` is a primitive element of :math:`\mathrm{GF}(q^m)`.
+        `True` if $g$ is a primitive element of $\mathrm{GF}(q^m)$.
 
     See Also:
         primitive_element, FieldArray.primitive_element
 
     Examples:
-        In the extension field :math:`\mathrm{GF}(3^4)`, the element :math:`x + 2` is a primitive element whose
-        order is :math:`3^4 - 1 = 80`.
+        In the extension field $\mathrm{GF}(3^4)$, the element $x + 2$ is a primitive element whose
+        order is $3^4 - 1 = 80$.
 
         .. ipython:: python
 
@@ -43,7 +43,7 @@ def is_primitive_element(element: PolyLike, irreducible_poly: Poly) -> bool:
             galois.is_primitive_element("x + 2", f)
             GF("x + 2").multiplicative_order()
 
-        However, the element :math:`x + 1` is not a primitive element, as noted by its order being only 20.
+        However, the element $x + 1$ is not a primitive element, as noted by its order being only 20.
 
         .. ipython:: python
 
@@ -103,23 +103,23 @@ def _is_primitive_element(element: Poly, irreducible_poly: Poly) -> bool:
 @export
 def primitive_element(irreducible_poly: Poly, method: Literal["min", "max", "random"] = "min") -> Poly:
     r"""
-    Finds a primitive element :math:`g` of the Galois field :math:`\mathrm{GF}(q^m)` with degree-:math:`m`
-    irreducible polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)`.
+    Finds a primitive element $g$ of the Galois field $\mathrm{GF}(q^m)$ with degree-$m$
+    irreducible polynomial $f(x)$ over $\mathrm{GF}(q)$.
 
     Arguments:
-        irreducible_poly: The degree-:math:`m` irreducible polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)` that
-            defines the extension field :math:`\mathrm{GF}(q^m)`.
+        irreducible_poly: The degree-$m$ irreducible polynomial $f(x)$ over $\mathrm{GF}(q)$ that
+            defines the extension field $\mathrm{GF}(q^m)$.
         method: The search method for finding the primitive element.
 
     Returns:
-        A primitive element :math:`g` of :math:`\mathrm{GF}(q^m)` with irreducible polynomial :math:`f(x)`.
-        The primitive element :math:`g` is a polynomial over :math:`\mathrm{GF}(q)` with degree less than :math:`m`.
+        A primitive element $g$ of $\mathrm{GF}(q^m)$ with irreducible polynomial $f(x)$.
+        The primitive element $g$ is a polynomial over $\mathrm{GF}(q)$ with degree less than $m$.
 
     See Also:
         is_primitive_element, FieldArray.primitive_element
 
     Examples:
-        Construct the extension field :math:`\mathrm{GF}(7^5)`.
+        Construct the extension field $\mathrm{GF}(7^5)$.
 
         .. ipython:: python
 
@@ -127,8 +127,8 @@ def primitive_element(irreducible_poly: Poly, method: Literal["min", "max", "ran
             GF = galois.GF(7**5, irreducible_poly=f, repr="poly")
             print(GF.properties)
 
-        Find the smallest primitive element for the degree-5 extension of :math:`\mathrm{GF}(7)` with irreducible
-        polynomial :math:`f(x)`.
+        Find the smallest primitive element for the degree-5 extension of $\mathrm{GF}(7)$ with irreducible
+        polynomial $f(x)$.
 
         .. ipython:: python
 
@@ -137,8 +137,8 @@ def primitive_element(irreducible_poly: Poly, method: Literal["min", "max", "ran
             g = GF(int(g)); g
             g.multiplicative_order() == GF.order - 1
 
-        Find the largest primitive element for the degree-5 extension of :math:`\mathrm{GF}(7)` with irreducible
-        polynomial :math:`f(x)`.
+        Find the largest primitive element for the degree-5 extension of $\mathrm{GF}(7)$ with irreducible
+        polynomial $f(x)$.
 
         .. ipython:: python
 
@@ -147,8 +147,8 @@ def primitive_element(irreducible_poly: Poly, method: Literal["min", "max", "ran
             g = GF(int(g)); g
             g.multiplicative_order() == GF.order - 1
 
-        Find a random primitive element for the degree-5 extension of :math:`\mathrm{GF}(7)` with irreducible
-        polynomial :math:`f(x)`.
+        Find a random primitive element for the degree-5 extension of $\mathrm{GF}(7)$ with irreducible
+        polynomial $f(x)$.
 
         .. ipython:: python
 
@@ -205,26 +205,26 @@ def primitive_element(irreducible_poly: Poly, method: Literal["min", "max", "ran
 @export
 def primitive_elements(irreducible_poly: Poly) -> list[Poly]:
     r"""
-    Finds all primitive elements :math:`g` of the Galois field :math:`\mathrm{GF}(q^m)` with
-    degree-:math:`m` irreducible polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)`.
+    Finds all primitive elements $g$ of the Galois field $\mathrm{GF}(q^m)$ with
+    degree-$m$ irreducible polynomial $f(x)$ over $\mathrm{GF}(q)$.
 
     Arguments:
-        irreducible_poly: The degree-:math:`m` irreducible polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)` that
-            defines the extension field :math:`\mathrm{GF}(q^m)`.
+        irreducible_poly: The degree-$m$ irreducible polynomial $f(x)$ over $\mathrm{GF}(q)$ that
+            defines the extension field $\mathrm{GF}(q^m)$.
 
     Returns:
-        List of all primitive elements of :math:`\mathrm{GF}(q^m)` with irreducible polynomial :math:`f(x)`.
-        Each primitive element :math:`g` is a polynomial over :math:`\mathrm{GF}(q)` with degree less than :math:`m`.
+        List of all primitive elements of $\mathrm{GF}(q^m)$ with irreducible polynomial $f(x)$.
+        Each primitive element $g$ is a polynomial over $\mathrm{GF}(q)$ with degree less than $m$.
 
     See Also:
         is_primitive_element, FieldArray.primitive_elements
 
     Notes:
-        The number of primitive elements of :math:`\mathrm{GF}(q^m)` is :math:`\phi(q^m - 1)`, where
-        :math:`\phi(n)` is the Euler totient function. See :obj:`~galois.euler_phi`.
+        The number of primitive elements of $\mathrm{GF}(q^m)$ is $\phi(q^m - 1)$, where
+        $\phi(n)$ is the Euler totient function. See :obj:`~galois.euler_phi`.
 
     Examples:
-        Construct the extension field :math:`\mathrm{GF}(3^4)`.
+        Construct the extension field $\mathrm{GF}(3^4)$.
 
         .. ipython:: python
 
@@ -232,20 +232,20 @@ def primitive_elements(irreducible_poly: Poly) -> list[Poly]:
             GF = galois.GF(3**4, irreducible_poly=f, repr="poly")
             print(GF.properties)
 
-        Find all primitive elements for the degree-4 extension of :math:`\mathrm{GF}(3)`.
+        Find all primitive elements for the degree-4 extension of $\mathrm{GF}(3)$.
 
         .. ipython:: python
 
             g = galois.primitive_elements(f); g
 
-        The number of primitive elements is given by :math:`\phi(q^m - 1)`.
+        The number of primitive elements is given by $\phi(q^m - 1)$.
 
         .. ipython:: python
 
             phi = galois.euler_phi(3**4 - 1); phi
             len(g) == phi
 
-        Shows that each primitive element has an order of :math:`q^m - 1`.
+        Shows that each primitive element has an order of $q^m - 1$.
 
         .. ipython:: python
 

@@ -8,7 +8,7 @@ The :obj:`galois` library subclasses :obj:`~numpy.ndarray` to provide arithmetic
 
 The main abstract base class is :obj:`~galois.Array`. It has two abstract subclasses: :obj:`~galois.FieldArray` and
 :obj:`~galois.RingArray` (future). None of these abstract classes may be instantiated directly. Instead, specific
-subclasses for :math:`\mathrm{GF}(p^m)` and :math:`\mathrm{GR}(p^e, m)` are created at runtime with :func:`~galois.GF`
+subclasses for $\mathrm{GF}(p^m)$ and $\mathrm{GR}(p^e, m)$ are created at runtime with :func:`~galois.GF`
 and :func:`~galois.GR` (future).
 
 :obj:`~galois.FieldArray` subclasses
@@ -26,7 +26,7 @@ A :obj:`~galois.FieldArray` subclass is created using the class factory function
     :collapsible:
 
     For very large finite fields, the :obj:`~galois.FieldArray` subclass creation time can be reduced by explicitly specifying
-    :math:`p` and :math:`m`. This eliminates the need to factor the order :math:`p^m`.
+    $p$ and $m$. This eliminates the need to factor the order $p^m$.
 
     .. ipython:: python
 
@@ -35,7 +35,7 @@ A :obj:`~galois.FieldArray` subclass is created using the class factory function
 
     Furthermore, if you already know the desired irreducible polynomial is irreducible and the primitive element is a generator of
     the multiplicative group, you can specify `verify=False` to skip the verification step. This eliminates the need to factor
-    :math:`p^m - 1`.
+    $p^m - 1$.
 
     .. ipython:: python
 
@@ -57,8 +57,8 @@ Class singletons
 
 :obj:`~galois.FieldArray` subclasses of the same type (order, irreducible polynomial, and primitive element) are singletons.
 
-Here is the creation (twice) of the field :math:`\mathrm{GF}(3^5)` defined with the default irreducible
-polynomial :math:`x^5 + 2x + 1`. They *are* the same class (a singleton), not just equivalent classes.
+Here is the creation (twice) of the field $\mathrm{GF}(3^5)$ defined with the default irreducible
+polynomial $x^5 + 2x + 1$. They *are* the same class (a singleton), not just equivalent classes.
 
 .. ipython:: python
 
@@ -66,7 +66,7 @@ polynomial :math:`x^5 + 2x + 1`. They *are* the same class (a singleton), not ju
 
 The expense of class creation is incurred only once. So, subsequent calls of `galois.GF(3**5)` are extremely inexpensive.
 
-However, the field :math:`\mathrm{GF}(3^5)` defined with irreducible polynomial :math:`x^5 + x^2 + x + 2`, while isomorphic to the
+However, the field $\mathrm{GF}(3^5)$ defined with irreducible polynomial $x^5 + x^2 + x + 2$, while isomorphic to the
 first field, has different arithmetic. As such, :func:`~galois.GF` returns a unique :obj:`~galois.FieldArray` subclass.
 
 .. ipython:: python
@@ -76,7 +76,7 @@ first field, has different arithmetic. As such, :func:`~galois.GF` returns a uni
 Methods and properties
 ......................
 
-All of the methods and properties related to :math:`\mathrm{GF}(p^m)`, not one of its arrays, are documented as class methods
+All of the methods and properties related to $\mathrm{GF}(p^m)$, not one of its arrays, are documented as class methods
 and class properties in :obj:`~galois.FieldArray`. For example, the irreducible polynomial of the finite field is accessed
 with :obj:`~galois.FieldArray.irreducible_poly`.
 

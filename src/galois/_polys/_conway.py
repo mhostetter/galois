@@ -17,8 +17,8 @@ from ._primitive import is_primitive
 @method_of(Poly)
 def is_conway(f: Poly, search: bool = False) -> bool:
     r"""
-    Checks whether the degree-:math:`m` polynomial :math:`f(x)` over :math:`\mathrm{GF}(p)` is the
-    Conway polynomial :math:`C_{p,m}(x)`.
+    Checks whether the degree-$m$ polynomial $f(x)$ over $\mathrm{GF}(p)$ is the
+    Conway polynomial $C_{p,m}(x)$.
 
     .. question:: Why is this a method and not a property?
         :collapsible:
@@ -34,27 +34,27 @@ def is_conway(f: Poly, search: bool = False) -> bool:
                 Manually searching for a Conway polynomial is *very* computationally expensive.
 
     Returns:
-        `True` if the polynomial :math:`f(x)` is the Conway polynomial :math:`C_{p,m}(x)`.
+        `True` if the polynomial $f(x)$ is the Conway polynomial $C_{p,m}(x)$.
 
     Raises:
-        LookupError: If `search=False` and the Conway polynomial :math:`C_{p,m}` is not found in Frank Luebeck's
+        LookupError: If `search=False` and the Conway polynomial $C_{p,m}$ is not found in Frank Luebeck's
             database.
 
     See Also:
         conway_poly, Poly.is_conway_consistent, Poly.is_primitive
 
     Notes:
-        A degree-:math:`m` polynomial :math:`f(x)` over :math:`\mathrm{GF}(p)` is the *Conway polynomial*
-        :math:`C_{p,m}(x)` if it is monic, primitive, compatible with Conway polynomials :math:`C_{p,n}(x)` for all
-        :math:`n\ |\ m`, and is lexicographically first according to a special ordering.
+        A degree-$m$ polynomial $f(x)$ over $\mathrm{GF}(p)$ is the *Conway polynomial*
+        $C_{p,m}(x)$ if it is monic, primitive, compatible with Conway polynomials $C_{p,n}(x)$ for all
+        $n\ |\ m$, and is lexicographically first according to a special ordering.
 
-        A Conway polynomial :math:`C_{p,m}(x)` is *compatible* with Conway polynomials :math:`C_{p,n}(x)` for
-        :math:`n\ |\ m` if :math:`C_{p,n}(x^r)` divides :math:`C_{p,m}(x)`, where :math:`r = \frac{p^m - 1}{p^n - 1}`.
+        A Conway polynomial $C_{p,m}(x)$ is *compatible* with Conway polynomials $C_{p,n}(x)$ for
+        $n\ |\ m$ if $C_{p,n}(x^r)$ divides $C_{p,m}(x)$, where $r = \frac{p^m - 1}{p^n - 1}$.
 
-        The Conway lexicographic ordering is defined as follows. Given two degree-:math:`m` polynomials
-        :math:`g(x) = \sum_{i=0}^m g_i x^i` and :math:`h(x) = \sum_{i=0}^m h_i x^i`, then :math:`g < h` if and only if
-        there exists :math:`i` such that :math:`g_j = h_j` for all :math:`j > i` and
-        :math:`(-1)^{m-i} g_i < (-1)^{m-i} h_i`.
+        The Conway lexicographic ordering is defined as follows. Given two degree-$m$ polynomials
+        $g(x) = \sum_{i=0}^m g_i x^i$ and $h(x) = \sum_{i=0}^m h_i x^i$, then $g < h$ if and only if
+        there exists $i$ such that $g_j = h_j$ for all $j > i$ and
+        $(-1)^{m-i} g_i < (-1)^{m-i} h_i$.
 
     References:
         - http://www.math.rwth-aachen.de/~Frank.Luebeck/data/ConwayPol/CP7.html
@@ -104,8 +104,8 @@ def is_conway(f: Poly, search: bool = False) -> bool:
 @functools.lru_cache()
 def is_conway_consistent(f: Poly, search: bool = False) -> bool:
     r"""
-    Determines whether the degree-:math:`m` polynomial :math:`f(x)` over :math:`\mathrm{GF}(p)` is consistent
-    with smaller Conway polynomials :math:`C_{p,n}(x)` for all :math:`n\ |\ m`.
+    Determines whether the degree-$m$ polynomial $f(x)$ over $\mathrm{GF}(p)$ is consistent
+    with smaller Conway polynomials $C_{p,n}(x)$ for all $n\ |\ m$.
 
     .. question:: Why is this a method and not a property?
         :collapsible:
@@ -121,20 +121,20 @@ def is_conway_consistent(f: Poly, search: bool = False) -> bool:
                 Manually searching for a Conway polynomial is *very* computationally expensive.
 
     Returns:
-        `True` if the polynomial :math:`f(x)` is primitive and consistent with smaller Conway polynomials
-        :math:`C_{p,n}(x)` for all :math:`n\ |\ m`.
+        `True` if the polynomial $f(x)$ is primitive and consistent with smaller Conway polynomials
+        $C_{p,n}(x)$ for all $n\ |\ m$.
 
     Raises:
-        LookupError: If `search=False` and a smaller Conway polynomial :math:`C_{p,n}` is not found in Frank Luebeck's
+        LookupError: If `search=False` and a smaller Conway polynomial $C_{p,n}$ is not found in Frank Luebeck's
             database.
 
     See Also:
         conway_poly, Poly.is_conway, Poly.is_primitive
 
     Notes:
-        A degree-:math:`m` polynomial :math:`f(x)` over :math:`\mathrm{GF}(p)` is *compatible* with Conway polynomials
-        :math:`C_{p,n}(x)` for :math:`n\ |\ m` if :math:`C_{p,n}(x^r)` divides :math:`f(x)`, where
-        :math:`r = \frac{p^m - 1}{p^n - 1}`.
+        A degree-$m$ polynomial $f(x)$ over $\mathrm{GF}(p)$ is *compatible* with Conway polynomials
+        $C_{p,n}(x)$ for $n\ |\ m$ if $C_{p,n}(x^r)$ divides $f(x)$, where
+        $r = \frac{p^m - 1}{p^n - 1}$.
 
         A Conway-consistent polynomial has all the properties of a Conway polynomial except that it is not
         necessarily lexicographically first (according to a special ordering).
@@ -203,12 +203,12 @@ def is_conway_consistent(f: Poly, search: bool = False) -> bool:
 @export
 def conway_poly(characteristic: int, degree: int, search: bool = False) -> Poly:
     r"""
-    Returns the Conway polynomial :math:`C_{p,m}(x)` over :math:`\mathrm{GF}(p)` with degree :math:`m`.
+    Returns the Conway polynomial $C_{p,m}(x)$ over $\mathrm{GF}(p)$ with degree $m$.
 
     Arguments:
-        characteristic: The prime characteristic :math:`p` of the field :math:`\mathrm{GF}(p)` that the polynomial
+        characteristic: The prime characteristic $p$ of the field $\mathrm{GF}(p)$ that the polynomial
             is over.
-        degree: The degree :math:`m` of the Conway polynomial.
+        degree: The degree $m$ of the Conway polynomial.
         search: Manually search for Conway polynomials if they are not included in `Frank Luebeck's database
             <http://www.math.rwth-aachen.de/~Frank.Luebeck/data/ConwayPol/index.html>`_. The default is `False`.
 
@@ -217,30 +217,30 @@ def conway_poly(characteristic: int, degree: int, search: bool = False) -> Poly:
                 Manually searching for a Conway polynomial is *very* computationally expensive.
 
     Returns:
-        The degree-:math:`m` Conway polynomial :math:`C_{p,m}(x)` over :math:`\mathrm{GF}(p)`.
+        The degree-$m$ Conway polynomial $C_{p,m}(x)$ over $\mathrm{GF}(p)$.
 
     See Also:
         Poly.is_conway, Poly.is_conway_consistent, Poly.is_primitive, primitive_poly
 
     Raises:
-        LookupError: If `search=False` and the Conway polynomial :math:`C_{p,m}` is not found in Frank Luebeck's
+        LookupError: If `search=False` and the Conway polynomial $C_{p,m}$ is not found in Frank Luebeck's
             database.
 
     Notes:
-        A degree-:math:`m` polynomial :math:`f(x)` over :math:`\mathrm{GF}(p)` is the *Conway polynomial*
-        :math:`C_{p,m}(x)` if it is monic, primitive, compatible with Conway polynomials :math:`C_{p,n}(x)` for all
-        :math:`n\ |\ m`, and is lexicographically first according to a special ordering.
+        A degree-$m$ polynomial $f(x)$ over $\mathrm{GF}(p)$ is the *Conway polynomial*
+        $C_{p,m}(x)$ if it is monic, primitive, compatible with Conway polynomials $C_{p,n}(x)$ for all
+        $n\ |\ m$, and is lexicographically first according to a special ordering.
 
-        A Conway polynomial :math:`C_{p,m}(x)` is *compatible* with Conway polynomials :math:`C_{p,n}(x)` for
-        :math:`n\ |\ m` if :math:`C_{p,n}(x^r)` divides :math:`C_{p,m}(x)`, where :math:`r = \frac{p^m - 1}{p^n - 1}`.
+        A Conway polynomial $C_{p,m}(x)$ is *compatible* with Conway polynomials $C_{p,n}(x)$ for
+        $n\ |\ m$ if $C_{p,n}(x^r)$ divides $C_{p,m}(x)$, where $r = \frac{p^m - 1}{p^n - 1}$.
 
-        The Conway lexicographic ordering is defined as follows. Given two degree-:math:`m` polynomials
-        :math:`g(x) = \sum_{i=0}^m g_i x^i` and :math:`h(x) = \sum_{i=0}^m h_i x^i`, then :math:`g < h` if and only if
-        there exists :math:`i` such that :math:`g_j = h_j` for all :math:`j > i` and
-        :math:`(-1)^{m-i} g_i < (-1)^{m-i} h_i`.
+        The Conway lexicographic ordering is defined as follows. Given two degree-$m$ polynomials
+        $g(x) = \sum_{i=0}^m g_i x^i$ and $h(x) = \sum_{i=0}^m h_i x^i$, then $g < h$ if and only if
+        there exists $i$ such that $g_j = h_j$ for all $j > i$ and
+        $(-1)^{m-i} g_i < (-1)^{m-i} h_i$.
 
-        The Conway polynomial :math:`C_{p,m}(x)` provides a standard representation of :math:`\mathrm{GF}(p^m)` as a
-        splitting field of :math:`C_{p,m}(x)`. Conway polynomials provide compatibility between fields and their
+        The Conway polynomial $C_{p,m}(x)$ provides a standard representation of $\mathrm{GF}(p^m)$ as a
+        splitting field of $C_{p,m}(x)$. Conway polynomials provide compatibility between fields and their
         subfields and, hence, are the common way to represent extension fields.
 
     References:
@@ -300,11 +300,11 @@ def conway_poly(characteristic: int, degree: int, search: bool = False) -> Poly:
 
 def _conway_poly_database(characteristic: int, degree: int) -> Poly:
     r"""
-    Returns the Conway polynomial :math:`C_{p,m}(x)` over :math:`\mathrm{GF}(p)` with degree :math:`m`
+    Returns the Conway polynomial $C_{p,m}(x)$ over $\mathrm{GF}(p)$ with degree $m$
     from Frank Luebeck's database.
 
     Raises:
-        LookupError: If the Conway polynomial :math:`C_{p,m}(x)` is not found in Frank Luebeck's database.
+        LookupError: If the Conway polynomial $C_{p,m}(x)$ is not found in Frank Luebeck's database.
     """
     db = ConwayPolyDatabase()
     degrees, coeffs = db.fetch(characteristic, degree)
@@ -316,7 +316,7 @@ def _conway_poly_database(characteristic: int, degree: int) -> Poly:
 @functools.lru_cache()
 def _conway_poly_search(characteristic: int, degree: int) -> Poly:
     r"""
-    Manually searches for the Conway polynomial :math:`C_{p,m}(x)` over :math:`\mathrm{GF}(p)` with degree :math:`m`.
+    Manually searches for the Conway polynomial $C_{p,m}(x)$ over $\mathrm{GF}(p)$ with degree $m$.
     """
     for poly in _conway_lexicographic_order(characteristic, degree):
         if is_conway_consistent(poly):
@@ -333,7 +333,7 @@ def _conway_lexicographic_order(
     degree: int,
 ) -> Iterator[Poly]:
     r"""
-    Yields all monic polynomials of degree :math:`m` over :math:`\mathrm{GF}(p)` in the lexicographic order
+    Yields all monic polynomials of degree $m$ over $\mathrm{GF}(p)$ in the lexicographic order
     defined for Conway polynomials.
     """
     field = _factory.FIELD_FACTORY(characteristic)

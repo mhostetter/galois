@@ -31,7 +31,7 @@ to speed up arithmetic computations. These tables are built once at :obj:`~galoi
 during the call to :func:`~galois.GF`.
 
 The exponential and logarithm lookup tables map every finite field element to a power of the primitive element
-:math:`\alpha`.
+$\alpha$.
 
 .. math::
     x = \alpha^i
@@ -64,7 +64,7 @@ integer subtraction.
           &= \alpha^m \alpha^{Z(n - m)} \\
           &= \alpha^{m + Z(n - m)}
 
-Finite fields with order less than :math:`2^{20}` use lookup tables by default. In the limited cases where explicit calculation
+Finite fields with order less than $2^{20}$ use lookup tables by default. In the limited cases where explicit calculation
 is faster than table lookup, the explicit calculation is used.
 
 .. ipython:: python
@@ -77,7 +77,7 @@ is faster than table lookup, the explicit calculation is used.
 Explicit calculation
 --------------------
 
-Finite fields with order greater than :math:`2^{20}` use explicit calculation by default. This eliminates the need to store large lookup
+Finite fields with order greater than $2^{20}$ use explicit calculation by default. This eliminates the need to store large lookup
 tables. However, explicit calculation is usually slower than table lookup.
 
 .. ipython:: python
@@ -118,7 +118,7 @@ Recompile the ufuncs
 The compilation mode may be explicitly set during creation of the :obj:`~galois.FieldArray` subclass using the
 `compile` keyword argument to :func:`~galois.GF`.
 
-Here, the :obj:`~galois.FieldArray` subclass for :math:`\mathrm{GF}(3^5)` would normally select `"jit-lookup"` as its
+Here, the :obj:`~galois.FieldArray` subclass for $\mathrm{GF}(3^5)$ would normally select `"jit-lookup"` as its
 default compilation mode. However, we can intentionally choose explicit calculation.
 
 .. ipython:: python

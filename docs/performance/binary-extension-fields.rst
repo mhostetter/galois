@@ -1,10 +1,10 @@
 Binary Extension Fields
 =======================
 
-This page compares the performance of :obj:`galois` performing finite field multiplication in :math:`\mathrm{GF}(2^m)` with
+This page compares the performance of :obj:`galois` performing finite field multiplication in $\mathrm{GF}(2^m)$ with
 native NumPy performing *only* modular multiplication.
 
-Native NumPy cannot easily perform finite field multiplication in :math:`\mathrm{GF}(2^m)` because it involves polynomial multiplication
+Native NumPy cannot easily perform finite field multiplication in $\mathrm{GF}(2^m)$ because it involves polynomial multiplication
 (convolution) followed by reducing modulo the irreducible polynomial. To make a *similar* comparison, NumPy will perform integer
 multiplication followed by integer remainder division.
 
@@ -19,9 +19,9 @@ Lookup table performance
 ------------------------
 
 This section tests :obj:`galois` when using the `"jit-lookup"` compilation mode. For finite fields with order less
-than or equal to :math:`2^{20}`, :obj:`galois` uses lookup tables by default for efficient arithmetic.
+than or equal to $2^{20}$, :obj:`galois` uses lookup tables by default for efficient arithmetic.
 
-Below are examples computing 10 million multiplications in the binary extension field :math:`\mathrm{GF}(2^8)`.
+Below are examples computing 10 million multiplications in the binary extension field $\mathrm{GF}(2^8)$.
 
 .. code-block:: ipython
 
@@ -62,9 +62,9 @@ Explicit calculation performance
 --------------------------------
 
 This section tests :obj:`galois` when using the `"jit-calculate"` compilation mode. For finite fields with order greater
-than :math:`2^{20}`, :obj:`galois` will use explicit arithmetic calculation by default rather than lookup tables.
+than $2^{20}$, :obj:`galois` will use explicit arithmetic calculation by default rather than lookup tables.
 
-Below are examples computing 10 million multiplications in the binary extension field :math:`\mathrm{GF}(2^{32})`.
+Below are examples computing 10 million multiplications in the binary extension field $\mathrm{GF}(2^{32})$.
 
 .. code-block:: ipython
 
@@ -110,8 +110,8 @@ Linear algebra performance in extension fields is definitely slower than native 
 with prime fields, it is not possible to use the BLAS/LAPACK implementations. Instead, entirely new JIT-compiled
 ufuncs are generated, which are not as optimized for parallelism or hardware acceleration as BLAS/LAPACK.
 
-Below are examples computing the matrix multiplication of two :math:`100 \times 100` matrices in the binary extension
-field :math:`\mathrm{GF}(2^{32})`.
+Below are examples computing the matrix multiplication of two $100 \times 100$ matrices in the binary extension
+field $\mathrm{GF}(2^{32})$.
 
 .. code-block:: ipython
 

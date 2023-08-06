@@ -24,29 +24,29 @@ from ._cyclic import _CyclicCode
 @export
 class BCH(_CyclicCode):
     r"""
-    A general :math:`\textrm{BCH}(n, k)` code over :math:`\mathrm{GF}(q)`.
+    A general $\textrm{BCH}(n, k)$ code over $\mathrm{GF}(q)$.
 
-    A :math:`\textrm{BCH}(n, k)` code is a :math:`[n, k, d]_q` linear block code with codeword size :math:`n`, message
-    size :math:`k`, minimum distance :math:`d`, and symbols taken from an alphabet of size :math:`q`.
+    A $\textrm{BCH}(n, k)$ code is a $[n, k, d]_q$ linear block code with codeword size $n$, message
+    size $k$, minimum distance $d$, and symbols taken from an alphabet of size $q$.
 
     .. info::
         :title: Shortened codes
 
-        To create the shortened :math:`\textrm{BCH}(n-s, k-s)` code, construct the full-sized
-        :math:`\textrm{BCH}(n, k)` code and then pass :math:`k-s` symbols into :func:`encode` and :math:`n-s` symbols
+        To create the shortened $\textrm{BCH}(n-s, k-s)$ code, construct the full-sized
+        $\textrm{BCH}(n, k)$ code and then pass $k-s$ symbols into :func:`encode` and $n-s$ symbols
         into :func:`decode()`. Shortened codes are only applicable for systematic codes.
 
-    A BCH code is a cyclic code over :math:`\mathrm{GF}(q)` with generator polynomial :math:`g(x)`. The generator
-    polynomial is over :math:`\mathrm{GF}(q)` and has :math:`d-1` roots :math:`\alpha^c, \dots, \alpha^{c+d-2}` when
-    evaluated in :math:`\mathrm{GF}(q^m)`. The element :math:`\alpha` is a primitive :math:`n`-th root of unity in
-    :math:`\mathrm{GF}(q^m)`.
+    A BCH code is a cyclic code over $\mathrm{GF}(q)$ with generator polynomial $g(x)$. The generator
+    polynomial is over $\mathrm{GF}(q)$ and has $d-1$ roots $\alpha^c, \dots, \alpha^{c+d-2}$ when
+    evaluated in $\mathrm{GF}(q^m)$. The element $\alpha$ is a primitive $n$-th root of unity in
+    $\mathrm{GF}(q^m)$.
 
     .. math::
 
         g(x) = \textrm{LCM}(m_{\alpha^c}(x), \dots, m_{\alpha^{c+d-2}}(x))
 
     Examples:
-        Construct a binary :math:`\textrm{BCH}(15, 7)` code.
+        Construct a binary $\textrm{BCH}(15, 7)$ code.
 
         .. ipython:: python
 
@@ -93,29 +93,29 @@ class BCH(_CyclicCode):
         systematic: bool = True,
     ):
         r"""
-        Constructs a general :math:`\textrm{BCH}(n, k)` code over :math:`\mathrm{GF}(q)`.
+        Constructs a general $\textrm{BCH}(n, k)$ code over $\mathrm{GF}(q)$.
 
         Arguments:
-            n: The codeword size :math:`n`. If :math:`n = q^m - 1`, the BCH code is *primitive*.
-            k: The message size :math:`k`.
+            n: The codeword size $n$. If $n = q^m - 1$, the BCH code is *primitive*.
+            k: The message size $k$.
 
                 .. important::
                     Either `k` or `d` must be provided to define the code. Both may be provided as long as they are
                     consistent.
 
-            d: The design distance :math:`d`. This defines the number of roots :math:`d - 1` in the generator
-                polynomial :math:`g(x)` over :math:`\mathrm{GF}(q^m)`.
-            field: The Galois field :math:`\mathrm{GF}(q)` that defines the alphabet of the codeword symbols.
-                The default is `None` which corresponds to :math:`\mathrm{GF}(2)`.
-            extension_field: The Galois field :math:`\mathrm{GF}(q^m)` that defines the syndrome arithmetic.
-                The default is `None` which corresponds to :math:`\mathrm{GF}(q^m)` where
-                :math:`q^{m - 1} \le n < q^m`. The default extension field will use `matlab_primitive_poly(q, m)`
+            d: The design distance $d$. This defines the number of roots $d - 1$ in the generator
+                polynomial $g(x)$ over $\mathrm{GF}(q^m)$.
+            field: The Galois field $\mathrm{GF}(q)$ that defines the alphabet of the codeword symbols.
+                The default is `None` which corresponds to $\mathrm{GF}(2)$.
+            extension_field: The Galois field $\mathrm{GF}(q^m)$ that defines the syndrome arithmetic.
+                The default is `None` which corresponds to $\mathrm{GF}(q^m)$ where
+                $q^{m - 1} \le n < q^m$. The default extension field will use `matlab_primitive_poly(q, m)`
                 for the irreducible polynomial.
-            alpha: A primitive :math:`n`-th root of unity :math:`\alpha` in :math:`\mathrm{GF}(q^m)` that defines the
-                :math:`\alpha^c, \dots, \alpha^{c+d-2}` roots of the generator polynomial :math:`g(x)`.
-            c: The first consecutive power :math:`c` of :math:`\alpha` that defines the
-                :math:`\alpha^c, \dots, \alpha^{c+d-2}` roots of the generator polynomial :math:`g(x)`.
-                The default is 1. If :math:`c = 1`, the BCH code is *narrow-sense*.
+            alpha: A primitive $n$-th root of unity $\alpha$ in $\mathrm{GF}(q^m)$ that defines the
+                $\alpha^c, \dots, \alpha^{c+d-2}$ roots of the generator polynomial $g(x)$.
+            c: The first consecutive power $c$ of $\alpha$ that defines the
+                $\alpha^c, \dots, \alpha^{c+d-2}$ roots of the generator polynomial $g(x)$.
+                The default is 1. If $c = 1$, the BCH code is *narrow-sense*.
             systematic: Indicates if the encoding should be systematic, meaning the codeword is the message with
                 parity appended. The default is `True`.
 
@@ -123,7 +123,7 @@ class BCH(_CyclicCode):
             matlab_primitive_poly, FieldArray.primitive_root_of_unity
 
         Examples:
-            Construct a binary primitive, narrow-sense :math:`\textrm{BCH}(15, 7)` code.
+            Construct a binary primitive, narrow-sense $\textrm{BCH}(15, 7)$ code.
 
             .. ipython:: python
 
@@ -131,7 +131,7 @@ class BCH(_CyclicCode):
                 galois.BCH(15, d=5)
                 galois.BCH(15, 7, 5)
 
-            Construct a primitive, narrow-sense :math:`\textrm{BCH}(26, 17)` code over :math:`\mathrm{GF}(3)`.
+            Construct a primitive, narrow-sense $\textrm{BCH}(26, 17)$ code over $\mathrm{GF}(3)$.
 
             .. ipython:: python
 
@@ -140,7 +140,7 @@ class BCH(_CyclicCode):
                 galois.BCH(26, d=5, field=GF)
                 galois.BCH(26, 17, 5, field=GF)
 
-            Construct a non-primitive, narrow-sense :math:`\textrm{BCH}(13, 4)` code over :math:`\mathrm{GF}(3)`.
+            Construct a non-primitive, narrow-sense $\textrm{BCH}(13, 4)$ code over $\mathrm{GF}(3)$.
 
             .. ipython:: python
 
@@ -149,7 +149,7 @@ class BCH(_CyclicCode):
                 galois.BCH(13, d=7, field=GF)
                 galois.BCH(13, 4, 7, field=GF)
 
-            Discover primitive BCH codes over :math:`\mathrm{GF}(5)` by looping over the design distance.
+            Discover primitive BCH codes over $\mathrm{GF}(5)$ by looping over the design distance.
 
             .. ipython:: python
 
@@ -222,21 +222,21 @@ class BCH(_CyclicCode):
         A terse representation of the BCH code.
 
         Examples:
-            Construct a binary primitive :math:`\textrm{BCH}(15, 7)` code.
+            Construct a binary primitive $\textrm{BCH}(15, 7)$ code.
 
             .. ipython:: python
 
                 bch = galois.BCH(15, 7)
                 bch
 
-            Construct a primitive :math:`\textrm{BCH}(26, 14)` code over :math:`\mathrm{GF}(3)`.
+            Construct a primitive $\textrm{BCH}(26, 14)$ code over $\mathrm{GF}(3)$.
 
             .. ipython:: python
 
                 bch = galois.BCH(26, 14, field=galois.GF(3))
                 bch
 
-            Construct a non-primitive :math:`\textrm{BCH}(13, 4)` code over :math:`\mathrm{GF}(3)`.
+            Construct a non-primitive $\textrm{BCH}(13, 4)$ code over $\mathrm{GF}(3)$.
 
             .. ipython:: python
 
@@ -250,21 +250,21 @@ class BCH(_CyclicCode):
         A formatted string with relevant properties of the BCH code.
 
         Examples:
-            Construct a binary primitive :math:`\textrm{BCH}(15, 7)` code.
+            Construct a binary primitive $\textrm{BCH}(15, 7)$ code.
 
             .. ipython:: python
 
                 bch = galois.BCH(15, 7)
                 print(bch)
 
-            Construct a primitive :math:`\textrm{BCH}(26, 14)` code over :math:`\mathrm{GF}(3)`.
+            Construct a primitive $\textrm{BCH}(26, 14)$ code over $\mathrm{GF}(3)$.
 
             .. ipython:: python
 
                 bch = galois.BCH(26, 14, field=galois.GF(3))
                 print(bch)
 
-            Construct a non-primitive :math:`\textrm{BCH}(13, 4)` code over :math:`\mathrm{GF}(3)`.
+            Construct a non-primitive $\textrm{BCH}(13, 4)$ code over $\mathrm{GF}(3)$.
 
             .. ipython:: python
 
@@ -291,7 +291,7 @@ class BCH(_CyclicCode):
 
                 .. md-tab-item:: Vector
 
-                    Encode a single message using the :math:`\textrm{BCH}(15, 7)` code.
+                    Encode a single message using the $\textrm{BCH}(15, 7)$ code.
 
                     .. ipython:: python
 
@@ -308,7 +308,7 @@ class BCH(_CyclicCode):
 
                 .. md-tab-item:: Vector (shortened)
 
-                    Encode a single message using the shortened :math:`\textrm{BCH}(12, 4)` code.
+                    Encode a single message using the shortened $\textrm{BCH}(12, 4)$ code.
 
                     .. ipython:: python
 
@@ -325,7 +325,7 @@ class BCH(_CyclicCode):
 
                 .. md-tab-item:: Matrix
 
-                    Encode a matrix of three messages using the :math:`\textrm{BCH}(15, 7)` code.
+                    Encode a matrix of three messages using the $\textrm{BCH}(15, 7)$ code.
 
                     .. ipython:: python
 
@@ -342,7 +342,7 @@ class BCH(_CyclicCode):
 
                 .. md-tab-item:: Matrix (shortened)
 
-                    Encode a matrix of three messages using the shortened :math:`\textrm{BCH}(12, 4)` code.
+                    Encode a matrix of three messages using the shortened $\textrm{BCH}(12, 4)$ code.
 
                     .. ipython:: python
 
@@ -370,7 +370,7 @@ class BCH(_CyclicCode):
 
                 .. md-tab-item:: Vector
 
-                    Encode a single message using the :math:`\textrm{BCH}(15, 7)` code.
+                    Encode a single message using the $\textrm{BCH}(15, 7)$ code.
 
                     .. ipython:: python
 
@@ -385,7 +385,7 @@ class BCH(_CyclicCode):
 
                         bch.detect(c)
 
-                    Detect :math:`d_{min}-1` errors in the codeword.
+                    Detect $d_{min}-1$ errors in the codeword.
 
                     .. ipython:: python
 
@@ -395,7 +395,7 @@ class BCH(_CyclicCode):
 
                 .. md-tab-item:: Vector (shortened)
 
-                    Encode a single message using the shortened :math:`\textrm{BCH}(12, 4)` code.
+                    Encode a single message using the shortened $\textrm{BCH}(12, 4)$ code.
 
                     .. ipython:: python
 
@@ -410,7 +410,7 @@ class BCH(_CyclicCode):
 
                         bch.detect(c)
 
-                    Detect :math:`d_{min}-1` errors in the codeword.
+                    Detect $d_{min}-1$ errors in the codeword.
 
                     .. ipython:: python
 
@@ -420,7 +420,7 @@ class BCH(_CyclicCode):
 
                 .. md-tab-item:: Matrix
 
-                    Encode a matrix of three messages using the :math:`\textrm{BCH}(15, 7)` code.
+                    Encode a matrix of three messages using the $\textrm{BCH}(15, 7)$ code.
 
                     .. ipython:: python
 
@@ -435,7 +435,7 @@ class BCH(_CyclicCode):
 
                         bch.detect(c)
 
-                    Detect one, two, and :math:`d_{min}-1` errors in the codewords.
+                    Detect one, two, and $d_{min}-1$ errors in the codewords.
 
                     .. ipython:: python
 
@@ -448,7 +448,7 @@ class BCH(_CyclicCode):
 
                 .. md-tab-item:: Matrix (shortened)
 
-                    Encode a matrix of three messages using the shortened :math:`\textrm{BCH}(12, 4)` code.
+                    Encode a matrix of three messages using the shortened $\textrm{BCH}(12, 4)$ code.
 
                     .. ipython:: python
 
@@ -463,7 +463,7 @@ class BCH(_CyclicCode):
 
                         bch.detect(c)
 
-                    Detect one, two, and :math:`d_{min}-1` errors in the codewords.
+                    Detect one, two, and $d_{min}-1$ errors in the codewords.
 
                     .. ipython:: python
 
@@ -501,11 +501,11 @@ class BCH(_CyclicCode):
         _CyclicCode.decode,
         {},
         r"""
-        In decoding, the syndrome vector :math:`\mathbf{s}` is computed by evaluating the received codeword
-        :math:`\mathbf{r}` in the extension field :math:`\mathrm{GF}(q^m)` at the roots
-        :math:`\alpha^c, \dots, \alpha^{c+d-2}` of the generator polynomial :math:`g(x)`. The equivalent polynomial
-        operation computes the remainder of :math:`r(x)` by :math:`g(x)` in the extension field
-        :math:`\mathrm{GF}(q^m)`.
+        In decoding, the syndrome vector $\mathbf{s}$ is computed by evaluating the received codeword
+        $\mathbf{r}$ in the extension field $\mathrm{GF}(q^m)$ at the roots
+        $\alpha^c, \dots, \alpha^{c+d-2}$ of the generator polynomial $g(x)$. The equivalent polynomial
+        operation computes the remainder of $r(x)$ by $g(x)$ in the extension field
+        $\mathrm{GF}(q^m)$.
 
         .. math::
             \mathbf{s} = [r(\alpha^c),\ \dots,\ r(\alpha^{c+d-2})] \in \mathrm{GF}(q^m)^{d-1}
@@ -514,19 +514,19 @@ class BCH(_CyclicCode):
             s(x) = r(x)\ \textrm{mod}\ g(x) \in \mathrm{GF}(q^m)[x]
 
         A syndrome of zeros indicates the received codeword is a valid codeword and there are no errors. If the
-        syndrome is non-zero, the decoder will find an error-locator polynomial :math:`\sigma(x)` and the corresponding
+        syndrome is non-zero, the decoder will find an error-locator polynomial $\sigma(x)$ and the corresponding
         error locations and values.
 
         Note:
-            The :math:`[n, k, d]_q` code has :math:`d_{min} \ge d` minimum distance. It can detect up
-            to :math:`d_{min}-1` errors.
+            The $[n, k, d]_q$ code has $d_{min} \ge d$ minimum distance. It can detect up
+            to $d_{min}-1$ errors.
 
         Examples:
             .. md-tab-set::
 
                 .. md-tab-item:: Vector
 
-                    Encode a single message using the :math:`\textrm{BCH}(15, 7)` code.
+                    Encode a single message using the $\textrm{BCH}(15, 7)$ code.
 
                     .. ipython:: python
 
@@ -535,7 +535,7 @@ class BCH(_CyclicCode):
                         m = GF.Random(bch.k); m
                         c = bch.encode(m); c
 
-                    Corrupt :math:`t` symbols of the codeword.
+                    Corrupt $t$ symbols of the codeword.
 
                     .. ipython:: python
 
@@ -558,7 +558,7 @@ class BCH(_CyclicCode):
 
                 .. md-tab-item:: Vector (shortened)
 
-                    Encode a single message using the shortened :math:`\textrm{BCH}(12, 4)` code.
+                    Encode a single message using the shortened $\textrm{BCH}(12, 4)$ code.
 
                     .. ipython:: python
 
@@ -567,7 +567,7 @@ class BCH(_CyclicCode):
                         m = GF.Random(bch.k - 3); m
                         c = bch.encode(m); c
 
-                    Corrupt :math:`t` symbols of the codeword.
+                    Corrupt $t$ symbols of the codeword.
 
                     .. ipython:: python
 
@@ -590,7 +590,7 @@ class BCH(_CyclicCode):
 
                 .. md-tab-item:: Matrix
 
-                    Encode a matrix of three messages using the :math:`\textrm{BCH}(15, 7)` code.
+                    Encode a matrix of three messages using the $\textrm{BCH}(15, 7)$ code.
 
                     .. ipython:: python
 
@@ -624,7 +624,7 @@ class BCH(_CyclicCode):
 
                 .. md-tab-item:: Matrix (shortened)
 
-                    Encode a matrix of three messages using the shortened :math:`\textrm{BCH}(12, 4)` code.
+                    Encode a matrix of three messages using the shortened $\textrm{BCH}(12, 4)$ code.
 
                     .. ipython:: python
 
@@ -672,7 +672,7 @@ class BCH(_CyclicCode):
         {},
         r"""
         Examples:
-            Construct a binary :math:`\textrm{BCH}(15, 7)` code.
+            Construct a binary $\textrm{BCH}(15, 7)$ code.
 
             .. ipython:: python
 
@@ -680,7 +680,7 @@ class BCH(_CyclicCode):
                 bch.field
                 print(bch.field.properties)
 
-            Construct a :math:`\textrm{BCH}(26, 14)` code over :math:`\mathrm{GF}(3)`.
+            Construct a $\textrm{BCH}(26, 14)$ code over $\mathrm{GF}(3)$.
 
             .. ipython:: python
 
@@ -695,10 +695,10 @@ class BCH(_CyclicCode):
     @property
     def extension_field(self) -> Type[FieldArray]:
         r"""
-        The Galois field :math:`\mathrm{GF}(q^m)` that defines the BCH syndrome arithmetic.
+        The Galois field $\mathrm{GF}(q^m)$ that defines the BCH syndrome arithmetic.
 
         Examples:
-            Construct a binary :math:`\textrm{BCH}(15, 7)` code.
+            Construct a binary $\textrm{BCH}(15, 7)$ code.
 
             .. ipython:: python
 
@@ -706,7 +706,7 @@ class BCH(_CyclicCode):
                 bch.extension_field
                 print(bch.extension_field.properties)
 
-            Construct a :math:`\textrm{BCH}(26, 14)` code over :math:`\mathrm{GF}(3)`.
+            Construct a $\textrm{BCH}(26, 14)$ code over $\mathrm{GF}(3)$.
 
             .. ipython:: python
 
@@ -721,14 +721,14 @@ class BCH(_CyclicCode):
         {},
         r"""
         Examples:
-            Construct a binary :math:`\textrm{BCH}(15, 7)` code.
+            Construct a binary $\textrm{BCH}(15, 7)$ code.
 
             .. ipython:: python
 
                 bch = galois.BCH(15, 7); bch
                 bch.n
 
-            Construct a :math:`\textrm{BCH}(26, 14)` code over :math:`\mathrm{GF}(3)`.
+            Construct a $\textrm{BCH}(26, 14)$ code over $\mathrm{GF}(3)$.
 
             .. ipython:: python
 
@@ -745,14 +745,14 @@ class BCH(_CyclicCode):
         {},
         r"""
         Examples:
-            Construct a binary :math:`\textrm{BCH}(15, 7)` code.
+            Construct a binary $\textrm{BCH}(15, 7)$ code.
 
             .. ipython:: python
 
                 bch = galois.BCH(15, 7); bch
                 bch.k
 
-            Construct a :math:`\textrm{BCH}(26, 14)` code over :math:`\mathrm{GF}(3)`.
+            Construct a $\textrm{BCH}(26, 14)$ code over $\mathrm{GF}(3)$.
 
             .. ipython:: python
 
@@ -769,17 +769,17 @@ class BCH(_CyclicCode):
         {},
         r"""
         Notes:
-            The minimum distance of a BCH code may be greater than the design distance, i.e. :math:`d_{min} \ge d`.
+            The minimum distance of a BCH code may be greater than the design distance, i.e. $d_{min} \ge d$.
 
         Examples:
-            Construct a binary :math:`\textrm{BCH}(15, 7)` code.
+            Construct a binary $\textrm{BCH}(15, 7)$ code.
 
             .. ipython:: python
 
                 bch = galois.BCH(15, 7); bch
                 bch.d
 
-            Construct a :math:`\textrm{BCH}(26, 14)` code over :math:`\mathrm{GF}(3)`.
+            Construct a $\textrm{BCH}(26, 14)$ code over $\mathrm{GF}(3)$.
 
             .. ipython:: python
 
@@ -796,14 +796,14 @@ class BCH(_CyclicCode):
         {},
         r"""
         Examples:
-            Construct a binary :math:`\textrm{BCH}(15, 7)` code.
+            Construct a binary $\textrm{BCH}(15, 7)$ code.
 
             .. ipython:: python
 
                 bch = galois.BCH(15, 7); bch
                 bch.t
 
-            Construct a :math:`\textrm{BCH}(26, 14)` code over :math:`\mathrm{GF}(3)`.
+            Construct a $\textrm{BCH}(26, 14)$ code over $\mathrm{GF}(3)$.
 
             .. ipython:: python
 
@@ -820,8 +820,8 @@ class BCH(_CyclicCode):
         {},
         r"""
         Examples:
-            Construct a binary narrow-sense :math:`\textrm{BCH}(15, 7)` code with first consecutive root
-            :math:`\alpha`.
+            Construct a binary narrow-sense $\textrm{BCH}(15, 7)$ code with first consecutive root
+            $\alpha$.
 
             .. ipython:: python
 
@@ -831,9 +831,9 @@ class BCH(_CyclicCode):
                 # Evaluate the generator polynomial at its roots in GF(q^m)
                 bch.generator_poly(bch.roots, field=bch.extension_field)
 
-            Construct a binary non-narrow-sense :math:`\textrm{BCH}(15, 7)` code with first consecutive root
-            :math:`\alpha^3`. Notice the design distance of this code is only 3 and it only has 2 roots
-            in :math:`\mathrm{GF}(2^4)`.
+            Construct a binary non-narrow-sense $\textrm{BCH}(15, 7)$ code with first consecutive root
+            $\alpha^3$. Notice the design distance of this code is only 3 and it only has 2 roots
+            in $\mathrm{GF}(2^4)$.
 
             .. ipython:: python
 
@@ -853,7 +853,7 @@ class BCH(_CyclicCode):
         {},
         r"""
         Examples:
-            Construct a binary primitive :math:`\textrm{BCH}(15, 7)` code.
+            Construct a binary primitive $\textrm{BCH}(15, 7)$ code.
 
             .. ipython:: python
 
@@ -861,7 +861,7 @@ class BCH(_CyclicCode):
                 bch.parity_check_poly
                 bch.H
 
-            Construct a non-primitive :math:`\textrm{BCH}(13, 4)` code over :math:`\mathrm{GF}(3)`.
+            Construct a non-primitive $\textrm{BCH}(13, 4)$ code over $\mathrm{GF}(3)$.
 
             .. ipython:: python
 
@@ -878,11 +878,11 @@ class BCH(_CyclicCode):
         _CyclicCode.roots,
         {},
         r"""
-        These are consecutive powers of :math:`\alpha^c`, specifically :math:`\alpha^c, \dots, \alpha^{c+d-2}`.
+        These are consecutive powers of $\alpha^c$, specifically $\alpha^c, \dots, \alpha^{c+d-2}$.
 
         Examples:
-            Construct a binary narrow-sense :math:`\textrm{BCH}(15, 7)` code with first consecutive root
-            :math:`\alpha`.
+            Construct a binary narrow-sense $\textrm{BCH}(15, 7)$ code with first consecutive root
+            $\alpha$.
 
             .. ipython:: python
 
@@ -892,9 +892,9 @@ class BCH(_CyclicCode):
                 # Evaluate the generator polynomial at its roots in GF(q^m)
                 bch.generator_poly(bch.roots, field=bch.extension_field)
 
-            Construct a binary non-narrow-sense :math:`\textrm{BCH}(15, 7)` code with first consecutive root
-            :math:`\alpha^3`. Notice the design distance of this code is only 3 and it only has 2 roots
-            in :math:`\mathrm{GF}(2^4)`.
+            Construct a binary non-narrow-sense $\textrm{BCH}(15, 7)$ code with first consecutive root
+            $\alpha^3$. Notice the design distance of this code is only 3 and it only has 2 roots
+            in $\mathrm{GF}(2^4)$.
 
             .. ipython:: python
 
@@ -912,12 +912,12 @@ class BCH(_CyclicCode):
     @property
     def alpha(self) -> FieldArray:
         r"""
-        A primitive :math:`n`-th root of unity :math:`\alpha` in :math:`\mathrm{GF}(q^m)` whose consecutive powers
-        :math:`\alpha^c, \dots, \alpha^{c+d-2}` are roots of the generator polynomial :math:`g(x)`
-        in :math:`\mathrm{GF}(q^m)`.
+        A primitive $n$-th root of unity $\alpha$ in $\mathrm{GF}(q^m)$ whose consecutive powers
+        $\alpha^c, \dots, \alpha^{c+d-2}$ are roots of the generator polynomial $g(x)$
+        in $\mathrm{GF}(q^m)$.
 
         Examples:
-            Construct a binary primitive :math:`\textrm{BCH}(15, 7)` code.
+            Construct a binary primitive $\textrm{BCH}(15, 7)$ code.
 
             .. ipython:: python
 
@@ -926,7 +926,7 @@ class BCH(_CyclicCode):
                 bch.roots[0] == bch.alpha ** bch.c
                 bch.alpha.multiplicative_order() == bch.n
 
-            Construct a non-primitive :math:`\textrm{BCH}(13, 7)` code over :math:`\mathrm{GF}(3)`.
+            Construct a non-primitive $\textrm{BCH}(13, 7)$ code over $\mathrm{GF}(3)$.
 
             .. ipython:: python
 
@@ -946,12 +946,12 @@ class BCH(_CyclicCode):
     @property
     def c(self) -> int:
         r"""
-        The first consecutive power :math:`c` of :math:`\alpha` that defines the roots
-        :math:`\alpha^c, \dots, \alpha^{c+d-2}` of the generator polynomial :math:`g(x)`.
+        The first consecutive power $c$ of $\alpha$ that defines the roots
+        $\alpha^c, \dots, \alpha^{c+d-2}$ of the generator polynomial $g(x)$.
 
         Examples:
-            Construct a binary narrow-sense :math:`\textrm{BCH}(15, 7)` code with first consecutive root
-            :math:`\alpha`.
+            Construct a binary narrow-sense $\textrm{BCH}(15, 7)$ code with first consecutive root
+            $\alpha$.
 
             .. ipython:: python
 
@@ -959,8 +959,8 @@ class BCH(_CyclicCode):
                 bch.c
                 bch.roots[0] == bch.alpha ** bch.c
 
-            Construct a binary non-narrow-sense :math:`\textrm{BCH}(15, 7)` code with first consecutive root
-            :math:`\alpha^3`. Notice the design distance of this code is only 3.
+            Construct a binary non-narrow-sense $\textrm{BCH}(15, 7)$ code with first consecutive root
+            $\alpha^3$. Notice the design distance of this code is only 3.
 
             .. ipython:: python
 
@@ -981,14 +981,14 @@ class BCH(_CyclicCode):
         {},
         r"""
         Examples:
-            Construct a binary primitive :math:`\textrm{BCH}(15, 7)` code.
+            Construct a binary primitive $\textrm{BCH}(15, 7)$ code.
 
             .. ipython:: python
 
                 bch = galois.BCH(15, 7); bch
                 bch.G
 
-            Construct a non-primitive :math:`\textrm{BCH}(13, 4)` code over :math:`\mathrm{GF}(3)`.
+            Construct a non-primitive $\textrm{BCH}(13, 4)$ code over $\mathrm{GF}(3)$.
 
             .. ipython:: python
 
@@ -1011,7 +1011,7 @@ class BCH(_CyclicCode):
         {},
         r"""
         Examples:
-            Construct a binary primitive :math:`\textrm{BCH}(15, 7)` code.
+            Construct a binary primitive $\textrm{BCH}(15, 7)$ code.
 
             .. ipython:: python
 
@@ -1019,7 +1019,7 @@ class BCH(_CyclicCode):
                 bch.H
                 bch.parity_check_poly
 
-            Construct a non-primitive :math:`\textrm{BCH}(13, 4)` code over :math:`\mathrm{GF}(3)`.
+            Construct a non-primitive $\textrm{BCH}(13, 4)$ code over $\mathrm{GF}(3)$.
 
             .. ipython:: python
 
@@ -1035,10 +1035,10 @@ class BCH(_CyclicCode):
     @property
     def is_primitive(self) -> bool:
         r"""
-        Indicates if the BCH code is *primitive*, meaning :math:`n = q^m - 1`.
+        Indicates if the BCH code is *primitive*, meaning $n = q^m - 1$.
 
         Examples:
-            Construct a binary primitive :math:`\textrm{BCH}(15, 7)` code.
+            Construct a binary primitive $\textrm{BCH}(15, 7)$ code.
 
             .. ipython:: python
 
@@ -1046,7 +1046,7 @@ class BCH(_CyclicCode):
                 bch.is_primitive
                 bch.n == bch.extension_field.order - 1
 
-            Construct a non-primitive :math:`\textrm{BCH}(13, 7)` code over :math:`\mathrm{GF}(3)`.
+            Construct a non-primitive $\textrm{BCH}(13, 7)$ code over $\mathrm{GF}(3)$.
 
             .. ipython:: python
 
@@ -1060,11 +1060,11 @@ class BCH(_CyclicCode):
     def is_narrow_sense(self) -> bool:
         r"""
         Indicates if the BCH code is *narrow-sense*, meaning the roots of the generator polynomial are consecutive
-        powers of :math:`\alpha` starting at 1, that is :math:`\alpha, \dots, \alpha^{d-1}`.
+        powers of $\alpha$ starting at 1, that is $\alpha, \dots, \alpha^{d-1}$.
 
         Examples:
-            Construct a binary narrow-sense :math:`\textrm{BCH}(15, 7)` code with first consecutive root
-            :math:`\alpha`.
+            Construct a binary narrow-sense $\textrm{BCH}(15, 7)$ code with first consecutive root
+            $\alpha$.
 
             .. ipython:: python
 
@@ -1074,8 +1074,8 @@ class BCH(_CyclicCode):
                 bch.generator_poly
                 bch.roots
 
-            Construct a binary non-narrow-sense :math:`\textrm{BCH}(15, 7)` code with first consecutive root
-            :math:`\alpha^3`. Notice the design distance of this code is only 3.
+            Construct a binary non-narrow-sense $\textrm{BCH}(15, 7)$ code with first consecutive root
+            $\alpha^3$. Notice the design distance of this code is only 3.
 
             .. ipython:: python
 
@@ -1092,7 +1092,7 @@ class BCH(_CyclicCode):
         {},
         r"""
         Examples:
-            Construct a non-primitive :math:`\textrm{BCH}(13, 4)` systematic code over :math:`\mathrm{GF}(3)`.
+            Construct a non-primitive $\textrm{BCH}(13, 4)$ systematic code over $\mathrm{GF}(3)$.
 
             .. ipython:: python
 
@@ -1100,7 +1100,7 @@ class BCH(_CyclicCode):
                 bch.is_systematic
                 bch.G
 
-            Construct a non-primitive :math:`\textrm{BCH}(13, 4)` non-systematic code over :math:`\mathrm{GF}(3)`.
+            Construct a non-primitive $\textrm{BCH}(13, 4)$ non-systematic code over $\mathrm{GF}(3)$.
 
             .. ipython:: python
 

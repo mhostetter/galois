@@ -100,10 +100,10 @@ class FieldArrayMeta(ArrayMeta):
     @property
     def characteristic(cls) -> int:
         r"""
-        The prime characteristic :math:`p` of the Galois field :math:`\mathrm{GF}(p^m)`.
+        The prime characteristic $p$ of the Galois field $\mathrm{GF}(p^m)$.
 
         Notes:
-            Adding :math:`p` copies of any element will always result in 0.
+            Adding $p$ copies of any element will always result in 0.
 
         Examples:
             .. ipython:: python
@@ -118,7 +118,7 @@ class FieldArrayMeta(ArrayMeta):
     @property
     def degree(cls) -> int:
         r"""
-        The extension degree :math:`m` of the Galois field :math:`\mathrm{GF}(p^m)`.
+        The extension degree $m$ of the Galois field $\mathrm{GF}(p^m)$.
 
         Notes:
             The degree is a positive integer. For prime fields, the degree is 1.
@@ -136,7 +136,7 @@ class FieldArrayMeta(ArrayMeta):
     @property
     def order(cls) -> int:
         r"""
-        The order :math:`p^m` of the Galois field :math:`\mathrm{GF}(p^m)`.
+        The order $p^m$ of the Galois field $\mathrm{GF}(p^m)$.
 
         Notes:
             The order of the field is equal to the field's size.
@@ -154,10 +154,10 @@ class FieldArrayMeta(ArrayMeta):
     @property
     def irreducible_poly(cls) -> Poly:
         r"""
-        The irreducible polynomial :math:`f(x)` of the Galois field :math:`\mathrm{GF}(p^m)`.
+        The irreducible polynomial $f(x)$ of the Galois field $\mathrm{GF}(p^m)$.
 
         Notes:
-            The irreducible polynomial is of degree :math:`m` over :math:`\mathrm{GF}(p)`.
+            The irreducible polynomial is of degree $m$ over $\mathrm{GF}(p)$.
 
         Examples:
             .. ipython:: python
@@ -175,10 +175,10 @@ class FieldArrayMeta(ArrayMeta):
         Indicates whether the :obj:`~galois.FieldArray.irreducible_poly` is a primitive polynomial.
 
         Notes:
-            If the irreducible polynomial is primitive, then :math:`x` is a primitive element of the finite field.
+            If the irreducible polynomial is primitive, then $x$ is a primitive element of the finite field.
 
         Examples:
-            The default :math:`\mathrm{GF}(2^8)` field uses a primitive polynomial.
+            The default $\mathrm{GF}(2^8)$ field uses a primitive polynomial.
 
             .. ipython:: python
 
@@ -186,7 +186,7 @@ class FieldArrayMeta(ArrayMeta):
                 print(GF.properties)
                 GF.is_primitive_poly
 
-            The :math:`\mathrm{GF}(2^8)` field from AES uses a non-primitive polynomial.
+            The $\mathrm{GF}(2^8)$ field from AES uses a non-primitive polynomial.
 
             .. ipython:: python
 
@@ -199,17 +199,17 @@ class FieldArrayMeta(ArrayMeta):
     @property
     def elements(cls) -> FieldArray:
         r"""
-        All of the finite field's elements :math:`\{0, \dots, p^m-1\}`.
+        All of the finite field's elements $\{0, \dots, p^m-1\}$.
 
         Examples:
-            All elements of the prime field :math:`\mathrm{GF}(31)` in increasing order.
+            All elements of the prime field $\mathrm{GF}(31)$ in increasing order.
 
             .. ipython-with-reprs:: int,power
 
                 GF = galois.GF(31)
                 GF.elements
 
-            All elements of the extension field :math:`\mathrm{GF}(5^2)` in lexicographical order.
+            All elements of the extension field $\mathrm{GF}(5^2)$ in lexicographical order.
 
             .. ipython-with-reprs:: int,poly,power
 
@@ -227,20 +227,20 @@ class FieldArrayMeta(ArrayMeta):
     @property
     def units(cls) -> FieldArray:
         r"""
-        All of the finite field's units :math:`\{1, \dots, p^m-1\}`.
+        All of the finite field's units $\{1, \dots, p^m-1\}$.
 
         Notes:
             A unit is an element with a multiplicative inverse.
 
         Examples:
-            All units of the prime field :math:`\mathrm{GF}(31)` in increasing order.
+            All units of the prime field $\mathrm{GF}(31)$ in increasing order.
 
             .. ipython-with-reprs:: int,power
 
                 GF = galois.GF(31)
                 GF.units
 
-            All units of the extension field :math:`\mathrm{GF}(5^2)` in lexicographical order.
+            All units of the extension field $\mathrm{GF}(5^2)$ in lexicographical order.
 
             .. ipython-with-reprs:: int,poly,power
 
@@ -258,23 +258,23 @@ class FieldArrayMeta(ArrayMeta):
     @property
     def primitive_element(cls) -> FieldArray:
         r"""
-        A primitive element :math:`\alpha` of the Galois field :math:`\mathrm{GF}(p^m)`.
+        A primitive element $\alpha$ of the Galois field $\mathrm{GF}(p^m)$.
 
         Notes:
             A primitive element is a multiplicative generator of the field, such that
-            :math:`\mathrm{GF}(p^m) = \{0, 1, \alpha, \alpha^2, \dots, \alpha^{p^m - 2}\}`. A primitive element is a
-            root of the primitive polynomial :math:`f(x)`, such that :math:`f(\alpha) = 0` over
-            :math:`\mathrm{GF}(p^m)`.
+            $\mathrm{GF}(p^m) = \{0, 1, \alpha, \alpha^2, \dots, \alpha^{p^m - 2}\}$. A primitive element is a
+            root of the primitive polynomial $f(x)$, such that $f(\alpha) = 0$ over
+            $\mathrm{GF}(p^m)$.
 
         Examples:
-            The smallest primitive element of the prime field :math:`\mathrm{GF}(31)`.
+            The smallest primitive element of the prime field $\mathrm{GF}(31)$.
 
             .. ipython-with-reprs:: int,power
 
                 GF = galois.GF(31)
                 GF.elements
 
-            The smallest primitive element of the extension field :math:`\mathrm{GF}(5^2)`.
+            The smallest primitive element of the extension field $\mathrm{GF}(5^2)$.
 
             .. ipython-with-reprs:: int,poly,power
 
@@ -292,23 +292,23 @@ class FieldArrayMeta(ArrayMeta):
     @property
     def primitive_elements(cls) -> FieldArray:
         r"""
-        All primitive elements :math:`\alpha` of the Galois field :math:`\mathrm{GF}(p^m)`.
+        All primitive elements $\alpha$ of the Galois field $\mathrm{GF}(p^m)$.
 
         Notes:
             A primitive element is a multiplicative generator of the field, such that
-            :math:`\mathrm{GF}(p^m) = \{0, 1, \alpha, \alpha^2, \dots, \alpha^{p^m - 2}\}`. A primitive element is a
-            root of the primitive polynomial :math:`f(x)`, such that :math:`f(\alpha) = 0` over
-            :math:`\mathrm{GF}(p^m)`.
+            $\mathrm{GF}(p^m) = \{0, 1, \alpha, \alpha^2, \dots, \alpha^{p^m - 2}\}$. A primitive element is a
+            root of the primitive polynomial $f(x)$, such that $f(\alpha) = 0$ over
+            $\mathrm{GF}(p^m)$.
 
         Examples:
-            All primitive elements of the prime field :math:`\mathrm{GF}(31)` in increasing order.
+            All primitive elements of the prime field $\mathrm{GF}(31)$ in increasing order.
 
             .. ipython-with-reprs:: int,power
 
                 GF = galois.GF(31)
                 GF.elements
 
-            All primitive elements of the extension field :math:`\mathrm{GF}(5^2)` in lexicographical order.
+            All primitive elements of the extension field $\mathrm{GF}(5^2)$ in lexicographical order.
 
             .. ipython-with-reprs:: int,poly,power
 
@@ -333,8 +333,8 @@ class FieldArrayMeta(ArrayMeta):
         All squares in the finite field.
 
         Notes:
-            An element :math:`x` in :math:`\mathrm{GF}(p^m)` is a *square* if there exists a :math:`y` such that
-            :math:`y^2 = x` in the field.
+            An element $x$ in $\mathrm{GF}(p^m)$ is a *square* if there exists a $y$ such that
+            $y^2 = x$ in the field.
 
         See Also:
             is_square
@@ -379,8 +379,8 @@ class FieldArrayMeta(ArrayMeta):
         All non-squares in the Galois field.
 
         Notes:
-            An element :math:`x` in :math:`\mathrm{GF}(p^m)` is a *non-square* if there does not exist a :math:`y`
-            such that :math:`y^2 = x` in the field.
+            An element $x$ in $\mathrm{GF}(p^m)$ is a *non-square* if there does not exist a $y$
+            such that $y^2 = x$ in the field.
 
         See Also:
             is_square
@@ -443,10 +443,10 @@ class FieldArrayMeta(ArrayMeta):
     @property
     def prime_subfield(cls) -> Type[FieldArray]:
         r"""
-        The prime subfield :math:`\mathrm{GF}(p)` of the extension field :math:`\mathrm{GF}(p^m)`.
+        The prime subfield $\mathrm{GF}(p)$ of the extension field $\mathrm{GF}(p^m)$.
 
         Notes:
-            For the prime field :math:`\mathrm{GF}(p)`, the prime subfield is itself.
+            For the prime field $\mathrm{GF}(p)$, the prime subfield is itself.
 
         Examples:
             .. ipython:: python
@@ -478,7 +478,7 @@ class FieldArrayMeta(ArrayMeta):
                 GF = galois.GF(31); GF.dtypes
 
             Some data types are too small for certain finite fields, such as :obj:`numpy.int16` for
-            :math:`\mathrm{GF}(7^5)`.
+            $\mathrm{GF}(7^5)$.
 
             .. ipython:: python
 
@@ -544,14 +544,14 @@ class FieldArrayMeta(ArrayMeta):
             The ufuncs may be recompiled with :func:`~galois.FieldArray.compile`.
 
         Examples:
-            Fields with order less than :math:`2^{20}` are compiled, by default, using lookup tables for speed.
+            Fields with order less than $2^{20}$ are compiled, by default, using lookup tables for speed.
 
             .. ipython:: python
 
                 galois.GF(65537).ufunc_mode
                 galois.GF(2**16).ufunc_mode
 
-            Fields with order greater than :math:`2^{20}` are compiled, by default, using explicit calculation for
+            Fields with order greater than $2^{20}$ are compiled, by default, using explicit calculation for
             memory savings. The field elements and arithmetic must still fit within :obj:`numpy.int64`.
 
             .. ipython:: python
@@ -617,14 +617,14 @@ class FieldArrayMeta(ArrayMeta):
             The ufuncs may be recompiled with :func:`~galois.FieldArray.compile`.
 
         Examples:
-            Fields with order less than :math:`2^{20}` are compiled, by default, using lookup tables for speed.
+            Fields with order less than $2^{20}$ are compiled, by default, using lookup tables for speed.
 
             .. ipython:: python
 
                 galois.GF(65537).default_ufunc_mode
                 galois.GF(2**16).default_ufunc_mode
 
-            Fields with order greater than :math:`2^{20}` are compiled, by default, using explicit calculation for
+            Fields with order greater than $2^{20}$ are compiled, by default, using explicit calculation for
             memory savings. The field elements and arithmetic must still fit within :obj:`numpy.int64`.
 
             .. ipython:: python

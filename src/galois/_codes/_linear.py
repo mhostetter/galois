@@ -55,23 +55,23 @@ class _LinearCode:
 
     def encode(self, message: ArrayLike, output: Literal["codeword", "parity"] = "codeword") -> FieldArray:
         r"""
-        Encodes the message :math:`\mathbf{m}` into the codeword :math:`\mathbf{c}`.
+        Encodes the message $\mathbf{m}$ into the codeword $\mathbf{c}$.
 
         Arguments:
-            message: The message as either a :math:`k`-length vector or :math:`(N, k)` matrix, where :math:`N` is the
+            message: The message as either a $k$-length vector or $(N, k)$ matrix, where $N$ is the
                 number of messages.
 
                 .. info::
                     :title: Shortened codes
 
-                    For the shortened :math:`[n-s,\ k-s,\ d]` code (only applicable for systematic codes),
-                    pass :math:`k-s` symbols into :func:`encode` to return the :math:`n-s`-symbol message.
+                    For the shortened $[n-s,\ k-s,\ d]$ code (only applicable for systematic codes),
+                    pass $k-s$ symbols into :func:`encode` to return the $n-s$-symbol message.
 
             output: Specify whether to return the codeword or parity symbols only. The default is `"codeword"`.
 
         Returns:
-            If `output="codeword"`, the codeword as either a :math:`n`-length vector or :math:`(N, n)` matrix.
-            If `output="parity"`, the parity symbols as either a :math:`n-k`-length vector or :math:`(N, n-k)` matrix.
+            If `output="codeword"`, the codeword as either a $n$-length vector or $(N, n)$ matrix.
+            If `output="parity"`, the parity symbols as either a $n-k$-length vector or $(N, n-k)$ matrix.
         """
         verify_literal(output, ["codeword", "parity"])
 
@@ -92,20 +92,20 @@ class _LinearCode:
 
     def detect(self, codeword: ArrayLike) -> bool | np.ndarray:
         r"""
-        Detects if errors are present in the codeword :math:`\mathbf{c}`.
+        Detects if errors are present in the codeword $\mathbf{c}$.
 
         Arguments:
-            codeword: The codeword as either a :math:`n`-length vector or :math:`(N, n)` matrix, where :math:`N` is the
+            codeword: The codeword as either a $n$-length vector or $(N, n)$ matrix, where $N$ is the
                 number of codewords.
 
                 .. info::
                     :title: Shortened codes
 
-                    For the shortened :math:`[n-s,\ k-s,\ d]` code (only applicable for systematic codes),
-                    pass :math:`n-s` symbols into :func:`detect`.
+                    For the shortened $[n-s,\ k-s,\ d]$ code (only applicable for systematic codes),
+                    pass $n-s$ symbols into :func:`detect`.
 
         Returns:
-            A boolean scalar or :math:`N`-length array indicating if errors were detected in the corresponding codeword.
+            A boolean scalar or $N$-length array indicating if errors were detected in the corresponding codeword.
         """
         codeword, is_codeword_1d = self._check_and_convert_codeword(codeword)
         detected = self._detect_errors(codeword)
@@ -135,28 +135,28 @@ class _LinearCode:
 
     def decode(self, codeword, output="message", errors=False):
         r"""
-        Decodes the codeword :math:`\mathbf{c}` into the message :math:`\mathbf{m}`.
+        Decodes the codeword $\mathbf{c}$ into the message $\mathbf{m}$.
 
         Arguments:
-            codeword: The codeword as either a :math:`n`-length vector or :math:`(N, n)` matrix, where :math:`N` is the
+            codeword: The codeword as either a $n$-length vector or $(N, n)$ matrix, where $N$ is the
                 number of codewords.
 
                 .. info::
                     :title: Shortened codes
 
-                    For the shortened :math:`[n-s,\ k-s,\ d]` code (only applicable for systematic codes),
-                    pass :math:`n-s` symbols into :func:`decode` to return the :math:`k-s`-symbol message.
+                    For the shortened $[n-s,\ k-s,\ d]$ code (only applicable for systematic codes),
+                    pass $n-s$ symbols into :func:`decode` to return the $k-s$-symbol message.
 
             output: Specify whether to return the error-corrected message or entire codeword. The default is
                 `"message"`.
             errors: Optionally specify whether to return the number of corrected errors. The default is `False`.
 
         Returns:
-            - If `output="message"`, the error-corrected message as either a :math:`k`-length vector or
-              :math:`(N, k)` matrix. If `output="codeword"`, the error-corrected codeword as either a :math:`n`-length
-              vector or :math:`(N, n)` matrix.
-            - If `errors=True`, returns the number of corrected symbol errors as either a scalar or :math:`N`-length
-              array. Valid number of corrections are in :math:`[0, t]`. If a codeword has too many errors and cannot
+            - If `output="message"`, the error-corrected message as either a $k$-length vector or
+              $(N, k)$ matrix. If `output="codeword"`, the error-corrected codeword as either a $n$-length
+              vector or $(N, n)$ matrix.
+            - If `errors=True`, returns the number of corrected symbol errors as either a scalar or $N$-length
+              array. Valid number of corrections are in $[0, t]$. If a codeword has too many errors and cannot
               be corrected, -1 will be returned.
         """
         verify_literal(output, ["message", "codeword"])
@@ -304,38 +304,38 @@ class _LinearCode:
     @property
     def field(self) -> Type[FieldArray]:
         r"""
-        The Galois field :math:`\mathrm{GF}(q)` that defines the codeword alphabet.
+        The Galois field $\mathrm{GF}(q)$ that defines the codeword alphabet.
         """
         return self._field
 
     @property
     def n(self) -> int:
         """
-        The codeword size :math:`n` of the :math:`[n, k, d]_q` code. This is also called the code *length*.
+        The codeword size $n$ of the $[n, k, d]_q$ code. This is also called the code *length*.
         """
         return self._n
 
     @property
     def k(self) -> int:
         """
-        The message size :math:`k` of the :math:`[n, k, d]_q` code. This is also called the code *dimension*.
+        The message size $k$ of the $[n, k, d]_q$ code. This is also called the code *dimension*.
         """
         return self._k
 
     @property
     def d(self) -> int:
         r"""
-        The minimum distance :math:`d` of the :math:`[n, k, d]_q` code.
+        The minimum distance $d$ of the $[n, k, d]_q$ code.
         """
         return self._d
 
     @property
     def t(self) -> int:
         r"""
-        The error-correcting capability :math:`t` of the code.
+        The error-correcting capability $t$ of the code.
 
         Notes:
-            The code can correct :math:`t` symbol errors in a codeword.
+            The code can correct $t$ symbol errors in a codeword.
 
             .. math::
                 t = \bigg\lfloor \frac{d - 1}{2} \bigg\rfloor
@@ -345,7 +345,7 @@ class _LinearCode:
     @property
     def G(self) -> FieldArray:
         r"""
-        The generator matrix :math:`\mathbf{G}` with shape :math:`(k, n)`.
+        The generator matrix $\mathbf{G}$ with shape $(k, n)$.
 
         Group:
             Matrices
@@ -358,7 +358,7 @@ class _LinearCode:
     @property
     def H(self) -> FieldArray:
         r"""
-        The parity-check matrix :math:`\mathbf{H}` with shape :math:`(n - k, n)`.
+        The parity-check matrix $\mathbf{H}$ with shape $(n - k, n)$.
 
         Group:
             Matrices
@@ -378,18 +378,18 @@ class _LinearCode:
 
 def generator_to_parity_check_matrix(G: FieldArray) -> FieldArray:
     r"""
-    Converts the generator matrix :math:`\mathbf{G}` of a linear :math:`[n, k]` code into its parity-check matrix
-    :math:`\mathbf{H}`.
+    Converts the generator matrix $\mathbf{G}$ of a linear $[n, k]$ code into its parity-check matrix
+    $\mathbf{H}$.
 
-    The generator and parity-check matrices satisfy the equations :math:`\mathbf{G}\mathbf{H}^T = \mathbf{0}`.
+    The generator and parity-check matrices satisfy the equations $\mathbf{G}\mathbf{H}^T = \mathbf{0}$.
 
     Arguments:
-        G: The :math:`(k, n)` generator matrix :math:`\mathbf{G}` in systematic form
-            :math:`\mathbf{G} = [\mathbf{I}_{k,k}\ |\ \mathbf{P}_{k,n-k}]`.
+        G: The $(k, n)$ generator matrix $\mathbf{G}$ in systematic form
+            $\mathbf{G} = [\mathbf{I}_{k,k}\ |\ \mathbf{P}_{k,n-k}]$.
 
     Returns:
-        The :math:`(n-k, n)` parity-check matrix
-        :math:`\mathbf{H} = [-\mathbf{P}_{k,n-k}^T\ |\ \mathbf{I}_{n-k,n-k}]``.
+        The $(n-k, n)$ parity-check matrix
+        $\mathbf{H} = [-\mathbf{P}_{k,n-k}^T\ |\ \mathbf{I}_{n-k,n-k}]$`.
 
     Examples:
         .. ipython:: python
@@ -418,17 +418,17 @@ def generator_to_parity_check_matrix(G: FieldArray) -> FieldArray:
 
 def parity_check_to_generator_matrix(H: FieldArray) -> FieldArray:
     r"""
-    Converts the parity-check matrix :math:`\mathbf{H}` of a linear :math:`[n, k]` code into its generator matrix
-    :math:`\mathbf{G}`.
+    Converts the parity-check matrix $\mathbf{H}$ of a linear $[n, k]$ code into its generator matrix
+    $\mathbf{G}$.
 
-    The generator and parity-check matrices satisfy the equations :math:`\mathbf{G}\mathbf{H}^T = \mathbf{0}`.
+    The generator and parity-check matrices satisfy the equations $\mathbf{G}\mathbf{H}^T = \mathbf{0}$.
 
     Arguments:
-        H: The :math:`(n-k, n)` parity-check matrix :math:`\mathbf{G}` in systematic form
-            :math:`\mathbf{H} = [-\mathbf{P}_{k,n-k}^T\ |\ \mathbf{I}_{n-k,n-k}]``.
+        H: The $(n-k, n)$ parity-check matrix $\mathbf{G}$ in systematic form
+            $\mathbf{H} = [-\mathbf{P}_{k,n-k}^T\ |\ \mathbf{I}_{n-k,n-k}]$`.
 
     Returns:
-        The :math:`(k, n)` generator matrix :math:`\mathbf{G} = [\mathbf{I}_{k,k}\ |\ \mathbf{P}_{k,n-k}]`.
+        The $(k, n)$ generator matrix $\mathbf{G} = [\mathbf{I}_{k,k}\ |\ \mathbf{P}_{k,n-k}]$.
 
     Examples:
         .. ipython:: python
