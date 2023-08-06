@@ -76,7 +76,7 @@ def prod(*args: int) -> int:
 @export
 def isqrt(n: int) -> int:
     r"""
-    Computes :math:`x = \lfloor\sqrt{n}\rfloor` such that :math:`x^2 \le n < (x + 1)^2`.
+    Computes $x = \lfloor\sqrt{n}\rfloor$ such that $x^2 \le n < (x + 1)^2$.
 
     .. info::
 
@@ -87,7 +87,7 @@ def isqrt(n: int) -> int:
         n: A non-negative integer.
 
     Returns:
-        The integer square root of :math:`n`.
+        The integer square root of $n$.
 
     See Also:
         iroot, ilog
@@ -124,14 +124,14 @@ def isqrt(n: int) -> int:
 @export
 def iroot(n: int, k: int) -> int:
     r"""
-    Computes :math:`x = \lfloor n^{\frac{1}{k}} \rfloor` such that :math:`x^k \le n < (x + 1)^k`.
+    Computes $x = \lfloor n^{\frac{1}{k}} \rfloor$ such that $x^k \le n < (x + 1)^k$.
 
     Arguments:
         n: A non-negative integer.
-        k: The positive root :math:`k`.
+        k: The positive root $k$.
 
     Returns:
-        The integer :math:`k`-th root of :math:`n`.
+        The integer $k$-th root of $n$.
 
     See Also:
         isqrt, ilog
@@ -173,14 +173,14 @@ def iroot(n: int, k: int) -> int:
 @export
 def ilog(n: int, b: int) -> int:
     r"""
-    Computes :math:`x = \lfloor\textrm{log}_b(n)\rfloor` such that :math:`b^x \le n < b^{x + 1}`.
+    Computes $x = \lfloor\textrm{log}_b(n)\rfloor$ such that $b^x \le n < b^{x + 1}$.
 
     Arguments:
         n: A positive integer.
-        b: The logarithm base :math:`b`, must be at least 2.
+        b: The logarithm base $b$, must be at least 2.
 
     Returns:
-        The integer logarithm base :math:`b` of :math:`n`.
+        The integer logarithm base $b$ of $n$.
 
     See Also:
         iroot, isqrt

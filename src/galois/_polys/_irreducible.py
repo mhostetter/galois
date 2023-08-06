@@ -27,7 +27,7 @@ from ._search import (
 @functools.lru_cache(maxsize=8192)
 def is_irreducible(f: Poly) -> bool:
     r"""
-    Determines whether the polynomial :math:`f(x)` over :math:`\mathrm{GF}(p^m)` is irreducible.
+    Determines whether the polynomial $f(x)$ over $\mathrm{GF}(p^m)$ is irreducible.
 
     .. question:: Why is this a method and not a property?
         :collapsible:
@@ -41,15 +41,15 @@ def is_irreducible(f: Poly) -> bool:
         irreducible_poly, irreducible_polys
 
     Notes:
-        A polynomial :math:`f(x) \in \mathrm{GF}(p^m)[x]` is *reducible* over :math:`\mathrm{GF}(p^m)` if it can
-        be represented as :math:`f(x) = g(x) h(x)` for some :math:`g(x), h(x) \in \mathrm{GF}(p^m)[x]` of strictly
-        lower degree. If :math:`f(x)` is not reducible, it is said to be *irreducible*. Since Galois fields are not
+        A polynomial $f(x) \in \mathrm{GF}(p^m)[x]$ is *reducible* over $\mathrm{GF}(p^m)$ if it can
+        be represented as $f(x) = g(x) h(x)$ for some $g(x), h(x) \in \mathrm{GF}(p^m)[x]$ of strictly
+        lower degree. If $f(x)$ is not reducible, it is said to be *irreducible*. Since Galois fields are not
         algebraically closed, such irreducible polynomials exist.
 
-        This function implements Rabin's irreducibility test. It says a degree-:math:`m` polynomial :math:`f(x)`
-        over :math:`\mathrm{GF}(q)` for prime power :math:`q` is irreducible if and only if
-        :math:`f(x)\ |\ (x^{q^m} - x)` and :math:`\textrm{gcd}(f(x),\ x^{q^{m_i}} - x) = 1` for
-        :math:`1 \le i \le k`, where :math:`m_i = m/p_i` for the :math:`k` prime divisors :math:`p_i` of :math:`m`.
+        This function implements Rabin's irreducibility test. It says a degree-$m$ polynomial $f(x)$
+        over $\mathrm{GF}(q)$ for prime power $q$ is irreducible if and only if
+        $f(x)\ |\ (x^{q^m} - x)$ and $\textrm{gcd}(f(x),\ x^{q^{m_i}} - x) = 1$ for
+        $1 \le i \le k$, where $m_i = m/p_i$ for the $k$ prime divisors $p_i$ of $m$.
 
     References:
         - Rabin, M. Probabilistic algorithms in finite fields. SIAM Journal on Computing (1980), 273-280.
@@ -132,12 +132,12 @@ def irreducible_poly(
     method: Literal["min", "max", "random"] = "min",
 ) -> Poly:
     r"""
-    Returns a monic irreducible polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)` with degree :math:`m`.
+    Returns a monic irreducible polynomial $f(x)$ over $\mathrm{GF}(q)$ with degree $m$.
 
     Arguments:
-        order: The prime power order :math:`q` of the field :math:`\mathrm{GF}(q)` that the polynomial is over.
-        degree: The degree :math:`m` of the desired irreducible polynomial.
-        terms: The desired number of non-zero terms :math:`t` in the polynomial.
+        order: The prime power order $q$ of the field $\mathrm{GF}(q)$ that the polynomial is over.
+        degree: The degree $m$ of the desired irreducible polynomial.
+        terms: The desired number of non-zero terms $t$ in the polynomial.
 
             - `None` (default): Disregards the number of terms while searching for the polynomial.
             - `int`: The exact number of non-zero terms in the polynomial.
@@ -154,26 +154,26 @@ def irreducible_poly(
         Depending on the type of polynomial requested, this function may use a database of precomputed polynomials.
         Under these conditions, this function returns very quickly.
 
-        - For :math:`q = 2`, :math:`2 \le m \le 10000`, `terms="min"`, and `method="min"`, the
+        - For $q = 2$, $2 \le m \le 10000$, `terms="min"`, and `method="min"`, the
           `HP Table of Low-Weight Binary Irreducible Polynomials
           <https://www.hpl.hp.com/techreports/98/HPL-98-135.pdf>`_ is used.
 
     Returns:
-        The degree-:math:`m` monic irreducible polynomial over :math:`\mathrm{GF}(q)`.
+        The degree-$m$ monic irreducible polynomial over $\mathrm{GF}(q)$.
 
     Raises:
-        RuntimeError: If no monic irreducible polynomial of degree :math:`m` over :math:`\mathrm{GF}(q)` with
-            :math:`t` terms exists. If `terms` is `None` or `"min"`, this should never be raised.
+        RuntimeError: If no monic irreducible polynomial of degree $m$ over $\mathrm{GF}(q)$ with
+            $t$ terms exists. If `terms` is `None` or `"min"`, this should never be raised.
 
     See Also:
         Poly.is_irreducible, primitive_poly, conway_poly
 
     Notes:
-        If :math:`f(x)` is an irreducible polynomial over :math:`\mathrm{GF}(q)` and
-        :math:`a \in \mathrm{GF}(q) \backslash \{0\}`, then :math:`a \cdot f(x)` is also irreducible.
+        If $f(x)$ is an irreducible polynomial over $\mathrm{GF}(q)$ and
+        $a \in \mathrm{GF}(q) \backslash \{0\}$, then $a \cdot f(x)$ is also irreducible.
 
-        In addition to other applications, :math:`f(x)` produces the field extension :math:`\mathrm{GF}(q^m)` of
-        :math:`\mathrm{GF}(q)`.
+        In addition to other applications, $f(x)$ produces the field extension $\mathrm{GF}(q^m)$ of
+        $\mathrm{GF}(q)$.
 
     Examples:
         Find the lexicographically-first, lexicographically-last, and a random monic irreducible polynomial.
@@ -264,12 +264,12 @@ def irreducible_polys(
     reverse: bool = False,
 ) -> Iterator[Poly]:
     r"""
-    Iterates through all monic irreducible polynomials :math:`f(x)` over :math:`\mathrm{GF}(q)` with degree :math:`m`.
+    Iterates through all monic irreducible polynomials $f(x)$ over $\mathrm{GF}(q)$ with degree $m$.
 
     Arguments:
-        order: The prime power order :math:`q` of the field :math:`\mathrm{GF}(q)` that the polynomial is over.
-        degree: The degree :math:`m` of the desired irreducible polynomial.
-        terms: The desired number of non-zero terms :math:`t` in the polynomial.
+        order: The prime power order $q$ of the field $\mathrm{GF}(q)$ that the polynomial is over.
+        degree: The degree $m$ of the desired irreducible polynomial.
+        terms: The desired number of non-zero terms $t$ in the polynomial.
 
             - `None` (default): Disregards the number of terms while searching for the polynomial.
             - `int`: The exact number of non-zero terms in the polynomial.
@@ -279,20 +279,20 @@ def irreducible_polys(
             The default is `False`.
 
     Returns:
-        An iterator over all degree-:math:`m` monic irreducible polynomials over :math:`\mathrm{GF}(q)`.
+        An iterator over all degree-$m$ monic irreducible polynomials over $\mathrm{GF}(q)$.
 
     See Also:
         Poly.is_irreducible, primitive_polys
 
     Notes:
-        If :math:`f(x)` is an irreducible polynomial over :math:`\mathrm{GF}(q)` and
-        :math:`a \in \mathrm{GF}(q) \backslash \{0\}`, then :math:`a \cdot f(x)` is also irreducible.
+        If $f(x)$ is an irreducible polynomial over $\mathrm{GF}(q)$ and
+        $a \in \mathrm{GF}(q) \backslash \{0\}$, then $a \cdot f(x)$ is also irreducible.
 
-        In addition to other applications, :math:`f(x)` produces the field extension :math:`\mathrm{GF}(q^m)` of
-        :math:`\mathrm{GF}(q)`.
+        In addition to other applications, $f(x)$ produces the field extension $\mathrm{GF}(q^m)$ of
+        $\mathrm{GF}(q)$.
 
     Examples:
-        Find all monic irreducible polynomials over :math:`\mathrm{GF}(3)` with degree 4. You may also use `tuple()` on
+        Find all monic irreducible polynomials over $\mathrm{GF}(3)$ with degree 4. You may also use `tuple()` on
         the returned generator.
 
         .. ipython:: python

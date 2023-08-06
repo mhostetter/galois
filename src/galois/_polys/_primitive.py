@@ -26,7 +26,7 @@ from ._search import (
 @functools.lru_cache(maxsize=8192)
 def is_primitive(f: Poly) -> bool:
     r"""
-    Determines whether the polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)` is primitive.
+    Determines whether the polynomial $f(x)$ over $\mathrm{GF}(q)$ is primitive.
 
     .. question:: Why is this a method and not a property?
         :collapsible:
@@ -40,9 +40,9 @@ def is_primitive(f: Poly) -> bool:
         primitive_poly, primitive_polys, conway_poly, matlab_primitive_poly
 
     Notes:
-        A degree-:math:`m` polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)` is *primitive* if it is
-        irreducible and :math:`f(x)\ |\ (x^k - 1)` for :math:`k = q^m - 1` and no :math:`k` less than
-        :math:`q^m - 1`.
+        A degree-$m$ polynomial $f(x)$ over $\mathrm{GF}(q)$ is *primitive* if it is
+        irreducible and $f(x)\ |\ (x^k - 1)$ for $k = q^m - 1$ and no $k$ less than
+        $q^m - 1$.
 
     References:
         - Algorithm 4.77 from https://cacr.uwaterloo.ca/hac/about/chap4.pdf
@@ -58,7 +58,7 @@ def is_primitive(f: Poly) -> bool:
             f = galois.conway_poly(3, 5); f
             f.is_primitive()
 
-        The irreducible polynomial of :math:`\mathrm{GF}(2^8)` for AES is not primitive.
+        The irreducible polynomial of $\mathrm{GF}(2^8)$ for AES is not primitive.
 
         .. ipython:: python
 
@@ -111,12 +111,12 @@ def primitive_poly(
     method: Literal["min", "max", "random"] = "min",
 ) -> Poly:
     r"""
-    Returns a monic primitive polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)` with degree :math:`m`.
+    Returns a monic primitive polynomial $f(x)$ over $\mathrm{GF}(q)$ with degree $m$.
 
     Arguments:
-        order: The prime power order :math:`q` of the field :math:`\mathrm{GF}(q)` that the polynomial is over.
-        degree: The degree :math:`m` of the desired primitive polynomial.
-        terms: The desired number of non-zero terms :math:`t` in the polynomial.
+        order: The prime power order $q$ of the field $\mathrm{GF}(q)$ that the polynomial is over.
+        degree: The degree $m$ of the desired primitive polynomial.
+        terms: The desired number of non-zero terms $t$ in the polynomial.
 
             - `None` (default): Disregards the number of terms while searching for the polynomial.
             - `int`: The exact number of non-zero terms in the polynomial.
@@ -129,23 +129,23 @@ def primitive_poly(
             - `"random"`: Returns a random polynomial.
 
     Returns:
-        The degree-:math:`m` monic primitive polynomial over :math:`\mathrm{GF}(q)`.
+        The degree-$m$ monic primitive polynomial over $\mathrm{GF}(q)$.
 
     Raises:
-        RuntimeError: If no monic primitive polynomial of degree :math:`m` over :math:`\mathrm{GF}(q)` with
-            :math:`t` terms exists. If `terms` is `None` or `"min"`, this should never be raised.
+        RuntimeError: If no monic primitive polynomial of degree $m$ over $\mathrm{GF}(q)$ with
+            $t$ terms exists. If `terms` is `None` or `"min"`, this should never be raised.
 
     See Also:
         Poly.is_primitive, matlab_primitive_poly, conway_poly
 
     Notes:
-        If :math:`f(x)` is a primitive polynomial over :math:`\mathrm{GF}(q)` and
-        :math:`a \in \mathrm{GF}(q) \backslash \{0\}`, then :math:`a \cdot f(x)` is also primitive.
+        If $f(x)$ is a primitive polynomial over $\mathrm{GF}(q)$ and
+        $a \in \mathrm{GF}(q) \backslash \{0\}$, then $a \cdot f(x)$ is also primitive.
 
-        In addition to other applications, :math:`f(x)` produces the field extension :math:`\mathrm{GF}(q^m)`
-        of :math:`\mathrm{GF}(q)`. Since :math:`f(x)` is primitive, :math:`x` is a primitive element :math:`\alpha`
-        of :math:`\mathrm{GF}(q^m)` such that
-        :math:`\mathrm{GF}(q^m) = \{0, 1, \alpha, \alpha^2, \dots, \alpha^{q^m-2}\}`.
+        In addition to other applications, $f(x)$ produces the field extension $\mathrm{GF}(q^m)$
+        of $\mathrm{GF}(q)$. Since $f(x)$ is primitive, $x$ is a primitive element $\alpha$
+        of $\mathrm{GF}(q^m)$ such that
+        $\mathrm{GF}(q^m) = \{0, 1, \alpha, \alpha^2, \dots, \alpha^{q^m-2}\}$.
 
     Examples:
         Find the lexicographically-first, lexicographically-last, and a random monic primitive polynomial.
@@ -242,12 +242,12 @@ def primitive_polys(
     reverse: bool = False,
 ) -> Iterator[Poly]:
     r"""
-    Iterates through all monic primitive polynomials :math:`f(x)` over :math:`\mathrm{GF}(q)` with degree :math:`m`.
+    Iterates through all monic primitive polynomials $f(x)$ over $\mathrm{GF}(q)$ with degree $m$.
 
     Arguments:
-        order: The prime power order :math:`q` of the field :math:`\mathrm{GF}(q)` that the polynomial is over.
-        degree: The degree :math:`m` of the desired primitive polynomial.
-        terms: The desired number of non-zero terms :math:`t` in the polynomial.
+        order: The prime power order $q$ of the field $\mathrm{GF}(q)$ that the polynomial is over.
+        degree: The degree $m$ of the desired primitive polynomial.
+        terms: The desired number of non-zero terms $t$ in the polynomial.
 
             - `None` (default): Disregards the number of terms while searching for the polynomial.
             - `int`: The exact number of non-zero terms in the polynomial.
@@ -257,22 +257,22 @@ def primitive_polys(
             The default is `False`.
 
     Returns:
-        An iterator over all degree-:math:`m` monic primitive polynomials over :math:`\mathrm{GF}(q)`.
+        An iterator over all degree-$m$ monic primitive polynomials over $\mathrm{GF}(q)$.
 
     See Also:
         Poly.is_primitive, irreducible_polys
 
     Notes:
-        If :math:`f(x)` is a primitive polynomial over :math:`\mathrm{GF}(q)` and
-        :math:`a \in \mathrm{GF}(q) \backslash \{0\}`, then :math:`a \cdot f(x)` is also primitive.
+        If $f(x)$ is a primitive polynomial over $\mathrm{GF}(q)$ and
+        $a \in \mathrm{GF}(q) \backslash \{0\}$, then $a \cdot f(x)$ is also primitive.
 
-        In addition to other applications, :math:`f(x)` produces the field extension :math:`\mathrm{GF}(q^m)`
-        of :math:`\mathrm{GF}(q)`. Since :math:`f(x)` is primitive, :math:`x` is a primitive element :math:`\alpha`
-        of :math:`\mathrm{GF}(q^m)` such that
-        :math:`\mathrm{GF}(q^m) = \{0, 1, \alpha, \alpha^2, \dots, \alpha^{q^m-2}\}`.
+        In addition to other applications, $f(x)$ produces the field extension $\mathrm{GF}(q^m)$
+        of $\mathrm{GF}(q)$. Since $f(x)$ is primitive, $x$ is a primitive element $\alpha$
+        of $\mathrm{GF}(q^m)$ such that
+        $\mathrm{GF}(q^m) = \{0, 1, \alpha, \alpha^2, \dots, \alpha^{q^m-2}\}$.
 
     Examples:
-        Find all monic primitive polynomials over :math:`\mathrm{GF}(3)` with degree 4. You may also use `tuple()` on
+        Find all monic primitive polynomials over $\mathrm{GF}(3)$ with degree 4. You may also use `tuple()` on
         the returned generator.
 
         .. ipython:: python
@@ -356,15 +356,15 @@ def primitive_polys(
 @export
 def matlab_primitive_poly(characteristic: int, degree: int) -> Poly:
     r"""
-    Returns Matlab's default primitive polynomial :math:`f(x)` over :math:`\mathrm{GF}(p)` with degree :math:`m`.
+    Returns Matlab's default primitive polynomial $f(x)$ over $\mathrm{GF}(p)$ with degree $m$.
 
     Arguments:
-        characteristic: The prime characteristic :math:`p` of the field :math:`\mathrm{GF}(p)` that the polynomial
+        characteristic: The prime characteristic $p$ of the field $\mathrm{GF}(p)$ that the polynomial
             is over.
-        degree: The degree :math:`m` of the desired primitive polynomial.
+        degree: The degree $m$ of the desired primitive polynomial.
 
     Returns:
-        Matlab's default degree-:math:`m` primitive polynomial over :math:`\mathrm{GF}(p)`.
+        Matlab's default degree-$m$ primitive polynomial over $\mathrm{GF}(p)$.
 
     See Also:
         Poly.is_primitive, primitive_poly, conway_poly
@@ -374,16 +374,16 @@ def matlab_primitive_poly(characteristic: int, degree: int) -> Poly:
         primitive polynomial with minimum terms, which is equivalent to `galois.primitive_poly(p, m, terms="min")`.
         There are three notable exceptions, however:
 
-        1. In :math:`\mathrm{GF}(2^7)`, Matlab uses :math:`x^7 + x^3 + 1`,
-           not :math:`x^7 + x + 1`.
-        2. In :math:`\mathrm{GF}(2^{14})`, Matlab uses :math:`x^{14} + x^{10} + x^6 + x + 1`,
-           not :math:`x^{14} + x^5 + x^3 + x + 1`.
-        3. In :math:`\mathrm{GF}(2^{16})`, Matlab uses :math:`x^{16} + x^{12} + x^3 + x + 1`,
-           not :math:`x^{16} + x^5 + x^3 + x^2 + 1`.
+        1. In $\mathrm{GF}(2^7)$, Matlab uses $x^7 + x^3 + 1$,
+           not $x^7 + x + 1$.
+        2. In $\mathrm{GF}(2^{14})$, Matlab uses $x^{14} + x^{10} + x^6 + x + 1$,
+           not $x^{14} + x^5 + x^3 + x + 1$.
+        3. In $\mathrm{GF}(2^{16})$, Matlab uses $x^{16} + x^{12} + x^3 + x + 1$,
+           not $x^{16} + x^5 + x^3 + x^2 + 1$.
 
     Warning:
-        This has been tested for all the :math:`\mathrm{GF}(2^m)` fields for :math:`2 \le m \le 16` (Matlab doesn't
-        support larger than 16). And it has been spot-checked for :math:`\mathrm{GF}(p^m)`. There may exist other
+        This has been tested for all the $\mathrm{GF}(2^m)$ fields for $2 \le m \le 16$ (Matlab doesn't
+        support larger than 16). And it has been spot-checked for $\mathrm{GF}(p^m)$. There may exist other
         exceptions. Please submit a `GitHub issue <https://github.com/mhostetter/galois/issues>`_ if you discover one.
 
     References:

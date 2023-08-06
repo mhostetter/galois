@@ -25,7 +25,7 @@ Create a :obj:`~galois.FieldArray` subclass
 -------------------------------------------
 
 Next, create a :obj:`~galois.FieldArray` subclass for the specific finite field you'd like to work in. This is created using
-the :func:`~galois.GF` class factory. In this example, we are working in :math:`\mathrm{GF}(3^5)`.
+the :func:`~galois.GF` class factory. In this example, we are working in $\mathrm{GF}(3^5)$.
 
 .. ipython:: python
 
@@ -33,7 +33,7 @@ the :func:`~galois.GF` class factory. In this example, we are working in :math:`
    print(GF.properties)
 
 The :obj:`~galois.FieldArray` subclass `GF` is a subclass of :obj:`~numpy.ndarray` that performs all arithmetic in the Galois field
-:math:`\mathrm{GF}(3^5)`, not in :math:`\mathbb{R}`.
+$\mathrm{GF}(3^5)$, not in $\mathbb{R}$.
 
 .. ipython:: python
 
@@ -105,7 +105,7 @@ Standard element-wise array arithmetic -- addition, subtraction, multiplication,
    x * y
    x / y
 
-More complicated arithmetic, like square root and logarithm base :math:`\alpha`, are also supported.
+More complicated arithmetic, like square root and logarithm base $\alpha$, are also supported.
 
 .. ipython:: python
 
