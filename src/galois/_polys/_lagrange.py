@@ -17,16 +17,16 @@ from ._poly import Poly
 @export
 def lagrange_poly(x: Array, y: Array) -> Poly:
     r"""
-    Computes the Lagrange interpolating polynomial :math:`L(x)` such that :math:`L(x_i) = y_i`.
+    Computes the Lagrange interpolating polynomial $L(x)$ such that $L(x_i) = y_i$.
 
     Arguments:
-        x: An array of :math:`x_i` values for the coordinates :math:`(x_i, y_i)`. Must be 1-D. Must have no
+        x: An array of $x_i$ values for the coordinates $(x_i, y_i)$. Must be 1-D. Must have no
             duplicate entries.
-        y: An array of :math:`y_i` values for the coordinates :math:`(x_i, y_i)`. Must be 1-D. Must be the same
-            size as :math:`x`.
+        y: An array of $y_i$ values for the coordinates $(x_i, y_i)$. Must be 1-D. Must be the same
+            size as $x$.
 
     Returns:
-        The Lagrange polynomial :math:`L(x)`.
+        The Lagrange polynomial $L(x)$.
 
     Notes:
         The Lagrange interpolating polynomial is defined as
@@ -37,13 +37,13 @@ def lagrange_poly(x: Array, y: Array) -> Poly:
         .. math::
             \ell_j(x) = \prod_{\substack{0 \le m < k \\ m \ne j}} \frac{x - x_m}{x_j - x_m} .
 
-        It is the polynomial of minimal degree that satisfies :math:`L(x_i) = y_i`.
+        It is the polynomial of minimal degree that satisfies $L(x_i) = y_i$.
 
     References:
         - https://en.wikipedia.org/wiki/Lagrange_polynomial
 
     Examples:
-        Create random :math:`(x, y)` pairs in :math:`\mathrm{GF}(3^2)`.
+        Create random $(x, y)$ pairs in $\mathrm{GF}(3^2)$.
 
         .. ipython:: python
 
@@ -57,7 +57,7 @@ def lagrange_poly(x: Array, y: Array) -> Poly:
 
             L = galois.lagrange_poly(x, y); L
 
-        Show that the polynomial evaluated at :math:`x` is :math:`y`.
+        Show that the polynomial evaluated at $x$ is $y$.
 
         .. ipython:: python
 

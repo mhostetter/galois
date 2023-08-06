@@ -5,7 +5,7 @@ The :obj:`galois` library is a Python 3 package that extends NumPy arrays to ope
 
 The user creates a :obj:`~galois.FieldArray` subclass using `GF = galois.GF(p**m)`. `GF` is a subclass of :obj:`numpy.ndarray`
 and its constructor `x = GF(array_like)` mimics the signature of :func:`numpy.array`. The :obj:`~galois.FieldArray` `x` is operated
-on like any other NumPy array except all arithmetic is performed in :math:`\mathrm{GF}(p^m)`, not :math:`\mathbb{R}`.
+on like any other NumPy array except all arithmetic is performed in $\mathrm{GF}(p^m)$, not $\mathbb{R}$.
 
 Internally, the finite field arithmetic is implemented by replacing `NumPy ufuncs <https://numpy.org/doc/stable/reference/ufuncs.html>`_.
 The new ufuncs are written in pure Python and `just-in-time compiled <https://numba.pydata.org/numba-doc/dev/user/vectorize.html>`_ with
@@ -23,8 +23,8 @@ calculation (for memory savings).
 Features
 --------
 
-- Supports all Galois fields :math:`\mathrm{GF}(p^m)`, even arbitrarily-large fields!
-- **Faster** than native NumPy! `GF(x) * GF(y)` is faster than `(x * y) % p` for :math:`\mathrm{GF}(p)`.
+- Supports all Galois fields $\mathrm{GF}(p^m)$, even arbitrarily-large fields!
+- **Faster** than native NumPy! `GF(x) * GF(y)` is faster than `(x * y) % p` for $\mathrm{GF}(p)$.
 - Seamless integration with NumPy -- normal NumPy functions work on :obj:`~galois.FieldArray` instances.
 - Linear algebra over finite fields using normal :obj:`numpy.linalg` functions.
 - Linear transforms over finite fields, such as the FFT with :func:`numpy.fft.fft` and the NTT with :func:`~galois.ntt`.
@@ -54,8 +54,8 @@ of the finite field arithmetic.
 `Wolfram's compilation <https://datarepository.wolframcloud.com/resources/Primitive-Polynomials/>`_ of primitive polynomials are used
 for efficient polynomial lookup, when possible.
 
-`The Cunningham Book's tables <https://homes.cerias.purdue.edu/~ssw/cun/third/index.html>`_ of prime factorizations, :math:`b^n \pm 1`
-for :math:`b \in \{2, 3, 5, 6, 7, 10, 11, 12\}`, are used to generate factorization lookup tables. These lookup tables speed-up the
+`The Cunningham Book's tables <https://homes.cerias.purdue.edu/~ssw/cun/third/index.html>`_ of prime factorizations, $b^n \pm 1$
+for $b \in \{2, 3, 5, 6, 7, 10, 11, 12\}$, are used to generate factorization lookup tables. These lookup tables speed-up the
 creation of large finite fields by avoiding the need to factor large integers.
 
 `Sage <https://www.sagemath.org/>`_ is used extensively for generating test vectors for finite field arithmetic and polynomial arithmetic.

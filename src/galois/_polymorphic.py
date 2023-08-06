@@ -38,14 +38,14 @@ def gcd(a: Poly, b: Poly) -> Poly:
 @export
 def gcd(a, b):
     r"""
-    Finds the greatest common divisor of :math:`a` and :math:`b`.
+    Finds the greatest common divisor of $a$ and $b$.
 
     Arguments:
         a: The first integer or polynomial argument.
         b: The second integer or polynomial argument.
 
     Returns:
-        Greatest common divisor of :math:`a` and :math:`b`.
+        Greatest common divisor of $a$ and $b$.
 
     See Also:
         egcd, lcm, prod
@@ -70,7 +70,7 @@ def gcd(a, b):
 
             .. md-tab-item:: Polynomials
 
-                Generate irreducible polynomials over :math:`\mathrm{GF}(7)`.
+                Generate irreducible polynomials over $\mathrm{GF}(7)$.
 
                 .. ipython:: python
 
@@ -79,7 +79,7 @@ def gcd(a, b):
                     f2 = galois.irreducible_poly(7, 2); f2
                     f3 = galois.irreducible_poly(7, 3); f3
 
-                Compute the GCD of :math:`f_1(x)^2 f_2(x)` and :math:`f_1(x) f_3(x)`, which is :math:`f_1(x)`.
+                Compute the GCD of $f_1(x)^2 f_2(x)$ and $f_1(x) f_3(x)$, which is $f_1(x)$.
 
                 .. ipython:: python
 
@@ -108,16 +108,16 @@ def egcd(a: Poly, b: Poly) -> tuple[Poly, Poly, Poly]:
 @export
 def egcd(a, b):
     r"""
-    Finds the multiplicands of :math:`a` and :math:`b` such that :math:`a s + b t = \mathrm{gcd}(a, b)`.
+    Finds the multiplicands of $a$ and $b$ such that $a s + b t = \mathrm{gcd}(a, b)$.
 
     Arguments:
         a: The first integer or polynomial argument.
         b: The second integer or polynomial argument.
 
     Returns:
-        - Greatest common divisor of :math:`a` and :math:`b`.
-        - The multiplicand :math:`s` of :math:`a`.
-        - The multiplicand :math:`t` of :math:`b`.
+        - Greatest common divisor of $a$ and $b$.
+        - The multiplicand $s$ of $a$.
+        - The multiplicand $t$ of $b$.
 
     See Also:
         gcd, lcm, prod
@@ -146,7 +146,7 @@ def egcd(a, b):
 
             .. md-tab-item:: Polynomials
 
-                Generate irreducible polynomials over :math:`\mathrm{GF}(7)`.
+                Generate irreducible polynomials over $\mathrm{GF}(7)$.
 
                 .. ipython:: python
 
@@ -155,7 +155,7 @@ def egcd(a, b):
                     f2 = galois.irreducible_poly(7, 2); f2
                     f3 = galois.irreducible_poly(7, 3); f3
 
-                Compute the extended GCD of :math:`f_1(x)^2 f_2(x)` and :math:`f_1(x) f_3(x)`.
+                Compute the extended GCD of $f_1(x)^2 f_2(x)$ and $f_1(x) f_3(x)$.
 
                 .. ipython:: python
 
@@ -212,7 +212,7 @@ def lcm(*values):
 
             .. md-tab-item:: Polynomials
 
-                Generate irreducible polynomials over :math:`\mathrm{GF}(7)`.
+                Generate irreducible polynomials over $\mathrm{GF}(7)$.
 
                 .. ipython:: python
 
@@ -221,8 +221,8 @@ def lcm(*values):
                     f2 = galois.irreducible_poly(7, 2); f2
                     f3 = galois.irreducible_poly(7, 3); f3
 
-                Compute the LCM of three polynomials :math:`f_1(x)^2 f_2(x)`, :math:`f_1(x) f_3(x)`, and
-                :math:`f_2(x) f_3(x)`, which is :math:`f_1(x)^2 f_2(x) f_3(x)`.
+                Compute the LCM of three polynomials $f_1(x)^2 f_2(x)$, $f_1(x) f_3(x)$, and
+                $f_2(x) f_3(x)$, which is $f_1(x)^2 f_2(x) f_3(x)$.
 
                 .. ipython:: python
 
@@ -279,7 +279,7 @@ def prod(*values):
 
             .. md-tab-item:: Polynomials
 
-                Generate random polynomials over :math:`\mathrm{GF}(7)`.
+                Generate random polynomials over $\mathrm{GF}(7)$.
 
                 .. ipython:: python
 
@@ -349,7 +349,7 @@ def are_coprime(*values):
 
             .. md-tab-item:: Polynomials
 
-                Generate irreducible polynomials over :math:`\mathrm{GF}(7)`.
+                Generate irreducible polynomials over $\mathrm{GF}(7)$.
 
                 .. ipython:: python
 
@@ -397,14 +397,14 @@ def crt(remainders: Sequence[Poly], moduli: Sequence[Poly]) -> Poly:
 @export
 def crt(remainders, moduli):
     r"""
-    Solves the simultaneous system of congruences for :math:`x`.
+    Solves the simultaneous system of congruences for $x$.
 
     Arguments:
-        remainders: The integer or polynomial remainders :math:`a_i`.
-        moduli: The integer or polynomial moduli :math:`m_i`.
+        remainders: The integer or polynomial remainders $a_i$.
+        moduli: The integer or polynomial moduli $m_i$.
 
     Returns:
-        The simultaneous solution :math:`x` to the system of congruences.
+        The simultaneous solution $x$ to the system of congruences.
 
     Notes:
         This function implements the Chinese Remainder Theorem.
@@ -446,7 +446,7 @@ def crt(remainders, moduli):
 
             .. md-tab-item:: Polynomials
 
-                Define a system of polynomial congruences over :math:`\mathrm{GF}(7)`.
+                Define a system of polynomial congruences over $\mathrm{GF}(7)$.
 
                 .. ipython:: python
 
@@ -552,39 +552,39 @@ def factors(value):
     Computes the prime factors of a positive integer or the irreducible factors of a non-constant, monic polynomial.
 
     Arguments:
-        value: A positive integer :math:`n` or a non-constant, monic polynomial :math:`f(x)`.
+        value: A positive integer $n$ or a non-constant, monic polynomial $f(x)$.
 
     Returns:
-        - Sorted list of prime factors :math:`\{p_1, p_2, \dots, p_k\}` of :math:`n` with
-          :math:`p_1 < p_2 < \dots < p_k` or irreducible factors :math:`\{g_1(x), g_2(x), \dots, g_k(x)\}` of
-          :math:`f(x)` sorted in lexicographical order.
-        - List of corresponding multiplicities :math:`\{e_1, e_2, \dots, e_k\}`.
+        - Sorted list of prime factors $\{p_1, p_2, \dots, p_k\}$ of $n$ with
+          $p_1 < p_2 < \dots < p_k$ or irreducible factors $\{g_1(x), g_2(x), \dots, g_k(x)\}$ of
+          $f(x)$ sorted in lexicographical order.
+        - List of corresponding multiplicities $\{e_1, e_2, \dots, e_k\}$.
 
     Notes:
         .. md-tab-set::
 
             .. md-tab-item:: Integers
 
-                This function factors a positive integer :math:`n` into its :math:`k` prime factors such that
-                :math:`n = p_1^{e_1} p_2^{e_2} \dots p_k^{e_k}`.
+                This function factors a positive integer $n$ into its $k$ prime factors such that
+                $n = p_1^{e_1} p_2^{e_2} \dots p_k^{e_k}$.
 
                 Steps:
 
-                0. Test if :math:`n` is in the `Cunningham Book's
-                   <https://homes.cerias.purdue.edu/~ssw/cun/third/index.html>`_ database of :math:`n = p^m \pm 1`
+                0. Test if $n$ is in the `Cunningham Book's
+                   <https://homes.cerias.purdue.edu/~ssw/cun/third/index.html>`_ database of $n = p^m \pm 1$
                    factorizations. If so, return the prime factorization.
-                1. Test if :math:`n` is prime. If so, return `[n], [1]`. See :func:`~galois.is_prime`.
-                2. Test if :math:`n` is a perfect power, such that :math:`n = x^k`. If so, prime factor :math:`x` and
-                   multiply the exponents by :math:`k`. See :func:`~galois.perfect_power`.
-                3. Use trial division with a list of primes up to :math:`10^6`. If no residual factors, return the
+                1. Test if $n$ is prime. If so, return `[n], [1]`. See :func:`~galois.is_prime`.
+                2. Test if $n$ is a perfect power, such that $n = x^k$. If so, prime factor $x$ and
+                   multiply the exponents by $k$. See :func:`~galois.perfect_power`.
+                3. Use trial division with a list of primes up to $10^6$. If no residual factors, return the
                    discovered prime factors. See :func:`~galois.trial_division`.
                 4. Use Pollard's Rho algorithm to find a non-trivial factor of the residual. Continue until all are
                    found. See :func:`~galois.pollard_rho`.
 
             .. md-tab-item:: Polynomials
 
-                This function factors a monic polynomial :math:`f(x)` into its :math:`k` irreducible factors such that
-                :math:`f(x) = g_1(x)^{e_1} g_2(x)^{e_2} \dots g_k(x)^{e_k}`.
+                This function factors a monic polynomial $f(x)$ into its $k$ irreducible factors such that
+                $f(x) = g_1(x)^{e_1} g_2(x)^{e_2} \dots g_k(x)^{e_k}$.
 
                 Steps:
 
@@ -620,7 +620,7 @@ def factors(value):
 
             .. md-tab-item:: Polynomials
 
-                Generate irreducible polynomials over :math:`\mathrm{GF}(3)`.
+                Generate irreducible polynomials over $\mathrm{GF}(3)$.
 
                 .. ipython:: python
 
@@ -636,7 +636,7 @@ def factors(value):
                     e1, e2, e3 = 5, 4, 3
                     f = g1**e1 * g2**e2 * g3**e3; f
 
-                Factor the polynomial into its irreducible factors over :math:`\mathrm{GF}(3)`.
+                Factor the polynomial into its irreducible factors over $\mathrm{GF}(3)$.
 
                 .. ipython:: python
 
@@ -668,7 +668,7 @@ def is_square_free(value):
     Determines if an integer or polynomial is square-free.
 
     Arguments:
-        value: An integer :math:`n` or polynomial :math:`f(x)`.
+        value: An integer $n$ or polynomial $f(x)$.
 
     Returns:
         `True` if the integer or polynomial is square-free.
@@ -681,15 +681,15 @@ def is_square_free(value):
 
             .. md-tab-item:: Integers
 
-                A square-free integer :math:`n` is divisible by no perfect squares. As a consequence, the prime
-                factorization of a square-free integer :math:`n` is
+                A square-free integer $n$ is divisible by no perfect squares. As a consequence, the prime
+                factorization of a square-free integer $n$ is
 
                 .. math::
                     n = \prod_{i=1}^{k} p_i^{e_i} = \prod_{i=1}^{k} p_i .
 
             .. md-tab-item:: Polynomials
 
-                A square-free polynomial :math:`f(x)` has no irreducible factors with multiplicity greater than one.
+                A square-free polynomial $f(x)$ has no irreducible factors with multiplicity greater than one.
                 Therefore, its canonical factorization is
 
                 .. math::
@@ -711,7 +711,7 @@ def is_square_free(value):
 
             .. md-tab-item:: Polynomials
 
-                Generate irreducible polynomials over :math:`\mathrm{GF}(3)`.
+                Generate irreducible polynomials over $\mathrm{GF}(3)$.
 
                 .. ipython:: python
 
@@ -719,7 +719,7 @@ def is_square_free(value):
                     f1 = galois.irreducible_poly(3, 3); f1
                     f2 = galois.irreducible_poly(3, 4); f2
 
-                Determine if composite polynomials are square-free over :math:`\mathrm{GF}(3)`.
+                Determine if composite polynomials are square-free over $\mathrm{GF}(3)$.
 
                 .. ipython:: python
 

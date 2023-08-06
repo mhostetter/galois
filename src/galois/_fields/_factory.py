@@ -59,25 +59,25 @@ def GF(
     repr=None,
 ):
     r"""
-    Creates a :obj:`~galois.FieldArray` subclass for :math:`\mathrm{GF}(p^m)`.
+    Creates a :obj:`~galois.FieldArray` subclass for $\mathrm{GF}(p^m)$.
 
     Arguments:
-        order: The order :math:`p^m` of the field :math:`\mathrm{GF}(p^m)`. The order must be a prime power.
-        characteristic: The characteristic :math:`p` of the field :math:`\mathrm{GF}(p^m)`. The characteristic must
+        order: The order $p^m$ of the field $\mathrm{GF}(p^m)$. The order must be a prime power.
+        characteristic: The characteristic $p$ of the field $\mathrm{GF}(p^m)$. The characteristic must
             be prime.
-        degree: The degree :math:`m` of the field :math:`\mathrm{GF}(p^m)`. The degree must be a positive integer.
-        irreducible_poly: Optionally specify an irreducible polynomial of degree :math:`m` over :math:`\mathrm{GF}(p)`
+        degree: The degree $m$ of the field $\mathrm{GF}(p^m)$. The degree must be a positive integer.
+        irreducible_poly: Optionally specify an irreducible polynomial of degree $m$ over $\mathrm{GF}(p)$
             that defines the finite field arithmetic. The default is `None` which uses the Conway polynomial
-            :math:`C_{p,m}`, see :func:`~galois.conway_poly`.
+            $C_{p,m}$, see :func:`~galois.conway_poly`.
         primitive_element: Optionally specify a primitive element of the field. This value is used when building the
             exponential and logarithm lookup tables and as the base of :obj:`numpy.log`. A primitive element is a
             generator of the multiplicative group of the field.
 
-            For prime fields :math:`\mathrm{GF}(p)`, the primitive element must be an integer and is a primitive root
-            modulo :math:`p`. The default is `None` which uses :func:`~galois.primitive_root`.
+            For prime fields $\mathrm{GF}(p)$, the primitive element must be an integer and is a primitive root
+            modulo $p$. The default is `None` which uses :func:`~galois.primitive_root`.
 
-            For extension fields :math:`\mathrm{GF}(p^m)`, the primitive element is a polynomial of degree less than
-            :math:`m` over :math:`\mathrm{GF}(p)`. The default is `None` which uses :func:`~galois.primitive_element`.
+            For extension fields $\mathrm{GF}(p^m)$, the primitive element is a polynomial of degree less than
+            $m$ over $\mathrm{GF}(p)$. The default is `None` which uses :func:`~galois.primitive_element`.
         verify: Indicates whether to verify that the user-provided irreducible polynomial is in fact irreducible and
             that the user-provided primitive element is in fact a generator of the multiplicative group.
             The default is `True`.
@@ -94,7 +94,7 @@ def GF(
             - `None` (default): For a newly-created :obj:`~galois.FieldArray` subclass, `None` corresponds to
               `"auto"`. If the :obj:`~galois.FieldArray` subclass already exists, `None` does not modify its current
               compilation mode.
-            - `"auto"`: Selects `"jit-lookup"` for fields with order less than :math:`2^{20}`, `"jit-calculate"` for
+            - `"auto"`: Selects `"jit-lookup"` for fields with order less than $2^{20}$, `"jit-calculate"` for
               larger fields, and `"python-calculate"` for fields whose elements cannot be represented with
               :obj:`numpy.int64`.
             - `"jit-lookup"`: JIT compiles arithmetic ufuncs to use Zech log, log, and anti-log lookup tables for
@@ -119,7 +119,7 @@ def GF(
             - `"power"`: Sets the element representation to the :ref:`power representation <power-repr>`.
 
     Returns:
-        A :obj:`~galois.FieldArray` subclass for :math:`\mathrm{GF}(p^m)`.
+        A :obj:`~galois.FieldArray` subclass for $\mathrm{GF}(p^m)$.
 
     Notes:
         :obj:`~galois.FieldArray` subclasses of the same type (order, irreducible polynomial, and primitive element)
@@ -152,7 +152,7 @@ def GF(
             .. md-tab-item:: GF(2^m)
 
                 Construct a binary extension field. Notice the default irreducible polynomial is primitive and
-                :math:`x` is a primitive element.
+                $x$ is a primitive element.
 
                 .. ipython:: python
 
@@ -161,7 +161,7 @@ def GF(
 
             .. md-tab-item:: GF(p^m)
 
-                Construct a prime extension field. Notice the default irreducible polynomial is primitive and :math:`x`
+                Construct a prime extension field. Notice the default irreducible polynomial is primitive and $x$
                 is a primitive element.
 
                 .. ipython:: python
@@ -175,8 +175,8 @@ def GF(
 
             .. md-tab-item:: GF(2^m)
 
-                Construct the :math:`\mathrm{GF}(2^8)` field that is used in AES. Notice the irreducible polynomial
-                is not primitive and :math:`x` is not a primitive element.
+                Construct the $\mathrm{GF}(2^8)$ field that is used in AES. Notice the irreducible polynomial
+                is not primitive and $x$ is not a primitive element.
 
                 .. ipython:: python
 
@@ -185,8 +185,8 @@ def GF(
 
             .. md-tab-item:: GF(p^m)
 
-                Construct :math:`\mathrm{GF}(3^5)` with an irreducible, but not primitive, polynomial. Notice that
-                :math:`x` is not a primitive element.
+                Construct $\mathrm{GF}(3^5)$ with an irreducible, but not primitive, polynomial. Notice that
+                $x$ is not a primitive element.
 
                 .. ipython:: python
 
@@ -215,8 +215,8 @@ def GF(
                     GF = galois.GF(2**100)
                     print(GF.properties)
 
-                The construction of large fields can be sped up by explicitly specifying :math:`p` and :math:`m`.
-                This avoids the need to factor the order :math:`p^m`.
+                The construction of large fields can be sped up by explicitly specifying $p$ and $m$.
+                This avoids the need to factor the order $p^m$.
 
                 .. ipython:: python
 
@@ -232,8 +232,8 @@ def GF(
                     GF = galois.GF(109987**4)
                     print(GF.properties)
 
-                The construction of large fields can be sped up by explicitly specifying :math:`p` and :math:`m`.
-                This avoids the need to factor the order :math:`p^m`.
+                The construction of large fields can be sped up by explicitly specifying $p$ and $m$.
+                This avoids the need to factor the order $p^m$.
 
                 .. ipython:: python
 

@@ -2,7 +2,7 @@ Array Creation
 ==============
 
 This page discusses the multiple ways to create arrays over finite fields. For this discussion, we are working in
-the finite field :math:`\mathrm{GF}(3^5)`.
+the finite field $\mathrm{GF}(3^5)$.
 
 .. ipython-with-reprs:: int,poly,power
 
@@ -41,15 +41,15 @@ A finite field array may also be created by exponentiating the primitive element
 Polynomial coefficients
 .......................
 
-Rather than strings, the polynomial coefficients may be passed into `GF`'s constructor as length-:math:`m` vectors using
+Rather than strings, the polynomial coefficients may be passed into `GF`'s constructor as length-$m$ vectors using
 the :func:`~galois.FieldArray.Vector` classmethod.
 
 .. ipython-with-reprs:: int,poly,power
 
    GF.Vector([[0, 0, 1, 2, 2], [0, 0, 0, 1, 1]])
 
-The :func:`~galois.FieldArray.vector` method is the opposite operation. It converts extension field elements from :math:`\mathrm{GF}(p^m)`
-into length-:math:`m` vectors over :math:`\mathrm{GF}(p)`.
+The :func:`~galois.FieldArray.vector` method is the opposite operation. It converts extension field elements from $\mathrm{GF}(p^m)$
+into length-$m$ vectors over $\mathrm{GF}(p)$.
 
 .. ipython-with-reprs:: int,poly,power
 
@@ -104,7 +104,7 @@ useful for initializing empty arrays.
    :title: There is no :func:`numpy.empty` equivalent.
    :collapsible:
 
-   This is because :obj:`~galois.FieldArray` instances must have values in :math:`[0, p^m)`. Empty NumPy arrays have whatever values
+   This is because :obj:`~galois.FieldArray` instances must have values in $[0, p^m)$. Empty NumPy arrays have whatever values
    are currently in memory, and therefore would fail those bounds checks during instantiation.
 
 Ordered arrays
@@ -153,14 +153,14 @@ able to store all the field elements (in their :ref:`integer representation <int
 Valid data types
 ................
 
-For small finite fields, like :math:`\mathrm{GF}(2^4)`, every NumPy integer data type is supported.
+For small finite fields, like $\mathrm{GF}(2^4)$, every NumPy integer data type is supported.
 
 .. ipython:: python
 
     GF = galois.GF(2**4)
     GF.dtypes
 
-For medium finite fields, like :math:`\mathrm{GF}(2^{10})`, some NumPy integer data types are not supported. Here,
+For medium finite fields, like $\mathrm{GF}(2^{10})$, some NumPy integer data types are not supported. Here,
 :obj:`numpy.uint8` and :obj:`numpy.int8` are not supported.
 
 .. ipython:: python
@@ -168,7 +168,7 @@ For medium finite fields, like :math:`\mathrm{GF}(2^{10})`, some NumPy integer d
     GF = galois.GF(2**10)
     GF.dtypes
 
-For large finite fields, like :math:`\mathrm{GF}(2^{100})`, only the "object" data type (:obj:`numpy.object_`) is
+For large finite fields, like $\mathrm{GF}(2^{100})$, only the "object" data type (:obj:`numpy.object_`) is
 supported. This uses arrays of Python objects, rather than integer data types. The Python objects used are Python integers,
 which have unlimited size.
 

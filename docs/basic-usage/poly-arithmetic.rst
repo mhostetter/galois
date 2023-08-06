@@ -1,7 +1,7 @@
 Polynomial Arithmetic
 =====================
 
-In the sections below, the finite field :math:`\mathrm{GF}(7)` and polynomials :math:`f(x)` and :math:`g(x)` are used.
+In the sections below, the finite field $\mathrm{GF}(7)$ and polynomials $f(x)$ and $g(x)$ are used.
 
 .. ipython:: python
 
@@ -95,7 +95,7 @@ performed using Python operators. Expand any section for more details.
         f * 4
         f + f + f + f
 
-    In finite fields :math:`\mathrm{GF}(p^m)`, the characteristic :math:`p` is the smallest value when multiplied by
+    In finite fields $\mathrm{GF}(p^m)$, the characteristic $p$ is the smallest value when multiplied by
     any non-zero field element that always results in 0.
 
     .. ipython:: python
@@ -220,7 +220,7 @@ Polynomial objects may also be evaluated at scalars, arrays, or square matrices.
     :collapsible:
 
     Polynomials can also be evaluated at square matrices. Note, this is different than element-wise array evaluation. Here,
-    the square matrix indeterminate is exponentiated using matrix multiplication. So :math:`f(x) = x^3` evaluated
+    the square matrix indeterminate is exponentiated using matrix multiplication. So $f(x) = x^3$ evaluated
     at the square matrix `X` equals `X @ X @ X`.
 
     .. ipython:: python
@@ -234,7 +234,7 @@ Polynomial objects may also be evaluated at scalars, arrays, or square matrices.
 .. example:: Composition: `f(g)`
     :collapsible:
 
-    Polynomial composition :math:`f(g(x))` is easily performed using an overload to :func:`~galois.Poly.__call__`.
+    Polynomial composition $f(g(x))$ is easily performed using an overload to :func:`~galois.Poly.__call__`.
 
     .. ipython:: python
 

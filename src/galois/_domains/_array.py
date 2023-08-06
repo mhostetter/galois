@@ -298,10 +298,10 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
     @classmethod
     def Identity(cls, size: int, dtype: DTypeLike | None = None) -> Self:
         r"""
-        Creates an :math:`n \times n` identity matrix.
+        Creates an $n \times n$ identity matrix.
 
         Arguments:
-            size: The size :math:`n` along one dimension of the identity matrix.
+            size: The size $n$ along one dimension of the identity matrix.
             dtype: The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest
                 unsigned data type for this :obj:`~galois.Array` subclass (the first element in
                 :obj:`~galois.Array.dtypes`).
@@ -327,7 +327,7 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
         Arguments:
             mode: The ufunc calculation mode.
 
-                - `"auto"`: Selects `"jit-lookup"` for fields with order less than :math:`2^{20}`, `"jit-calculate"`
+                - `"auto"`: Selects `"jit-lookup"` for fields with order less than $2^{20}$, `"jit-calculate"`
                   for larger fields, and `"python-calculate"` for fields whose elements cannot be represented with
                   :obj:`numpy.int64`.
                 - `"jit-lookup"`: JIT compiles arithmetic ufuncs to use Zech log, log, and anti-log lookup tables for

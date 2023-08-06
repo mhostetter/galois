@@ -181,13 +181,13 @@ class FLFSR(_LFSR):
     A Fibonacci linear-feedback shift register (LFSR).
 
     Notes:
-        A Fibonacci LFSR is defined by its feedback polynomial :math:`f(x)`.
+        A Fibonacci LFSR is defined by its feedback polynomial $f(x)$.
 
         .. math::
             f(x) = -c_{0}x^{n} - c_{1}x^{n-1} - \dots - c_{n-2}x^{2} - c_{n-1}x + 1 = x^n c(x^{-1})
 
-        The feedback polynomial is the reciprocal of the characteristic polynomial :math:`c(x)` of the linear recurrent
-        sequence :math:`y` produced by the Fibonacci LFSR.
+        The feedback polynomial is the reciprocal of the characteristic polynomial $c(x)$ of the linear recurrent
+        sequence $y$ produced by the Fibonacci LFSR.
 
         .. math::
             c(x) = x^{n} - c_{n-1}x^{n-1} - c_{n-2}x^{n-2} - \dots - c_{1}x - c_{0}
@@ -207,12 +207,12 @@ class FLFSR(_LFSR):
                +--------+     +--------+                    +--------+
                 y[t+n-1]       y[t+n-2]                       y[t+1]
 
-        The shift register taps :math:`T` are defined left-to-right as :math:`T = [T_0, T_1, \dots, T_{n-2}, T_{n-1}]`.
-        The state vector :math:`S` is also defined left-to-right as :math:`S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]`.
+        The shift register taps $T$ are defined left-to-right as $T = [T_0, T_1, \dots, T_{n-2}, T_{n-1}]$.
+        The state vector $S$ is also defined left-to-right as $S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]$.
 
-        In the Fibonacci configuration, the shift register taps are :math:`T = [c_{n-1}, c_{n-2}, \dots, c_1, c_0]`.
-        Additionally, the state vector is equal to the next :math:`n` outputs in reversed order, namely
-        :math:`S = [y_{t+n-1}, y_{t+n-2}, \dots, y_{t+2}, y_{t+1}]`.
+        In the Fibonacci configuration, the shift register taps are $T = [c_{n-1}, c_{n-2}, \dots, c_1, c_0]$.
+        Additionally, the state vector is equal to the next $n$ outputs in reversed order, namely
+        $S = [y_{t+n-1}, y_{t+n-2}, \dots, y_{t+2}, y_{t+1}]$.
 
     References:
         - Gardner, D. 2019. “Applications of the Galois Model LFSR in Cryptography”. figshare.
@@ -227,7 +227,7 @@ class FLFSR(_LFSR):
             .. md-tab-item:: GF(2)
 
                 Create a Fibonacci LFSR from a degree-4 primitive characteristic polynomial over
-                :math:`\mathrm{GF}(2)`.
+                $\mathrm{GF}(2)$.
 
                 .. ipython:: python
 
@@ -246,7 +246,7 @@ class FLFSR(_LFSR):
             .. md-tab-item:: GF(p)
 
                 Create a Fibonacci LFSR from a degree-4 primitive characteristic polynomial over
-                :math:`\mathrm{GF}(7)`.
+                $\mathrm{GF}(7)$.
 
                 .. ipython:: python
 
@@ -265,7 +265,7 @@ class FLFSR(_LFSR):
             .. md-tab-item:: GF(2^m)
 
                 Create a Fibonacci LFSR from a degree-4 primitive characteristic polynomial over
-                :math:`\mathrm{GF}(2^3)`.
+                $\mathrm{GF}(2^3)$.
 
                 .. ipython:: python
 
@@ -284,7 +284,7 @@ class FLFSR(_LFSR):
             .. md-tab-item:: GF(p^m)
 
                 Create a Fibonacci LFSR from a degree-4 primitive characteristic polynomial over
-                :math:`\mathrm{GF}(3^3)`.
+                $\mathrm{GF}(3^3)$.
 
                 .. ipython:: python
 
@@ -312,35 +312,35 @@ class FLFSR(_LFSR):
         state: ArrayLike | None = None,
     ):
         r"""
-        Constructs a Fibonacci LFSR from its feedback polynomial :math:`f(x)`.
+        Constructs a Fibonacci LFSR from its feedback polynomial $f(x)$.
 
         Arguments:
             feedback_poly: The feedback polynomial
-                :math:`f(x) = -c_{0}x^{n} - c_{1}x^{n-1} - \dots - c_{n-2}x^{2} - c_{n-1}x + 1`.
-            state: The initial state vector :math:`S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]`. The default is `None`
+                $f(x) = -c_{0}x^{n} - c_{1}x^{n-1} - \dots - c_{n-2}x^{2} - c_{n-1}x + 1$.
+            state: The initial state vector $S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]$. The default is `None`
                 which corresponds to all ones.
 
         See Also:
             irreducible_poly, primitive_poly
 
         Notes:
-            A Fibonacci LFSR may be constructed from its characteristic polynomial :math:`c(x)` by passing in its
-            reciprocal as the feedback polynomial. This is because :math:`f(x) = x^n c(x^{-1})`.
+            A Fibonacci LFSR may be constructed from its characteristic polynomial $c(x)$ by passing in its
+            reciprocal as the feedback polynomial. This is because $f(x) = x^n c(x^{-1})$.
         """
         super().__init__(feedback_poly, state=state)
 
     @classmethod
     def Taps(cls, taps: FieldArray, state: ArrayLike | None = None) -> Self:
         r"""
-        Constructs a Fibonacci LFSR from its taps :math:`T = [c_{n-1}, c_{n-2}, \dots, c_1, c_0]`.
+        Constructs a Fibonacci LFSR from its taps $T = [c_{n-1}, c_{n-2}, \dots, c_1, c_0]$.
 
         Arguments:
-            taps: The shift register taps :math:`T = [c_{n-1}, c_{n-2}, \dots, c_1, c_0]`.
-            state: The initial state vector :math:`S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]`. The default is `None`
+            taps: The shift register taps $T = [c_{n-1}, c_{n-2}, \dots, c_1, c_0]$.
+            state: The initial state vector $S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]$. The default is `None`
                 which corresponds to all ones.
 
         Returns:
-            A Fibonacci LFSR with taps :math:`T = [c_{n-1}, c_{n-2}, \dots, c_1, c_0]`.
+            A Fibonacci LFSR with taps $T = [c_{n-1}, c_{n-2}, \dots, c_1, c_0]$.
 
         Examples:
             .. ipython:: python
@@ -392,7 +392,7 @@ class FLFSR(_LFSR):
         Resets the Fibonacci LFSR state to the specified state.
 
         Arguments:
-            state: The state vector :math:`S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]`. The default is `None` which
+            state: The state vector $S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]$. The default is `None` which
                 corresponds to the initial state.
 
         Examples:
@@ -443,7 +443,7 @@ class FLFSR(_LFSR):
             An array of output symbols of type :obj:`field` with size `abs(steps)`.
 
         Examples:
-            Step the Fibonacci LFSR one output at a time. Notice the first :math:`n` outputs of a Fibonacci LFSR are
+            Step the Fibonacci LFSR one output at a time. Notice the first $n$ outputs of a Fibonacci LFSR are
             its state reversed.
 
             .. ipython:: python
@@ -547,11 +547,11 @@ class FLFSR(_LFSR):
     @property
     def feedback_poly(self) -> Poly:
         r"""
-        The feedback polynomial :math:`f(x) = -c_{0}x^{n} - c_{1}x^{n-1} - \dots - c_{n-2}x^{2} - c_{n-1}x + 1`
+        The feedback polynomial $f(x) = -c_{0}x^{n} - c_{1}x^{n-1} - \dots - c_{n-2}x^{2} - c_{n-1}x + 1$
         that defines the feedback arithmetic.
 
         Notes:
-            The feedback polynomial is the reciprocal of the characteristic polynomial :math:`f(x) = x^n c(x^{-1})`.
+            The feedback polynomial is the reciprocal of the characteristic polynomial $f(x) = x^n c(x^{-1})$.
 
         Examples:
             .. ipython:: python
@@ -572,11 +572,11 @@ class FLFSR(_LFSR):
     @property
     def characteristic_poly(self) -> Poly:
         r"""
-        The characteristic polynomial :math:`c(x) = x^{n} - c_{n-1}x^{n-1} - c_{n-2}x^{n-2} - \dots - c_{1}x - c_{0}`
+        The characteristic polynomial $c(x) = x^{n} - c_{n-1}x^{n-1} - c_{n-2}x^{n-2} - \dots - c_{1}x - c_{0}$
         that defines the linear recurrent sequence.
 
         Notes:
-            The characteristic polynomial is the reciprocal of the feedback polynomial :math:`c(x) = x^n f(x^{-1})`.
+            The characteristic polynomial is the reciprocal of the feedback polynomial $c(x) = x^n f(x^{-1})$.
 
         Examples:
             .. ipython:: python
@@ -597,7 +597,7 @@ class FLFSR(_LFSR):
     @property
     def taps(self) -> FieldArray:
         r"""
-        The shift register taps :math:`T = [c_{n-1}, c_{n-2}, \dots, c_1, c_0]`. The taps of the shift register define
+        The shift register taps $T = [c_{n-1}, c_{n-2}, \dots, c_1, c_0]$. The taps of the shift register define
         the linear recurrence relation.
 
         Examples:
@@ -621,7 +621,7 @@ class FLFSR(_LFSR):
     @property
     def initial_state(self) -> FieldArray:
         r"""
-        The initial state vector :math:`S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]`.
+        The initial state vector $S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]$.
 
         Examples:
             .. ipython:: python
@@ -648,7 +648,7 @@ class FLFSR(_LFSR):
     @property
     def state(self) -> FieldArray:
         r"""
-        The current state vector :math:`S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]`.
+        The current state vector $S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]$.
 
         Examples:
             .. ipython:: python
@@ -814,13 +814,13 @@ class GLFSR(_LFSR):
     A Galois linear-feedback shift register (LFSR).
 
     Notes:
-        A Galois LFSR is defined by its feedback polynomial :math:`f(x)`.
+        A Galois LFSR is defined by its feedback polynomial $f(x)$.
 
         .. math::
             f(x) = -c_{0}x^{n} - c_{1}x^{n-1} - \dots - c_{n-2}x^{2} - c_{n-1}x + 1 = x^n c(x^{-1})
 
-        The feedback polynomial is the reciprocal of the characteristic polynomial :math:`c(x)` of the linear recurrent
-        sequence :math:`y` produced by the Galois LFSR.
+        The feedback polynomial is the reciprocal of the characteristic polynomial $c(x)$ of the linear recurrent
+        sequence $y$ produced by the Galois LFSR.
 
         .. math::
             c(x) = x^{n} - c_{n-1}x^{n-1} - c_{n-2}x^{n-2} - \dots - c_{1}x - c_{0}
@@ -840,10 +840,10 @@ class GLFSR(_LFSR):
                +--------+     +--------+                    +--------+
                                                               y[t+1]
 
-        The shift register taps :math:`T` are defined left-to-right as :math:`T = [T_0, T_1, \dots, T_{n-2}, T_{n-1}]`.
-        The state vector :math:`S` is also defined left-to-right as :math:`S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]`.
+        The shift register taps $T$ are defined left-to-right as $T = [T_0, T_1, \dots, T_{n-2}, T_{n-1}]$.
+        The state vector $S$ is also defined left-to-right as $S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]$.
 
-        In the Galois configuration, the shift register taps are :math:`T = [c_0, c_1, \dots, c_{n-2}, c_{n-1}]`.
+        In the Galois configuration, the shift register taps are $T = [c_0, c_1, \dots, c_{n-2}, c_{n-1}]$.
 
     References:
         - Gardner, D. 2019. “Applications of the Galois Model LFSR in Cryptography”. figshare.
@@ -857,7 +857,7 @@ class GLFSR(_LFSR):
 
             .. md-tab-item:: GF(2)
 
-                Create a Galois LFSR from a degree-4 primitive characteristic polynomial over :math:`\mathrm{GF}(2)`.
+                Create a Galois LFSR from a degree-4 primitive characteristic polynomial over $\mathrm{GF}(2)$.
 
                 .. ipython:: python
 
@@ -876,7 +876,7 @@ class GLFSR(_LFSR):
             .. md-tab-item:: GF(p)
 
                 Create a Galois LFSR from a degree-4 primitive characteristic polynomial over
-                :math:`\mathrm{GF}(7)`.
+                $\mathrm{GF}(7)$.
 
                 .. ipython:: python
 
@@ -895,7 +895,7 @@ class GLFSR(_LFSR):
             .. md-tab-item:: GF(2^m)
 
                 Create a Galois LFSR from a degree-4 primitive characteristic polynomial over
-                :math:`\mathrm{GF}(2^3)`.
+                $\mathrm{GF}(2^3)$.
 
                 .. ipython:: python
 
@@ -914,7 +914,7 @@ class GLFSR(_LFSR):
             .. md-tab-item:: GF(p^m)
 
                 Create a Galois LFSR from a degree-4 primitive characteristic polynomial over
-                :math:`\mathrm{GF}(3^3)`.
+                $\mathrm{GF}(3^3)$.
 
                 .. ipython:: python
 
@@ -942,35 +942,35 @@ class GLFSR(_LFSR):
         state: ArrayLike | None = None,
     ):
         r"""
-        Constructs a Galois LFSR from its feedback polynomial :math:`f(x)`.
+        Constructs a Galois LFSR from its feedback polynomial $f(x)$.
 
         Arguments:
             feedback_poly: The feedback polynomial
-                :math:`f(x) = -c_{0}x^{n} - c_{1}x^{n-1} - \dots - c_{n-2}x^{2} - c_{n-1}x + 1`.
-            state: The initial state vector :math:`S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]`. The default is `None`
+                $f(x) = -c_{0}x^{n} - c_{1}x^{n-1} - \dots - c_{n-2}x^{2} - c_{n-1}x + 1$.
+            state: The initial state vector $S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]$. The default is `None`
                 which corresponds to all ones.
 
         See Also:
             irreducible_poly, primitive_poly
 
         Notes:
-            A Galois LFSR may be constructed from its characteristic polynomial :math:`c(x)` by passing in its
-            reciprocal as the feedback polynomial. This is because :math:`f(x) = x^n c(x^{-1})`.
+            A Galois LFSR may be constructed from its characteristic polynomial $c(x)$ by passing in its
+            reciprocal as the feedback polynomial. This is because $f(x) = x^n c(x^{-1})$.
         """
         super().__init__(feedback_poly, state=state)
 
     @classmethod
     def Taps(cls, taps: FieldArray, state: ArrayLike | None = None) -> Self:
         r"""
-        Constructs a Galois LFSR from its taps :math:`T = [c_0, c_1, \dots, c_{n-2}, c_{n-1}]`.
+        Constructs a Galois LFSR from its taps $T = [c_0, c_1, \dots, c_{n-2}, c_{n-1}]$.
 
         Arguments:
-            taps: The shift register taps :math:`T = [c_0, c_1, \dots, c_{n-2}, c_{n-1}]`.
-            state: The initial state vector :math:`S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]`. The default is `None`
+            taps: The shift register taps $T = [c_0, c_1, \dots, c_{n-2}, c_{n-1}]$.
+            state: The initial state vector $S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]$. The default is `None`
                 which corresponds to all ones.
 
         Returns:
-            A Galois LFSR with taps :math:`T = [c_0, c_1, \dots, c_{n-2}, c_{n-1}]`.
+            A Galois LFSR with taps $T = [c_0, c_1, \dots, c_{n-2}, c_{n-1}]$.
 
         Examples:
             .. ipython:: python
@@ -1022,7 +1022,7 @@ class GLFSR(_LFSR):
         Resets the Galois LFSR state to the specified state.
 
         Arguments:
-            state: The state vector :math:`S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]`. The default is `None` which
+            state: The state vector $S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]$. The default is `None` which
                 corresponds to the initial state.
 
         Examples:
@@ -1163,11 +1163,11 @@ class GLFSR(_LFSR):
     @property
     def feedback_poly(self) -> Poly:
         r"""
-        The feedback polynomial :math:`f(x) = -c_{0}x^{n} - c_{1}x^{n-1} - \dots - c_{n-2}x^{2} - c_{n-1}x + 1`
+        The feedback polynomial $f(x) = -c_{0}x^{n} - c_{1}x^{n-1} - \dots - c_{n-2}x^{2} - c_{n-1}x + 1$
         that defines the feedback arithmetic.
 
         Notes:
-            The feedback polynomial is the reciprocal of the characteristic polynomial :math:`f(x) = x^n c(x^{-1})`.
+            The feedback polynomial is the reciprocal of the characteristic polynomial $f(x) = x^n c(x^{-1})$.
 
         Examples:
             .. ipython:: python
@@ -1188,11 +1188,11 @@ class GLFSR(_LFSR):
     @property
     def characteristic_poly(self) -> Poly:
         r"""
-        The characteristic polynomial :math:`c(x) = x^{n} - c_{n-1}x^{n-1} - c_{n-2}x^{n-2} - \dots - c_{1}x - c_{0}`
+        The characteristic polynomial $c(x) = x^{n} - c_{n-1}x^{n-1} - c_{n-2}x^{n-2} - \dots - c_{1}x - c_{0}$
         that defines the linear recurrent sequence.
 
         Notes:
-            The characteristic polynomial is the reciprocal of the feedback polynomial :math:`c(x) = x^n f(x^{-1})`.
+            The characteristic polynomial is the reciprocal of the feedback polynomial $c(x) = x^n f(x^{-1})$.
 
         Examples:
             .. ipython:: python
@@ -1213,7 +1213,7 @@ class GLFSR(_LFSR):
     @property
     def taps(self) -> FieldArray:
         r"""
-        The shift register taps :math:`T = [c_0, c_1, \dots, c_{n-2}, c_{n-1}]`. The taps of the shift register define
+        The shift register taps $T = [c_0, c_1, \dots, c_{n-2}, c_{n-1}]$. The taps of the shift register define
         the linear recurrence relation.
 
         Examples:
@@ -1237,7 +1237,7 @@ class GLFSR(_LFSR):
     @property
     def initial_state(self) -> FieldArray:
         r"""
-        The initial state vector :math:`S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]`.
+        The initial state vector $S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]$.
 
         Examples:
             .. ipython:: python
@@ -1264,7 +1264,7 @@ class GLFSR(_LFSR):
     @property
     def state(self) -> FieldArray:
         r"""
-        The current state vector :math:`S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]`.
+        The current state vector $S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]$.
 
         Examples:
             .. ipython:: python
@@ -1440,25 +1440,25 @@ def berlekamp_massey(sequence: FieldArray, output: Literal["galois"]) -> GLFSR:
 @export
 def berlekamp_massey(sequence, output="minimal"):
     r"""
-    Finds the minimal polynomial :math:`c(x)` that produces the linear recurrent sequence :math:`y`.
+    Finds the minimal polynomial $c(x)$ that produces the linear recurrent sequence $y$.
 
     This function implements the Berlekamp-Massey algorithm.
 
     Arguments:
-        sequence: A linear recurrent sequence :math:`y` in :math:`\mathrm{GF}(p^m)`.
+        sequence: A linear recurrent sequence $y$ in $\mathrm{GF}(p^m)$.
         output: The output object type.
 
             - `"minimal"` (default): Returns the minimal polynomial that generates the linear recurrent sequence.
-              The minimal polynomial is a characteristic polynomial :math:`c(x)` of minimal degree.
-            - `"fibonacci"`: Returns a Fibonacci LFSR that produces :math:`y`.
-            - `"galois"`: Returns a Galois LFSR that produces :math:`y`.
+              The minimal polynomial is a characteristic polynomial $c(x)$ of minimal degree.
+            - `"fibonacci"`: Returns a Fibonacci LFSR that produces $y$.
+            - `"galois"`: Returns a Galois LFSR that produces $y$.
 
     Returns:
-        The minimal polynomial :math:`c(x)`, a Fibonacci LFSR, or a Galois LFSR, depending on the value of `output`.
+        The minimal polynomial $c(x)$, a Fibonacci LFSR, or a Galois LFSR, depending on the value of `output`.
 
     Notes:
-        The minimal polynomial is the characteristic polynomial :math:`c(x)` of minimal degree that produces the
-        linear recurrent sequence :math:`y`.
+        The minimal polynomial is the characteristic polynomial $c(x)$ of minimal degree that produces the
+        linear recurrent sequence $y$.
 
         .. math::
             c(x) = x^{n} - c_{n-1}x^{n-1} - c_{n-2}x^{n-2} - \dots - c_{1}x - c_{0}
@@ -1466,7 +1466,7 @@ def berlekamp_massey(sequence, output="minimal"):
         .. math::
             y_t = c_{n-1}y_{t-1} + c_{n-2}y_{t-2} + \dots + c_{1}y_{t-n+2} + c_{0}y_{t-n+1}
 
-        For a linear sequence with order :math:`n`, at least :math:`2n` output symbols are required to determine the
+        For a linear sequence with order $n$, at least $2n$ output symbols are required to determine the
         minimal polynomial.
 
     References:
@@ -1476,14 +1476,14 @@ def berlekamp_massey(sequence, output="minimal"):
         - https://crypto.stanford.edu/~mironov/cs359/massey.pdf
 
     Examples:
-        The sequence below is a degree-4 linear recurrent sequence over :math:`\mathrm{GF}(7)`.
+        The sequence below is a degree-4 linear recurrent sequence over $\mathrm{GF}(7)$.
 
         .. ipython:: python
 
             GF = galois.GF(7)
             y = GF([5, 5, 1, 3, 1, 4, 6, 6, 5, 5])
 
-        The characteristic polynomial is :math:`c(x) = x^4 + x^2 + 3x + 5` over :math:`\mathrm{GF}(7)`.
+        The characteristic polynomial is $c(x) = x^4 + x^2 + 3x + 5$ over $\mathrm{GF}(7)$.
 
         .. ipython:: python
 

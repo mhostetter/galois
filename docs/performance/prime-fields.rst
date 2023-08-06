@@ -2,16 +2,16 @@ Prime Fields
 ============
 
 This page compares the performance of :obj:`galois` to native NumPy when performing finite field
-multiplication in :math:`\mathrm{GF}(p)`. Native NumPy can perform finite field multiplication in :math:`\mathrm{GF}(p)`
-because prime fields are very simple. Multiplication is simply :math:`xy\ \textrm{mod}\ p`.
+multiplication in $\mathrm{GF}(p)$. Native NumPy can perform finite field multiplication in $\mathrm{GF}(p)$
+because prime fields are very simple. Multiplication is simply $xy\ \textrm{mod}\ p$.
 
 Lookup table performance
 ------------------------
 
 This section tests :obj:`galois` when using the `"jit-lookup"` compilation mode. For finite fields with order less
-than or equal to :math:`2^{20}`, :obj:`galois` uses lookup tables by default for efficient arithmetic.
+than or equal to $2^{20}$, :obj:`galois` uses lookup tables by default for efficient arithmetic.
 
-Below are examples computing 10 million multiplications in the prime field :math:`\mathrm{GF}(31)`.
+Below are examples computing 10 million multiplications in the prime field $\mathrm{GF}(31)$.
 
 .. code-block:: ipython
 
@@ -48,10 +48,10 @@ Explicit calculation performance
 --------------------------------
 
 This section tests :obj:`galois` when using the `"jit-calculate"` compilation mode. For finite fields with order greater
-than :math:`2^{20}`, :obj:`galois` will use explicit arithmetic calculation by default rather than lookup tables. *Even in these cases*,
+than $2^{20}$, :obj:`galois` will use explicit arithmetic calculation by default rather than lookup tables. *Even in these cases*,
 :obj:`galois` is faster than NumPy!
 
-Below are examples computing 10 million multiplications in the prime field :math:`\mathrm{GF}(2097169)`.
+Below are examples computing 10 million multiplications in the prime field $\mathrm{GF}(2097169)$.
 
 .. code-block:: ipython
 
@@ -134,11 +134,11 @@ Linear algebra performance
 Linear algebra performance in prime fields is comparable to the native NumPy implementations, which use BLAS/LAPACK. This is
 because :obj:`galois` uses the native NumPy ufuncs when possible.
 
-If overflow is prevented, dot products in :math:`\mathrm{GF}(p)` can be computed by first computing the dot product in
-:math:`\mathbb{Z}` and then reducing modulo :math:`p`. In this way, the efficient BLAS/LAPACK implementations are used to
+If overflow is prevented, dot products in $\mathrm{GF}(p)$ can be computed by first computing the dot product in
+$\mathbb{Z}$ and then reducing modulo $p$. In this way, the efficient BLAS/LAPACK implementations are used to
 keep finite field linear algebra fast, whenever possible.
 
-Below are examples computing the matrix multiplication of two :math:`100 \times 100` matrices in the prime field :math:`\mathrm{GF}(2097169)`.
+Below are examples computing the matrix multiplication of two $100 \times 100$ matrices in the prime field $\mathrm{GF}(2097169)$.
 
 .. code-block:: ipython
 

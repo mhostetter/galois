@@ -13,7 +13,7 @@ __all__ = []
 @method_of(Poly)
 def is_square_free(f) -> bool:
     r"""
-    Determines whether the polynomial :math:`f(x)` over :math:`\mathrm{GF}(q)` is square-free.
+    Determines whether the polynomial $f(x)$ over $\mathrm{GF}(q)$ is square-free.
 
     .. question:: Why is this a method and not a property?
         :collapsible:
@@ -24,14 +24,14 @@ def is_square_free(f) -> bool:
         `True` if the polynomial is square-free.
 
     Notes:
-        A square-free polynomial :math:`f(x)` has no irreducible factors with multiplicity greater than one.
+        A square-free polynomial $f(x)$ has no irreducible factors with multiplicity greater than one.
         Therefore, its canonical factorization is
 
         .. math::
             f(x) = \prod_{i=1}^{k} g_i(x)^{e_i} = \prod_{i=1}^{k} g_i(x) .
 
     Examples:
-        Generate irreducible polynomials over :math:`\mathrm{GF}(3)`.
+        Generate irreducible polynomials over $\mathrm{GF}(3)$.
 
         .. ipython:: python
 
@@ -39,7 +39,7 @@ def is_square_free(f) -> bool:
             f1 = galois.irreducible_poly(3, 3); f1
             f2 = galois.irreducible_poly(3, 4); f2
 
-        Determine if composite polynomials are square-free over :math:`\mathrm{GF}(3)`.
+        Determine if composite polynomials are square-free over $\mathrm{GF}(3)$.
 
         .. ipython:: python
 
@@ -61,23 +61,23 @@ def is_square_free(f) -> bool:
 @method_of(Poly)
 def square_free_factors(f: Poly) -> tuple[list[Poly], list[int]]:
     r"""
-    Factors the monic polynomial :math:`f(x)` into a product of square-free polynomials.
+    Factors the monic polynomial $f(x)$ into a product of square-free polynomials.
 
     Returns:
-        - The list of non-constant, square-free polynomials :math:`h_j(x)` in the factorization.
-        - The list of corresponding multiplicities :math:`j`.
+        - The list of non-constant, square-free polynomials $h_j(x)$ in the factorization.
+        - The list of corresponding multiplicities $j$.
 
     Raises:
-        ValueError: If :math:`f(x)` is not monic or has degree 0.
+        ValueError: If $f(x)$ is not monic or has degree 0.
 
     Notes:
-        The Square-Free Factorization algorithm factors :math:`f(x)` into a product of :math:`m` square-free
-        polynomials :math:`h_j(x)` with multiplicity :math:`j`.
+        The Square-Free Factorization algorithm factors $f(x)$ into a product of $m$ square-free
+        polynomials $h_j(x)$ with multiplicity $j$.
 
         .. math::
             f(x) = \prod_{j=1}^{m} h_j(x)^j
 
-        Some :math:`h_j(x) = 1`, but those polynomials are not returned by this function.
+        Some $h_j(x) = 1$, but those polynomials are not returned by this function.
 
         A complete polynomial factorization is implemented in :func:`~Poly.factors`.
 
@@ -86,8 +86,8 @@ def square_free_factors(f: Poly) -> tuple[list[Poly], list[int]]:
         - Section 2.1 from https://people.csail.mit.edu/dmoshkov/courses/codes/poly-factorization.pdf
 
     Examples:
-        Suppose :math:`f(x) = x(x^3 + 2x + 4)(x^2 + 4x + 1)^3` over :math:`\mathrm{GF}(5)`. Each polynomial
-        :math:`x`, :math:`x^3 + 2x + 4`, and :math:`x^2 + 4x + 1` are all irreducible over :math:`\mathrm{GF}(5)`.
+        Suppose $f(x) = x(x^3 + 2x + 4)(x^2 + 4x + 1)^3$ over $\mathrm{GF}(5)$. Each polynomial
+        $x$, $x^3 + 2x + 4$, and $x^2 + 4x + 1$ are all irreducible over $\mathrm{GF}(5)$.
 
         .. ipython:: python
 
@@ -97,8 +97,8 @@ def square_free_factors(f: Poly) -> tuple[list[Poly], list[int]]:
             c = galois.Poly([1,4,1], field=GF); c, c.is_irreducible()
             f = a * b * c**3; f
 
-        The square-free factorization is :math:`\{x(x^3 + 2x + 4), x^2 + 4x + 1\}` with multiplicities
-        :math:`\{1, 3\}`.
+        The square-free factorization is $\{x(x^3 + 2x + 4), x^2 + 4x + 1\}$ with multiplicities
+        $\{1, 3\}$.
 
         .. ipython:: python
 
@@ -160,26 +160,26 @@ def square_free_factors(f: Poly) -> tuple[list[Poly], list[int]]:
 @method_of(Poly)
 def distinct_degree_factors(f: Poly) -> tuple[list[Poly], list[int]]:
     r"""
-    Factors the monic, square-free polynomial :math:`f(x)` into a product of polynomials whose irreducible factors
+    Factors the monic, square-free polynomial $f(x)$ into a product of polynomials whose irreducible factors
     all have the same degree.
 
     Returns:
-        - The list of polynomials :math:`f_i(x)` whose irreducible factors all have degree :math:`i`.
-        - The list of corresponding distinct degrees :math:`i`.
+        - The list of polynomials $f_i(x)$ whose irreducible factors all have degree $i$.
+        - The list of corresponding distinct degrees $i$.
 
     Raises:
-        ValueError: If :math:`f(x)` is not monic, has degree 0, or is not square-free.
+        ValueError: If $f(x)$ is not monic, has degree 0, or is not square-free.
 
     Notes:
-        The Distinct-Degree Factorization algorithm factors a square-free polynomial :math:`f(x)` with degree
-        :math:`d` into a product of :math:`d` polynomials :math:`f_i(x)`, where :math:`f_i(x)` is the product of
-        all irreducible factors of :math:`f(x)` with degree :math:`i`.
+        The Distinct-Degree Factorization algorithm factors a square-free polynomial $f(x)$ with degree
+        $d$ into a product of $d$ polynomials $f_i(x)$, where $f_i(x)$ is the product of
+        all irreducible factors of $f(x)$ with degree $i$.
 
         .. math::
             f(x) = \prod_{i=1}^{d} f_i(x)
 
-        For example, suppose :math:`f(x) = x(x + 1)(x^2 + x + 1)(x^3 + x + 1)(x^3 + x^2 + 1)` over
-        :math:`\mathrm{GF}(2)`, then the distinct-degree factorization is
+        For example, suppose $f(x) = x(x + 1)(x^2 + x + 1)(x^3 + x + 1)(x^3 + x^2 + 1)$ over
+        $\mathrm{GF}(2)$, then the distinct-degree factorization is
 
         .. math::
             f_1(x) &= x(x + 1) = x^2 + x \\
@@ -187,8 +187,8 @@ def distinct_degree_factors(f: Poly) -> tuple[list[Poly], list[int]]:
             f_3(x) &= (x^3 + x + 1)(x^3 + x^2 + 1) = x^6 + x^5 + x^4 + x^3 + x^2 + x + 1 \\
             f_i(x) &= 1\ \textrm{for}\ i = 4, \dots, 10.
 
-        Some :math:`f_i(x) = 1`, but those polynomials are not returned by this function. In this example,
-        the function returns :math:`\{f_1(x), f_2(x), f_3(x)\}` and :math:`\{1, 2, 3\}`.
+        Some $f_i(x) = 1$, but those polynomials are not returned by this function. In this example,
+        the function returns $\{f_1(x), f_2(x), f_3(x)\}$ and $\{1, 2, 3\}$.
 
         The Distinct-Degree Factorization algorithm is often applied after the Square-Free Factorization algorithm,
         see :func:`~Poly.square_free_factors`. A complete polynomial factorization is implemented in
@@ -199,8 +199,8 @@ def distinct_degree_factors(f: Poly) -> tuple[list[Poly], list[int]]:
         - Section 2.2 from https://people.csail.mit.edu/dmoshkov/courses/codes/poly-factorization.pdf
 
     Examples:
-        From the example in the notes, suppose :math:`f(x) = x(x + 1)(x^2 + x + 1)(x^3 + x + 1)(x^3 + x^2 + 1)`
-        over :math:`\mathrm{GF}(2)`.
+        From the example in the notes, suppose $f(x) = x(x + 1)(x^2 + x + 1)(x^3 + x + 1)(x^3 + x^2 + 1)$
+        over $\mathrm{GF}(2)$.
 
         .. ipython:: python
 
@@ -211,8 +211,8 @@ def distinct_degree_factors(f: Poly) -> tuple[list[Poly], list[int]]:
             e = galois.Poly([1, 1, 0, 1]); e, e.is_irreducible()
             f = a * b * c * d * e; f
 
-        The distinct-degree factorization is :math:`\{x(x + 1), x^2 + x + 1, (x^3 + x + 1)(x^3 + x^2 + 1)\}`
-        whose irreducible factors have degrees :math:`\{1, 2, 3\}`.
+        The distinct-degree factorization is $\{x(x + 1), x^2 + x + 1, (x^3 + x + 1)(x^3 + x^2 + 1)\}$
+        whose irreducible factors have degrees $\{1, 2, 3\}$.
 
         .. ipython:: python
 
@@ -265,21 +265,21 @@ def distinct_degree_factors(f: Poly) -> tuple[list[Poly], list[int]]:
 @method_of(Poly)
 def equal_degree_factors(f: Poly, degree: int) -> list[Poly]:
     r"""
-    Factors the monic, square-free polynomial :math:`f(x)` of degree :math:`rd` into a product of :math:`r`
-    irreducible factors with degree :math:`d`.
+    Factors the monic, square-free polynomial $f(x)$ of degree $rd$ into a product of $r$
+    irreducible factors with degree $d$.
 
     Arguments:
-        degree: The degree :math:`d` of each irreducible factor of :math:`f(x)`.
+        degree: The degree $d$ of each irreducible factor of $f(x)$.
 
     Returns:
-        The list of :math:`r` irreducible factors :math:`\{g_1(x), \dots, g_r(x)\}` in lexicographical order.
+        The list of $r$ irreducible factors $\{g_1(x), \dots, g_r(x)\}$ in lexicographical order.
 
     Raises:
-        ValueError: If :math:`f(x)` is not monic, has degree 0, or is not square-free.
+        ValueError: If $f(x)$ is not monic, has degree 0, or is not square-free.
 
     Notes:
-        The Equal-Degree Factorization algorithm factors a square-free polynomial :math:`f(x)` with degree
-        :math:`rd` into a product of :math:`r` irreducible polynomials each with degree :math:`d`. This function
+        The Equal-Degree Factorization algorithm factors a square-free polynomial $f(x)$ with degree
+        $rd$ into a product of $r$ irreducible polynomials each with degree $d$. This function
         implements the Cantor-Zassenhaus algorithm, which is probabilistic.
 
         The Equal-Degree Factorization algorithm is often applied after the Distinct-Degree Factorization algorithm,
@@ -291,7 +291,7 @@ def equal_degree_factors(f: Poly, degree: int) -> list[Poly]:
         - Section 1 from https://www.csa.iisc.ac.in/~chandan/courses/CNT/notes/lec8.pdf
 
     Examples:
-        Factor a product of degree-1 irreducible polynomials over :math:`\mathrm{GF}(2)`.
+        Factor a product of degree-1 irreducible polynomials over $\mathrm{GF}(2)$.
 
         .. ipython:: python
 
@@ -300,7 +300,7 @@ def equal_degree_factors(f: Poly, degree: int) -> list[Poly]:
             f = a * b; f
             f.equal_degree_factors(1)
 
-        Factor a product of degree-3 irreducible polynomials over :math:`\mathrm{GF}(5)`.
+        Factor a product of degree-3 irreducible polynomials over $\mathrm{GF}(5)$.
 
         .. ipython:: python
 
@@ -359,19 +359,19 @@ def equal_degree_factors(f: Poly, degree: int) -> list[Poly]:
 @method_of(Poly)
 def factors(f) -> tuple[list[Poly], list[int]]:
     r"""
-    Computes the irreducible factors of the non-constant, monic polynomial :math:`f(x)`.
+    Computes the irreducible factors of the non-constant, monic polynomial $f(x)$.
 
     Returns:
-        - Sorted list of irreducible factors :math:`\{g_1(x), g_2(x), \dots, g_k(x)\}` of :math:`f(x)` sorted in
+        - Sorted list of irreducible factors $\{g_1(x), g_2(x), \dots, g_k(x)\}$ of $f(x)$ sorted in
           lexicographical order.
-        - List of corresponding multiplicities :math:`\{e_1, e_2, \dots, e_k\}`.
+        - List of corresponding multiplicities $\{e_1, e_2, \dots, e_k\}$.
 
     Raises:
-        ValueError: If :math:`f(x)` is not monic or has degree 0.
+        ValueError: If $f(x)$ is not monic or has degree 0.
 
     Notes:
-        This function factors a monic polynomial :math:`f(x)` into its :math:`k` irreducible factors such that
-        :math:`f(x) = g_1(x)^{e_1} g_2(x)^{e_2} \dots g_k(x)^{e_k}`.
+        This function factors a monic polynomial $f(x)$ into its $k$ irreducible factors such that
+        $f(x) = g_1(x)^{e_1} g_2(x)^{e_2} \dots g_k(x)^{e_k}$.
 
         Steps:
 
@@ -387,7 +387,7 @@ def factors(f) -> tuple[list[Poly], list[int]]:
         - Section 2.1 from https://people.csail.mit.edu/dmoshkov/courses/codes/poly-factorization.pdf
 
     Examples:
-        Generate irreducible polynomials over :math:`\mathrm{GF}(3)`.
+        Generate irreducible polynomials over $\mathrm{GF}(3)$.
 
         .. ipython:: python
 
@@ -403,7 +403,7 @@ def factors(f) -> tuple[list[Poly], list[int]]:
             e1, e2, e3 = 5, 4, 3
             f = g1**e1 * g2**e2 * g3**e3; f
 
-        Factor the polynomial into its irreducible factors over :math:`\mathrm{GF}(3)`.
+        Factor the polynomial into its irreducible factors over $\mathrm{GF}(3)$.
 
         .. ipython:: python
 

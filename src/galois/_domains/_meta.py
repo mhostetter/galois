@@ -120,23 +120,23 @@ class ArrayMeta(abc.ABCMeta):
     @property
     def characteristic(cls) -> int:
         r"""
-        The characteristic :math:`p` of the Galois field :math:`\mathrm{GF}(p^m)` or :math:`p^e` of the Galois ring
-        :math:`\mathrm{GR}(p^e, m)`.
+        The characteristic $p$ of the Galois field $\mathrm{GF}(p^m)$ or $p^e$ of the Galois ring
+        $\mathrm{GR}(p^e, m)$.
         """
         return cls._characteristic
 
     @property
     def degree(cls) -> int:
         r"""
-        The degree :math:`m` of the Galois field :math:`\mathrm{GF}(p^m)` or Galois ring :math:`\mathrm{GR}(p^e, m)`.
+        The degree $m$ of the Galois field $\mathrm{GF}(p^m)$ or Galois ring $\mathrm{GR}(p^e, m)$.
         """
         return cls._degree
 
     @property
     def order(cls) -> int:
         r"""
-        The order :math:`p^m` of the Galois field :math:`\mathrm{GF}(p^m)` or :math:`p^{em}` of the Galois ring
-        :math:`\mathrm{GR}(p^e, m)`.
+        The order $p^m$ of the Galois field $\mathrm{GF}(p^m)$ or $p^{em}$ of the Galois ring
+        $\mathrm{GR}(p^e, m)$.
         """
         return cls._order
 

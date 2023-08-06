@@ -118,7 +118,7 @@ class GF2(
     primitive_element=1,
 ):
     r"""
-    A :obj:`~galois.FieldArray` subclass over :math:`\mathrm{GF}(2)`.
+    A :obj:`~galois.FieldArray` subclass over $\mathrm{GF}(2)$.
 
     .. info::
 
