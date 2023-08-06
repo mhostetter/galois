@@ -31,11 +31,9 @@ def lagrange_poly(x: Array, y: Array) -> Poly:
     Notes:
         The Lagrange interpolating polynomial is defined as
 
-        .. math::
-            L(x) = \sum_{j=0}^{k-1} y_j \ell_j(x)
+        $$L(x) = \sum_{j=0}^{k-1} y_j \ell_j(x)$$
 
-        .. math::
-            \ell_j(x) = \prod_{\substack{0 \le m < k \\ m \ne j}} \frac{x - x_m}{x_j - x_m} .
+        $$\ell_j(x) = \prod_{\substack{0 \le m < k \\ m \ne j}} \frac{x - x_m}{x_j - x_m} .$$
 
         It is the polynomial of minimal degree that satisfies $L(x_i) = y_i$.
 

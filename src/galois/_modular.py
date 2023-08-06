@@ -81,8 +81,7 @@ def euler_phi(n: int) -> int:
     Notes:
         This function implements the Euler totient function
 
-        .. math::
-            \phi(n) = n \prod_{p\ |\ n} \bigg(1 - \frac{1}{p}\bigg) = \prod_{i=1}^{k} p_i^{e_i-1} \big(p_i - 1\big)
+        $$\phi(n) = n \prod_{p\ |\ n} \bigg(1 - \frac{1}{p}\bigg) = \prod_{i=1}^{k} p_i^{e_i-1} \big(p_i - 1\big)$$
 
         for prime $p$ and the prime factorization $n = p_1^{e_1} \dots p_k^{e_k}$.
 
@@ -743,8 +742,7 @@ def is_primitive_root(g: int, n: int) -> bool:
         Alternatively said, $g$ is a primitive root modulo $n$ if and only if $g$ is a generator of
         the multiplicative group of integers modulo $n$,
 
-        .. math::
-            (\mathbb{Z}/n\mathbb{Z}){^\times} = \{1, g, g^2, \dots, g^{\phi(n)-1}\}
+        $$(\mathbb{Z}/n\mathbb{Z}){^\times} = \{1, g, g^2, \dots, g^{\phi(n)-1}\}$$
 
         where $\phi(n)$ is order of the group.
 

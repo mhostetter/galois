@@ -61,30 +61,24 @@ class _CyclicCode(_LinearCode):
             The message vector $\mathbf{m}$ is a member of $\mathrm{GF}(q)^k$. The corresponding
             message polynomial $m(x)$ is a degree-$k$ polynomial over $\mathrm{GF}(q)$.
 
-            .. math::
-                \mathbf{m} = [m_{k-1},\ \dots,\ m_1,\ m_0] \in \mathrm{GF}(q)^k
+            $$\mathbf{m} = [m_{k-1},\ \dots,\ m_1,\ m_0] \in \mathrm{GF}(q)^k$$
 
-            .. math::
-                m(x) = m_{k-1} x^{k-1} + \dots + m_1 x + m_0 \in \mathrm{GF}(q)[x]
+            $$m(x) = m_{k-1} x^{k-1} + \dots + m_1 x + m_0 \in \mathrm{GF}(q)[x]$$
 
             The codeword vector $\mathbf{c}$ is a member of $\mathrm{GF}(q)^n$. The corresponding
             codeword polynomial $c(x)$ is a degree-$n$ polynomial over $\mathrm{GF}(q)$.
 
-            .. math::
-                \mathbf{c} = [c_{n-1},\ \dots,\ c_1,\ c_0] \in \mathrm{GF}(q)^n
+            $$\mathbf{c} = [c_{n-1},\ \dots,\ c_1,\ c_0] \in \mathrm{GF}(q)^n$$
 
-            .. math::
-                c(x) = c_{n-1} x^{n-1} + \dots + c_1 x + c_0 \in \mathrm{GF}(q)[x]
+            $$c(x) = c_{n-1} x^{n-1} + \dots + c_1 x + c_0 \in \mathrm{GF}(q)[x]$$
 
             The codeword vector is computed by matrix multiplication of the message vector with the generator matrix.
             The equivalent polynomial operation is multiplication of the message polynomial with the generator
             polynomial.
 
-            .. math::
-                \mathbf{c} = \mathbf{m} \mathbf{G}
+            $$\mathbf{c} = \mathbf{m} \mathbf{G}$$
 
-            .. math::
-                c(x) = m(x) g(x)
+            $$c(x) = m(x) g(x)$$
         """,
     )
     def encode(self, message: ArrayLike, output: Literal["codeword", "parity"] = "codeword") -> FieldArray:
@@ -116,21 +110,17 @@ class _CyclicCode(_LinearCode):
             The message vector $\mathbf{m}$ is a member of $\mathrm{GF}(q)^k$. The corresponding
             message polynomial $m(x)$ is a degree-$k$ polynomial over $\mathrm{GF}(q)$.
 
-            .. math::
-                \mathbf{m} = [m_{k-1},\ \dots,\ m_1,\ m_0] \in \mathrm{GF}(q)^k
+            $$\mathbf{m} = [m_{k-1},\ \dots,\ m_1,\ m_0] \in \mathrm{GF}(q)^k$$
 
-            .. math::
-                m(x) = m_{k-1} x^{k-1} + \dots + m_1 x + m_0 \in \mathrm{GF}(q)[x]
+            $$m(x) = m_{k-1} x^{k-1} + \dots + m_1 x + m_0 \in \mathrm{GF}(q)[x]$$
 
             The codeword vector $\mathbf{c}$ is a member of $\mathrm{GF}(q)^n$. The corresponding
             codeword polynomial $c(x)$ is a degree-$n$ polynomial over $\mathrm{GF}(q)$.
             Each codeword polynomial $c(x)$ is divisible by the generator polynomial $g(x)$.
 
-            .. math::
-                \mathbf{c} = [c_{n-1},\ \dots,\ c_1,\ c_0] \in \mathrm{GF}(q)^n
+            $$\mathbf{c} = [c_{n-1},\ \dots,\ c_1,\ c_0] \in \mathrm{GF}(q)^n$$
 
-            .. math::
-                c(x) = c_{n-1} x^{n-1} + \dots + c_1 x + c_0 \in \mathrm{GF}(q)[x]
+            $$c(x) = c_{n-1} x^{n-1} + \dots + c_1 x + c_0 \in \mathrm{GF}(q)[x]$$
         """,
     )
     def decode(self, codeword, output="message", errors=False):
