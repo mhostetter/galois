@@ -27,8 +27,7 @@ def is_square_free(f) -> bool:
         A square-free polynomial $f(x)$ has no irreducible factors with multiplicity greater than one.
         Therefore, its canonical factorization is
 
-        .. math::
-            f(x) = \prod_{i=1}^{k} g_i(x)^{e_i} = \prod_{i=1}^{k} g_i(x) .
+        $$f(x) = \prod_{i=1}^{k} g_i(x)^{e_i} = \prod_{i=1}^{k} g_i(x) .$$
 
     Examples:
         Generate irreducible polynomials over $\mathrm{GF}(3)$.
@@ -74,8 +73,7 @@ def square_free_factors(f: Poly) -> tuple[list[Poly], list[int]]:
         The Square-Free Factorization algorithm factors $f(x)$ into a product of $m$ square-free
         polynomials $h_j(x)$ with multiplicity $j$.
 
-        .. math::
-            f(x) = \prod_{j=1}^{m} h_j(x)^j
+        $$f(x) = \prod_{j=1}^{m} h_j(x)^j$$
 
         Some $h_j(x) = 1$, but those polynomials are not returned by this function.
 
@@ -175,17 +173,17 @@ def distinct_degree_factors(f: Poly) -> tuple[list[Poly], list[int]]:
         $d$ into a product of $d$ polynomials $f_i(x)$, where $f_i(x)$ is the product of
         all irreducible factors of $f(x)$ with degree $i$.
 
-        .. math::
-            f(x) = \prod_{i=1}^{d} f_i(x)
+        $$f(x) = \prod_{i=1}^{d} f_i(x)$$
 
         For example, suppose $f(x) = x(x + 1)(x^2 + x + 1)(x^3 + x + 1)(x^3 + x^2 + 1)$ over
         $\mathrm{GF}(2)$, then the distinct-degree factorization is
 
-        .. math::
-            f_1(x) &= x(x + 1) = x^2 + x \\
-            f_2(x) &= x^2 + x + 1 \\
-            f_3(x) &= (x^3 + x + 1)(x^3 + x^2 + 1) = x^6 + x^5 + x^4 + x^3 + x^2 + x + 1 \\
-            f_i(x) &= 1\ \textrm{for}\ i = 4, \dots, 10.
+        $$
+        f_1(x) &= x(x + 1) = x^2 + x \\
+        f_2(x) &= x^2 + x + 1 \\
+        f_3(x) &= (x^3 + x + 1)(x^3 + x^2 + 1) = x^6 + x^5 + x^4 + x^3 + x^2 + x + 1 \\
+        f_i(x) &= 1\ \textrm{for}\ i = 4, \dots, 10.
+        $$
 
         Some $f_i(x) = 1$, but those polynomials are not returned by this function. In this example,
         the function returns $\{f_1(x), f_2(x), f_3(x)\}$ and $\{1, 2, 3\}$.

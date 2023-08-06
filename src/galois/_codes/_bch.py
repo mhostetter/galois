@@ -41,9 +41,7 @@ class BCH(_CyclicCode):
     evaluated in $\mathrm{GF}(q^m)$. The element $\alpha$ is a primitive $n$-th root of unity in
     $\mathrm{GF}(q^m)$.
 
-    .. math::
-
-        g(x) = \textrm{LCM}(m_{\alpha^c}(x), \dots, m_{\alpha^{c+d-2}}(x))
+    $$g(x) = \textrm{LCM}(m_{\alpha^c}(x), \dots, m_{\alpha^{c+d-2}}(x))$$
 
     Examples:
         Construct a binary $\textrm{BCH}(15, 7)$ code.
@@ -507,11 +505,9 @@ class BCH(_CyclicCode):
         operation computes the remainder of $r(x)$ by $g(x)$ in the extension field
         $\mathrm{GF}(q^m)$.
 
-        .. math::
-            \mathbf{s} = [r(\alpha^c),\ \dots,\ r(\alpha^{c+d-2})] \in \mathrm{GF}(q^m)^{d-1}
+        $$\mathbf{s} = [r(\alpha^c),\ \dots,\ r(\alpha^{c+d-2})] \in \mathrm{GF}(q^m)^{d-1}$$
 
-        .. math::
-            s(x) = r(x)\ \textrm{mod}\ g(x) \in \mathrm{GF}(q^m)[x]
+        $$s(x) = r(x)\ \textrm{mod}\ g(x) \in \mathrm{GF}(q^m)[x]$$
 
         A syndrome of zeros indicates the received codeword is a valid codeword and there are no errors. If the
         syndrome is non-zero, the decoder will find an error-locator polynomial $\sigma(x)$ and the corresponding

@@ -53,8 +53,7 @@ def ntt(
 
         The $k$-th value of the $N$-point NTT $X = \mathrm{NTT}(x)$ is
 
-        .. math::
-            X_k = \sum_{j=0}^{N-1} x_j \omega_N^{jk} ,
+        $$X_k = \sum_{j=0}^{N-1} x_j \omega_N^{jk} ,$$
 
         with all arithmetic performed in $\mathrm{GF}(p)$.
 
@@ -163,8 +162,7 @@ def intt(
 
         The $j$-th value of the scaled $N$-point INTT $x = \mathrm{INTT}(X)$ is
 
-        .. math::
-            x_j = \frac{1}{N} \sum_{k=0}^{N-1} X_k \omega_N^{-kj} ,
+        $$x_j = \frac{1}{N} \sum_{k=0}^{N-1} X_k \omega_N^{-kj} ,$$
 
         with all arithmetic performed in $\mathrm{GF}(p)$. The scaled INTT has the property that
         $x = \mathrm{INTT}(\mathrm{NTT}(x))$.

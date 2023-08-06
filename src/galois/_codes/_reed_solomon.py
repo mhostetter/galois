@@ -37,9 +37,7 @@ class ReedSolomon(_CyclicCode):
     generator polynomial has $d-1$ roots $\alpha^c, \dots, \alpha^{c+d-2}$. The element $\alpha$ is
     a primitive $n$-th root of unity in $\mathrm{GF}(q)$.
 
-    .. math::
-
-        g(x) = (x - \alpha^c) \dots (x - \alpha^{c+d-2})
+    $$g(x) = (x - \alpha^c) \dots (x - \alpha^{c+d-2})$$
 
     Examples:
         Construct a $\textrm{RS}(15, 9)$ code.
@@ -461,11 +459,9 @@ class ReedSolomon(_CyclicCode):
         $\mathbf{r}$ at the roots $\alpha^c, \dots, \alpha^{c+d-2}$ of the generator polynomial
         $g(x)$. The equivalent polynomial operation computes the remainder of $r(x)$ by $g(x)$.
 
-        .. math::
-            \mathbf{s} = [r(\alpha^c),\ \dots,\ r(\alpha^{c+d-2})] \in \mathrm{GF}(q)^{d-1}
+        $$\mathbf{s} = [r(\alpha^c),\ \dots,\ r(\alpha^{c+d-2})] \in \mathrm{GF}(q)^{d-1}$$
 
-        .. math::
-            s(x) = r(x)\ \textrm{mod}\ g(x) \in \mathrm{GF}(q)[x]
+        $$s(x) = r(x)\ \textrm{mod}\ g(x) \in \mathrm{GF}(q)[x]$$
 
         A syndrome of zeros indicates the received codeword is a valid codeword and there are no errors. If the
         syndrome is non-zero, the decoder will find an error-locator polynomial $\sigma(x)$ and the corresponding
