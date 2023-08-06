@@ -123,7 +123,6 @@ html_theme_options = {
     "site_url": "https://galois.readthedocs.io/",
     "repo_url": "https://github.com/mhostetter/galois",
     "repo_name": "mhostetter/galois",
-    "repo_type": "github",
     "social": [
         {
             "icon": "fontawesome/brands/github",
