@@ -409,11 +409,12 @@ def crt(remainders, moduli):
     Notes:
         This function implements the Chinese Remainder Theorem.
 
-        .. math::
-            x &\equiv a_1\ (\textrm{mod}\ m_1) \\
-            x &\equiv a_2\ (\textrm{mod}\ m_2) \\
-            x &\equiv \ldots \\
-            x &\equiv a_n\ (\textrm{mod}\ m_n)
+        $$
+        x &\equiv a_1\ (\textrm{mod}\ m_1) \\
+        x &\equiv a_2\ (\textrm{mod}\ m_2) \\
+        x &\equiv \ldots \\
+        x &\equiv a_n\ (\textrm{mod}\ m_n)
+        $$
 
     References:
         - Section 14.5 from https://cacr.uwaterloo.ca/hac/about/chap14.pdf
@@ -684,16 +685,14 @@ def is_square_free(value):
                 A square-free integer $n$ is divisible by no perfect squares. As a consequence, the prime
                 factorization of a square-free integer $n$ is
 
-                .. math::
-                    n = \prod_{i=1}^{k} p_i^{e_i} = \prod_{i=1}^{k} p_i .
+                $$n = \prod_{i=1}^{k} p_i^{e_i} = \prod_{i=1}^{k} p_i .$$
 
             .. md-tab-item:: Polynomials
 
                 A square-free polynomial $f(x)$ has no irreducible factors with multiplicity greater than one.
                 Therefore, its canonical factorization is
 
-                .. math::
-                    f(x) = \prod_{i=1}^{k} g_i(x)^{e_i} = \prod_{i=1}^{k} g_i(x) .
+                $$f(x) = \prod_{i=1}^{k} g_i(x)^{e_i} = \prod_{i=1}^{k} g_i(x) .$$
 
                 This test is also available in :func:`Poly.is_square_free`.
 

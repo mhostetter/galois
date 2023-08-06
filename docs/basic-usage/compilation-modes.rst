@@ -33,36 +33,36 @@ during the call to :func:`~galois.GF`.
 The exponential and logarithm lookup tables map every finite field element to a power of the primitive element
 $\alpha$.
 
-.. math::
-    x = \alpha^i
+$$x = \alpha^i$$
 
-.. math::
-    \textrm{log}_{\alpha}(x) = i
+$$\textrm{log}_{\alpha}(x) = i$$
 
 With these lookup tables, many arithmetic operations are simplified. For instance, multiplication of two finite field
 elements is reduced to three lookups and one integer addition.
 
-.. math::
-    x \cdot y &= \alpha^m \cdot \alpha^n \\
-              &= \alpha^{m + n}
+$$
+x \cdot y
+&= \alpha^m \cdot \alpha^n \\
+&= \alpha^{m + n}
+$$
 
 The `Zech logarithm <https://en.wikipedia.org/wiki/Zech%27s_logarithm>`_ is defined below. A similar lookup table is
 created for it.
 
-.. math::
-    1 + \alpha^i = \alpha^{Z(i)}
+$$1 + \alpha^i = \alpha^{Z(i)}$$
 
-.. math::
-    Z(i) = \textrm{log}_{\alpha}(1 + \alpha^i)
+$$Z(i) = \textrm{log}_{\alpha}(1 + \alpha^i)$$
 
 With Zech logarithms, addition of two finite field elements becomes three lookups, one integer addition, and one
 integer subtraction.
 
-.. math::
-    x + y &= \alpha^m + \alpha^n \\
-          &= \alpha^m (1 + \alpha^{n - m}) \\
-          &= \alpha^m \alpha^{Z(n - m)} \\
-          &= \alpha^{m + Z(n - m)}
+$$
+x + y
+&= \alpha^m + \alpha^n \\
+&= \alpha^m (1 + \alpha^{n - m}) \\
+&= \alpha^m \alpha^{Z(n - m)} \\
+&= \alpha^{m + Z(n - m)}
+$$
 
 Finite fields with order less than $2^{20}$ use lookup tables by default. In the limited cases where explicit calculation
 is faster than table lookup, the explicit calculation is used.

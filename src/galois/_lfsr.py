@@ -183,17 +183,14 @@ class FLFSR(_LFSR):
     Notes:
         A Fibonacci LFSR is defined by its feedback polynomial $f(x)$.
 
-        .. math::
-            f(x) = -c_{0}x^{n} - c_{1}x^{n-1} - \dots - c_{n-2}x^{2} - c_{n-1}x + 1 = x^n c(x^{-1})
+        $$f(x) = -c_{0}x^{n} - c_{1}x^{n-1} - \dots - c_{n-2}x^{2} - c_{n-1}x + 1 = x^n c(x^{-1})$$
 
         The feedback polynomial is the reciprocal of the characteristic polynomial $c(x)$ of the linear recurrent
         sequence $y$ produced by the Fibonacci LFSR.
 
-        .. math::
-            c(x) = x^{n} - c_{n-1}x^{n-1} - c_{n-2}x^{n-2} - \dots - c_{1}x - c_{0}
+        $$c(x) = x^{n} - c_{n-1}x^{n-1} - c_{n-2}x^{n-2} - \dots - c_{1}x - c_{0}$$
 
-        .. math::
-            y_t = c_{n-1}y_{t-1} + c_{n-2}y_{t-2} + \dots + c_{1}y_{t-n+2} + c_{0}y_{t-n+1}
+        $$y_t = c_{n-1}y_{t-1} + c_{n-2}y_{t-2} + \dots + c_{1}y_{t-n+2} + c_{0}y_{t-n+1}$$
 
         .. code-block:: text
            :caption: Fibonacci LFSR Configuration
@@ -816,17 +813,14 @@ class GLFSR(_LFSR):
     Notes:
         A Galois LFSR is defined by its feedback polynomial $f(x)$.
 
-        .. math::
-            f(x) = -c_{0}x^{n} - c_{1}x^{n-1} - \dots - c_{n-2}x^{2} - c_{n-1}x + 1 = x^n c(x^{-1})
+        $$f(x) = -c_{0}x^{n} - c_{1}x^{n-1} - \dots - c_{n-2}x^{2} - c_{n-1}x + 1 = x^n c(x^{-1})$$
 
         The feedback polynomial is the reciprocal of the characteristic polynomial $c(x)$ of the linear recurrent
         sequence $y$ produced by the Galois LFSR.
 
-        .. math::
-            c(x) = x^{n} - c_{n-1}x^{n-1} - c_{n-2}x^{n-2} - \dots - c_{1}x - c_{0}
+        $$c(x) = x^{n} - c_{n-1}x^{n-1} - c_{n-2}x^{n-2} - \dots - c_{1}x - c_{0}$$
 
-        .. math::
-            y_t = c_{n-1}y_{t-1} + c_{n-2}y_{t-2} + \dots + c_{1}y_{t-n+2} + c_{0}y_{t-n+1}
+        $$y_t = c_{n-1}y_{t-1} + c_{n-2}y_{t-2} + \dots + c_{1}y_{t-n+2} + c_{0}y_{t-n+1}$$
 
         .. code-block:: text
            :caption: Galois LFSR Configuration
@@ -1460,11 +1454,9 @@ def berlekamp_massey(sequence, output="minimal"):
         The minimal polynomial is the characteristic polynomial $c(x)$ of minimal degree that produces the
         linear recurrent sequence $y$.
 
-        .. math::
-            c(x) = x^{n} - c_{n-1}x^{n-1} - c_{n-2}x^{n-2} - \dots - c_{1}x - c_{0}
+        $$c(x) = x^{n} - c_{n-1}x^{n-1} - c_{n-2}x^{n-2} - \dots - c_{1}x - c_{0}$$
 
-        .. math::
-            y_t = c_{n-1}y_{t-1} + c_{n-2}y_{t-2} + \dots + c_{1}y_{t-n+2} + c_{0}y_{t-n+1}
+        $$y_t = c_{n-1}y_{t-1} + c_{n-2}y_{t-2} + \dots + c_{1}y_{t-n+2} + c_{0}y_{t-n+1}$$
 
         For a linear sequence with order $n$, at least $2n$ output symbols are required to determine the
         minimal polynomial.

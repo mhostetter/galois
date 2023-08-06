@@ -1351,8 +1351,7 @@ def divisor_sigma(n: int, k: int = 1) -> int:
     Notes:
         This function implements the $\sigma_k(n)$ function. It is defined as:
 
-        .. math::
-            \sigma_k(n) = \sum_{d\ |\ n} d^k
+        $$\sigma_k(n) = \sum_{d\ \mid\ n} d^k$$
 
     Examples:
         .. ipython:: python

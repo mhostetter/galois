@@ -337,8 +337,7 @@ class _LinearCode:
         Notes:
             The code can correct $t$ symbol errors in a codeword.
 
-            .. math::
-                t = \bigg\lfloor \frac{d - 1}{2} \bigg\rfloor
+            $$t = \bigg\lfloor \frac{d - 1}{2} \bigg\rfloor$$
         """
         return (self.d - 1) // 2
 

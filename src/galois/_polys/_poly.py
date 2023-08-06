@@ -543,9 +543,11 @@ class Poly:
             The polynomial $f(x)$ with $k$ roots $\{r_1, r_2, \dots, r_k\}$ with multiplicities
             $\{m_1, m_2, \dots, m_k\}$ is
 
-            .. math::
-                f(x) &= (x - r_1)^{m_1} (x - r_2)^{m_2} \dots (x - r_k)^{m_k} \\
-                     &= a_d x^d + a_{d-1} x^{d-1} + \dots + a_1 x + a_0
+            $$
+            f(x)
+            &= (x - r_1)^{m_1} (x - r_2)^{m_2} \dots (x - r_k)^{m_k} \\
+            &= a_d x^d + a_{d-1} x^{d-1} + \dots + a_1 x + a_0
+            $$
 
             with degree $d = \sum_{i=1}^{k} m_i$.
 
@@ -669,8 +671,7 @@ class Poly:
             For a polynomial $f(x) = a_d x^d + a_{d-1} x^{d-1} + \dots + a_1 x + a_0$ with degree $d$,
             the $d$-th reversal is equivalent to reversing the coefficients.
 
-            .. math::
-                \textrm{rev}_d f(x) = x^d f(x^{-1}) = a_0 x^d + a_{1} x^{d-1} + \dots + a_{d-1} x + a_d
+            $$\textrm{rev}_d f(x) = x^d f(x^{-1}) = a_0 x^d + a_{1} x^{d-1} + \dots + a_{d-1} x + a_d$$
 
         Examples:
             .. ipython:: python
@@ -707,13 +708,11 @@ class Poly:
             This implementation uses Chien's search to find the roots $\{r_1, r_2, \dots, r_k\}$ of the
             degree-$d$ polynomial
 
-            .. math::
-                f(x) = a_{d}x^{d} + a_{d-1}x^{d-1} + \dots + a_1x + a_0,
+            $$f(x) = a_{d}x^{d} + a_{d-1}x^{d-1} + \dots + a_1x + a_0,$$
 
             where $k \le d$. Then, $f(x)$ can be factored as
 
-            .. math::
-                f(x) = (x - r_1)^{m_1} (x - r_2)^{m_2} \dots (x - r_k)^{m_k},
+            $$f(x) = (x - r_1)^{m_1} (x - r_2)^{m_2} \dots (x - r_k)^{m_k},$$
 
             where $m_i$ is the multiplicity of root $r_i$ and $d = \sum_{i=1}^{k} m_i$.
 
@@ -726,18 +725,22 @@ class Poly:
             $\alpha$. The following equations calculate $f(\alpha^i)$, where $\alpha^i$ is a
             root of $f(x)$ if $f(\alpha^i) = 0$.
 
-            .. math::
-                f(\alpha^i) &= a_{d}(\alpha^i)^{d} + \dots + a_1(\alpha^i) + a_0 \\
-                            &\overset{\Delta}{=} \lambda_{i,d} + \dots + \lambda_{i,1} + \lambda_{i,0} \\
-                            &= \sum_{j=0}^{d} \lambda_{i,j}
+            $$
+            f(\alpha^i)
+            &= a_{d}(\alpha^i)^{d} + \dots + a_1(\alpha^i) + a_0 \\
+            &\overset{\Delta}{=} \lambda_{i,d} + \dots + \lambda_{i,1} + \lambda_{i,0} \\
+            &= \sum_{j=0}^{d} \lambda_{i,j}
+            $$
 
             The next power of $\alpha$ can be easily calculated from the previous calculation.
 
-            .. math::
-                f(\alpha^{i+1}) &= a_{d}(\alpha^{i+1})^{d} + \dots + a_1(\alpha^{i+1}) + a_0 \\
-                                &= a_{d}(\alpha^i)^{d}\alpha^d + \dots + a_1(\alpha^i)\alpha + a_0 \\
-                                &= \lambda_{i,d}\alpha^d + \dots + \lambda_{i,1}\alpha + \lambda_{i,0} \\
-                                &= \sum_{j=0}^{d} \lambda_{i,j}\alpha^j
+            $$
+            f(\alpha^{i+1})
+            &= a_{d}(\alpha^{i+1})^{d} + \dots + a_1(\alpha^{i+1}) + a_0 \\
+            &= a_{d}(\alpha^i)^{d}\alpha^d + \dots + a_1(\alpha^i)\alpha + a_0 \\
+            &= \lambda_{i,d}\alpha^d + \dots + \lambda_{i,1}\alpha + \lambda_{i,0} \\
+            &= \sum_{j=0}^{d} \lambda_{i,j}\alpha^j
+            $$
 
         Examples:
             Find the roots of a polynomial over $\mathrm{GF}(2)$.
@@ -811,13 +814,11 @@ class Poly:
         Notes:
             For the polynomial
 
-            .. math::
-                f(x) = a_d x^d + a_{d-1} x^{d-1} + \dots + a_1 x + a_0
+            $$f(x) = a_d x^d + a_{d-1} x^{d-1} + \dots + a_1 x + a_0$$
 
             the first formal derivative is defined as
 
-            .. math::
-                f'(x) = (d) \cdot a_{d} x^{d-1} + (d-1) \cdot a_{d-1} x^{d-2} + \dots + (2) \cdot a_{2} x + a_1
+            $$f'(x) = (d) \cdot a_{d} x^{d-1} + (d-1) \cdot a_{d-1} x^{d-2} + \dots + (2) \cdot a_{2} x + a_1$$
 
             where $\cdot$ represents scalar multiplication (repeated addition), not finite field multiplication.
             The exponent that is "brought down" and multiplied by the coefficient is an integer, not a finite field

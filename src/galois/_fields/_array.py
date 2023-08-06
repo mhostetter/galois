@@ -1474,8 +1474,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             For finite fields, since $L$ is a Galois extension of $K$, the field trace of $x$ is
             defined as a sum of the Galois conjugates of $x$.
 
-            .. math::
-                \mathrm{Tr}_{L / K}(x) = \sum_{i=0}^{m-1} x^{p^i}
+            $$\mathrm{Tr}_{L / K}(x) = \sum_{i=0}^{m-1} x^{p^i}$$
 
         References:
             - https://en.wikipedia.org/wiki/Field_trace
@@ -1520,8 +1519,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             For finite fields, since $L$ is a Galois extension of $K$, the field norm of $x$ is
             defined as a product of the Galois conjugates of $x$.
 
-            .. math::
-                \mathrm{N}_{L / K}(x) = \prod_{i=0}^{m-1} x^{p^i} = x^{(p^m - 1) / (p - 1)}
+            $$\mathrm{N}_{L / K}(x) = \prod_{i=0}^{m-1} x^{p^i} = x^{(p^m - 1) / (p - 1)}$$
 
         References:
             - https://en.wikipedia.org/wiki/Field_norm
