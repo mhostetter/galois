@@ -3,4 +3,5 @@ sphinx-immaterial == 0.11.5
 myst-parser
 sphinx-design
 sphinx-last-updated-by-git
+sphinx-math-dollar
 ipykernel
