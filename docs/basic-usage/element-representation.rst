@@ -67,7 +67,7 @@ In prime fields, the integer representation is simply the integer element in $\{
     GF = galois.GF(31)
     GF(11)
 
-In extension fields, the integer representation converts and element's degree-$m-1$ polynomial over $\mathrm{GF}(p)$ into
+In extension fields, the integer representation converts an element's degree-$m-1$ polynomial over $\mathrm{GF}(p)$ into
 its integer equivalent. The integer equivalent of a polynomial is a radix-$p$ integer of its coefficients, with the highest-degree
 coefficient as the most-significant digit and zero-degree coefficient as the least-significant digit.
 
