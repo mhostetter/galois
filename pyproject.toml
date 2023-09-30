@@ -1,18 +1,12 @@
 [build-system]
-requires = [
-    "setuptools >= 62",
-    "wheel",
-    "setuptools_scm[toml] >= 6.2"
-]
+requires = ["setuptools >= 62", "wheel", "setuptools_scm[toml] >= 6.2"]
 
 [project]
 name = "galois"
-authors = [
-  {name = "Matt Hostetter", email = "matthostetter@gmail.com"},
-]
+authors = [{ name = "Matt Hostetter", email = "matthostetter@gmail.com" }]
 description = "A performant NumPy extension for Galois fields and their applications"
 readme = "README.md"
-license = {text = "MIT"}
+license = { text = "MIT" }
 keywords = [
     "aes",
     "bch",
@@ -55,9 +49,9 @@ classifiers = [
 ]
 requires-python = ">=3.7"
 dependencies = [
-    "numpy >= 1.21.0, < 1.25",  # v1.21.0 is needed for dtype support of ufuncs, see https://numpy.org/devdocs/release/1.21.0-notes.html#ufunc-signature-and-dtype-generalization-and-casting
-    "numba >= 0.55, < 0.58",  # v0.55 is needed for support of NumPy 1.21
-    "typing_extensions >= 4.0.0",  # v4.0.0 is needed for use of Self (Python 3.11+) and Literal (Python 3.8+)
+    "numpy >= 1.21.0, < 1.25",    # v1.21.0 is needed for dtype support of ufuncs, see https://numpy.org/devdocs/release/1.21.0-notes.html#ufunc-signature-and-dtype-generalization-and-casting
+    "numba >= 0.55, < 0.58",      # v0.55 is needed for support of NumPy 1.21
+    "typing_extensions >= 4.0.0", # v4.0.0 is needed for use of Self (Python 3.11+) and Literal (Python 3.8+)
 ]
 dynamic = ["version"]
 
@@ -70,7 +64,7 @@ dev = [
     "pytest-xdist",
     "pytest-benchmark >= 4.0.0",
     "requests",
-    "pdfminer.six"
+    "pdfminer.six",
 ]
 
 [project.urls]
@@ -96,11 +90,9 @@ where = ["src"]
 universal = false
 
 [tool.pylint]
-ignore-paths = [
-    "src/galois/_version.py",
-]
+ignore-paths = ["src/galois/_version.py"]
 disable = [
-    "comparison-with-callable",  # pylint doesn't understand metaclass properties
+    "comparison-with-callable",     # pylint doesn't understand metaclass properties
     "fixme",
     "global-statement",
     "invalid-name",
@@ -134,9 +126,7 @@ profile = "black"
 [tool.pytest.ini_options]
 minversion = "6.2"
 addopts = "-s --showlocals"
-testpaths = [
-    "tests"
-]
+testpaths = ["tests"]
 
 [tool.coverage.report]
 exclude_lines = [
