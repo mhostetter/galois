@@ -50,13 +50,12 @@ class Function:
     _PARALLEL = False
     """Indicates if parallel processing should be performed."""
 
-    @abstractmethod
     @staticmethod
     def implementation(*args, **kwargs):
         """
         The function's implementation in pure Python.
         """
-        raise NotImplementedError
+        pass
 
     ###############################################################################
     # Various ufuncs based on implementation and compilation
