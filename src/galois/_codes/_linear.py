@@ -7,6 +7,7 @@ from __future__ import annotations
 from typing import Any, Type, cast, overload
 
 import numpy as np
+import numpy.typing as npt
 from typing_extensions import Literal
 
 from .._fields import FieldArray
@@ -91,7 +92,7 @@ class _LinearCode:
         parity = self._convert_codeword_to_parity(codeword)
         return parity
 
-    def detect(self, codeword: ArrayLike) -> bool | np.ndarray:
+    def detect(self, codeword: ArrayLike) -> bool | npt.NDArray:
         r"""
         Detects if errors are present in the codeword $\mathbf{c}$.
 
@@ -130,7 +131,7 @@ class _LinearCode:
         codeword: ArrayLike,
         output: Literal["message", "codeword"] = "message",
         errors: Literal[True] = True,
-    ) -> tuple[FieldArray, int | np.ndarray]: ...
+    ) -> tuple[FieldArray, int | npt.NDArray]: ...
 
     def decode(self, codeword: Any, output: Any = "message", errors: Any = False) -> Any:
         r"""
@@ -275,7 +276,7 @@ class _LinearCode:
 
         return codeword
 
-    def _detect_errors(self, codeword: FieldArray) -> np.ndarray:
+    def _detect_errors(self, codeword: FieldArray) -> npt.NDArray:
         """
         Returns a boolean array (N,) indicating if errors are present in the codeword.
         """
@@ -289,7 +290,7 @@ class _LinearCode:
 
         return detected
 
-    def _decode_codeword(self, codeword: FieldArray) -> tuple[FieldArray, np.ndarray]:
+    def _decode_codeword(self, codeword: FieldArray) -> tuple[FieldArray, npt.NDArray]:
         """
         Decodes errors in the received codeword. Returns the corrected codeword (N, ns) and array of number of
         corrected errors (N,).

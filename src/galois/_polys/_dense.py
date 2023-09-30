@@ -8,6 +8,7 @@ from typing import Callable, cast
 
 import numba
 import numpy as np
+import numpy.typing as npt
 from numba import int64, uint64
 
 from .._domains import Array
@@ -21,8 +22,8 @@ SUBTRACT: Callable[[int, int], int]
 MULTIPLY: Callable[[int, int], int]
 RECIPROCAL: Callable[[int], int]
 POWER: Callable[[int, int], int]
-POLY_MULTIPLY: Callable[[np.ndarray, np.ndarray], np.ndarray]
-POLY_MOD: Callable[[np.ndarray, np.ndarray], np.ndarray]
+POLY_MULTIPLY: Callable[[npt.NDArray, npt.NDArray], npt.NDArray]
+POLY_MOD: Callable[[npt.NDArray, npt.NDArray], npt.NDArray]
 
 
 class add_jit(Function):
@@ -457,7 +458,7 @@ class roots_jit(Function):
     Finds the roots of the polynomial f(x).
     """
 
-    def __call__(self, nonzero_degrees: np.ndarray, nonzero_coeffs: Array) -> Array:
+    def __call__(self, nonzero_degrees: npt.NDArray, nonzero_coeffs: Array) -> Array:
         verify_isinstance(nonzero_degrees, np.ndarray)
         verify_isinstance(nonzero_coeffs, self.field)
         dtype = nonzero_coeffs.dtype

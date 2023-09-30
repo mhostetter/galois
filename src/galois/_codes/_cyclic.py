@@ -7,6 +7,7 @@ from __future__ import annotations
 from typing import Any, overload
 
 import numpy as np
+import numpy.typing as npt
 from typing_extensions import Literal
 
 from .._fields import FieldArray
@@ -97,7 +98,7 @@ class _CyclicCode(_LinearCode):
         codeword: ArrayLike,
         output: Literal["message", "codeword"] = "message",
         errors: Literal[True] = True,
-    ) -> tuple[FieldArray, int | np.ndarray]: ...
+    ) -> tuple[FieldArray, int | npt.NDArray]: ...
 
     @extend_docstring(
         _LinearCode.decode,

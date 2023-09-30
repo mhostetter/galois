@@ -5,16 +5,17 @@ A module containing polynomial arithmetic for polynomials with sparse coefficien
 from __future__ import annotations
 
 import numpy as np
+import numpy.typing as npt
 
 from .._domains import Array
 
 
 def add(
-    a_degrees: np.ndarray,
+    a_degrees: npt.NDArray,
     a_coeffs: Array,
-    b_degrees: np.ndarray,
+    b_degrees: npt.NDArray,
     b_coeffs: Array,
-) -> tuple[np.ndarray, Array]:
+) -> tuple[npt.NDArray, Array]:
     """
     c(x) = a(x) + b(x)
     """
@@ -28,9 +29,9 @@ def add(
 
 
 def negative(
-    a_degrees: np.ndarray,
+    a_degrees: npt.NDArray,
     a_coeffs: Array,
-) -> tuple[np.ndarray, Array]:
+) -> tuple[npt.NDArray, Array]:
     """
     c(x) = -a(x)
     a(x) + -a(x) = 0
@@ -39,11 +40,11 @@ def negative(
 
 
 def subtract(
-    a_degrees: np.ndarray,
+    a_degrees: npt.NDArray,
     a_coeffs: Array,
-    b_degrees: np.ndarray,
+    b_degrees: npt.NDArray,
     b_coeffs: Array,
-) -> tuple[np.ndarray, Array]:
+) -> tuple[npt.NDArray, Array]:
     """
     c(x) = a(x) - b(x)
     """
@@ -58,11 +59,11 @@ def subtract(
 
 
 def multiply(
-    a_degrees: np.ndarray,
+    a_degrees: npt.NDArray,
     a_coeffs: Array,
-    b_degrees: np.ndarray,
+    b_degrees: npt.NDArray,
     b_coeffs: Array,
-) -> tuple[np.ndarray, Array]:
+) -> tuple[npt.NDArray, Array]:
     """
     c(x) = a(x) * b(x)
     c(x) = a(x) * b = a(x) + ... + a(x)

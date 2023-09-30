@@ -7,6 +7,7 @@ from __future__ import annotations
 from typing import Any, Type, overload
 
 import numpy as np
+import numpy.typing as npt
 from typing_extensions import Literal
 
 from .._fields import GF2, Field, FieldArray
@@ -469,7 +470,7 @@ class BCH(_CyclicCode):
                         bch.detect(c)
         """,
     )
-    def detect(self, codeword: ArrayLike) -> bool | np.ndarray:
+    def detect(self, codeword: ArrayLike) -> bool | npt.NDArray:
         return super().detect(codeword)
 
     @overload
@@ -486,7 +487,7 @@ class BCH(_CyclicCode):
         codeword: ArrayLike,
         output: Literal["message", "codeword"] = "message",
         errors: Literal[True] = True,
-    ) -> tuple[FieldArray, int | np.ndarray]: ...
+    ) -> tuple[FieldArray, int | npt.NDArray]: ...
 
     @extend_docstring(
         _CyclicCode.decode,
@@ -649,7 +650,7 @@ class BCH(_CyclicCode):
     def decode(self, codeword: Any, output: Any = "message", errors: Any = False) -> Any:
         return super().decode(codeword, output=output, errors=errors)
 
-    def _decode_codeword(self, codeword: FieldArray) -> tuple[FieldArray, np.ndarray]:
+    def _decode_codeword(self, codeword: FieldArray) -> tuple[FieldArray, npt.NDArray]:
         func = berlekamp_decode_jit(self.field, self.extension_field)
         dec_codeword, N_errors = func(codeword, self.n, int(self.alpha), self.c, self.roots)
         dec_codeword = dec_codeword.view(self.field)

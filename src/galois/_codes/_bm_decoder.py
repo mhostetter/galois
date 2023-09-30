@@ -7,6 +7,7 @@ from typing import Callable, Hashable, Type
 
 import numba
 import numpy as np
+import numpy.typing as npt
 from numba import int64
 
 from .._domains._function import Function
@@ -19,10 +20,10 @@ SUBTRACT: Callable[[int, int], int]
 MULTIPLY: Callable[[int, int], int]
 RECIPROCAL: Callable[[int], int]
 POWER: Callable[[int, int], int]
-CONVOLVE: Callable[[np.ndarray, np.ndarray], np.ndarray]
-POLY_ROOTS: Callable[[np.ndarray, np.ndarray, int], np.ndarray]
-POLY_EVALUATE: Callable[[np.ndarray, np.ndarray], np.ndarray]
-BERLEKAMP_MASSEY: Callable[[np.ndarray], np.ndarray]
+CONVOLVE: Callable[[npt.NDArray, npt.NDArray], npt.NDArray]
+POLY_ROOTS: Callable[[npt.NDArray, npt.NDArray, int], npt.NDArray]
+POLY_EVALUATE: Callable[[npt.NDArray, npt.NDArray], npt.NDArray]
+BERLEKAMP_MASSEY: Callable[[npt.NDArray], npt.NDArray]
 
 
 class berlekamp_decode_jit(Function):
@@ -51,7 +52,7 @@ class berlekamp_decode_jit(Function):
 
     def __call__(
         self, codeword: FieldArray, design_n: int, alpha: int, c: int, roots: FieldArray
-    ) -> tuple[FieldArray, np.ndarray]:
+    ) -> tuple[FieldArray, npt.NDArray]:
         if self.extension_field.ufunc_mode != "python-calculate":
             output = self.jit(codeword.astype(np.int64), design_n, alpha, c, roots.astype(np.int64))
         else:
@@ -82,8 +83,8 @@ class berlekamp_decode_jit(Function):
 
     @staticmethod
     def implementation(
-        codewords: np.ndarray, design_n: int, alpha: int, c: int, roots: np.ndarray
-    ) -> np.ndarray:  # pragma: no cover
+        codewords: npt.NDArray, design_n: int, alpha: int, c: int, roots: npt.NDArray
+    ) -> npt.NDArray:  # pragma: no cover
         dtype = codewords.dtype
         N = codewords.shape[0]  # The number of codewords
         n = codewords.shape[1]  # The codeword size (could be less than the design n for shortened codes)

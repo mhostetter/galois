@@ -7,6 +7,7 @@ from __future__ import annotations
 from typing import Generator, cast
 
 import numpy as np
+import numpy.typing as npt
 from typing_extensions import Literal, Self
 
 from .._domains import Array, _linalg
@@ -155,7 +156,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         return x
 
     @classmethod
-    def _verify_element_types_and_convert(cls, array: np.ndarray, object_=False) -> np.ndarray:
+    def _verify_element_types_and_convert(cls, array: npt.NDArray, object_=False) -> npt.NDArray:
         if array.size == 0:
             return array
         if object_:
@@ -168,7 +169,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             raise ValueError(f"{cls.name} scalars must be in `0 <= x < {cls.order}`, not {scalar}.")
 
     @classmethod
-    def _verify_array_values(cls, array: np.ndarray):
+    def _verify_array_values(cls, array: npt.NDArray):
         if np.any(array < 0) or np.any(array >= cls.order):
             idxs = np.logical_or(array < 0, array >= cls.order)
             values = array if array.ndim == 0 else array[idxs]
@@ -192,7 +193,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         return element
 
     @classmethod
-    def _convert_iterable_to_elements(cls, iterable: IterableLike) -> np.ndarray:
+    def _convert_iterable_to_elements(cls, iterable: IterableLike) -> npt.NDArray:
         if cls.dtypes == [np.object_]:
             array = np.array(iterable, dtype=object)
             array = cls._verify_element_types_and_convert(array, object_=True)
@@ -961,7 +962,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
     # Instance methods
     ###############################################################################
 
-    def additive_order(self) -> int | np.ndarray:
+    def additive_order(self) -> int | npt.NDArray:
         r"""
         Computes the additive order of each element in $x$.
 
@@ -995,7 +996,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
         return order
 
-    def multiplicative_order(self) -> int | np.ndarray:
+    def multiplicative_order(self) -> int | npt.NDArray:
         r"""
         Computes the multiplicative order $\textrm{ord}(x)$ of each element in $x$.
 
@@ -1057,7 +1058,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
         return order
 
-    def is_square(self) -> bool | np.ndarray:
+    def is_square(self) -> bool | npt.NDArray:
         r"""
         Determines if the elements of $x$ are squares in the finite field.
 
@@ -1656,7 +1657,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             f"or 2-D to return the minimal polynomial of a square matrix, not have shape {self.shape}."
         )
 
-    def log(self, base: ElementLike | ArrayLike | None = None) -> int | np.ndarray:
+    def log(self, base: ElementLike | ArrayLike | None = None) -> int | npt.NDArray:
         r"""
         Computes the discrete logarithm of the array $x$ base $\beta$.
 
@@ -1883,7 +1884,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         return s
 
 
-def _poly_det(A: np.ndarray) -> Poly:
+def _poly_det(A: npt.NDArray) -> Poly:
     """
     Computes the determinant of a matrix of `Poly` objects.
     """
