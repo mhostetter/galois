@@ -533,11 +533,11 @@ class LinalgFunctionMixin(FunctionMixin):
 
     def __init_subclass__(cls) -> None:
         super().__init_subclass__()
-        cls._dot = dot_jit(cls)
-        cls._vdot = vdot_jit(cls)
-        cls._inner = inner_jit(cls)
-        cls._outer = outer_jit(cls)
-        cls._det = det_jit(cls)
-        cls._matrix_rank = matrix_rank_jit(cls)
-        cls._solve = solve_jit(cls)
-        cls._inv = inv_jit(cls)
+        cls._dot = dot_jit(cls)  # type: ignore
+        cls._vdot = vdot_jit(cls)  # type: ignore
+        cls._inner = inner_jit(cls)  # type: ignore
+        cls._outer = outer_jit(cls)  # type: ignore
+        cls._det = det_jit(cls)  # type: ignore
+        cls._matrix_rank = matrix_rank_jit(cls)  # type: ignore
+        cls._solve = solve_jit(cls)  # type: ignore
+        cls._inv = inv_jit(cls)  # type: ignore

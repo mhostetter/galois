@@ -355,9 +355,9 @@ class FunctionMixin(np.ndarray, metaclass=ArrayMeta):
 
     def __init_subclass__(cls) -> None:
         super().__init_subclass__()
-        cls._convolve = convolve_jit(cls)
-        cls._fft = fft_jit(cls)
-        cls._ifft = ifft_jit(cls)
+        cls._convolve = convolve_jit(cls)  # type: ignore
+        cls._fft = fft_jit(cls)  # type: ignore
+        cls._ifft = ifft_jit(cls)  # type: ignore
 
     def __array_function__(self, func, types, args, kwargs):
         """
