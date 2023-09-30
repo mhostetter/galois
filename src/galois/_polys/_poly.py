@@ -132,12 +132,12 @@ class Poly:
         A private alternate constructor that converts a poly-like object into a polynomial, given a finite field.
         """
         if isinstance(poly_like, int):
-            poly = Poly.Int(poly_like, field=field)
+            poly = cls.Int(poly_like, field=field)
         elif isinstance(poly_like, str):
-            poly = Poly.Str(poly_like, field=field)
+            poly = cls.Str(poly_like, field=field)
         elif isinstance(poly_like, (tuple, list, np.ndarray)):
-            poly = Poly(poly_like, field=field)
-        elif isinstance(poly_like, Poly):
+            poly = cls(poly_like, field=field)
+        elif isinstance(poly_like, cls):
             poly = poly_like
         else:
             raise TypeError(
@@ -177,7 +177,7 @@ class Poly:
                 GF = galois.GF(3**5)
                 galois.Poly.Zero(GF)
         """
-        return Poly([0], field=field)
+        return cls([0], field=field)
 
     @classmethod
     def One(cls, field: Type[Array] | None = None) -> Self:
@@ -205,7 +205,7 @@ class Poly:
                 GF = galois.GF(3**5)
                 galois.Poly.One(GF)
         """
-        return Poly([1], field=field)
+        return cls([1], field=field)
 
     @classmethod
     def Identity(cls, field: Type[Array] | None = None) -> Self:
@@ -233,7 +233,7 @@ class Poly:
                 GF = galois.GF(3**5)
                 galois.Poly.Identity(GF)
         """
-        return Poly([1, 0], field=field)
+        return cls([1, 0], field=field)
 
     @classmethod
     def Random(
@@ -298,7 +298,7 @@ class Poly:
         if coeffs[0] == 0:
             coeffs[0] = field.Random(low=1, seed=rng)  # Ensure leading coefficient is non-zero
 
-        return Poly(coeffs)
+        return cls(coeffs)
 
     @classmethod
     def Str(cls, string: str, field: Type[Array] | None = None) -> Self:
@@ -348,7 +348,7 @@ class Poly:
 
         degrees, coeffs = str_to_sparse_poly(string)
 
-        return Poly.Degrees(degrees, coeffs, field=field)
+        return cls.Degrees(degrees, coeffs, field=field)
 
     @classmethod
     def Int(cls, integer: int, field: Type[Array] | None = None) -> Self:
@@ -586,8 +586,8 @@ class Poly:
                 f"not {len(roots)} and {len(multiplicities)}."
             )
 
-        poly = Poly.One(field=field)
-        x = Poly.Identity(field=field)
+        poly = cls.One(field=field)
+        x = cls.Identity(field=field)
         for root, multiplicity in zip(roots, multiplicities):
             poly *= (x - root) ** multiplicity
 
