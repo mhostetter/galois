@@ -14,7 +14,7 @@ from .._helper import export, extend_docstring, verify_isinstance, verify_issubc
 from .._math import ilog
 from .._polys import Poly, matlab_primitive_poly
 from ..typing import ArrayLike, ElementLike
-from ._bch import bch_decode_jit
+from ._bm_decoder import berlekamp_decode_jit
 from ._cyclic import _CyclicCode
 
 
@@ -606,7 +606,7 @@ class ReedSolomon(_CyclicCode):
         return super().decode(codeword, output=output, errors=errors)
 
     def _decode_codeword(self, codeword: FieldArray) -> tuple[FieldArray, np.ndarray]:
-        func = reed_solomon_decode_jit(self.field, self.field)
+        func = berlekamp_decode_jit(self.field, self.field)
         dec_codeword, N_errors = func(codeword, self.n, int(self.alpha), self.c, self.roots)
         dec_codeword = dec_codeword.view(self.field)
         return dec_codeword, N_errors
@@ -1026,14 +1026,3 @@ class ReedSolomon(_CyclicCode):
     )
     def is_systematic(self) -> bool:
         return super().is_systematic
-
-
-class reed_solomon_decode_jit(bch_decode_jit):
-    """
-    Performs general BCH and Reed-Solomon decoding.
-
-    References:
-        - Lin, S. and Costello, D. Error Control Coding. Section 7.4.
-    """
-
-    # NOTE: Making a subclass so that these compiled functions are stored in a new namespace
