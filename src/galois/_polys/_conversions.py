@@ -151,29 +151,29 @@ def str_to_sparse_poly(poly_str: str) -> tuple[list[int], list[int]]:
     coeffs = []
     for element in s.split("+"):
         if var not in element:
-            degree = 0
-            coeff = element
+            degree_str = "0"
+            coeff_str = element
         elif "^" not in element and "**" not in element:
-            degree = 1
-            coeff = element.split(var, 1)[0]
+            degree_str = "1"
+            coeff_str = element.split(var, 1)[0]
         elif "^" in element:
-            coeff, degree = element.split(var + "^", 1)
+            coeff_str, degree_str = element.split(var + "^", 1)
         elif "**" in element:
-            coeff, degree = element.split(var + "**", 1)
+            coeff_str, degree_str = element.split(var + "**", 1)
         else:
             raise ValueError(f"Could not parse polynomial degree in {element}.")
 
         # If the degree was negative `3*x^-2`, it was converted to `3*x^+-2` previously. When split
         # by "+" it will leave the degree empty.
-        if degree == "":
+        if degree_str == "":
             raise ValueError(f"Cannot parse polynomials with negative exponents, {poly_str!r}.")
-        degree = int(degree)
+        degree = int(degree_str)
 
-        coeff = coeff.replace("*", "")  # Remove multiplication sign for elements like `3*x^2`
-        if coeff == "-":
+        coeff_str = coeff_str.replace("*", "")  # Remove multiplication sign for elements like `3*x^2`
+        if coeff_str == "-":
             coeff = -1
-        elif coeff != "":
-            coeff = int(coeff)
+        elif coeff_str != "":
+            coeff = int(coeff_str)
         else:
             coeff = 1
 
