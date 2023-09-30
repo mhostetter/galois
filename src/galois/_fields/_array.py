@@ -4,7 +4,7 @@ A module that defines the abstract base class FieldArray.
 
 from __future__ import annotations
 
-from typing import Generator
+from typing import Generator, cast
 
 import numpy as np
 from typing_extensions import Literal, Self
@@ -369,7 +369,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             raise ValueError(f"Argument 'element' must be element scalar, not {element.ndim}-D.")
 
         v = element ** np.arange(0, rows)
-        V = np.power.outer(v, np.arange(0, cols))
+        V = cast(cls, np.power.outer(v, np.arange(0, cols)))
 
         return V
 

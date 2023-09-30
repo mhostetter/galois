@@ -5,7 +5,7 @@ included in NumPy are also included.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Type
+from typing import TYPE_CHECKING, Type, cast
 
 import numba
 import numpy as np
@@ -114,8 +114,8 @@ class vdot_jit(Function):
         if self.field._is_prime_field:
             return _lapack_linalg(self.field, a, b, np.vdot)
 
-        a = a.flatten()
-        b = b.flatten().reshape(a.shape)  # This is done to mimic NumPy's error scenarios
+        a = cast(Array, a.flatten())
+        b = cast(Array, b.flatten().reshape(a.shape))  # This is done to mimic NumPy's error scenarios
 
         return np.sum(a * b)
 
@@ -160,7 +160,7 @@ class outer_jit(Function):
         if self.field._is_prime_field:
             return _lapack_linalg(self.field, a, b, np.outer, out=out, n_sum=1)
 
-        return np.multiply.outer(a.ravel(), b.ravel(), out=out)
+        return cast(Array, np.multiply.outer(a.ravel(), b.ravel(), out=out))
 
 
 class matmul_jit(Function):
@@ -192,10 +192,10 @@ class matmul_jit(Function):
 
         prepend, append = False, False
         if A.ndim == 1:
-            A = A.reshape((1, A.size))
+            A = cast(Array, A.reshape((1, A.size)))
             prepend = True
         if B.ndim == 1:
-            B = B.reshape((B.size, 1))
+            B = cast(Array, B.reshape((B.size, 1)))
             append = True
 
         if not A.shape[-1] == B.shape[-2]:

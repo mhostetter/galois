@@ -4,7 +4,7 @@ A module that defines the metaclass for the abstract base class FieldArray.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Type
+from typing import TYPE_CHECKING, Type, cast
 
 import numpy as np
 from typing_extensions import Literal
@@ -324,7 +324,7 @@ class FieldArrayMeta(ArrayMeta):
             n = cls.order - 1
             powers = np.array(totatives(n))
             cls._primitive_elements = np.sort(cls.primitive_element**powers)
-        return cls._primitive_elements.copy()
+        return cast(FieldArray, cls._primitive_elements.copy())
 
     @property
     def squares(cls) -> FieldArray:

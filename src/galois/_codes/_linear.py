@@ -4,7 +4,7 @@ A module containing common functions for linear block codes.
 
 from __future__ import annotations
 
-from typing import Any, Type, overload
+from typing import Any, Type, cast, overload
 
 import numpy as np
 from typing_extensions import Literal
@@ -240,7 +240,7 @@ class _LinearCode:
 
         # Record if the original codeword was 1-D and then convert to 2-D
         is_codeword_1d = codeword.ndim == 1
-        codeword = np.atleast_2d(codeword)
+        codeword = cast(FieldArray, np.atleast_2d(codeword))
 
         return codeword, is_codeword_1d
 
@@ -269,7 +269,7 @@ class _LinearCode:
 
         if self.is_systematic:
             parity = message @ self.G[-ks:, self.k :]
-            codeword = np.hstack((message, parity))
+            codeword = cast(FieldArray, np.hstack((message, parity)))
         else:
             codeword = message @ self.G
 
@@ -409,7 +409,7 @@ def generator_to_parity_check_matrix(G: FieldArray) -> FieldArray:
 
     P = G[:, k:]
     I = field.Identity(n - k)
-    H = np.hstack((-P.T, I))
+    H = cast(FieldArray, np.hstack((-P.T, I)))
 
     return H
 
@@ -450,6 +450,6 @@ def parity_check_to_generator_matrix(H: FieldArray) -> FieldArray:
 
     P = -H[:, 0:k].T
     I = field.Identity(k)
-    G = np.hstack((I, P))
+    G = cast(FieldArray, np.hstack((I, P)))
 
     return G

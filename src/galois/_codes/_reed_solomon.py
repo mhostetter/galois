@@ -4,7 +4,7 @@ A module containing general Reed-Solomon (RS) codes.
 
 from __future__ import annotations
 
-from typing import Any, Type, overload
+from typing import Any, Type, cast, overload
 
 import numpy as np
 from typing_extensions import Literal
@@ -182,7 +182,7 @@ class ReedSolomon(_CyclicCode):
         super().__init__(n, k, d, generator_poly, roots, systematic)
 
         # TODO: Do this?? How to standardize G and H?
-        self._H = np.power.outer(roots, np.arange(n - 1, -1, -1, dtype=field.dtypes[-1]))
+        self._H = cast(FieldArray, np.power.outer(roots, np.arange(n - 1, -1, -1, dtype=field.dtypes[-1])))
 
     def __repr__(self) -> str:
         r"""

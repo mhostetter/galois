@@ -7,7 +7,7 @@ from __future__ import annotations
 import abc
 import contextlib
 import random
-from typing import Generator, no_type_check
+from typing import Generator, cast, no_type_check
 
 import numpy as np
 import numpy.typing as npt
@@ -137,7 +137,7 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
         """
         with cls._view_without_verification():
             array = array.view(cls)
-        return array
+        return cast(cls, array)
 
     @classmethod
     @contextlib.contextmanager

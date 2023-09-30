@@ -195,7 +195,7 @@ class fft_jit(Function):
 
         if n is None:
             n = x.size
-        x = np.append(x, np.zeros(n - x.size, dtype=x.dtype))
+        x = cast(Array, np.append(x, np.zeros(n - x.size, dtype=x.dtype)))
 
         omega = self.field.primitive_root_of_unity(x.size)
         if self._direction == "backward":

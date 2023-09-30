@@ -4,7 +4,7 @@ A module containing a class for univariate polynomials over finite fields.
 
 from __future__ import annotations
 
-from typing import Any, Sequence, Type, overload
+from typing import Any, Sequence, Type, cast, overload
 
 import numpy as np
 from typing_extensions import Literal, Self
@@ -110,11 +110,11 @@ class Poly:
         self._coeffs, self._field = _convert_coeffs(coeffs, field)
 
         if self._coeffs.ndim == 0:
-            self._coeffs = np.atleast_1d(self._coeffs)
+            self._coeffs = cast(Array, np.atleast_1d(self._coeffs))
         if order == "asc":
-            self._coeffs = np.flip(self._coeffs)  # Ensure it's in descending-degree order
+            self._coeffs = cast(Array, np.flip(self._coeffs))  # Ensure it's in descending-degree order
         if self._coeffs[0] == 0:
-            self._coeffs = np.trim_zeros(self._coeffs, "f")  # Remove leading zeros
+            self._coeffs = cast(Array, np.trim_zeros(self._coeffs, "f"))  # Remove leading zeros
         if self._coeffs.size == 0:
             self._coeffs = self._field([0])
 
@@ -655,7 +655,7 @@ class Poly:
         coeffs = self.field.Zeros(size)
         coeffs[-len(self) :] = self.coeffs
         if order == "asc":
-            coeffs = np.flip(coeffs)
+            coeffs = cast(Array, np.flip(coeffs))
 
         return coeffs
 
@@ -1646,7 +1646,7 @@ def _convert_coeffs(coeffs: ArrayLike, field: Type[Array] | None = None) -> tupl
             field = _factory.DEFAULT_ARRAY
         coeffs = np.array(coeffs, dtype=field.dtypes[-1])
         sign = np.sign(coeffs)
-        coeffs = sign * field(np.abs(coeffs))
+        coeffs = cast(Array, sign * field(np.abs(coeffs)))
 
     return coeffs, field
 
@@ -1757,9 +1757,9 @@ def _convert_to_coeffs(a: Poly | Array | int, field: Type[Array]) -> Array:
         coeffs = a.coeffs
     elif isinstance(a, int):
         # Scalar multiplication
-        coeffs = np.atleast_1d(field(a % field.characteristic))
+        coeffs = cast(Array, np.atleast_1d(field(a % field.characteristic)))
     else:
-        coeffs = np.atleast_1d(a)
+        coeffs = cast(Array, np.atleast_1d(a))
 
     return coeffs
 
@@ -1787,9 +1787,9 @@ def _convert_to_sparse_coeffs(a: Poly | Array | int, field: Type[Array]) -> tupl
     elif isinstance(a, int):
         # Scalar multiplication
         degrees = np.array([0])
-        coeffs = np.atleast_1d(field(a % field.characteristic))
+        coeffs = cast(Array, np.atleast_1d(field(a % field.characteristic)))
     else:
         degrees = np.array([0])
-        coeffs = np.atleast_1d(a)
+        coeffs = cast(Array, np.atleast_1d(a))
 
     return degrees, coeffs
