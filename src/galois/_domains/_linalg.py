@@ -32,31 +32,31 @@ def _lapack_linalg(field: Type[Array], a: Array, b: Array, function, out=None, n
     else:
         return_dtype = a.dtype if np.iinfo(a.dtype).max < np.iinfo(b.dtype).max else b.dtype
 
-    a = a.view(np.ndarray)
-    b = b.view(np.ndarray)
+    a_np = a.view(np.ndarray)
+    b_np = b.view(np.ndarray)
 
     # Determine the minimum dtype to hold the entire product and summation without overflowing
     if n_sum is None:
-        n_sum = 1 if len(a.shape) == 0 else max(a.shape)
+        n_sum = 1 if len(a_np.shape) == 0 else max(a_np.shape)
     max_value = n_sum * (field.characteristic - 1) ** 2
     dtypes = [dtype for dtype in DTYPES if np.iinfo(dtype).max >= max_value]
     dtype = np.object_ if len(dtypes) == 0 else dtypes[0]
-    a = a.astype(dtype)
-    b = b.astype(dtype)
+    a_np = a_np.astype(dtype)
+    b_np = b_np.astype(dtype)
 
     # Compute result using native NumPy LAPACK/BLAS implementation
     if function in [np.inner, np.vdot]:
         # These functions don't have and `out` keyword argument
-        c = function(a, b)
+        cc = function(a_np, b_np)
     else:
-        c = function(a, b, out=out)
-    c = c % field.characteristic  # Reduce the result mod p
+        cc = function(a_np, b_np, out=out)
+    cc = cc % field.characteristic  # Reduce the result mod p
 
-    if np.isscalar(c):
+    if np.isscalar(cc):
         # TODO: Sometimes the scalar c is a float?
-        c = field(int(c), dtype=return_dtype)
+        c = field(int(cc), dtype=return_dtype)
     else:
-        c = field._view(c.astype(return_dtype))
+        c = field._view(cc.astype(return_dtype))
 
     return c
 

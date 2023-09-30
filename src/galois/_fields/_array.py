@@ -415,14 +415,15 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         degree = cls.degree
 
         x = cls.prime_subfield(array)  # Convert element-like objects into the prime subfield
-        x = x.view(np.ndarray)  # Convert into an integer array
-        if not x.shape[-1] == degree:
+        x_np = x.view(np.ndarray)  # Convert into an integer array
+        if not x_np.shape[-1] == degree:
             raise ValueError(
-                f"The last dimension of `array` must be the field extension dimension {cls.degree}, not {x.shape[-1]}."
+                f"The last dimension of `array` must be the field extension dimension {cls.degree}, "
+                f"not {x_np.shape[-1]}."
             )
 
         degrees = np.arange(degree - 1, -1, -1, dtype=dtype)
-        y = np.sum(x * order**degrees, axis=-1, dtype=dtype)
+        y = np.sum(x_np * order**degrees, axis=-1, dtype=dtype)
 
         if np.isscalar(y):
             y = cls(y, dtype=dtype)
@@ -987,10 +988,10 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         field = type(self)
 
         if x.ndim == 0:
-            order = 1 if x == 0 else field.characteristic
-        else:
-            order = field.characteristic * np.ones(x.shape, dtype=field.dtypes[-1])
-            order[np.where(x == 0)] = 1
+            return 1 if x == 0 else field.characteristic
+
+        order = field.characteristic * np.ones(x.shape, dtype=field.dtypes[-1])
+        order[np.where(x == 0)] = 1
 
         return order
 

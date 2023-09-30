@@ -112,7 +112,7 @@ class _LinearCode:
         detected = self._detect_errors(codeword)
 
         if is_codeword_1d:
-            detected = bool(detected[0])
+            return bool(detected[0])
 
         return detected
 
