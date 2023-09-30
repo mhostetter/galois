@@ -93,6 +93,8 @@ def egcd(a: int, b: int) -> npt.NDArray:  # pragma: no cover
 
     return np.array([r2, s2, t2], dtype=DTYPE)
 
+EGCD = egcd
+
 
 @numba.jit(["int64(int64[:], int64[:])"], nopython=True, cache=True)
 def crt(remainders: npt.NDArray, moduli: npt.NDArray) -> int:  # pragma: no cover
