@@ -5,7 +5,7 @@ sequences.
 
 from __future__ import annotations
 
-from typing import Any, Type, overload
+from typing import Any, Callable, Type, cast, overload
 
 import numba
 import numpy as np
@@ -17,6 +17,12 @@ from ._fields import FieldArray
 from ._helper import export, verify_isinstance
 from ._polys import Poly
 from .typing import ArrayLike
+
+ADD: Callable[[int, int], int]
+SUBTRACT: Callable[[int, int], int]
+MULTIPLY: Callable[[int, int], int]
+RECIPROCAL: Callable[[int], int]
+
 
 ###############################################################################
 # LFSR base class

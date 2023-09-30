@@ -111,6 +111,13 @@ class Function:
 # Ndarray function wrappers
 ###############################################################################
 
+CHARACTERISTIC: int
+IS_PRIME_FIELD: bool
+
+ADD: Callable[[int, int], int]
+SUBTRACT: Callable[[int, int], int]
+MULTIPLY: Callable[[int, int], int]
+
 
 class convolve_jit(Function):
     """

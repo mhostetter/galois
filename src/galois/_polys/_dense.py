@@ -4,6 +4,8 @@ A module containing polynomial arithmetic for polynomials with dense coefficient
 
 from __future__ import annotations
 
+from typing import Callable
+
 import numba
 import numpy as np
 from numba import int64, uint64
@@ -11,6 +13,16 @@ from numba import int64, uint64
 from .._domains import Array
 from .._domains._function import Function
 from .._helper import verify_isinstance
+
+ORDER: int
+
+ADD: Callable[[int, int], int]
+SUBTRACT: Callable[[int, int], int]
+MULTIPLY: Callable[[int, int], int]
+RECIPROCAL: Callable[[int], int]
+POWER: Callable[[int, int], int]
+POLY_MULTIPLY: Callable[[np.ndarray, np.ndarray], np.ndarray]
+POLY_MOD: Callable[[np.ndarray, np.ndarray], np.ndarray]
 
 
 class add_jit(Function):
