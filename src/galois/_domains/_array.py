@@ -7,7 +7,7 @@ from __future__ import annotations
 import abc
 import contextlib
 import random
-from typing import Generator
+from typing import Generator, no_type_check
 
 import numpy as np
 import numpy.typing as npt
@@ -454,92 +454,122 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
     # Override arithmetic operators so type checking is appeased
     ###############################################################################
 
+    @no_type_check
     def __add__(self, other: npt.NDArray) -> Self:
         return super().__add__(other)
 
+    @no_type_check
     def __iadd__(self, other: npt.NDArray) -> Self:
         return super().__iadd__(other)
 
+    @no_type_check
     def __radd__(self, other: npt.NDArray) -> Self:
         return super().__radd__(other)
 
+    @no_type_check
     def __sub__(self, other: npt.NDArray) -> Self:
         return super().__sub__(other)
 
+    @no_type_check
     def __isub__(self, other: npt.NDArray) -> Self:
         return super().__isub__(other)
 
+    @no_type_check
     def __rsub__(self, other: npt.NDArray) -> Self:
         return super().__rsub__(other)
 
+    @no_type_check
     def __mul__(self, other: int | npt.NDArray) -> Self:
         return super().__mul__(other)
 
+    @no_type_check
     def __imul__(self, other: int | npt.NDArray) -> Self:
         return super().__imul__(other)
 
+    @no_type_check
     def __rmul__(self, other: int | npt.NDArray) -> Self:
         return super().__rmul__(other)
 
+    @no_type_check
     def __truediv__(self, other: npt.NDArray) -> Self:
         return super().__truediv__(other)
 
+    @no_type_check
     def __itruediv__(self, other: npt.NDArray) -> Self:
         return super().__itruediv__(other)
 
+    @no_type_check
     def __rtruediv__(self, other: npt.NDArray) -> Self:
         return super().__rtruediv__(other)
 
+    @no_type_check
     def __floordiv__(self, other: npt.NDArray) -> Self:
         return super().__floordiv__(other)
 
+    @no_type_check
     def __ifloordiv__(self, other: npt.NDArray) -> Self:
         return super().__ifloordiv__(other)
 
+    @no_type_check
     def __rfloordiv__(self, other: npt.NDArray) -> Self:
         return super().__rfloordiv__(other)
 
+    @no_type_check
     def __neg__(self) -> Self:
         return super().__neg__()
 
+    @no_type_check
     def __mod__(self, other: npt.NDArray) -> Self:
         return super().__mod__(other)
 
+    @no_type_check
     def __imod__(self, other: npt.NDArray) -> Self:
         return super().__imod__(other)
 
+    @no_type_check
     def __rmod__(self, other: npt.NDArray) -> Self:
         return super().__rmod__(other)
 
+    @no_type_check
     def __pow__(self, other: int | npt.NDArray) -> Self:
         return super().__pow__(other)
 
+    @no_type_check
     def __ipow__(self, other: int | npt.NDArray) -> Self:
         return super().__ipow__(other)
 
+    # @no_type_check
     # def __rpow__(self, other) -> Self:
     #     return super().__rpow__(other)
 
+    @no_type_check
     def __matmul__(self, other: npt.NDArray) -> Self:
         return super().__matmul__(other)
 
+    @no_type_check
     def __rmatmul__(self, other: npt.NDArray) -> Self:
         return super().__rmatmul__(other)
 
+    @no_type_check
     def __lshift__(self, other: int | npt.NDArray) -> Self:
         return super().__lshift__(other)
 
+    @no_type_check
     def __ilshift__(self, other: int | npt.NDArray) -> Self:
         return super().__ilshift__(other)
 
+    # @no_type_check
     # def __rlshift__(self, other) -> Self:
     #     return super().__rlshift__(other)
 
+    @no_type_check
     def __rshift__(self, other: int | npt.NDArray) -> Self:
         return super().__rshift__(other)
 
+    @no_type_check
     def __irshift__(self, other: int | npt.NDArray) -> Self:
         return super().__irshift__(other)
 
+    # @no_type_check
     # def __rrshift__(self, other) -> Self:
     #     return super().__rrshift__(other)
