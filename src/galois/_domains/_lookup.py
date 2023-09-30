@@ -15,6 +15,13 @@ from . import _ufunc
 if TYPE_CHECKING:
     from ._array import Array
 
+ORDER: int
+
+LOG: np.ndarray
+EXP: np.ndarray
+ZECH_LOG: np.ndarray
+ZECH_E: int
+
 
 class add_ufunc(_ufunc.add_ufunc):
     """

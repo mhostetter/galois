@@ -3,7 +3,7 @@ A module containing various ufunc dispatchers with explicit calculation arithmet
 each type of arithmetic are implemented here.
 """
 
-from typing import Type
+from typing import Callable, Type
 
 import numba
 import numpy as np
@@ -16,7 +16,26 @@ from ._array import Array
 # Helper JIT functions
 ###############################################################################
 
+CHARACTERISTIC: int
+DEGREE: int
+ORDER: int
+IRREDUCIBLE_POLY: int
+
+INT_TO_VECTOR: Callable[[int, int, int], np.ndarray]
+VECTOR_TO_INT: Callable[[np.ndarray, int, int], int]
+EGCD: Callable[[int, int], np.ndarray]
+CRT: Callable[[np.ndarray, np.ndarray], int]
 DTYPE = np.int64
+
+MULTIPLY: Callable[[int, int], int]
+RECIPROCAL: Callable[[int], int]
+SUBFIELD_RECIPROCAL: Callable[[int], int]
+POWER: Callable[[int, int], int]
+POSITIVE_POWER: Callable[[int, int], int]
+BRUTE_FORCE_LOG: Callable[[int, int], int]
+
+FACTORS: np.ndarray
+MULTIPLICITIES: np.ndarray
 
 
 @numba.jit(["int64[:](int64, int64, int64)"], nopython=True, cache=True)
@@ -72,9 +91,6 @@ def egcd(a: int, b: int) -> np.ndarray:  # pragma: no cover
         t2 *= -1
 
     return np.array([r2, s2, t2], dtype=DTYPE)
-
-
-EGCD = egcd
 
 
 @numba.jit(["int64(int64[:], int64[:])"], nopython=True, cache=True)
