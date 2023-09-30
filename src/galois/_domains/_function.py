@@ -5,7 +5,8 @@ dispatcher classes have snake_case naming because they are act like functions.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Callable, Type
+from abc import abstractmethod
+from typing import TYPE_CHECKING, Callable, Hashable, Type, cast
 
 import numba
 import numpy as np
@@ -29,7 +30,8 @@ class Function:
     def __init__(self, field: Type[Array]):
         self.field = field
 
-    def __call__(self):
+    @abstractmethod
+    def __call__(self, *args, **kwargs):
         """
         Invokes the function, either JIT-compiled or pure-Python, performing necessary input/output conversion.
         """
@@ -48,8 +50,13 @@ class Function:
     _PARALLEL = False
     """Indicates if parallel processing should be performed."""
 
-    implementation: Callable
-    """The function's implementation in pure Python."""
+    @abstractmethod
+    @staticmethod
+    def implementation(*args, **kwargs):
+        """
+        The function's implementation in pure Python.
+        """
+        raise NotImplementedError
 
     ###############################################################################
     # Various ufuncs based on implementation and compilation
