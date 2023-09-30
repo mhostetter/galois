@@ -446,3 +446,99 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
                 f"{type(self)._name} arrays can only be cast as integer dtypes in {type(self)._dtypes}, not {dtype}."
             )
         return super().astype(dtype, order=order, casting=casting, subok=subok, copy=copy)
+
+    ###############################################################################
+    # Override arithmetic operators so type checking is appeased
+    ###############################################################################
+
+    # pylint: disable=useless-super-delegation,no-member
+
+    def __add__(self, other) -> Self:
+        return super().__add__(other)
+
+    def __iadd__(self, other) -> Self:
+        return super().__iadd__(other)
+
+    def __radd__(self, other) -> Self:
+        return super().__radd__(other)
+
+    def __sub__(self, other) -> Self:
+        return super().__sub__(other)
+
+    def __isub__(self, other) -> Self:
+        return super().__isub__(other)
+
+    def __rsub__(self, other) -> Self:
+        return super().__rsub__(other)
+
+    def __mul__(self, other) -> Self:
+        return super().__mul__(other)
+
+    def __imul__(self, other) -> Self:
+        return super().__imul__(other)
+
+    def __rmul__(self, other) -> Self:
+        return super().__rmul__(other)
+
+    def __truediv__(self, other) -> Self:
+        return super().__truediv__(other)
+
+    def __itruediv__(self, other) -> Self:
+        return super().__itruediv__(other)
+
+    def __rtruediv__(self, other) -> Self:
+        return super().__rtruediv__(other)
+
+    def __floordiv__(self, other) -> Self:
+        return super().__floordiv__(other)  # pylint: disable=too-many-function-args
+
+    def __ifloordiv__(self, other) -> Self:
+        return super().__ifloordiv__(other)
+
+    def __rfloordiv__(self, other) -> Self:
+        return super().__rfloordiv__(other)
+
+    def __neg__(self) -> Self:
+        return super().__neg__()
+
+    def __mod__(self, other) -> Self:
+        return super().__mod__(other)
+
+    def __imod__(self, other) -> Self:
+        return super().__imod__(other)
+
+    def __rmod__(self, other) -> Self:
+        return super().__rmod__(other)
+
+    def __pow__(self, other) -> Self:
+        return super().__pow__(other)  # pylint: disable=too-many-function-args
+
+    def __ipow__(self, other) -> Self:
+        return super().__ipow__(other)
+
+    def __rpow__(self, other) -> Self:
+        return super().__rpow__(other)
+
+    def __matmul__(self, other) -> Self:
+        return super().__matmul__(other)
+
+    def __rmatmul__(self, other) -> Self:
+        return super().__rmatmul__(other)
+
+    def __lshift__(self, other) -> Self:
+        return super().__lshift__(other)
+
+    def __ilshift__(self, other) -> Self:
+        return super().__ilshift__(other)
+
+    def __rlshift__(self, other) -> Self:
+        return super().__rlshift__(other)
+
+    def __rshift__(self, other) -> Self:
+        return super().__rshift__(other)  # pylint: disable=too-many-function-args
+
+    def __irshift__(self, other) -> Self:
+        return super().__irshift__(other)
+
+    def __rrshift__(self, other) -> Self:
+        return super().__rrshift__(other)
