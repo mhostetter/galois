@@ -118,8 +118,8 @@ ignore = [
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401", "F403"]
 
-# [tool.mypy]
-# plugins = "numpy.typing.mypy_plugin"
+[tool.mypy]
+plugins = "numpy.typing.mypy_plugin"
 
 [[tool.mypy.overrides]]
 module = ["numba.*"]
