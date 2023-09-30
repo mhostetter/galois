@@ -410,7 +410,7 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
     # Override getters/setters and type conversion functions
     ###############################################################################
 
-    def __getitem__(self, key):
+    def __getitem__(self, key) -> Self:
         """
         Ensure that slices that return a single value return a 0-D Galois field array and not a single integer. This
         ensures subsequent arithmetic with the finite field scalar works properly.
