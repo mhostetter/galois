@@ -80,7 +80,7 @@ def poly_to_str(coeffs: list[int], poly_var: str = "x") -> str:
     """
     Converts the polynomial coefficients (descending order) into its string representation.
     """
-    degrees = np.arange(len(coeffs) - 1, -1, -1)
+    degrees = list(range(len(coeffs) - 1, -1, -1))
 
     return sparse_poly_to_str(degrees, coeffs, poly_var=poly_var)
 
