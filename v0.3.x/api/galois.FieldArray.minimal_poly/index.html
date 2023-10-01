@@ -7831,10 +7831,10 @@ Power</label></div>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="mi">5</span><span class="p">)</span>
 
 <span class="gp">In [2]: </span><span class="n">a</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">();</span> <span class="n">a</span>
-<span class="gh">Out[2]: </span><span class="go">GF(6, order=3^5)</span>
+<span class="gh">Out[2]: </span><span class="go">GF(38, order=3^5)</span>
 
 <span class="gp">In [3]: </span><span class="n">poly</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">minimal_poly</span><span class="p">();</span> <span class="n">poly</span>
-<span class="gh">Out[3]: </span><span class="go">Poly(x^5 + 2x + 2, GF(3))</span>
+<span class="gh">Out[3]: </span><span class="go">Poly(x^5 + 2x^4 + x^3 + x + 2, GF(3))</span>
 
 <span class="go"># The minimal polynomial annihilates a</span>
 <span class="gp">In [4]: </span><span class="n">poly</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">GF</span><span class="p">)</span>
@@ -7850,10 +7850,10 @@ Power</label></div>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [6]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="mi">5</span><span class="p">,</span> <span class="nb">repr</span><span class="o">=</span><span class="s2">&quot;poly&quot;</span><span class="p">)</span>
 
 <span class="gp">In [7]: </span><span class="n">a</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">();</span> <span class="n">a</span>
-<span class="gh">Out[7]: </span><span class="go">GF(α^4 + 2α^2, order=3^5)</span>
+<span class="gh">Out[7]: </span><span class="go">GF(2α^4 + α + 2, order=3^5)</span>
 
 <span class="gp">In [8]: </span><span class="n">poly</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">minimal_poly</span><span class="p">();</span> <span class="n">poly</span>
-<span class="gh">Out[8]: </span><span class="go">Poly(x^5 + 2x^4 + x^3 + 2x^2 + 2x + 2, GF(3))</span>
+<span class="gh">Out[8]: </span><span class="go">Poly(x^5 + 2x + 1, GF(3))</span>
 
 <span class="go"># The minimal polynomial annihilates a</span>
 <span class="gp">In [9]: </span><span class="n">poly</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">GF</span><span class="p">)</span>
@@ -7869,10 +7869,10 @@ Power</label></div>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [11]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="mi">5</span><span class="p">,</span> <span class="nb">repr</span><span class="o">=</span><span class="s2">&quot;power&quot;</span><span class="p">)</span>
 
 <span class="gp">In [12]: </span><span class="n">a</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">();</span> <span class="n">a</span>
-<span class="gh">Out[12]: </span><span class="go">GF(α^134, order=3^5)</span>
+<span class="gh">Out[12]: </span><span class="go">GF(α^207, order=3^5)</span>
 
 <span class="gp">In [13]: </span><span class="n">poly</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">minimal_poly</span><span class="p">();</span> <span class="n">poly</span>
-<span class="gh">Out[13]: </span><span class="go">Poly(x^5 + 2x^4 + x^3 + x + 2, GF(3))</span>
+<span class="gh">Out[13]: </span><span class="go">Poly(x^5 + x^4 + x^3 + 2x^2 + x + 1, GF(3))</span>
 
 <span class="go"># The minimal polynomial annihilates a</span>
 <span class="gp">In [14]: </span><span class="n">poly</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">GF</span><span class="p">)</span>

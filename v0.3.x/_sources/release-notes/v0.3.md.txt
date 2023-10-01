@@ -245,3 +245,20 @@ tocdepth: 2
 ### Contributors
 
 - Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
+
+## v0.3.6
+
+*Released October 1, 2023*
+
+### Changes
+
+- Added support for NumPy 1.25. ([#507](https://github.com/mhostetter/galois/pull/507))
+- Added support for Numba 0.58. ([#507](https://github.com/mhostetter/galois/pull/507))
+- Fixed rare overflow with computing a large modular exponentiation of polynomials. ([#488](https://github.com/mhostetter/galois/pull/488))
+- Resolved various deprecations warnings with NumPy 1.25. ([#492](https://github.com/mhostetter/galois/pull/492))
+
+### Contributors
+
+- Iyán Méndez Veiga ([@iyanmv](https://github.com/iyanmv))
+- [@Lasagnenator](https://github.com/Lasagnenator)
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
