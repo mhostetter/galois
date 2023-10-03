@@ -1786,7 +1786,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
         string = np.array2string(x, separator=separator, prefix=prefix, suffix=suffix, formatter=formatter)
 
-        if formatter != {}:
+        if formatter:
             # We are using special print methods and must perform element alignment ourselves. We will print each
             # element a second time use the max width of any element observed on the first array2string() call.
             field._element_fixed_width = field._element_fixed_width_counter

@@ -93,6 +93,7 @@ universal = false
 ignore-paths = ["src/galois/_version.py"]
 disable = [
     "comparison-with-callable",     # pylint doesn't understand metaclass properties
+    "duplicate-bases",              # pylint is false alarming on this error
     "fixme",
     "global-statement",
     "invalid-name",
