@@ -7820,12 +7820,12 @@ You're not viewing the latest version.
 
 <dl class="py method objdesc">
 <dt class="sig sig-object highlight py">
-<span class="sig-prename descclassname"><span class="pre">galois.</span><span class="pre">Poly.</span></span><span class="sig-name descname"><span class="pre">derivative</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#p-k" title="galois.Poly.derivative.k (Python parameter) — The number of derivatives to compute. 1 corresponds to $p'(x)$, 2 corresponds to $p''(x)$, etc. The default is 1."><span class="n"><span class="pre">k</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><code class="code python default_value docutils literal highlight highlight-python"><span class="mi">1</span></code></em></span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="desctype"><a class="reference internal" href="../galois.Poly/" title="galois._polys._poly.Poly (Python class)"><span class="pre">Poly</span></a></span></span></span></dt>
+<span class="sig-prename descclassname"><span class="pre">galois.</span><span class="pre">Poly.</span></span><span class="sig-name descname"><span class="pre">derivative</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#p-k" title="galois.Poly.derivative.k (Python parameter) — The number of derivatives to compute. 1 corresponds to $p'(x)$, 2 corresponds to $p''(x)$, etc. The default is 1."><span class="n"><span class="pre">k</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><code class="code python default_value docutils literal highlight highlight-python"><span class="mi">1</span></code></em></span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="desctype"><a class="reference internal" href="../galois.Poly/" title="galois._polys._poly.Poly (Python class)"><span class="pre">Poly</span></a></span></span></span></dt>
 <dd><p>Computes the <span class="math notranslate nohighlight">\(k\)</span>-th formal derivative <span class="math notranslate nohighlight">\(\frac{d^k}{dx^k} f(x)\)</span> of the polynomial <span class="math notranslate nohighlight">\(f(x)\)</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd" id="parameters">Parameters<span class="colon">:</span><a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></dt>
 <dd class="field-odd"><dl class="simple api-field highlight">
-<dt id="p-k"><span class="n sig-name">k</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></span></span><span class="w">   </span><span class="o">=</span><span class="w">   </span><code class="code python default_value docutils literal highlight highlight-python"><span class="mi">1</span></code><a class="headerlink" href="#p-k" title="Permalink to this definition">¶</a></dt><dd><p>The number of derivatives to compute. 1 corresponds to <span class="math notranslate nohighlight">\(p'(x)\)</span>, 2 corresponds to
+<dt id="p-k"><span class="n sig-name">k</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)">int</a></span></span><span class="w">   </span><span class="o">=</span><span class="w">   </span><code class="code python default_value docutils literal highlight highlight-python"><span class="mi">1</span></code><a class="headerlink" href="#p-k" title="Permalink to this definition">¶</a></dt><dd><p>The number of derivatives to compute. 1 corresponds to <span class="math notranslate nohighlight">\(p'(x)\)</span>, 2 corresponds to
 <span class="math notranslate nohighlight">\(p''(x)\)</span>, etc. The default is 1.</p>
 </dd>
 </dl>
@@ -7853,10 +7853,10 @@ element. For example, <span class="math notranslate nohighlight">\(3 \cdot a = a
 <p class="example rubric" id="examples">Examples</p>
 <p>Compute the derivatives of a polynomial over <span class="math notranslate nohighlight">\(\mathrm{GF}(2)\)</span>.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">f</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">Poly</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">7</span><span class="p">);</span> <span class="n">f</span>
-<span class="gh">Out[1]: </span><span class="go">Poly(x^7 + x^6 + x^2 + 1, GF(2))</span>
+<span class="gh">Out[1]: </span><span class="go">Poly(x^7 + x^6 + x^4 + x^2 + x, GF(2))</span>
 
 <span class="gp">In [2]: </span><span class="n">f</span><span class="o">.</span><span class="n">derivative</span><span class="p">()</span>
-<span class="gh">Out[2]: </span><span class="go">Poly(x^6, GF(2))</span>
+<span class="gh">Out[2]: </span><span class="go">Poly(x^6 + 1, GF(2))</span>
 
 <span class="go"># p derivatives of a polynomial, where p is the field&#39;s characteristic, will always result in 0</span>
 <span class="gp">In [3]: </span><span class="n">f</span><span class="o">.</span><span class="n">derivative</span><span class="p">(</span><span class="n">GF</span><span class="o">.</span><span class="n">characteristic</span><span class="p">)</span>
@@ -7867,16 +7867,16 @@ element. For example, <span class="math notranslate nohighlight">\(3 \cdot a = a
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [4]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
 
 <span class="gp">In [5]: </span><span class="n">f</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">Poly</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">GF</span><span class="p">);</span> <span class="n">f</span>
-<span class="gh">Out[5]: </span><span class="go">Poly(3x^11 + 6x^10 + 4x^9 + 5x^8 + 5x^7 + 2x^6 + 4x^5 + 5x^4 + 3x^2 + 5x + 6, GF(7))</span>
+<span class="gh">Out[5]: </span><span class="go">Poly(x^11 + 3x^9 + 3x^8 + 2x^6 + 2x^4 + 4x^3 + 3x^2 + x, GF(7))</span>
 
 <span class="gp">In [6]: </span><span class="n">f</span><span class="o">.</span><span class="n">derivative</span><span class="p">()</span>
-<span class="gh">Out[6]: </span><span class="go">Poly(5x^10 + 4x^9 + x^8 + 5x^7 + 5x^5 + 6x^4 + 6x^3 + 6x + 5, GF(7))</span>
+<span class="gh">Out[6]: </span><span class="go">Poly(4x^10 + 6x^8 + 3x^7 + 5x^5 + x^3 + 5x^2 + 6x + 1, GF(7))</span>
 
 <span class="gp">In [7]: </span><span class="n">f</span><span class="o">.</span><span class="n">derivative</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-<span class="gh">Out[7]: </span><span class="go">Poly(x^9 + x^8 + x^7 + 4x^4 + 3x^3 + 4x^2 + 6, GF(7))</span>
+<span class="gh">Out[7]: </span><span class="go">Poly(5x^9 + 6x^7 + 4x^4 + 3x^2 + 3x + 6, GF(7))</span>
 
 <span class="gp">In [8]: </span><span class="n">f</span><span class="o">.</span><span class="n">derivative</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-<span class="gh">Out[8]: </span><span class="go">Poly(2x^8 + x^7 + 2x^3 + 2x^2 + x, GF(7))</span>
+<span class="gh">Out[8]: </span><span class="go">Poly(3x^8 + 2x^3 + 6x + 3, GF(7))</span>
 
 <span class="go"># p derivatives of a polynomial, where p is the field&#39;s characteristic, will always result in 0</span>
 <span class="gp">In [9]: </span><span class="n">f</span><span class="o">.</span><span class="n">derivative</span><span class="p">(</span><span class="n">GF</span><span class="o">.</span><span class="n">characteristic</span><span class="p">)</span>
@@ -7887,13 +7887,13 @@ element. For example, <span class="math notranslate nohighlight">\(3 \cdot a = a
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [10]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="mi">5</span><span class="p">)</span>
 
 <span class="gp">In [11]: </span><span class="n">f</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">Poly</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">GF</span><span class="p">);</span> <span class="n">f</span>
-<span class="gh">Out[11]: </span><span class="go">Poly(67x^7 + 85x^6 + 132x^5 + 132x^4 + 176x^3 + 124x^2 + 83x + 97, GF(3^5))</span>
+<span class="gh">Out[11]: </span><span class="go">Poly(194x^7 + 197x^6 + 83x^5 + 73x^4 + 109x^3 + 108x^2 + 142x + 13, GF(3^5))</span>
 
 <span class="gp">In [12]: </span><span class="n">f</span><span class="o">.</span><span class="n">derivative</span><span class="p">()</span>
-<span class="gh">Out[12]: </span><span class="go">Poly(67x^6 + 228x^4 + 132x^3 + 239x + 83, GF(3^5))</span>
+<span class="gh">Out[12]: </span><span class="go">Poly(194x^6 + 163x^4 + 73x^3 + 216x + 142, GF(3^5))</span>
 
 <span class="gp">In [13]: </span><span class="n">f</span><span class="o">.</span><span class="n">derivative</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-<span class="gh">Out[13]: </span><span class="go">Poly(228x^3 + 239, GF(3^5))</span>
+<span class="gh">Out[13]: </span><span class="go">Poly(163x^3 + 216, GF(3^5))</span>
 
 <span class="go"># p derivatives of a polynomial, where p is the field&#39;s characteristic, will always result in 0</span>
 <span class="gp">In [14]: </span><span class="n">f</span><span class="o">.</span><span class="n">derivative</span><span class="p">(</span><span class="n">GF</span><span class="o">.</span><span class="n">characteristic</span><span class="p">)</span>
