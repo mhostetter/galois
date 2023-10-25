@@ -7790,9 +7790,9 @@ combinations of the columns of <span class="math notranslate nohighlight">\(\mat
 
 <span class="gp">In [3]: </span><span class="n">A</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">((</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">));</span> <span class="n">A</span>
 <span class="gh">Out[3]: </span>
-<span class="go">GF([[24, 14, 29, 29,  0],</span>
-<span class="go">    [ 7,  9,  8,  5,  4],</span>
-<span class="go">    [ 6, 26, 15, 11, 17]], order=31)</span>
+<span class="go">GF([[30,  6,  4, 21, 30],</span>
+<span class="go">    [23, 15, 23, 15, 10],</span>
+<span class="go">    [12, 15, 23,  4,  2]], order=31)</span>
 
 <span class="gp">In [4]: </span><span class="n">C</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">column_space</span><span class="p">();</span> <span class="n">C</span>
 <span class="gh">Out[4]: </span>
@@ -7804,8 +7804,8 @@ combinations of the columns of <span class="math notranslate nohighlight">\(\mat
 <p>The dimension of the column space and null space sum to <span class="math notranslate nohighlight">\(n\)</span>.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [5]: </span><span class="n">N</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">null_space</span><span class="p">();</span> <span class="n">N</span>
 <span class="gh">Out[5]: </span>
-<span class="go">GF([[ 1,  0, 16, 27, 10],</span>
-<span class="go">    [ 0,  1,  9, 29, 21]], order=31)</span>
+<span class="go">GF([[ 1,  0, 13, 20,  6],</span>
+<span class="go">    [ 0,  1, 20, 23, 11]], order=31)</span>
 
 <span class="gp">In [6]: </span><span class="n">C</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">N</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">n</span>
 <span class="gh">Out[6]: </span><span class="go">True</span>

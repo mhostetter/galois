@@ -7924,7 +7924,7 @@ Under these conditions, this function returns very quickly.</p>
 <span class="gh">Out[2]: </span><span class="go">Poly(x^3 + 6x^2 + 6x + 4, GF(7))</span>
 
 <span class="gp">In [3]: </span><span class="n">galois</span><span class="o">.</span><span class="n">irreducible_poly</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;random&quot;</span><span class="p">)</span>
-<span class="gh">Out[3]: </span><span class="go">Poly(x^3 + x^2 + 5x + 1, GF(7))</span>
+<span class="gh">Out[3]: </span><span class="go">Poly(x^3 + 5, GF(7))</span>
 </code></pre></div>
 </div>
 <p>Find the lexicographically-first monic irreducible polynomial with four terms.</p>
@@ -7941,13 +7941,13 @@ Under these conditions, this function returns very quickly.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [6]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
 
 <span class="gp">In [7]: </span><span class="n">f</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">irreducible_poly</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;random&quot;</span><span class="p">);</span> <span class="n">f</span>
-<span class="gh">Out[7]: </span><span class="go">Poly(x^5 + x^4 + 3x^3 + 4x^2 + x + 2, GF(7))</span>
+<span class="gh">Out[7]: </span><span class="go">Poly(x^5 + 4x^4 + 5x^3 + 4x^2 + 5x + 4, GF(7))</span>
 
 <span class="gp">In [8]: </span><span class="n">f</span><span class="o">.</span><span class="n">is_irreducible</span><span class="p">()</span>
 <span class="gh">Out[8]: </span><span class="go">True</span>
 
 <span class="gp">In [9]: </span><span class="n">g</span> <span class="o">=</span> <span class="n">f</span> <span class="o">*</span> <span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span> <span class="n">g</span>
-<span class="gh">Out[9]: </span><span class="go">Poly(3x^5 + 3x^4 + 2x^3 + 5x^2 + 3x + 6, GF(7))</span>
+<span class="gh">Out[9]: </span><span class="go">Poly(3x^5 + 5x^4 + x^3 + 5x^2 + x + 5, GF(7))</span>
 
 <span class="gp">In [10]: </span><span class="n">g</span><span class="o">.</span><span class="n">is_irreducible</span><span class="p">()</span>
 <span class="gh">Out[10]: </span><span class="go">True</span>
