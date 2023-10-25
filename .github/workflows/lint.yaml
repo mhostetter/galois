@@ -12,7 +12,7 @@ on:
 
 jobs:
   run-linter:
-    name: Lint
+    name: Ruff Lint
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -31,14 +31,11 @@ jobs:
       - name: Install the `galois` package with [dev]
         run: python3 -m pip install .[dev]
 
-      - name: Lint code with pylint
-        run: python3 -m pylint src/galois/
-
-      - name: Lint tests with pylint
-        run: python3 -m pylint tests/
+      - name: Lint with ruff
+        run: python3 -m ruff check --output-format=github .
 
   run-formatter:
-    name: Format
+    name: Ruff Format
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -54,5 +51,5 @@ jobs:
       - name: Install the `galois` package with [dev]
         run: python3 -m pip install .[dev]
 
-      - name: Format with black
-        run: python3 -m black . --check
+      - name: Format with ruff
+        run: python3 -m ruff format --check .
