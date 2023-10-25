@@ -13,8 +13,6 @@ import pytest
 
 import galois
 
-# pylint: disable=unidiomatic-typecheck
-
 
 def test_exceptions():
     GF = galois.GF(251)

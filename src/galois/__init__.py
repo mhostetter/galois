@@ -1,7 +1,7 @@
 """
 A performant NumPy extension for Galois fields and their applications.
 """
-# pylint: disable=wrong-import-position
+# ruff: noqa: F405, E402
 # isort: skip_file
 
 try:
@@ -13,8 +13,10 @@ except ModuleNotFoundError:  # pragma: no cover
     __version_tuple__ = (0, 0, 0)
     warnings.warn(
         "An error occurred during package install where setuptools_scm failed to create a _version.py file."
-        "Defaulting version to 0.0.0."
+        "Defaulting version to 0.0.0.",
+        stacklevel=3,
     )
+
 
 # Import class/functions from nested private modules
 from ._domains import *

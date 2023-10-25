@@ -51,7 +51,6 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
     Group:
         galois-fields
     """
-    # pylint: disable=no-value-for-parameter,abstract-method,too-many-public-methods
 
     def __new__(
         cls,
@@ -116,7 +115,6 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
                 GF([["x^2 + 2x + 2", 4], ["x^4 + 2x^3 + x^2 + x + 1", 205]])
                 alpha ** np.array([[222, 69], [54, 24]])
         """
-        # pylint: disable=unused-argument,super-init-not-called
         # Adding __init__ and not doing anything is done to overwrite the superclass's __init__ docstring
         return
 
@@ -783,7 +781,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
         if cls.element_repr == "power":
             # Order elements by powers of the primitive element
-            dtype = cls.dtypes[-1]  # pylint: disable=unsubscriptable-object
+            dtype = cls.dtypes[-1]
             x_default = np.concatenate(
                 (np.atleast_1d(cls(0)), cls.primitive_element ** np.arange(0, cls.order - 1, dtype=dtype))
             )
@@ -1339,7 +1337,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         if not A.ndim == 2:
             raise ValueError(f"Only 2-D matrices have a column space, not {A.ndim}-D.")
 
-        return (A.T).row_space()  # pylint: disable=no-member
+        return (A.T).row_space()
 
     def left_null_space(self) -> Self:
         r"""
@@ -1457,7 +1455,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         if not A.ndim == 2:
             raise ValueError(f"Only 2-D matrices have a null space, not {A.ndim}-D.")
 
-        return (A.T).left_null_space()  # pylint: disable=no-member
+        return (A.T).left_null_space()
 
     def field_trace(self) -> FieldArray:
         r"""
@@ -1497,7 +1495,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             subfield = field.prime_subfield
             p = field.characteristic
             m = field.degree
-            dtype = field.dtypes[-1]  # pylint: disable=unsubscriptable-object
+            dtype = field.dtypes[-1]
             conjugates = np.power.outer(x, p ** np.arange(0, m, dtype=dtype))
             trace = np.add.reduce(conjugates, axis=-1)
             trace = subfield._view(trace)
@@ -1725,7 +1723,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             ufunc = field._log.jit_calculate
         else:
             ufunc = field._log.ufunc
-        output = getattr(ufunc, "__call__")(*inputs, **kwargs)
+        output = ufunc(*inputs, **kwargs)
 
         # TODO: Could add a method keyword argument to the function to allow different modes.
 

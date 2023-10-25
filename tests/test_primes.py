@@ -7,8 +7,6 @@ import pytest
 
 import galois
 
-# pylint: disable=line-too-long
-
 
 def test_primes_exceptions():
     with pytest.raises(TypeError):

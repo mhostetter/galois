@@ -8,8 +8,6 @@ import galois
 
 from .conftest import array_equal, invalid_dtype, valid_dtype
 
-# pylint: disable=unidiomatic-typecheck
-
 
 def test_cant_instantiate_GF():
     v = [0, 1, 0, 1]

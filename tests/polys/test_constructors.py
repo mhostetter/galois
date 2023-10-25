@@ -6,8 +6,6 @@ import pytest
 
 import galois
 
-# pylint: disable=line-too-long
-
 FIELDS = [
     galois.GF2,  # GF(2)
     galois.GF(31),  # GF(p) with np.int dtypes

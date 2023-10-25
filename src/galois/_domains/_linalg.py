@@ -4,7 +4,7 @@ included in NumPy are also included.
 """
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Type
+from typing import TYPE_CHECKING
 
 import numba
 import numpy as np
@@ -18,7 +18,7 @@ if TYPE_CHECKING:
     from ._array import Array
 
 
-def _lapack_linalg(field: Type[Array], a: Array, b: Array, function, out=None, n_sum=None) -> Array:
+def _lapack_linalg(field: type[Array], a: Array, b: Array, function, out=None, n_sum=None) -> Array:
     """
     In prime fields GF(p), it's much more efficient to use LAPACK/BLAS implementations of linear algebra
     and then reduce modulo p rather than compute manually.
@@ -172,7 +172,7 @@ class matmul_jit(Function):
         - https://numpy.org/doc/stable/reference/generated/numpy.matmul.html#numpy.matmul
     """
 
-    def __call__(self, A: Array, B: Array, out=None, **kwargs) -> Array:  # pylint: disable=unused-argument
+    def __call__(self, A: Array, B: Array, out=None, **kwargs) -> Array:
         verify_isinstance(A, self.field)
         verify_isinstance(B, self.field)
         if not (A.ndim >= 1 and B.ndim >= 1):
@@ -233,7 +233,6 @@ class matmul_jit(Function):
         return C
 
     def set_globals(self):
-        # pylint: disable=global-variable-undefined
         global ADD, MULTIPLY
         ADD = self.field._add.ufunc_call_only
         MULTIPLY = self.field._multiply.ufunc_call_only
@@ -249,8 +248,8 @@ class matmul_jit(Function):
         M, K = A.shape
         K, N = B.shape
         C = np.zeros((M, N), dtype=A.dtype)
-        for i in numba.prange(M):  # pylint: disable=not-an-iterable
-            for j in numba.prange(N):  # pylint: disable=not-an-iterable
+        for i in numba.prange(M):
+            for j in numba.prange(N):
                 for k in range(K):
                     C[i, j] = ADD(C[i, j], MULTIPLY(A[i, k], B[k, j]))
 
@@ -318,7 +317,7 @@ class lu_decompose_jit(Function):
         for i in range(0, m - 1):
             if Ai[i, i] == 0:
                 idxs = np.nonzero(Ai[i:, i])[0]  # The first non-zero entry in column `i` below row `i`
-                if idxs.size == 0:  # pylint: disable=no-else-continue
+                if idxs.size == 0:
                     L[i, i] = 1
                     continue
                 else:

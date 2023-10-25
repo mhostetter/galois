@@ -11,9 +11,6 @@ from .._prime import factors
 from . import _lookup
 from ._array import Array
 
-# pylint: disable=global-variable-undefined
-
-
 ###############################################################################
 # Helper JIT functions
 ###############################################################################

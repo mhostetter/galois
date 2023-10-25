@@ -7,13 +7,13 @@ Sources:
 """
 from __future__ import annotations
 
+import hashlib
+import io
 import os
 import sqlite3
 from pathlib import Path
 
 import requests
-import hashlib
-import io
 from pdfminer.high_level import extract_text
 
 

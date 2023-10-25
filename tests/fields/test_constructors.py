@@ -8,8 +8,6 @@ import galois
 
 from .conftest import invalid_dtype, randint, valid_dtype
 
-# pylint: disable=unidiomatic-typecheck
-
 RANDOM_REPRODUCIBLE = {
     "GF(2)-42": galois.GF2([1, 0, 1, 0]),
     "GF(2)-1337": galois.GF2([1, 1, 1, 1]),

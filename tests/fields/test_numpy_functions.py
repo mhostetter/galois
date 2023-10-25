@@ -10,8 +10,6 @@ import pytest
 
 from .conftest import array_equal, randint
 
-# pylint: disable=unidiomatic-typecheck
-
 ###############################################################################
 # Basic operations
 ###############################################################################
@@ -244,7 +242,7 @@ def test_split(field):
     shape = (6,)
     new_shape = (3,)
     a = field.Random(shape, dtype=dtype)
-    b1, b2 = np.split(a, 2)  # pylint: disable=unbalanced-tuple-unpacking
+    b1, b2 = np.split(a, 2)
     assert b1.shape == new_shape
     assert type(b1) is field
     assert b1.dtype == dtype

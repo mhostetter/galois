@@ -103,7 +103,7 @@ def isqrt(n: int) -> int:
         number-theory-integer
     """
     if sys.version_info.major == 3 and sys.version_info.minor >= 8:
-        return math.isqrt(n)  # pylint: disable=no-member
+        return math.isqrt(n)
 
     verify_isinstance(n, int)
     if not n >= 0:

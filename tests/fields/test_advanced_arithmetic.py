@@ -5,8 +5,6 @@ import random
 
 import numpy as np
 
-# pylint: disable=unidiomatic-typecheck
-
 
 def test_convolve(field_convolve):
     GF, X, Y, Z = field_convolve["GF"], field_convolve["X"], field_convolve["Y"], field_convolve["Z"]

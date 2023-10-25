@@ -15,8 +15,6 @@ from .conftest import (
     verify_encode_shortened,
 )
 
-# pylint: disable=line-too-long
-
 
 def test_exceptions():
     with pytest.raises(TypeError):
