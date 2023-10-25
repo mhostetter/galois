@@ -8,8 +8,6 @@ import pytest
 
 import galois
 
-# pylint: disable=line-too-long
-
 
 def test_repr_str():
     GF = galois.GF(7)

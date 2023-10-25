@@ -12,8 +12,6 @@ import pytest
 
 import galois
 
-# pylint: disable=unidiomatic-typecheck
-
 
 def get_filenames(path: pathlib.Path) -> list[str]:
     filenames = []

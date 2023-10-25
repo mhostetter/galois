@@ -9,8 +9,6 @@ import galois
 
 from .conftest import randint
 
-# pylint: disable=unidiomatic-typecheck
-
 # TODO: Add scalar arithmetic and array/scalar and radd, etc
 
 

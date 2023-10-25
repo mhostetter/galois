@@ -24,8 +24,6 @@ import pytest
 
 import galois
 
-# pylint: disable=line-too-long
-
 FACTORS_SMALL = [
     (311633, [7, 44519], [1, 1]),
     (557246, [2, 278623], [1, 1]),

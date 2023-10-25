@@ -91,7 +91,7 @@ def sparse_poly_to_str(degrees: list[int], coeffs: list[int], poly_var: str = "x
     x = []
 
     # Use brackets around coefficients only when using the "poly" or "power" element representation
-    brackets = hasattr(type(coeffs), "_element_repr") and getattr(type(coeffs), "_element_repr") in ["poly", "power"]
+    brackets = hasattr(type(coeffs), "_element_repr") and type(coeffs)._element_repr in ["poly", "power"]
 
     for degree, coeff in zip(degrees, coeffs):
         if coeff == 0:

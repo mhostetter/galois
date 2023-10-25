@@ -39,8 +39,6 @@ import numpy as np
 
 import galois
 
-# pylint: disable=line-too-long
-
 
 def test_binary_field():
     GF = galois.GF(2)

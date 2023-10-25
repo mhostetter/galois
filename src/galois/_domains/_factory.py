@@ -11,7 +11,6 @@ def FIELD_FACTORY(*args, **kwargs) -> Type[Array]:  # pragma: no cover
     """
     This will be monkey-patched to be `galois.GF()` in galois/__init__.py.
     """
-    # pylint: disable=unused-argument
     return Array
 
 

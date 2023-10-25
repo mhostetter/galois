@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import sys
 import types
-from typing import Type, overload
+from typing import overload
 
 from typing_extensions import Literal
 
@@ -19,8 +19,6 @@ from ._gf2 import GF2
 from ._primitive_element import is_primitive_element, primitive_element
 from ._ufunc import UFuncMixin_2_m, UFuncMixin_p_1, UFuncMixin_p_m
 
-# pylint: disable=redefined-outer-name,redefined-builtin
-
 
 @overload
 def GF(
@@ -31,7 +29,7 @@ def GF(
     verify: bool = True,
     compile: Literal["auto", "jit-lookup", "jit-calculate", "python-calculate"] | None = None,
     repr: Literal["int", "poly", "power"] | None = None,
-) -> Type[FieldArray]:
+) -> type[FieldArray]:
     ...
 
 
@@ -45,7 +43,7 @@ def GF(
     verify: bool = True,
     compile: Literal["auto", "jit-lookup", "jit-calculate", "python-calculate"] | None = None,
     repr: Literal["int", "poly", "power"] | None = None,
-) -> Type[FieldArray]:
+) -> type[FieldArray]:
     ...
 
 
@@ -309,7 +307,7 @@ def Field(
     verify: bool = True,
     compile: Literal["auto", "jit-lookup", "jit-calculate", "python-calculate"] | None = None,
     repr: Literal["int", "poly", "power"] | None = None,
-) -> Type[FieldArray]:
+) -> type[FieldArray]:
     ...
 
 
@@ -323,7 +321,7 @@ def Field(
     verify: bool = True,
     compile: Literal["auto", "jit-lookup", "jit-calculate", "python-calculate"] | None = None,
     repr: Literal["int", "poly", "power"] | None = None,
-) -> Type[FieldArray]:
+) -> type[FieldArray]:
     ...
 
 
@@ -358,7 +356,7 @@ def _GF_prime(
     verify: bool = True,
     compile: Literal["auto", "jit-lookup", "jit-calculate", "python-calculate"] | None = None,
     repr: Literal["int", "poly", "power"] | None = None,
-) -> Type[FieldArray]:
+) -> type[FieldArray]:
     """
     Class factory for prime fields GF(p).
     """
@@ -428,11 +426,10 @@ def _GF_extension(
     verify: bool = True,
     compile: Literal["auto", "jit-lookup", "jit-calculate", "python-calculate"] | None = None,
     repr: Literal["int", "poly", "power"] | None = None,
-) -> Type[FieldArray]:
+) -> type[FieldArray]:
     """
     Class factory for extension fields GF(p^m).
     """
-    # pylint: disable=too-many-statements
     prime_subfield = _GF_prime(p)
     is_primitive_poly = None
     verify_poly = verify

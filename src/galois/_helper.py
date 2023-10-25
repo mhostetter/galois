@@ -76,7 +76,7 @@ def export(obj):
     # Append this object to the private module's "all" list
     public_members = getattr(module, "__all__", [])
     public_members.append(obj.__name__)
-    setattr(module, "__all__", public_members)
+    module.__all__ = public_members
 
     return obj
 
@@ -92,7 +92,7 @@ def method_of(class_):
 
     def decorator(func):
         setattr(class_, func.__name__, func)
-        setattr(getattr(class_, func.__name__), "__doc__", func.__doc__)
+        getattr(class_, func.__name__).__doc__ = func.__doc__
 
         return func
 

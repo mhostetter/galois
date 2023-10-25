@@ -6,8 +6,6 @@ import pytest
 
 import galois
 
-# pylint: disable=unidiomatic-typecheck,no-member
-
 
 def test_gcd_exceptions():
     a = galois.Poly.Degrees([10, 9, 8, 6, 5, 4, 0])

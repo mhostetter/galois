@@ -10,8 +10,6 @@ import galois
 
 from .conftest import array_equal
 
-# pylint: disable=unidiomatic-typecheck,pointless-statement
-
 
 def test_dot_exceptions():
     with pytest.raises(TypeError):

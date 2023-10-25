@@ -3,7 +3,7 @@ A module that defines the metaclass for the abstract base class FieldArray.
 """
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Type
+from typing import TYPE_CHECKING
 
 import numpy as np
 from typing_extensions import Literal
@@ -23,9 +23,7 @@ class FieldArrayMeta(ArrayMeta):
     A metaclass that provides documented class properties for `FieldArray` subclasses.
     """
 
-    # pylint: disable=no-value-for-parameter,too-many-public-methods
-
-    def __new__(mcs, name, bases, namespace, **kwargs):  # pylint: disable=unused-argument
+    def __new__(mcs, name, bases, namespace, **kwargs):
         return super().__new__(mcs, name, bases, namespace)
 
     def __init__(cls, name, bases, namespace, **kwargs):
@@ -371,7 +369,7 @@ class FieldArrayMeta(ArrayMeta):
         """
         x = cls.elements
         is_square = x.is_square()
-        return x[is_square]  # pylint: disable=unsubscriptable-object
+        return x[is_square]
 
     @property
     def non_squares(cls) -> FieldArray:
@@ -408,7 +406,7 @@ class FieldArrayMeta(ArrayMeta):
         """
         x = cls.elements
         is_square = x.is_square()
-        return x[~is_square]  # pylint: disable=unsubscriptable-object
+        return x[~is_square]
 
     @property
     def is_prime_field(cls) -> bool:
@@ -441,7 +439,7 @@ class FieldArrayMeta(ArrayMeta):
         return cls._degree > 1
 
     @property
-    def prime_subfield(cls) -> Type[FieldArray]:
+    def prime_subfield(cls) -> type[FieldArray]:
         r"""
         The prime subfield $\mathrm{GF}(p)$ of the extension field $\mathrm{GF}(p^m)$.
 

@@ -81,7 +81,7 @@ class lagrange_poly_jit(Function):
     def __call__(self, x: Array, y: Array) -> Array:
         verify_isinstance(x, Array)
         verify_isinstance(y, Array)
-        if not type(x) == type(y):  # pylint: disable=unidiomatic-typecheck
+        if not type(x) == type(y):
             raise TypeError(f"Arguments 'x' and 'y' must be over the same Galois field, not {type(x)} and {type(y)}.")
         if not x.ndim == 1:
             raise ValueError(f"Argument 'x' must be 1-D, not have shape {x.shape}.")
@@ -103,7 +103,6 @@ class lagrange_poly_jit(Function):
         return coeffs
 
     def set_globals(self):
-        # pylint: disable=global-variable-undefined
         global NEGATIVE, SUBTRACT, MULTIPLY, RECIPROCAL, POLY_ADD, POLY_FLOORDIV, POLY_MULTIPLY
         NEGATIVE = self.field._negative.ufunc_call_only
         SUBTRACT = self.field._subtract.ufunc_call_only

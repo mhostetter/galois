@@ -38,7 +38,7 @@ def set_seed(seed):
     random.seed(seed)
 
 
-def I(element):
+def I(element):  # noqa: E743
     """Convert from various finite field elements to an integer"""
     if isinstance(element, sage.rings.finite_rings.element_pari_ffelt.FiniteFieldElement_pari_ffelt):
         coeffs = element._vector_()
@@ -63,7 +63,7 @@ def F(integer):
         return FIELD(" + ".join(l))
     try:
         return FIELD.fetch_int(int(integer))
-    except:
+    except:  # noqa: E722
         return FIELD(integer)
 
 
@@ -74,7 +74,7 @@ def arange(low, high, sparse=False):
         else:
             X = np.empty(SPARSE_SIZE, dtype=object)
             iterator = np.nditer(X, flags=["multi_index", "refs_ok"])
-            for i in iterator:
+            for _ in iterator:
                 X[iterator.multi_index] = random.randint(low, high - 1)
     else:
         X = np.arange(low, high, dtype=np.int64)
@@ -270,7 +270,7 @@ def make_luts(field, sub_folder, seed, sparse=False):
     for i in range(Z.shape[0]):
         try:
             Z[i] = I(field.fetch_int(X[i]).log(alpha))
-        except:
+        except:  # noqa: E722
             Z[i] = I(log(F(X[i]), alpha))
     d = {"X": X, "Z": Z}
     save_pickle(d, folder, "log.pkl")
@@ -364,7 +364,7 @@ def make_luts(field, sub_folder, seed, sparse=False):
     X = []
     Y = []
     Z = []
-    for i in range(3):
+    for _ in range(3):
         x = randint_matrix(0, order, (10,))
         y = randint_matrix(0, order, (10,))
         X.append(x)
@@ -801,8 +801,9 @@ def make_luts(field, sub_folder, seed, sparse=False):
     Y = [random_coeffs(0, order, MIN_COEFFS, MAX_COEFFS) for i in range(20)]
     # Add some specific polynomial types
     X.append([0]), Y.append(random_coeffs(0, order, MIN_COEFFS, MAX_COEFFS))  # 0 / y
-    X.append(random_coeffs(0, order, MIN_COEFFS, MAX_COEFFS // 2)), Y.append(
-        random_coeffs(0, order, MAX_COEFFS // 2, MAX_COEFFS)
+    (
+        X.append(random_coeffs(0, order, MIN_COEFFS, MAX_COEFFS // 2)),
+        Y.append(random_coeffs(0, order, MAX_COEFFS // 2, MAX_COEFFS)),
     )  # x / y with x.degree < y.degree
     X.append(random_coeffs(0, order, 2, MAX_COEFFS)), Y.append(random_coeffs(0, order, 1, 2))  # x / y with y.degree = 0
     Q = []
@@ -994,7 +995,7 @@ def make_luts(field, sub_folder, seed, sparse=False):
     for i in range(20):
         n = random.randint(2, 4)  # The number of polynomials
         x, y = [], []
-        for j in range(n):
+        for _ in range(n):
             d = random.randint(3, 5)
             x.append(random_coeffs(0, order, d, d + 1))
             y.append(random_coeffs(0, order, d + 1, d + 2))  # Ensure modulus degree is greater than remainder degree
@@ -1005,7 +1006,7 @@ def make_luts(field, sub_folder, seed, sparse=False):
             y = [list_to_poly(yy) for yy in y]
             z = crt(x, y)
             Z[i] = poly_to_list(z)
-        except:
+        except:  # noqa: E722
             Z[i] = None
     d = {"X": X, "Y": Y, "Z": Z}
     save_pickle(d, folder, "crt.pkl")

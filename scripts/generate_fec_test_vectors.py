@@ -4,10 +4,8 @@ Script to generate unit test vectors for FEC codes.
 Install SageMath:
 * `sudo apt install sagemath`
 """
-import json
 import os
 import pickle
-import random
 import shutil
 
 import numpy as np
@@ -42,7 +40,7 @@ def to_field(field, integer):
         return field(" + ".join(l))
     try:
         return field.fetch_int(int(integer))
-    except:
+    except:  # noqa: E722
         return field(integer)
 
 

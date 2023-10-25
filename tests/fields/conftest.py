@@ -11,8 +11,6 @@ import pytest
 
 import galois
 
-# pylint: disable=redefined-outer-name
-
 PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 
 FIELDS = [

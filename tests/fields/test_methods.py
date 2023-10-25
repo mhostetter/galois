@@ -8,8 +8,6 @@ import galois
 
 from .conftest import invalid_dtype, valid_dtype
 
-# pylint: disable=unidiomatic-typecheck,line-too-long
-
 
 def test_repr():
     GF = galois.GF(2**3)

@@ -6,8 +6,6 @@ import pytest
 
 from .conftest import DTYPES
 
-# pylint: disable=unidiomatic-typecheck
-
 
 class TestView:
     """

@@ -4,7 +4,7 @@ sequences.
 """
 from __future__ import annotations
 
-from typing import Type, overload
+from typing import overload
 
 import numba
 import numpy as np
@@ -142,7 +142,7 @@ class _LFSR:
         return y
 
     @property
-    def field(self) -> Type[FieldArray]:
+    def field(self) -> type[FieldArray]:
         return self._field
 
     @property
@@ -425,7 +425,6 @@ class FLFSR(_LFSR):
                 lfsr.reset([1, 2, 3, 4])
                 lfsr.state
         """
-        # pylint: disable=useless-super-delegation
         return super().reset(state)
 
     def step(self, steps: int = 1) -> FieldArray:
@@ -474,7 +473,6 @@ class FLFSR(_LFSR):
                 lfsr.step(-5)
                 lfsr.state
         """
-        # pylint: disable=useless-super-delegation
         return super().step(steps)
 
     def to_galois_lfsr(self) -> GLFSR:
@@ -528,7 +526,7 @@ class FLFSR(_LFSR):
         return GLFSR(self.feedback_poly, state=state)
 
     @property
-    def field(self) -> Type[FieldArray]:
+    def field(self) -> type[FieldArray]:
         """
         The :obj:`~galois.FieldArray` subclass for the finite field that defines the linear arithmetic.
 
@@ -710,7 +708,6 @@ class fibonacci_lfsr_step_forward_jit(Function):
         return y, state_
 
     def set_globals(self):
-        # pylint: disable=global-variable-undefined
         global ADD, MULTIPLY
         ADD = self.field._add.ufunc_call_only
         MULTIPLY = self.field._multiply.ufunc_call_only
@@ -772,7 +769,6 @@ class fibonacci_lfsr_step_backward_jit(Function):
         return y, state_
 
     def set_globals(self):
-        # pylint: disable=global-variable-undefined
         global SUBTRACT, MULTIPLY, RECIPROCAL
         SUBTRACT = self.field._subtract.ufunc_call_only
         MULTIPLY = self.field._multiply.ufunc_call_only
@@ -1052,7 +1048,6 @@ class GLFSR(_LFSR):
                 lfsr.reset([1, 2, 3, 4])
                 lfsr.state
         """
-        # pylint: disable=useless-super-delegation
         return super().reset(state)
 
     def step(self, steps: int = 1) -> FieldArray:
@@ -1100,7 +1095,6 @@ class GLFSR(_LFSR):
                 lfsr.step(-5)
                 lfsr.state
         """
-        # pylint: disable=useless-super-delegation
         return super().step(steps)
 
     def to_fibonacci_lfsr(self) -> FLFSR:
@@ -1141,7 +1135,7 @@ class GLFSR(_LFSR):
         return FLFSR(self.feedback_poly, state=state)
 
     @property
-    def field(self) -> Type[FieldArray]:
+    def field(self) -> type[FieldArray]:
         """
         The :obj:`~galois.FieldArray` subclass for the finite field that defines the linear arithmetic.
 
@@ -1321,7 +1315,6 @@ class galois_lfsr_step_forward_jit(Function):
         return y, state_
 
     def set_globals(self):
-        # pylint: disable=global-variable-undefined
         global ADD, MULTIPLY
         ADD = self.field._add.ufunc_call_only
         MULTIPLY = self.field._multiply.ufunc_call_only
@@ -1386,7 +1379,6 @@ class galois_lfsr_step_backward_jit(Function):
         return y, state_
 
     def set_globals(self):
-        # pylint: disable=global-variable-undefined
         global SUBTRACT, MULTIPLY, RECIPROCAL
         SUBTRACT = self.field._subtract.ufunc_call_only
         MULTIPLY = self.field._multiply.ufunc_call_only
@@ -1543,7 +1535,6 @@ class berlekamp_massey_jit(Function):
         return coeffs
 
     def set_globals(self):
-        # pylint: disable=global-variable-undefined
         global ADD, SUBTRACT, MULTIPLY, RECIPROCAL
         ADD = self.field._add.ufunc_call_only
         SUBTRACT = self.field._subtract.ufunc_call_only

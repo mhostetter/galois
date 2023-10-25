@@ -3,7 +3,6 @@ Script to generate unit test vectors for number theoretic functions.
 
 * `sudo apt install sagemath`
 """
-import json
 import os
 import pickle
 import random
@@ -156,7 +155,7 @@ for i in range(len(X)):
     try:
         z = crt(X[i], Y[i])
         Z[i] = int(z)
-    except:
+    except:  # noqa: E722
         Z[i] = None
 d = {"X": X, "Y": Y, "Z": Z}
 save_pickle(d, FOLDER, "crt.pkl")

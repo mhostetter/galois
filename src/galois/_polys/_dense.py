@@ -11,8 +11,6 @@ from .._domains import Array
 from .._domains._function import Function
 from .._helper import verify_isinstance
 
-# pylint: disable=unidiomatic-typecheck
-
 
 class add_jit(Function):
     """
@@ -38,7 +36,6 @@ class add_jit(Function):
         return r
 
     def set_globals(self):
-        # pylint: disable=global-variable-undefined
         global ADD
         ADD = self.field._add.ufunc_call_only
 
@@ -99,7 +96,6 @@ class subtract_jit(Function):
         return r
 
     def set_globals(self):
-        # pylint: disable=global-variable-undefined
         global SUBTRACT
         SUBTRACT = self.field._subtract.ufunc_call_only
 
@@ -175,7 +171,6 @@ class divmod_jit(Function):
         return q, r
 
     def set_globals(self):
-        # pylint: disable=global-variable-undefined
         global SUBTRACT, MULTIPLY, RECIPROCAL
         SUBTRACT = self.field._subtract.ufunc_call_only
         MULTIPLY = self.field._multiply.ufunc_call_only
@@ -226,7 +221,6 @@ class floordiv_jit(Function):
         return q
 
     def set_globals(self):
-        # pylint: disable=global-variable-undefined
         global SUBTRACT, MULTIPLY, RECIPROCAL
         SUBTRACT = self.field._subtract.ufunc_call_only
         MULTIPLY = self.field._multiply.ufunc_call_only
@@ -280,7 +274,6 @@ class mod_jit(Function):
         return r
 
     def set_globals(self):
-        # pylint: disable=global-variable-undefined
         global SUBTRACT, MULTIPLY, RECIPROCAL
         SUBTRACT = self.field._subtract.ufunc_call_only
         MULTIPLY = self.field._multiply.ufunc_call_only
@@ -363,7 +356,6 @@ class pow_jit(Function):
         return z
 
     def set_globals(self):
-        # pylint: disable=global-variable-undefined
         global POLY_MULTIPLY, POLY_MOD
         POLY_MULTIPLY = self.field._convolve.function
         POLY_MOD = mod_jit(self.field).function
@@ -429,7 +421,6 @@ class evaluate_elementwise_jit(Function):
         return y
 
     def set_globals(self):
-        # pylint: disable=global-variable-undefined
         global ADD, MULTIPLY
         ADD = self.field._add.ufunc_call_only
         MULTIPLY = self.field._multiply.ufunc_call_only
@@ -440,7 +431,7 @@ class evaluate_elementwise_jit(Function):
     @staticmethod
     def implementation(coeffs, values):
         y = np.zeros(values.size, dtype=values.dtype)
-        for i in numba.prange(values.size):  # pylint: disable=not-an-iterable
+        for i in numba.prange(values.size):
             y[i] = coeffs[0]
             for j in range(1, coeffs.size):
                 y[i] = ADD(coeffs[j], MULTIPLY(y[i], values[i]))
@@ -473,7 +464,6 @@ class roots_jit(Function):
         return roots[idxs]
 
     def set_globals(self):
-        # pylint: disable=global-variable-undefined
         global ORDER, ADD, MULTIPLY, POWER
         ORDER = self.field.order
         ADD = self.field._add.ufunc_call_only
