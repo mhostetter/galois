@@ -6,8 +6,6 @@ import pytest
 
 import galois
 
-# pylint: disable=unidiomatic-typecheck
-
 
 def test_reverse(poly_reverse):
     GF, X, Z = poly_reverse["GF"], poly_reverse["X"], poly_reverse["Z"]

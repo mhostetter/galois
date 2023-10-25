@@ -5,8 +5,6 @@ import numpy as np
 
 import galois
 
-# pylint: disable=unidiomatic-typecheck
-
 
 def test_add(poly_add):
     GF, X, Y, Z = poly_add["GF"], poly_add["X"], poly_add["Y"], poly_add["Z"]
@@ -280,7 +278,7 @@ def test_modular_power_large_exponent_python():
 
 def test_evaluate_constant(poly_evaluate):
     GF, X, Y, Z = poly_evaluate["GF"], poly_evaluate["X"], poly_evaluate["Y"], poly_evaluate["Z"]
-    for i in range(len(X)):  # pylint: disable=consider-using-enumerate
+    for i in range(len(X)):
         j = np.random.default_rng().integers(0, Y.size)
         x = X[i]  # Polynomial
         y = Y[j]  # GF element
@@ -291,7 +289,7 @@ def test_evaluate_constant(poly_evaluate):
 
 def test_evaluate_vector(poly_evaluate):
     GF, X, Y, Z = poly_evaluate["GF"], poly_evaluate["X"], poly_evaluate["Y"], poly_evaluate["Z"]
-    for i in range(len(X)):  # pylint: disable=consider-using-enumerate
+    for i in range(len(X)):
         x = X[i]  # Polynomial
         y = Y  # GF array
         z = x(y)  # GF array
@@ -306,7 +304,7 @@ def test_evaluate_matrix(poly_evaluate_matrix):
         poly_evaluate_matrix["Y"],
         poly_evaluate_matrix["Z"],
     )
-    for i in range(len(X)):  # pylint: disable=consider-using-enumerate
+    for i in range(len(X)):
         x = X[i]  # Polynomial
         y = Y[i]  # GF square matrix
         z = x(y, elementwise=False)  # GF square matrix

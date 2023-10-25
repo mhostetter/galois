@@ -21,7 +21,6 @@ class add_ufunc(_ufunc.add_ufunc):
     """
 
     def set_lookup_globals(self):
-        # pylint: disable=global-variable-undefined
         global EXP, LOG, ZECH_LOG, ZECH_E
         EXP = self.field._EXP
         LOG = self.field._LOG
@@ -66,7 +65,6 @@ class negative_ufunc(_ufunc.negative_ufunc):
     """
 
     def set_lookup_globals(self):
-        # pylint: disable=global-variable-undefined
         global EXP, LOG, ZECH_E
         EXP = self.field._EXP
         LOG = self.field._LOG
@@ -96,7 +94,6 @@ class subtract_ufunc(_ufunc.subtract_ufunc):
     """
 
     def set_lookup_globals(self):
-        # pylint: disable=global-variable-undefined
         global ORDER, EXP, LOG, ZECH_LOG, ZECH_E
         ORDER = self.field.order
         EXP = self.field._EXP
@@ -148,7 +145,6 @@ class multiply_ufunc(_ufunc.multiply_ufunc):
     """
 
     def set_lookup_globals(self):
-        # pylint: disable=global-variable-undefined
         global EXP, LOG
         EXP = self.field._EXP
         LOG = self.field._LOG
@@ -177,7 +173,6 @@ class reciprocal_ufunc(_ufunc.reciprocal_ufunc):
     """
 
     def set_lookup_globals(self):
-        # pylint: disable=global-variable-undefined
         global ORDER, EXP, LOG
         ORDER = self.field.order
         EXP = self.field._EXP
@@ -208,7 +203,6 @@ class divide_ufunc(_ufunc.divide_ufunc):
     """
 
     def set_lookup_globals(self):
-        # pylint: disable=global-variable-undefined
         global ORDER, EXP, LOG
         ORDER = self.field.order
         EXP = self.field._EXP
@@ -244,7 +238,6 @@ class power_ufunc(_ufunc.power_ufunc):
     """
 
     def set_lookup_globals(self):
-        # pylint: disable=global-variable-undefined
         global ORDER, EXP, LOG
         ORDER = self.field.order
         EXP = self.field._EXP
@@ -282,7 +275,6 @@ class log_ufunc(_ufunc.log_ufunc):
     """
 
     def set_lookup_globals(self):
-        # pylint: disable=global-variable-undefined
         global LOG
         LOG = self.field._LOG
 
@@ -295,7 +287,6 @@ class log_ufunc(_ufunc.log_ufunc):
         log(a, b) = log(b^m, b)
                   = c
         """
-        # pylint: disable=unused-argument
         if a == 0:
             raise ArithmeticError("Cannot compute the discrete logarithm of 0 in a Galois field.")
 

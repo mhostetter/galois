@@ -5,7 +5,6 @@ import numpy as np
 
 from .conftest import randint
 
-# pylint: disable=unidiomatic-typecheck
 # NOTE: We don't need to verify the arithmetic is correct here, that was done in test_field_arithmetic.py
 
 

@@ -8,7 +8,7 @@ unique explicit calculation algorithms.
 """
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Callable, Type
+from typing import TYPE_CHECKING, Callable
 
 import numba
 import numpy as np
@@ -32,7 +32,7 @@ class UFunc:
     _CACHE_CALCULATE = {}  # A cache of compiled ufuncs using explicit calculation
     _CACHE_LOOKUP = {}  # A cache of compiled ufuncs using lookup tables
 
-    def __init__(self, field: Type[Array], override=None, always_calculate=False):
+    def __init__(self, field: type[Array], override=None, always_calculate=False):
         self.field = field
         self.override = override  # A NumPy ufunc used instead of a custom one
         self.always_calculate = always_calculate  # Indicates to never use lookup tables for this ufunc
@@ -270,7 +270,7 @@ class UFunc:
 
     def _convert_inputs_to_vector(self, inputs, kwargs):
         v_inputs = list(inputs)
-        for i in range(len(inputs)):  # pylint: disable=consider-using-enumerate
+        for i in range(len(inputs)):
             if issubclass(type(inputs[i]), self.field):
                 v_inputs[i] = inputs[i].vector()
 
@@ -301,7 +301,7 @@ class UFunc:
     def _view_inputs_as_ndarray(self, inputs, kwargs, dtype=None):
         # View all inputs that are FieldArrays as np.ndarray to avoid infinite recursion
         v_inputs = list(inputs)
-        for i in range(len(inputs)):  # pylint: disable=consider-using-enumerate
+        for i in range(len(inputs)):
             if issubclass(type(inputs[i]), self.field):
                 v_inputs[i] = inputs[i].view(np.ndarray) if dtype is None else inputs[i].view(np.ndarray).astype(dtype)
 
@@ -428,7 +428,7 @@ class divide_ufunc(UFunc):
         if method == "__call__":
             # When dividing two arrays, instead multiply by the reciprocal. This is vastly
             # more efficient when the denominator is a scalar or smaller (broadcasted) array.
-            inputs[1] = getattr(self.field._reciprocal.ufunc, "__call__")(inputs[1])
+            inputs[1] = self.field._reciprocal.ufunc(inputs[1])
             output = getattr(self.field._multiply.ufunc, method)(*inputs, **kwargs)
         else:
             output = getattr(self.ufunc, method)(*inputs, **kwargs)
@@ -510,7 +510,7 @@ class log_ufunc(UFunc):
 
     type = "binary"
 
-    def __call__(self, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
+    def __call__(self, ufunc, method, inputs, kwargs, meta):
         self._verify_method_only_call(ufunc, method)
         inputs = list(inputs) + [int(self.field.primitive_element)]
         inputs, kwargs = self._view_inputs_as_ndarray(inputs, kwargs)
@@ -525,7 +525,7 @@ class sqrt_ufunc(UFunc):
 
     type = "unary"
 
-    def __call__(self, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
+    def __call__(self, ufunc, method, inputs, kwargs, meta):
         self._verify_method_only_call(ufunc, method)
         return self.implementation(*inputs)
 
@@ -543,7 +543,7 @@ class matmul_ufunc(UFunc):
 
     type = "binary"
 
-    def __call__(self, ufunc, method, inputs, kwargs, meta):  # pylint: disable=unused-argument
+    def __call__(self, ufunc, method, inputs, kwargs, meta):
         self._verify_method_only_call(ufunc, method)
         return matmul_jit(self.field)(*inputs, **kwargs)
 
@@ -698,7 +698,7 @@ class UFuncMixin(np.ndarray, metaclass=ArrayMeta):
             kwargs["casting"] = "unsafe"
 
         inputs, kwargs = UFunc(field)._view_inputs_as_ndarray(inputs, kwargs)
-        output = super().__array_ufunc__(ufunc, method, *inputs, **kwargs)  # pylint: disable=no-member
+        output = super().__array_ufunc__(ufunc, method, *inputs, **kwargs)
 
         if ufunc in field._UFUNCS_REQUIRING_VIEW and output is not None:
             output = field._view(output) if not np.isscalar(output) else field(output, dtype=self.dtype)

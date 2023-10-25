@@ -5,8 +5,6 @@ import pytest
 
 import galois
 
-# pylint: disable=line-too-long
-
 
 def test_totatives_exceptions():
     with pytest.raises(TypeError):

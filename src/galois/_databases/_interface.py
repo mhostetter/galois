@@ -3,11 +3,9 @@ A module that handles interfacing with the SQLite databases.
 """
 from __future__ import annotations
 
-import sys
 import sqlite3
+import sys
 from pathlib import Path
-
-# pylint: disable=too-few-public-methods
 
 
 class DatabaseInterface:

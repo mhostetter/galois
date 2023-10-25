@@ -10,8 +10,6 @@ import pytest
 
 import galois
 
-# pylint: disable=line-too-long,unidiomatic-typecheck
-
 
 def test_berlekamp_massey_exceptions():
     GF = galois.GF(2)

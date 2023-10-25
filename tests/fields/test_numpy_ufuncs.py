@@ -8,8 +8,6 @@ from .conftest import randint
 
 # TODO: Test using "out" keyword argument
 
-# pylint: disable=no-value-for-parameter
-
 
 class TestReduce:
     """
@@ -166,7 +164,7 @@ class TestReduceAt:
         idxs = [1, 4, 5, 8]
         b = np.add.reduceat(a, idxs)
         b_truth = field.Zeros(len(idxs))
-        for i in range(len(idxs)):  # pylint: disable=consider-using-enumerate
+        for i in range(len(idxs)):
             if i == len(idxs) - 1:
                 b_truth[i] = np.add.reduce(a[idxs[i] :])
             else:
@@ -184,7 +182,7 @@ class TestReduceAt:
         idxs = [1, 4, 5, 8]
         b = np.subtract.reduceat(a, idxs)
         b_truth = field.Zeros(len(idxs))
-        for i in range(len(idxs)):  # pylint: disable=consider-using-enumerate
+        for i in range(len(idxs)):
             if i == len(idxs) - 1:
                 b_truth[i] = np.subtract.reduce(a[idxs[i] :])
             else:
@@ -196,7 +194,7 @@ class TestReduceAt:
         idxs = [1, 4, 5, 8]
         b = np.multiply.reduceat(a, idxs)
         b_truth = field.Zeros(len(idxs))
-        for i in range(len(idxs)):  # pylint: disable=consider-using-enumerate
+        for i in range(len(idxs)):
             if i == len(idxs) - 1:
                 b_truth[i] = np.multiply.reduce(a[idxs[i] :])
             else:
@@ -214,7 +212,7 @@ class TestReduceAt:
         idxs = [1, 4, 5, 8]
         b = np.true_divide.reduceat(a, idxs)
         b_truth = field.Zeros(len(idxs))
-        for i in range(len(idxs)):  # pylint: disable=consider-using-enumerate
+        for i in range(len(idxs)):
             if i == len(idxs) - 1:
                 b_truth[i] = np.true_divide.reduce(a[idxs[i] :])
             else:
@@ -225,7 +223,7 @@ class TestReduceAt:
         idxs = [1, 4, 5, 8]
         b = np.floor_divide.reduceat(a, idxs)
         b_truth = field.Zeros(len(idxs))
-        for i in range(len(idxs)):  # pylint: disable=consider-using-enumerate
+        for i in range(len(idxs)):
             if i == len(idxs) - 1:
                 b_truth[i] = np.floor_divide.reduce(a[idxs[i] :])
             else:

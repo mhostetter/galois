@@ -5,8 +5,6 @@ import pytest
 
 import galois
 
-# pylint: disable=pointless-statement,expression-not-assigned
-
 
 def test_add():
     GF = galois.GF(3)

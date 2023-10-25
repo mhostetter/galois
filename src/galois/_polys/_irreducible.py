@@ -79,7 +79,6 @@ def is_irreducible(f: Poly) -> bool:
             f.is_irreducible()
     """
 
-    # pylint: disable=too-many-return-statements
     if f.degree == 0:
         # Over fields, f(x) = 0 is the zero element of GF(p^m)[x] and f(x) = c are the units of GF(p^m)[x].
         # Both the zero element and the units are not irreducible over the polynomial ring GF(p^m)[x].

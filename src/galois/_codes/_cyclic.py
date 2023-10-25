@@ -21,8 +21,6 @@ class _CyclicCode(_LinearCode):
     A FEC base class for cyclic codes.
     """
 
-    # pylint: disable=abstract-method
-
     def __init__(
         self,
         n: int,

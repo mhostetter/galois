@@ -452,8 +452,6 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
     # Override arithmetic operators so type checking is appeased
     ###############################################################################
 
-    # pylint: disable=useless-super-delegation,no-member
-
     def __add__(self, other: npt.NDArray) -> Self:
         return super().__add__(other)
 
@@ -491,7 +489,7 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
         return super().__rtruediv__(other)
 
     def __floordiv__(self, other: npt.NDArray) -> Self:
-        return super().__floordiv__(other)  # pylint: disable=too-many-function-args
+        return super().__floordiv__(other)
 
     def __ifloordiv__(self, other: npt.NDArray) -> Self:
         return super().__ifloordiv__(other)
@@ -512,7 +510,7 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
         return super().__rmod__(other)
 
     def __pow__(self, other: int | npt.NDArray) -> Self:
-        return super().__pow__(other)  # pylint: disable=too-many-function-args
+        return super().__pow__(other)
 
     def __ipow__(self, other: int | npt.NDArray) -> Self:
         return super().__ipow__(other)
@@ -536,7 +534,7 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
     #     return super().__rlshift__(other)
 
     def __rshift__(self, other: int | npt.NDArray) -> Self:
-        return super().__rshift__(other)  # pylint: disable=too-many-function-args
+        return super().__rshift__(other)
 
     def __irshift__(self, other: int | npt.NDArray) -> Self:
         return super().__irshift__(other)

@@ -1,6 +1,8 @@
 """
 A public module containing type hints for the :obj:`galois` library.
 """
+# ruff: noqa: F821
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Sequence, Union
@@ -11,7 +13,6 @@ import numpy as np
 if TYPE_CHECKING:
     from ._domains._array import Array
     from ._polys._poly import Poly
-
 
 ElementLike = Union[int, str, "Array"]
 """

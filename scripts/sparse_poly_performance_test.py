@@ -1,10 +1,10 @@
 import numpy as np
 from IPython import get_ipython
 
+import galois
+
 ipython = get_ipython()
 assert ipython is not None, "Must run this script with ipython3"
-
-import galois
 
 
 def get_coeffs(degree, N, field):
@@ -55,13 +55,13 @@ while degree <= 1000:
     print("  SparsePoly:\t", end="")
     p1._type = "sparse"
     p2._type = "sparse"
-    p1.nonzero_degrees, p1.nonzero_coeffs, p2.nonzero_degrees, p2.nonzero_coeffs
+    print(p1.nonzero_degrees, p1.nonzero_coeffs, p2.nonzero_degrees, p2.nonzero_coeffs)
     ipython.run_line_magic("timeit", "p1 * p2")
 
     print("  DensePoly:\t", end="")
     p1._type = "dense"
     p2._type = "dense"
-    p1.coeffs, p2.coeffs  # Ensure _coeffs is created for arithmetic
+    print(p1.coeffs, p2.coeffs)  # Ensure _coeffs is created for arithmetic
     ipython.run_line_magic("timeit", "p1 * p2")
 
     degree += 100

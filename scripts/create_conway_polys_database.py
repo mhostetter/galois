@@ -38,7 +38,7 @@ def main():
         degree = int(items[1])
 
         # Degree-descending coefficients
-        coeffs = np.array(eval(items[2])[::-1])  # pylint: disable=eval-used
+        coeffs = np.array(eval(items[2])[::-1])
 
         idxs = np.nonzero(coeffs)[0]
         nonzero_degrees = (degree - idxs).tolist()

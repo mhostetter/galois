@@ -6,8 +6,6 @@ import random
 import numpy as np
 import pytest
 
-# pylint: disable=unidiomatic-typecheck
-
 
 def test_additive_order(field_additive_order):
     GF, X, Z = field_additive_order["GF"], field_additive_order["X"], field_additive_order["Z"]

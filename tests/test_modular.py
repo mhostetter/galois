@@ -7,8 +7,6 @@ import pytest
 
 import galois
 
-# pylint: disable=line-too-long,use-implicit-booleaness-not-comparison
-
 
 def test_smallest_primitive_root():
     # https://oeis.org/A046145

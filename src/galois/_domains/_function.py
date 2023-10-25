@@ -4,7 +4,7 @@ dispatcher classes have snake_case naming because they are act like functions.
 """
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Callable, Type
+from typing import TYPE_CHECKING, Callable
 
 import numba
 import numpy as np
@@ -16,8 +16,6 @@ from ._meta import ArrayMeta
 if TYPE_CHECKING:
     from ._array import Array
 
-# pylint: disable=global-variable-undefined
-
 
 class Function:
     """
@@ -27,7 +25,7 @@ class Function:
 
     _CACHE = {}  # A cache of compiled functions
 
-    def __init__(self, field: Type[Array]):
+    def __init__(self, field: type[Array]):
         self.field = field
 
     def __call__(self):
@@ -145,7 +143,7 @@ class convolve_jit(Function):
                 max_sum = np.iinfo(dtype).max // (CHARACTERISTIC - 1) ** 2
                 n_sum = min(a.size, b.size)
                 overflow = n_sum > max_sum
-            except:  # pylint: disable=bare-except
+            except:  # noqa: E722
                 # This happens when the dtype is np.object_
                 overflow = False
 
@@ -185,7 +183,7 @@ class fft_jit(Function):
             n = x.size
         x = np.append(x, np.zeros(n - x.size, dtype=x.dtype))
 
-        omega = self.field.primitive_root_of_unity(x.size)  # pylint: disable=no-member
+        omega = self.field.primitive_root_of_unity(x.size)
         if self._direction == "backward":
             omega = omega**-1
 
@@ -220,8 +218,8 @@ class fft_jit(Function):
         elif N % 2 == 0:
             # Radix-2 Cooley-Tukey FFT
             omega2 = MULTIPLY(omega, omega)
-            EVEN = implementation(x[0::2], omega2)  # pylint: disable=undefined-variable
-            ODD = implementation(x[1::2], omega2)  # pylint: disable=undefined-variable
+            EVEN = implementation(x[0::2], omega2)  # noqa: F821
+            ODD = implementation(x[1::2], omega2)  # noqa: F821
 
             twiddle = 1
             for k in range(0, N // 2):
@@ -256,8 +254,8 @@ class fft_jit(Function):
         elif N % 2 == 0:
             # Radix-2 Cooley-Tukey FFT
             omega2 = MULTIPLY(omega, omega)
-            EVEN = fft_jit.implementation_2(x[0::2], omega2)  # pylint: disable=undefined-variable
-            ODD = fft_jit.implementation_2(x[1::2], omega2)  # pylint: disable=undefined-variable
+            EVEN = fft_jit.implementation_2(x[0::2], omega2)
+            ODD = fft_jit.implementation_2(x[1::2], omega2)
 
             twiddle = 1
             for k in range(0, N // 2):
@@ -371,7 +369,7 @@ class FunctionMixin(np.ndarray, metaclass=ArrayMeta):
                 args[2] = self._verify_array_like_types_and_values(args[2])
                 args = tuple(args)
 
-            output = super().__array_function__(func, types, args, kwargs)  # pylint: disable=no-member
+            output = super().__array_function__(func, types, args, kwargs)
 
             if func in field._FUNCTIONS_REQUIRING_VIEW:
                 output = field._view(output) if not np.isscalar(output) else field(output, dtype=self.dtype)

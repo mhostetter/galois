@@ -45,7 +45,7 @@ def multiply(a: int, b: int) -> int:
     return c
 
 
-def divmod(a: int, b: int) -> tuple[int, int]:  # pylint: disable=redefined-builtin
+def divmod(a: int, b: int) -> tuple[int, int]:
     """
     a(x) = q(x)*b(x) + r(x)
     """
@@ -87,7 +87,7 @@ def mod(a: int, b: int) -> int:
     return divmod(a, b)[1]
 
 
-def pow(a: int, b: int, c: int | None = None) -> int:  # pylint: disable=redefined-builtin
+def pow(a: int, b: int, c: int | None = None) -> int:
     """
     d(x) = a(x)^b % c(x)
     """

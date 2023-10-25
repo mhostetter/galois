@@ -6,8 +6,6 @@ import pytest
 
 from .conftest import randint
 
-# pylint: disable=pointless-statement
-
 
 def test_add_int_scalar(field):
     x = field.Random(10)

@@ -1,6 +1,8 @@
 """
 A pytest conftest module that provides pytest fixtures for galois/polys/ tests.
 """
+# ruff: noqa: F401, F811
+
 import os
 import pickle
 
@@ -9,9 +11,7 @@ import pytest
 
 import galois
 
-from ..fields.conftest import field, field_folder  # pylint: disable=unused-import
-
-# pylint: disable=redefined-outer-name
+from ..fields.conftest import field, field_folder
 
 ###############################################################################
 # Helper functions

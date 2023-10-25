@@ -41,8 +41,6 @@ import numpy as np
 
 import galois
 
-# pylint: disable=unidiomatic-typecheck,line-too-long
-
 
 def test_shapes():
     GF = galois.GF(31)

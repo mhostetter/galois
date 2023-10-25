@@ -3,7 +3,7 @@ A module containing general Bose-Chaudhuri-Hocquenghem (BCH) codes over GF(q).
 """
 from __future__ import annotations
 
-from typing import Type, overload
+from typing import overload
 
 import numba
 import numpy as np
@@ -77,15 +77,14 @@ class BCH(_CyclicCode):
     Group:
         fec
     """
-    # pylint: disable=no-member
 
     def __init__(
         self,
         n: int,
         k: int | None = None,
         d: int | None = None,
-        field: Type[FieldArray] | None = None,
-        extension_field: Type[FieldArray] | None = None,
+        field: type[FieldArray] | None = None,
+        extension_field: type[FieldArray] | None = None,
         alpha: ElementLike | None = None,
         c: int = 1,
         systematic: bool = True,
@@ -474,7 +473,6 @@ class BCH(_CyclicCode):
         """,
     )
     def detect(self, codeword: ArrayLike) -> bool | np.ndarray:
-        # pylint: disable=useless-super-delegation
         return super().detect(codeword)
 
     @overload
@@ -685,11 +683,11 @@ class BCH(_CyclicCode):
                 print(bch.field.properties)
         """,
     )
-    def field(self) -> Type[FieldArray]:
+    def field(self) -> type[FieldArray]:
         return super().field
 
     @property
-    def extension_field(self) -> Type[FieldArray]:
+    def extension_field(self) -> type[FieldArray]:
         r"""
         The Galois field $\mathrm{GF}(q^m)$ that defines the BCH syndrome arithmetic.
 
@@ -1113,7 +1111,7 @@ class BCH(_CyclicCode):
 
 def _generator_poly_from_d(
     d: int,
-    field: Type[FieldArray],
+    field: type[FieldArray],
     alpha: FieldArray,
     c: int,
 ) -> tuple[Poly, FieldArray]:
@@ -1136,8 +1134,8 @@ def _generator_poly_from_d(
 def _generator_poly_from_k(
     n: int,
     k: int,
-    field: Type[FieldArray],
-    extension_field: Type[FieldArray],
+    field: type[FieldArray],
+    extension_field: type[FieldArray],
     alpha: FieldArray,
     c: int,
 ) -> tuple[Poly, FieldArray]:
@@ -1196,7 +1194,7 @@ class bch_decode_jit(Function):
         - Lin, S. and Costello, D. Error Control Coding. Section 7.4.
     """
 
-    def __init__(self, field: Type[FieldArray], extension_field: Type[FieldArray]):
+    def __init__(self, field: type[FieldArray], extension_field: type[FieldArray]):
         super().__init__(field)
         self.extension_field = extension_field
 
@@ -1225,7 +1223,6 @@ class bch_decode_jit(Function):
         return dec_codeword, N_errors
 
     def set_globals(self):
-        # pylint: disable=global-variable-undefined
         global CHARACTERISTIC, SUBTRACT, MULTIPLY, RECIPROCAL, POWER
         global CONVOLVE, POLY_ROOTS, POLY_EVALUATE, BERLEKAMP_MASSEY
 
