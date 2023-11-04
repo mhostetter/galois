@@ -7876,18 +7876,18 @@ advised to pass extra arguments to format the display <code class="code highligh
 </code></pre></div>
 </div>
 <h2 id="compare-with-a-previous-benchmark">Compare with a previous benchmark<a class="headerlink" href="#compare-with-a-previous-benchmark" title="Permalink to this heading">¶</a></h2>
-<p>If you would like to compare the performance impact of a branch, first run a benchmark on <code class="code highlight python docutils literal highlight-python"><span class="n">master</span></code> using the <code class="code highlight python docutils literal highlight-python"><span class="o">--</span><span class="n">benchmark</span><span class="o">-</span><span class="n">save</span></code> option.
+<p>If you would like to compare the performance impact of a branch, first run a benchmark on <code class="code highlight python docutils literal highlight-python"><span class="n">main</span></code> using the <code class="code highlight python docutils literal highlight-python"><span class="o">--</span><span class="n">benchmark</span><span class="o">-</span><span class="n">save</span></code> option.
 This will save the file <code class="code highlight python docutils literal highlight-python"><span class="o">.</span><span class="n">benchmarks</span><span class="o">/</span><span class="mi">0001</span><span class="n">_master</span><span class="o">.</span><span class="n">json</span></code>.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><code><span class="gp">$ </span>git<span class="w"> </span>checkout<span class="w"> </span>master
-<span class="gp">$ </span>python3<span class="w"> </span>-m<span class="w"> </span>pytest<span class="w"> </span>benchmarks/test_field_arithmetic.py<span class="w"> </span>--benchmark-save<span class="o">=</span>master<span class="w"> </span>--benchmark-columns<span class="o">=</span>min,max,mean,stddev,median<span class="w"> </span>--benchmark-sort<span class="o">=</span>name
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><code><span class="gp">$ </span>git<span class="w"> </span>checkout<span class="w"> </span>main
+<span class="gp">$ </span>python3<span class="w"> </span>-m<span class="w"> </span>pytest<span class="w"> </span>benchmarks/test_field_arithmetic.py<span class="w"> </span>--benchmark-save<span class="o">=</span>main<span class="w"> </span>--benchmark-columns<span class="o">=</span>min,max,mean,stddev,median<span class="w"> </span>--benchmark-sort<span class="o">=</span>name
 </code></pre></div>
 </div>
-<p>Next, run a benchmark on the branch under test while comparing against the benchmark from <code class="code highlight python docutils literal highlight-python"><span class="n">master</span></code>.</p>
+<p>Next, run a benchmark on the branch under test while comparing against the benchmark from <code class="code highlight python docutils literal highlight-python"><span class="n">main</span></code>.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><code><span class="gp">$ </span>git<span class="w"> </span>checkout<span class="w"> </span>branch
 <span class="gp">$ </span>python3<span class="w"> </span>-m<span class="w"> </span>pytest<span class="w"> </span>benchmarks/test_field_arithmetic.py<span class="w"> </span>--benchmark-compare<span class="o">=</span>0001_master<span class="w"> </span>--benchmark-columns<span class="o">=</span>min,max,mean,stddev,median<span class="w"> </span>--benchmark-sort<span class="o">=</span>name
 </code></pre></div>
 </div>
-<p>Or, save a benchmark run from <code class="code highlight python docutils literal highlight-python"><span class="n">branch</span></code> and compare it explicitly against the one from <code class="code highlight python docutils literal highlight-python"><span class="n">master</span></code>. This benchmark run will save the file <code class="code highlight python docutils literal highlight-python"><span class="o">.</span><span class="n">benchmarks</span><span class="o">/</span><span class="mi">0001</span><span class="n">_branch</span><span class="o">.</span><span class="n">json</span></code>.</p>
+<p>Or, save a benchmark run from <code class="code highlight python docutils literal highlight-python"><span class="n">branch</span></code> and compare it explicitly against the one from <code class="code highlight python docutils literal highlight-python"><span class="n">main</span></code>. This benchmark run will save the file <code class="code highlight python docutils literal highlight-python"><span class="o">.</span><span class="n">benchmarks</span><span class="o">/</span><span class="mi">0001</span><span class="n">_branch</span><span class="o">.</span><span class="n">json</span></code>.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><code><span class="gp">$ </span>git<span class="w"> </span>checkout<span class="w"> </span>branch
 <span class="gp">$ </span>python3<span class="w"> </span>-m<span class="w"> </span>pytest<span class="w"> </span>benchmarks/test_field_arithmetic.py<span class="w"> </span>--benchmark-save<span class="o">=</span>branch<span class="w"> </span>--benchmark-columns<span class="o">=</span>min,max,mean,stddev,median<span class="w"> </span>--benchmark-sort<span class="o">=</span>name
 <span class="gp">$ </span>python3<span class="w"> </span>-m<span class="w"> </span>pytest-benchmark<span class="w"> </span>compare<span class="w"> </span>0001_master<span class="w"> </span>0001_branch
@@ -7900,7 +7900,7 @@ This will save the file <code class="code highlight python docutils literal high
   <small>
     
       Last update:
-      Aug 30, 2022
+      Nov 04, 2023
     
   </small>
 </div>
