@@ -10,7 +10,7 @@ First, `pytest` needs to be installed on your system. Easily install it by insta
 
 .. code-block:: console
 
-   $ python3 -m pip install .[dev]
+   $ python3 -m pip install -r requirements-dev.txt
 
 Configuration
 -------------
