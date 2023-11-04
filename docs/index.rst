@@ -128,7 +128,7 @@ If this library was useful to you in your research, please cite us. Following th
    :hidden:
 
    development/installation.rst
-   development/linter.rst
+   development/formatting.rst
    development/unit-tests.rst
    development/documentation.rst
 
