@@ -1,0 +1,7 @@
+ruff == 0.1.4
+pytest
+pytest-cov[toml]
+pytest-xdist
+pytest-benchmark >= 4.0.0
+requests
+pdfminer.six
