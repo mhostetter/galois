@@ -5,7 +5,7 @@ sequences.
 
 from __future__ import annotations
 
-from typing import Any, Callable, Type, cast, overload
+from typing import Any, Callable, cast, overload
 
 import numba
 import numpy as np
@@ -45,7 +45,7 @@ class _LFSR:
         if not feedback_poly.coeffs[-1] == 1:
             raise ValueError(f"Argument 'feedback_poly' must have a 0-th degree term of 1, not {feedback_poly}.")
 
-        self._field = feedback_poly.field
+        self._field = cast(type[FieldArray], feedback_poly.field)
         self._feedback_poly = feedback_poly
         self._characteristic_poly = feedback_poly.reverse()
         self._order = feedback_poly.degree
@@ -53,11 +53,12 @@ class _LFSR:
         if self._type == "fibonacci":
             # T = [c_n-1, c_n-2, ..., c_1, c_0]
             # c(x) = x^{n} - c_{n-1}x^{n-1} - c_{n-2}x^{n-2} - \dots - c_{1}x - c_{0}
-            self._taps = -self.characteristic_poly.coeffs[1:]
+            taps = -self.characteristic_poly.coeffs[1:]
         else:
             # T = [c_0, c_1, ..., c_n-2, c_n-1]
             # c(x) = x^{n} - c_{n-1}x^{n-1} - c_{n-2}x^{n-2} - \dots - c_{1}x - c_{0}
-            self._taps = -self.characteristic_poly.coeffs[1:][::-1]
+            taps = -self.characteristic_poly.coeffs[1:][::-1]
+        self._taps = cast(FieldArray, taps)
 
         if state is None:
             state = self.field.Ones(self.order)
@@ -114,13 +115,14 @@ class _LFSR:
 
         return y
 
-    def _step_forward(self, steps):
+    def _step_forward(self, steps: int) -> FieldArray:
         assert steps > 0
 
         if self._type == "fibonacci":
             y, state = fibonacci_lfsr_step_forward_jit(self.field)(self.taps, self.state, steps)
         else:
             y, state = galois_lfsr_step_forward_jit(self.field)(self.taps, self.state, steps)
+        y = cast(FieldArray, y)
 
         self._state[:] = state[:]
         if y.size == 1:
@@ -128,7 +130,7 @@ class _LFSR:
 
         return y
 
-    def _step_backward(self, steps):
+    def _step_backward(self, steps: int) -> FieldArray:
         assert steps > 0
 
         if not self.characteristic_poly.coeffs[-1] > 0:
@@ -141,6 +143,7 @@ class _LFSR:
             y, state = fibonacci_lfsr_step_backward_jit(self.field)(self.taps, self.state, steps)
         else:
             y, state = galois_lfsr_step_backward_jit(self.field)(self.taps, self.state, steps)
+        y = cast(FieldArray, y)
 
         self._state[:] = state[:]
         if y.size == 1:

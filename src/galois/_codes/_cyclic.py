@@ -4,7 +4,7 @@ A module containing common functions for cyclic codes.
 
 from __future__ import annotations
 
-from typing import Any, overload
+from typing import Any, cast, overload
 
 import numpy as np
 import numpy.typing as npt
@@ -132,6 +132,7 @@ class _CyclicCode(_LinearCode):
             message = codeword[..., 0:ks]
         else:
             message, _ = divmod_jit(self.field)(codeword, self.generator_poly.coeffs)
+        message = cast(FieldArray, message)
 
         return message
 
@@ -140,6 +141,7 @@ class _CyclicCode(_LinearCode):
             parity = codeword[..., -(self.n - self.k) :]
         else:
             _, parity = divmod_jit(self.field)(codeword, self.generator_poly.coeffs)
+        parity = cast(FieldArray, parity)
 
         return parity
 
@@ -217,6 +219,7 @@ def _poly_to_generator_matrix(n: int, generator_poly: Poly, systematic: bool) ->
         G = GF.Zeros((k, n))
         for i in range(k):
             G[i, i : i + generator_poly.degree + 1] = generator_poly.coeffs
+    G = cast(FieldArray, G)
 
     return G
 

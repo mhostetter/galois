@@ -4,7 +4,7 @@ A module containing common functions for linear block codes.
 
 from __future__ import annotations
 
-from typing import Any, Type, cast, overload
+from typing import Any, cast, overload
 
 import numpy as np
 import numpy.typing as npt
@@ -215,11 +215,11 @@ class _LinearCode:
 
         # Record if the original message was 1-D and then convert to 2-D
         is_message_1d = message.ndim == 1
-        message = np.atleast_2d(message)
+        message = cast(FieldArray, np.atleast_2d(message))
 
         return message, is_message_1d
 
-    def _check_and_convert_codeword(self, codeword: FieldArray) -> FieldArray:
+    def _check_and_convert_codeword(self, codeword: ArrayLike) -> tuple[FieldArray, bool]:
         """
         Converts the array-like codeword into a 2-D FieldArray with shape (N, ns).
         """
