@@ -7799,26 +7799,23 @@ fashion from a local folder. This allows any changes in the current directory to
 </code></pre></div>
 </div>
 <h2 id="install-the-dev-dependencies">Install the <code class="code highlight python docutils literal highlight-python"><span class="n">dev</span></code> dependencies<a class="headerlink" href="#install-the-dev-dependencies" title="Permalink to this heading">¶</a></h2>
-<p>The development dependencies include packages for linting and unit testing. These dependencies are stored
-in <code class="code highlight python docutils literal highlight-python"><span class="n">pyproject</span><span class="o">.</span><span class="n">toml</span></code>.</p>
+<p>The development dependencies include packages for linting and unit testing.
+These dependencies are stored in <code class="code highlight python docutils literal highlight-python"><span class="n">requirements</span><span class="o">-</span><span class="n">dev</span><span class="o">.</span><span class="n">txt</span></code>.</p>
 <div class="literal-block-wrapper docutils container" id="id1">
 <div class="code-block-caption highlight"><span class="filename"><span class="caption-text">
-</span>pyproject.toml<a class="headerlink" href="#id1" title="Permalink to this code">¶</a></span></div>
-<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><code><span class="k">[project.optional-dependencies]</span>
-<span class="n">dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<span class="w">    </span><span class="s">&quot;ruff == 0.1.4&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="s">&quot;pytest&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="s">&quot;pytest-cov[toml]&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="s">&quot;pytest-xdist&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="s">&quot;pytest-benchmark &gt;= 4.0.0&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="s">&quot;requests&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="s">&quot;pdfminer.six&quot;</span><span class="p">,</span>
-<span class="p">]</span>
+</span>requirements-dev.txt<a class="headerlink" href="#id1" title="Permalink to this code">¶</a></span></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="n">ruff</span> <span class="o">==</span> <span class="mf">0.1.4</span>
+<span class="n">pytest</span>
+<span class="n">pytest</span><span class="o">-</span><span class="n">cov</span><span class="p">[</span><span class="n">toml</span><span class="p">]</span>
+<span class="n">pytest</span><span class="o">-</span><span class="n">xdist</span>
+<span class="n">pytest</span><span class="o">-</span><span class="n">benchmark</span> <span class="o">&gt;=</span> <span class="mf">4.0.0</span>
+<span class="n">requests</span>
+<span class="n">pdfminer</span><span class="o">.</span><span class="n">six</span>
 </code></pre></div>
 </div>
 </div>
-<p>Install the development dependencies by passing the <code class="code highlight python docutils literal highlight-python"><span class="p">[</span><span class="n">dev</span><span class="p">]</span></code> extras to <code class="code highlight python docutils literal highlight-python"><span class="n">pip</span> <span class="n">install</span></code>.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><code><span class="gp">$ </span>python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>galois<span class="o">[</span>dev<span class="o">]</span>
+<p>Install the development dependencies by passing <code class="code highlight python docutils literal highlight-python"><span class="o">-</span><span class="n">r</span></code> to <code class="code highlight python docutils literal highlight-python"><span class="n">pip</span> <span class="n">install</span></code>.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><code><span class="gp">$ </span>python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements-dev.txt
 </code></pre></div>
 </div>
 

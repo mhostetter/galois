@@ -7756,7 +7756,7 @@ You're not viewing the latest version.
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="mi">5</span><span class="p">)</span>
 
 <span class="gp">In [2]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span> <span class="n">x</span>
-<span class="gh">Out[2]: </span><span class="go">GF([158, 103,  56, 189], order=3^5)</span>
+<span class="gh">Out[2]: </span><span class="go">GF([158, 222, 229,   0], order=3^5)</span>
 
 <span class="gp">In [3]: </span><span class="n">x</span><span class="o">.</span><span class="n">shape</span>
 <span class="gh">Out[3]: </span><span class="go">(4,)</span>
@@ -7767,27 +7767,27 @@ You're not viewing the latest version.
 iterable, <code class="code highlight python docutils literal highlight-python"><span class="p">()</span></code> or <code class="code highlight python docutils literal highlight-python"><span class="p">[]</span></code>, represents a 0-D array (scalar).</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [4]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">));</span> <span class="n">x</span>
 <span class="gh">Out[4]: </span>
-<span class="go">GF([[235, 152,  64],</span>
-<span class="go">    [168, 242,   9]], order=3^5)</span>
+<span class="go">GF([[ 88, 168,  26],</span>
+<span class="go">    [112,  30,  82]], order=3^5)</span>
 
 <span class="gp">In [5]: </span><span class="n">x</span><span class="o">.</span><span class="n">shape</span>
 <span class="gh">Out[5]: </span><span class="go">(2, 3)</span>
 
 <span class="gp">In [6]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]);</span> <span class="n">x</span>
 <span class="gh">Out[6]: </span>
-<span class="go">GF([[[228, 205, 242, 176],</span>
-<span class="go">     [ 21, 200,  10, 113],</span>
-<span class="go">     [241, 231,  23,  42]],</span>
+<span class="go">GF([[[ 96,  31, 241, 114],</span>
+<span class="go">     [106, 193,  61,  88],</span>
+<span class="go">     [166, 100, 130,  73]],</span>
 
-<span class="go">    [[ 79, 126,  38, 211],</span>
-<span class="go">     [112,  44,  85, 214],</span>
-<span class="go">     [199, 120,   3,  64]]], order=3^5)</span>
+<span class="go">    [[231, 145,  74, 158],</span>
+<span class="go">     [ 39, 188, 182, 115],</span>
+<span class="go">     [ 82, 180,  95,  94]]], order=3^5)</span>
 
 <span class="gp">In [7]: </span><span class="n">x</span><span class="o">.</span><span class="n">shape</span>
 <span class="gh">Out[7]: </span><span class="go">(2, 3, 4)</span>
 
 <span class="gp">In [8]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(());</span> <span class="n">x</span>
-<span class="gh">Out[8]: </span><span class="go">GF(25, order=3^5)</span>
+<span class="gh">Out[8]: </span><span class="go">GF(173, order=3^5)</span>
 
 <span class="gp">In [9]: </span><span class="n">x</span><span class="o">.</span><span class="n">shape</span>
 <span class="gh">Out[9]: </span><span class="go">()</span>
