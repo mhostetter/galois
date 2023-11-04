@@ -13,7 +13,7 @@ The latest released version of :obj:`galois` can be installed from `PyPI <https:
 Install from GitHub
 -------------------
 
-The latest code on `master` can be installed using `pip` in this way.
+The latest code on `main` can be installed using `pip` in this way.
 
 .. code-block:: console
 
