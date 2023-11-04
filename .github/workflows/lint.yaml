@@ -28,8 +28,11 @@ jobs:
       - name: Upgrade pip
         run: python3 -m pip install --upgrade pip
 
-      - name: Install the `galois` package with [dev]
-        run: python3 -m pip install .[dev]
+      - name: Install the dev requirements
+        run: python3 -m pip install -r requirements-dev.txt
+
+      - name: Install the `galois` package
+        run: python3 -m pip install .
 
       - name: Lint with ruff
         run: python3 -m ruff check --output-format=github .
@@ -48,8 +51,11 @@ jobs:
       - name: Upgrade pip
         run: python3 -m pip install --upgrade pip
 
-      - name: Install the `galois` package with [dev]
-        run: python3 -m pip install .[dev]
+      - name: Install the dev requirements
+        run: python3 -m pip install -r requirements-dev.txt
+
+      - name: Install the `galois` package
+        run: python3 -m pip install .
 
       - name: Format with ruff
         run: python3 -m ruff format --check .

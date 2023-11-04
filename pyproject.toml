@@ -55,16 +55,7 @@ dependencies = [
 ]
 dynamic = ["version"]
 
-[project.optional-dependencies]
-dev = [
-    "ruff == 0.1.4",
-    "pytest",
-    "pytest-cov[toml]",
-    "pytest-xdist",
-    "pytest-benchmark >= 4.0.0",
-    "requests",
-    "pdfminer.six",
-]
+# [project.optional-dependencies]
 
 [project.urls]
 Homepage = "https://github.com/mhostetter/galois"

@@ -59,8 +59,11 @@ jobs:
           files: galois-*.whl
           working-directory: dist/
 
-      - name: Install the `galois` package wheel with upgraded [dev]
-        run: python3 -m pip install --upgrade dist/${{ steps.glob.outputs.paths }}[dev]
+      - name: Install the dev dependencies
+        run: python3 -m pip install -r requirements-dev.txt
+
+      - name: Install the `galois` package wheel with upgraded dependencies
+        run: python3 -m pip install --upgrade dist/${{ steps.glob.outputs.paths }}
 
       - name: Test with pytest
         run: python3 -m pytest -n auto --cov=galois --cov-report=xml tests/
@@ -109,8 +112,11 @@ jobs:
       - name: Install minimum package dependencies
         run: python3 -m pip install -r requirements-min.txt
 
-      - name: Install the `galois` package wheel with [dev]
-        run: python3 -m pip install dist/${{ steps.glob.outputs.paths }}[dev]
+      - name: Install the dev dependencies
+        run: python3 -m pip install -r requirements-dev.txt
+
+      - name: Install the `galois` package wheel
+        run: python3 -m pip install dist/${{ steps.glob.outputs.paths }}
 
       - name: Test with pytest
         run: python3 -m pytest -n auto tests/
@@ -156,8 +162,11 @@ jobs:
           files: galois-*.whl
           working-directory: dist/
 
-      - name: Install the `galois` package wheel with upgraded [dev]
-        run: python3 -m pip install --upgrade dist/${{ steps.glob.outputs.paths }}[dev]
+      - name: Install the dev dependencies
+        run: python3 -m pip install -r requirements-dev.txt
+
+      - name: Install the `galois` package wheel with upgraded dependencies
+        run: python3 -m pip install --upgrade dist/${{ steps.glob.outputs.paths }}
 
       - name: Test with pytest
         run: python3 -m pytest -n auto tests/
