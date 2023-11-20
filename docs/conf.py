@@ -13,6 +13,7 @@
 
 import inspect
 import os
+import re
 import sys
 
 sys.path.insert(0, os.path.abspath("."))
@@ -440,7 +441,8 @@ def modify_type_hints(signature):
     See https://github.com/jbms/sphinx-immaterial/issues/161
     """
     if signature:
-        signature = signature.replace("np", "~numpy")
+        signature = re.sub(r"(?<!~)np\.", "~numpy.", signature)
+        signature = re.sub(r"(?<!~)galois\.", "~galois.", signature)
     return signature
 
 
