@@ -120,6 +120,7 @@ jobs:
       - name: Update versions.json file
         shell: python
         run: |
+          from distutils.version import StrictVersion
           import json
           import pathlib
           import os
@@ -132,6 +133,13 @@ jobs:
           # Remove "latest" from list of versions
           versions.remove("latest")
           os.system("rm latest")
+
+          # Sort versions, ignoring the initial 'v'
+          def sort_version(version):
+            if "x" in version:
+              version = version.replace("x", "1000")
+            return StrictVersion(version[1:])
+          versions = sorted(versions, key=sort_version, reverse=True)
 
           list_of_dicts = []
           latest = None
