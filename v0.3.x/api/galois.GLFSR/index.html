@@ -32,7 +32,7 @@
         <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
-        <link rel="stylesheet" type="text/css" href="../../_static/sphinx_immaterial_theme.f3dea7ad6e6240262.min.css" />
+        <link rel="stylesheet" type="text/css" href="../../_static/sphinx_immaterial_theme.7c9b8a3bed64916d7.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/extra.css" />
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
@@ -7989,7 +7989,7 @@ You're not viewing the latest version.
 <dt class="sig sig-object highlight py">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">galois.</span></span><span class="sig-name descname"><span class="pre">GLFSR</span></span></dt>
 <dd><p>A Galois linear-feedback shift register (LFSR).</p>
-<p class="rubric" id="notes">Notes</p>
+<p class="rubric" id="notes">Notes<a class="headerlink" href="#notes" title="Permalink to this headline">¶</a></p>
 <p>A Galois LFSR is defined by its feedback polynomial <span class="math notranslate nohighlight">\(f(x)\)</span>.</p>
 <p><div class="math notranslate nohighlight">
 \[f(x) = -c_{0}x^{n} - c_{1}x^{n-1} - \dots - c_{n-2}x^{2} - c_{n-1}x + 1 = x^n c(x^{-1})\]</div>
@@ -8019,7 +8019,7 @@ sequence <span class="math notranslate nohighlight">\(y\)</span> produced by the
 <p>The shift register taps <span class="math notranslate nohighlight">\(T\)</span> are defined left-to-right as <span class="math notranslate nohighlight">\(T = [T_0, T_1, \dots, T_{n-2}, T_{n-1}]\)</span>.
 The state vector <span class="math notranslate nohighlight">\(S\)</span> is also defined left-to-right as <span class="math notranslate nohighlight">\(S = [S_0, S_1, \dots, S_{n-2}, S_{n-1}]\)</span>.</p>
 <p>In the Galois configuration, the shift register taps are <span class="math notranslate nohighlight">\(T = [c_0, c_1, \dots, c_{n-2}, c_{n-1}]\)</span>.</p>
-<p class="rubric" id="references">References</p>
+<p class="rubric" id="references">References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></p>
 <ul class="simple">
 <li><p>Gardner, D. 2019. “Applications of the Galois Model LFSR in Cryptography”. figshare.
 <a class="reference external" href="https://hdl.handle.net/2134/21932">https://hdl.handle.net/2134/21932</a>.</p></li>
@@ -8028,7 +8028,7 @@ The state vector <span class="math notranslate nohighlight">\(S\)</span> is also
 <p class="admonition-title">See also</p>
 <p><a class="reference internal" href="../galois.berlekamp_massey/" title="galois.berlekamp_massey (Python function) — Finds the minimal polynomial $c(x)$ that produces the linear recurrent sequence $y$."><code class="xref py py-obj docutils literal notranslate"><span class="pre">berlekamp_massey</span></code></a></p>
 </div>
-<p class="example rubric" id="examples">Examples</p>
+<p class="example rubric" id="examples">Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:4">
 <input checked type="radio" id="__tabbed_1_1" name="__tabbed_1"><input type="radio" id="__tabbed_1_2" name="__tabbed_1"><input type="radio" id="__tabbed_1_3" name="__tabbed_1"><input type="radio" id="__tabbed_1_4" name="__tabbed_1"><div class="tabbed-labels docutils">
 <label class="tabbed-label" for="__tabbed_1_1">

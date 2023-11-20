@@ -32,7 +32,7 @@
         <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
-        <link rel="stylesheet" type="text/css" href="../../_static/sphinx_immaterial_theme.f3dea7ad6e6240262.min.css" />
+        <link rel="stylesheet" type="text/css" href="../../_static/sphinx_immaterial_theme.7c9b8a3bed64916d7.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/extra.css" />
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
@@ -7774,14 +7774,14 @@ You're not viewing the latest version.
 The number of rows of the basis matrix is the dimension of the row space.</p>
 </dd>
 </dl>
-<p class="rubric" id="notes">Notes</p>
+<p class="rubric" id="notes">Notes<a class="headerlink" href="#notes" title="Permalink to this headline">¶</a></p>
 <p>Given an <span class="math notranslate nohighlight">\(m \times n\)</span> matrix <span class="math notranslate nohighlight">\(\mathbf{A}\)</span> over <span class="math notranslate nohighlight">\(\mathrm{GF}(q)\)</span>, the <em>row space</em> of
 <span class="math notranslate nohighlight">\(\mathbf{A}\)</span> is the vector space <span class="math notranslate nohighlight">\(\{\mathbf{x} \in \mathrm{GF}(q)^n\}\)</span> defined by all linear
 combinations of the rows of <span class="math notranslate nohighlight">\(\mathbf{A}\)</span>. The row space has at most dimension
 <span class="math notranslate nohighlight">\(\textrm{min}(m, n)\)</span>.</p>
 <p>The row space has properties <span class="math notranslate nohighlight">\(\mathcal{R}(\mathbf{A}) = \mathcal{C}(\mathbf{A}^T)\)</span> and
 <span class="math notranslate nohighlight">\(\textrm{dim}(\mathcal{R}(\mathbf{A})) + \textrm{dim}(\mathcal{LN}(\mathbf{A})) = m\)</span>.</p>
-<p class="example rubric" id="examples">Examples</p>
+<p class="example rubric" id="examples">Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></p>
 <p>The <a class="reference internal" href="#" title="galois.FieldArray.row_space (Python method) — Computes the row space of the matrix $mathbf{A}$."><code class="xref py py-func docutils literal notranslate"><span class="pre">row_space()</span></code></a> method defines basis vectors (its rows) that span the row space of
 <span class="math notranslate nohighlight">\(\mathbf{A}\)</span>.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">m</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span>
@@ -7790,11 +7790,11 @@ combinations of the rows of <span class="math notranslate nohighlight">\(\mathbf
 
 <span class="gp">In [3]: </span><span class="n">A</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">((</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">));</span> <span class="n">A</span>
 <span class="gh">Out[3]: </span>
-<span class="go">GF([[ 4, 27, 27],</span>
-<span class="go">    [12, 20, 12],</span>
-<span class="go">    [22,  8, 18],</span>
-<span class="go">    [23,  2, 25],</span>
-<span class="go">    [11, 13,  6]], order=31)</span>
+<span class="go">GF([[ 0, 30,  2],</span>
+<span class="go">    [25, 13, 26],</span>
+<span class="go">    [ 4, 19, 13],</span>
+<span class="go">    [30,  0,  6],</span>
+<span class="go">    [ 8, 22, 23]], order=31)</span>
 
 <span class="gp">In [4]: </span><span class="n">R</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">row_space</span><span class="p">();</span> <span class="n">R</span>
 <span class="gh">Out[4]: </span>
@@ -7806,8 +7806,8 @@ combinations of the rows of <span class="math notranslate nohighlight">\(\mathbf
 <p>The dimension of the row space and left null space sum to <span class="math notranslate nohighlight">\(m\)</span>.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [5]: </span><span class="n">LN</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">left_null_space</span><span class="p">();</span> <span class="n">LN</span>
 <span class="gh">Out[5]: </span>
-<span class="go">GF([[ 1,  0, 28, 30, 19],</span>
-<span class="go">    [ 0,  1, 24, 19,  7]], order=31)</span>
+<span class="go">GF([[ 1,  0, 26, 29, 10],</span>
+<span class="go">    [ 0,  1, 16, 16, 18]], order=31)</span>
 
 <span class="gp">In [6]: </span><span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">LN</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">m</span>
 <span class="gh">Out[6]: </span><span class="go">True</span>

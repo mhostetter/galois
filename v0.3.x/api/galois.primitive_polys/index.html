@@ -32,7 +32,7 @@
         <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
-        <link rel="stylesheet" type="text/css" href="../../_static/sphinx_immaterial_theme.f3dea7ad6e6240262.min.css" />
+        <link rel="stylesheet" type="text/css" href="../../_static/sphinx_immaterial_theme.7c9b8a3bed64916d7.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/extra.css" />
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
@@ -7876,14 +7876,14 @@ The default is <code class="code highlight python docutils literal highlight-pyt
 <p class="admonition-title">See also</p>
 <p><a class="reference internal" href="../galois.Poly.is_primitive/" title="galois.Poly.is_primitive (Python method) — Determines whether the polynomial $f(x)$ over $mathrm{GF}(q)$ is primitive."><code class="xref py py-obj docutils literal notranslate"><span class="pre">Poly.is_primitive</span></code></a>, <a class="reference internal" href="../galois.irreducible_polys/" title="galois.irreducible_polys (Python function) — Iterates through all monic irreducible polynomials $f(x)$ over $mathrm{GF}(q)$ with degree $m$."><code class="xref py py-obj docutils literal notranslate"><span class="pre">irreducible_polys</span></code></a></p>
 </div>
-<p class="rubric" id="notes">Notes</p>
+<p class="rubric" id="notes">Notes<a class="headerlink" href="#notes" title="Permalink to this headline">¶</a></p>
 <p>If <span class="math notranslate nohighlight">\(f(x)\)</span> is a primitive polynomial over <span class="math notranslate nohighlight">\(\mathrm{GF}(q)\)</span> and
 <span class="math notranslate nohighlight">\(a \in \mathrm{GF}(q) \backslash \{0\}\)</span>, then <span class="math notranslate nohighlight">\(a \cdot f(x)\)</span> is also primitive.</p>
 <p>In addition to other applications, <span class="math notranslate nohighlight">\(f(x)\)</span> produces the field extension <span class="math notranslate nohighlight">\(\mathrm{GF}(q^m)\)</span>
 of <span class="math notranslate nohighlight">\(\mathrm{GF}(q)\)</span>. Since <span class="math notranslate nohighlight">\(f(x)\)</span> is primitive, <span class="math notranslate nohighlight">\(x\)</span> is a primitive element <span class="math notranslate nohighlight">\(\alpha\)</span>
 of <span class="math notranslate nohighlight">\(\mathrm{GF}(q^m)\)</span> such that
 <span class="math notranslate nohighlight">\(\mathrm{GF}(q^m) = \{0, 1, \alpha, \alpha^2, \dots, \alpha^{q^m-2}\}\)</span>.</p>
-<p class="example rubric" id="examples">Examples</p>
+<p class="example rubric" id="examples">Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></p>
 <p>Find all monic primitive polynomials over <span class="math notranslate nohighlight">\(\mathrm{GF}(3)\)</span> with degree 4. You may also use <code class="code highlight python docutils literal highlight-python"><span class="nb">tuple</span><span class="p">()</span></code> on
 the returned generator.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="nb">list</span><span class="p">(</span><span class="n">galois</span><span class="o">.</span><span class="n">primitive_polys</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
@@ -7930,7 +7930,7 @@ polynomials that would have been found after the <code class="code highlight pyt
 </div>
 <p>Or, manually iterate over the generator.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [5]: </span><span class="n">generator</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">primitive_polys</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">);</span> <span class="n">generator</span>
-<span class="gh">Out[5]: </span><span class="go">&lt;generator object primitive_polys at 0x7fc755c0a770&gt;</span>
+<span class="gh">Out[5]: </span><span class="go">&lt;generator object primitive_polys at 0x7f5ba17d5470&gt;</span>
 
 <span class="gp">In [6]: </span><span class="nb">next</span><span class="p">(</span><span class="n">generator</span><span class="p">)</span>
 <span class="gh">Out[6]: </span><span class="go">Poly(x^4 + 2x^3 + 2x^2 + x + 2, GF(3))</span>

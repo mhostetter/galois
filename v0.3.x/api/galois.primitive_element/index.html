@@ -32,7 +32,7 @@
         <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
-        <link rel="stylesheet" type="text/css" href="../../_static/sphinx_immaterial_theme.f3dea7ad6e6240262.min.css" />
+        <link rel="stylesheet" type="text/css" href="../../_static/sphinx_immaterial_theme.7c9b8a3bed64916d7.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/extra.css" />
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
@@ -7826,7 +7826,7 @@ The primitive element <span class="math notranslate nohighlight">\(g\)</span> is
 <p class="admonition-title">See also</p>
 <p><a class="reference internal" href="../galois.is_primitive_element/" title="galois.is_primitive_element (Python function) — Determines if $g$ is a primitive element of the Galois field $mathrm{GF}(q^m)$ with degree-$m$ irreducible polynomial $f(x)$ over $mathrm{GF}(q)$."><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_primitive_element</span></code></a>, <a class="reference internal" href="../galois.FieldArray.primitive_element/" title="galois.FieldArray.primitive_element (Python property) — A primitive element $alpha$ of the Galois field $mathrm{GF}(p^m)$."><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldArray.primitive_element</span></code></a></p>
 </div>
-<p class="example rubric" id="examples">Examples</p>
+<p class="example rubric" id="examples">Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></p>
 <p>Construct the extension field <span class="math notranslate nohighlight">\(\mathrm{GF}(7^5)\)</span>.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">f</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">irreducible_poly</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;max&quot;</span><span class="p">);</span> <span class="n">f</span>
 <span class="gh">Out[1]: </span><span class="go">Poly(x^5 + 6x^4 + 6x^3 + 6x^2 + 6x + 6, GF(7))</span>
@@ -7873,11 +7873,11 @@ polynomial <span class="math notranslate nohighlight">\(f(x)\)</span>.</p>
 <p>Find a random primitive element for the degree-5 extension of <span class="math notranslate nohighlight">\(\mathrm{GF}(7)\)</span> with irreducible
 polynomial <span class="math notranslate nohighlight">\(f(x)\)</span>.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [10]: </span><span class="n">g</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">primitive_element</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;random&quot;</span><span class="p">);</span> <span class="n">g</span>
-<span class="gh">Out[10]: </span><span class="go">Poly(4x^4 + 4x^3 + 2x^2 + 2, GF(7))</span>
+<span class="gh">Out[10]: </span><span class="go">Poly(6x^4 + 5x^3 + 4x^2 + 6x + 2, GF(7))</span>
 
 <span class="go"># Convert the polynomial over GF(7) into an element of GF(7^5)</span>
 <span class="gp">In [11]: </span><span class="n">g</span> <span class="o">=</span> <span class="n">GF</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">g</span><span class="p">));</span> <span class="n">g</span>
-<span class="gh">Out[11]: </span><span class="go">GF(4x^4 + 4x^3 + 2x^2 + 2, order=7^5)</span>
+<span class="gh">Out[11]: </span><span class="go">GF(6x^4 + 5x^3 + 4x^2 + 6x + 2, order=7^5)</span>
 
 <span class="gp">In [12]: </span><span class="n">g</span><span class="o">.</span><span class="n">multiplicative_order</span><span class="p">()</span> <span class="o">==</span> <span class="n">GF</span><span class="o">.</span><span class="n">order</span> <span class="o">-</span> <span class="mi">1</span>
 <span class="gh">Out[12]: </span><span class="go">True</span>

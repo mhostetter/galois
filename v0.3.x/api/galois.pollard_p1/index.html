@@ -32,7 +32,7 @@
         <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
-        <link rel="stylesheet" type="text/css" href="../../_static/sphinx_immaterial_theme.f3dea7ad6e6240262.min.css" />
+        <link rel="stylesheet" type="text/css" href="../../_static/sphinx_immaterial_theme.7c9b8a3bed64916d7.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/extra.css" />
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
@@ -7886,18 +7886,18 @@ will not perform the second step.</p>
 <p class="admonition-title">See also</p>
 <p><a class="reference internal" href="../galois.factors/" title="galois.factors (Python function) — Computes the prime factors of a positive integer or the irreducible factors of a non-constant, monic polynomial."><code class="xref py py-obj docutils literal notranslate"><span class="pre">factors</span></code></a>, <a class="reference internal" href="../galois.pollard_rho/" title="galois.pollard_rho (Python function) — Attempts to find a non-trivial factor of $n$ using cycle detection."><code class="xref py py-obj docutils literal notranslate"><span class="pre">pollard_rho</span></code></a></p>
 </div>
-<p class="rubric" id="notes">Notes</p>
+<p class="rubric" id="notes">Notes<a class="headerlink" href="#notes" title="Permalink to this headline">¶</a></p>
 <p>For a given odd composite <span class="math notranslate nohighlight">\(n\)</span> with a prime factor <span class="math notranslate nohighlight">\(p\)</span>, Pollard’s <span class="math notranslate nohighlight">\(p-1\)</span> algorithm can discover
 a non-trivial factor of <span class="math notranslate nohighlight">\(n\)</span> if <span class="math notranslate nohighlight">\(p-1\)</span> is <span class="math notranslate nohighlight">\(B\)</span>-smooth. Specifically, the prime factorization
 must satisfy <span class="math notranslate nohighlight">\(p-1 = p_1^{e_1} \dots p_k^{e_k}\)</span> with each <span class="math notranslate nohighlight">\(p_i \le B\)</span>.</p>
 <p>A extension of Pollard’s <span class="math notranslate nohighlight">\(p-1\)</span> algorithm allows a prime factor <span class="math notranslate nohighlight">\(p\)</span> to be <span class="math notranslate nohighlight">\(B\)</span>-smooth with the
 exception of one prime factor <span class="math notranslate nohighlight">\(B &lt; p_{k+1} \le B_2\)</span>. In this case, the prime factorization is
 <span class="math notranslate nohighlight">\(p-1 = p_1^{e_1} \dots p_k^{e_k} p_{k+1}\)</span>. Often <span class="math notranslate nohighlight">\(B_2\)</span> is chosen such that <span class="math notranslate nohighlight">\(B_2 \gg B\)</span>.</p>
-<p class="rubric" id="references">References</p>
+<p class="rubric" id="references">References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></p>
 <ul class="simple">
 <li><p>Section 3.2.3 from <a class="reference external" href="https://cacr.uwaterloo.ca/hac/about/chap3.pdf">https://cacr.uwaterloo.ca/hac/about/chap3.pdf</a></p></li>
 </ul>
-<p class="example rubric" id="examples">Examples</p>
+<p class="example rubric" id="examples">Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></p>
 <p>Here, <span class="math notranslate nohighlight">\(n = pq\)</span> where <span class="math notranslate nohighlight">\(p-1\)</span> is 1039-smooth and <span class="math notranslate nohighlight">\(q-1\)</span> is 17-smooth.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">p</span><span class="p">,</span> <span class="n">q</span> <span class="o">=</span> <span class="mi">1458757</span><span class="p">,</span> <span class="mi">1326001</span>
 

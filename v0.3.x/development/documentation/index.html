@@ -32,7 +32,7 @@
         <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
-        <link rel="stylesheet" type="text/css" href="../../_static/sphinx_immaterial_theme.f3dea7ad6e6240262.min.css" />
+        <link rel="stylesheet" type="text/css" href="../../_static/sphinx_immaterial_theme.7c9b8a3bed64916d7.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/extra.css" />
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
@@ -7766,13 +7766,16 @@ You're not viewing the latest version.
 <div class="literal-block-wrapper docutils container" id="id1">
 <div class="code-block-caption highlight"><span class="filename"><span class="caption-text">
 </span>docs/requirements.txt<a class="headerlink" href="#id1" title="Permalink to this code">¶</a></span></div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="n">sphinx</span> <span class="o">&lt;</span> <span class="mf">5.4</span>
-<span class="n">sphinx</span><span class="o">-</span><span class="n">immaterial</span> <span class="o">==</span> <span class="mf">0.11.5</span>
-<span class="n">myst</span><span class="o">-</span><span class="n">parser</span>
-<span class="n">sphinx</span><span class="o">-</span><span class="n">design</span>
-<span class="n">sphinx</span><span class="o">-</span><span class="n">last</span><span class="o">-</span><span class="n">updated</span><span class="o">-</span><span class="n">by</span><span class="o">-</span><span class="n">git</span>
-<span class="n">sphinx</span><span class="o">-</span><span class="n">math</span><span class="o">-</span><span class="n">dollar</span>
-<span class="n">ipykernel</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="n">sphinx</span> <span class="o">&lt;</span> <span class="mf">7.3</span>
+<span class="n">sphinx</span><span class="o">-</span><span class="n">immaterial</span> <span class="o">==</span> <span class="mf">0.11.9</span>
+<span class="c1"># For some reason, if the below versions aren&#39;t specified, the dependency resolution takes 18 minutes in CI.</span>
+<span class="n">myst</span><span class="o">-</span><span class="n">parser</span> <span class="o">==</span> <span class="mf">0.18.1</span>
+<span class="n">sphinx</span><span class="o">-</span><span class="n">design</span>  <span class="o">==</span> <span class="mf">0.5.0</span>
+<span class="n">sphinx</span><span class="o">-</span><span class="n">last</span><span class="o">-</span><span class="n">updated</span><span class="o">-</span><span class="n">by</span><span class="o">-</span><span class="n">git</span> <span class="o">==</span> <span class="mf">0.3.6</span>
+<span class="n">sphinx</span><span class="o">-</span><span class="n">math</span><span class="o">-</span><span class="n">dollar</span> <span class="o">==</span> <span class="mf">1.2.1</span>
+<span class="n">ipykernel</span> <span class="o">==</span> <span class="mf">6.26.0</span>
+<span class="n">myst</span><span class="o">-</span><span class="n">nb</span> <span class="o">==</span> <span class="mf">0.17.2</span>
+<span class="n">pickleshare</span> <span class="o">==</span> <span class="mf">0.7.5</span>  <span class="c1"># Needed by ipykernel</span>
 </code></pre></div>
 </div>
 </div>
@@ -7800,7 +7803,7 @@ to serve the webpages locally with a webserver. This is easily done using the bu
   <small>
     
       Last update:
-      Aug 06, 2023
+      Nov 20, 2023
     
   </small>
 </div>

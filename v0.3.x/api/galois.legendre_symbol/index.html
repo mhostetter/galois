@@ -32,7 +32,7 @@
         <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
-        <link rel="stylesheet" type="text/css" href="../../_static/sphinx_immaterial_theme.f3dea7ad6e6240262.min.css" />
+        <link rel="stylesheet" type="text/css" href="../../_static/sphinx_immaterial_theme.7c9b8a3bed64916d7.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/extra.css" />
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
@@ -7851,7 +7851,7 @@ You're not viewing the latest version.
 <p class="admonition-title">See also</p>
 <p><a class="reference internal" href="../galois.jacobi_symbol/" title="galois.jacobi_symbol (Python function) — Computes the Jacobi symbol $(frac{a}{n})$."><code class="xref py py-obj docutils literal notranslate"><span class="pre">jacobi_symbol</span></code></a>, <a class="reference internal" href="../galois.kronecker_symbol/" title="galois.kronecker_symbol (Python function) — Computes the Kronecker symbol $(frac{a}{n})$. The Kronecker symbol extends the Jacobi symbol for all $n$."><code class="xref py py-obj docutils literal notranslate"><span class="pre">kronecker_symbol</span></code></a></p>
 </div>
-<p class="rubric" id="notes">Notes</p>
+<p class="rubric" id="notes">Notes<a class="headerlink" href="#notes" title="Permalink to this headline">¶</a></p>
 <p>The Legendre symbol is useful for determining if <span class="math notranslate nohighlight">\(a\)</span> is a quadratic residue modulo <span class="math notranslate nohighlight">\(p\)</span>, namely
 <span class="math notranslate nohighlight">\(a \in Q_p\)</span>. A quadratic residue <span class="math notranslate nohighlight">\(a\)</span> modulo <span class="math notranslate nohighlight">\(p\)</span> satisfies
 <span class="math notranslate nohighlight">\(x^2 \equiv a\ (\textrm{mod}\ p)\)</span> for some <span class="math notranslate nohighlight">\(x\)</span>.</p>
@@ -7860,11 +7860,11 @@ You're not viewing the latest version.
     \begin{cases}
         0, &amp; p\ |\ a\\        1, &amp; a \in Q_p\\        -1, &amp; a \in \overline{Q}_p
     \end{cases}\end{aligned}\end{align} \]</div>
-<p class="rubric" id="references">References</p>
+<p class="rubric" id="references">References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></p>
 <ul class="simple">
 <li><p>Algorithm 2.149 from <a class="reference external" href="https://cacr.uwaterloo.ca/hac/about/chap2.pdf">https://cacr.uwaterloo.ca/hac/about/chap2.pdf</a></p></li>
 </ul>
-<p class="example rubric" id="examples">Examples</p>
+<p class="example rubric" id="examples">Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></p>
 <p>The quadratic residues modulo 7 are <span class="math notranslate nohighlight">\(Q_7 = \{1, 2, 4\}\)</span>. The quadratic non-residues
 modulo 7 are <span class="math notranslate nohighlight">\(\overline{Q}_7 = \{3, 5, 6\}\)</span>.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="p">[</span><span class="nb">pow</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">7</span><span class="p">)]</span>
