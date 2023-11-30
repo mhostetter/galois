@@ -7710,7 +7710,19 @@ You're not viewing the latest version.
 
 
 <img alt="_images/galois-heading.png" class="align-center" src="_images/galois-heading.png" />
-<p>The <a class="reference internal" href="api/#module-galois" title="galois (Python module)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">galois</span></code></a> library is a Python 3 package that extends NumPy arrays to operate over finite fields.</p>
+<div align=center>
+   <a href="https://pypi.org/project/galois"><img src="https://img.shields.io/pypi/v/galois"></a>
+   <a href="https://pypi.org/project/galois"><img src="https://img.shields.io/pypi/pyversions/galois"></a>
+   <a href="https://pypi.org/project/galois"><img src="https://img.shields.io/pypi/wheel/galois"></a>
+   <a href="https://pypistats.org/packages/galois"><img src="https://img.shields.io/pypi/dm/galois"></a>
+   <a href="https://pypi.org/project/galois"><img src="https://img.shields.io/pypi/l/galois"></a>
+   <a href="https://twitter.com/galois_py"><img src="https://img.shields.io/static/v1?label=follow&message=@galois_py&color=blue&logo=twitter"></a>
+   <a href="https://github.com/mhostetter/galois/actions/workflows/docs.yaml"><img src="https://github.com/mhostetter/galois/actions/workflows/docs.yaml/badge.svg"></a>
+   <a href="https://github.com/mhostetter/galois/actions/workflows/lint.yaml"><img src="https://github.com/mhostetter/galois/actions/workflows/lint.yaml/badge.svg"></a>
+   <a href="https://github.com/mhostetter/galois/actions/workflows/build.yaml"><img src="https://github.com/mhostetter/galois/actions/workflows/build.yaml/badge.svg"></a>
+   <a href="https://github.com/mhostetter/galois/actions/workflows/test.yaml"><img src="https://github.com/mhostetter/galois/actions/workflows/test.yaml/badge.svg"></a>
+   <a href="https://codecov.io/gh/mhostetter/galois"><img src="https://codecov.io/gh/mhostetter/galois/branch/main/graph/badge.svg?token=3FJML79ZUK"></a>
+</div><p>The <a class="reference internal" href="api/#module-galois" title="galois (Python module)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">galois</span></code></a> library is a Python 3 package that extends NumPy arrays to operate over finite fields.</p>
 <p>The user creates a <a class="reference internal" href="api/galois.FieldArray/" title="galois.FieldArray (Python class) — An abstract ndarray subclass over $mathrm{GF}(p^m)$."><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldArray</span></code></a> subclass using <code class="code highlight python docutils literal highlight-python"><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="n">p</span><span class="o">**</span><span class="n">m</span><span class="p">)</span></code>. <code class="code highlight python docutils literal highlight-python"><span class="n">GF</span></code> is a subclass of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>
 and its constructor <code class="code highlight python docutils literal highlight-python"><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="p">(</span><span class="n">array_like</span><span class="p">)</span></code> mimics the signature of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.26)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.array()</span></code></a>. The <a class="reference internal" href="api/galois.FieldArray/" title="galois.FieldArray (Python class) — An abstract ndarray subclass over $mathrm{GF}(p^m)$."><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldArray</span></code></a> <code class="code highlight python docutils literal highlight-python"><span class="n">x</span></code> is operated
 on like any other NumPy array except all arithmetic is performed in <span class="math notranslate nohighlight">\(\mathrm{GF}(p^m)\)</span>, not <span class="math notranslate nohighlight">\(\mathbb{R}\)</span>.</p>
@@ -7808,7 +7820,7 @@ APA</label></div>
   <small>
     
       Last update:
-      Nov 04, 2023
+      Nov 30, 2023
     
   </small>
 </div>
