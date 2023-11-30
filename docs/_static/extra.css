@@ -9,17 +9,20 @@
   --md-primary-fg-color: #EAA915;
   --md-accent-fg-color: #EEBA44;
 }
+
 [data-md-color-scheme="slate"] .md-header {
   background-color: #344FA1;
 }
+
 [data-md-color-scheme="slate"] .md-tabs {
   background-color: #344FA1;
 }
 
 /* @media screen and (max-width: 76.1875em) */
 .md-nav--primary .md-nav__title[for=__drawer] {
-    background-color: #344FA1;
+  background-color: #344FA1;
 }
+
 .md-source {
   background-color: #344FA1;
 }
@@ -39,6 +42,7 @@
 .sig-param a.reference span .pre {
   color: var(--md-code-hl-generic-color);
 }
+
 .sig-param a.reference span .pre:hover {
   color: var(--md-accent-fg-color);
 }
