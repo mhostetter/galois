@@ -7898,7 +7898,7 @@ Polynomials</label></div>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [5]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
 
 <span class="gp">In [6]: </span><span class="n">x_truth</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">Poly</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">GF</span><span class="p">);</span> <span class="n">x_truth</span>
-<span class="gh">Out[6]: </span><span class="go">Poly(6x^6 + 2x^5 + 6x^4 + 2x^3 + 6x^2 + 5x + 4, GF(7))</span>
+<span class="gh">Out[6]: </span><span class="go">Poly(x^6 + 6x^5 + 5x^4 + 2x^3 + 5x^2 + 4x + 6, GF(7))</span>
 
 <span class="gp">In [7]: </span><span class="n">m3</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">Poly</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">GF</span><span class="p">)</span>
 
@@ -7908,20 +7908,20 @@ Polynomials</label></div>
 
 <span class="gp">In [10]: </span><span class="n">m</span> <span class="o">=</span> <span class="p">[</span><span class="n">m3</span><span class="p">,</span> <span class="n">m4</span><span class="p">,</span> <span class="n">m5</span><span class="p">];</span> <span class="n">m</span>
 <span class="gh">Out[10]: </span>
-<span class="go">[Poly(3x^3 + x^2 + 3x + 1, GF(7)),</span>
-<span class="go"> Poly(4x^4 + 5x^3 + 5x^2 + 5x + 6, GF(7)),</span>
-<span class="go"> Poly(3x^5 + 3x^4 + 5x^3 + 5x^2 + 3x, GF(7))]</span>
+<span class="go">[Poly(3x^3 + 6x^2 + 4, GF(7)),</span>
+<span class="go"> Poly(x^4 + 4x^2 + 6x + 4, GF(7)),</span>
+<span class="go"> Poly(x^5 + 3x^4 + 2x^3 + x^2 + 2x, GF(7))]</span>
 
 <span class="gp">In [11]: </span><span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="n">x_truth</span> <span class="o">%</span> <span class="n">m3</span><span class="p">,</span> <span class="n">x_truth</span> <span class="o">%</span> <span class="n">m4</span><span class="p">,</span> <span class="n">x_truth</span> <span class="o">%</span> <span class="n">m5</span><span class="p">];</span> <span class="n">a</span>
 <span class="gh">Out[11]: </span>
-<span class="go">[Poly(6x^2 + 5x + 4, GF(7)),</span>
-<span class="go"> Poly(x^3 + 5x + 6, GF(7)),</span>
-<span class="go"> Poly(x^3 + 2x^2 + 2x + 4, GF(7))]</span>
+<span class="go">[Poly(5x^2 + x + 1, GF(7)),</span>
+<span class="go"> Poly(3x^2 + 2x + 2, GF(7)),</span>
+<span class="go"> Poly(x^4 + 2x^3 + 5x + 6, GF(7))]</span>
 </code></pre></div>
 </div>
 <p>Solve the system of congruences.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [12]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">crt</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">m</span><span class="p">);</span> <span class="n">x</span>
-<span class="gh">Out[12]: </span><span class="go">Poly(6x^6 + 2x^5 + 6x^4 + 2x^3 + 6x^2 + 5x + 4, GF(7))</span>
+<span class="gh">Out[12]: </span><span class="go">Poly(x^6 + 6x^5 + 5x^4 + 2x^3 + 5x^2 + 4x + 6, GF(7))</span>
 </code></pre></div>
 </div>
 <p>Show that the solution satisfies each congruence.</p>
@@ -7929,9 +7929,9 @@ Polynomials</label></div>
 <span class="gp">   ....: </span>    <span class="n">ai</span> <span class="o">=</span> <span class="n">x</span> <span class="o">%</span> <span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
 <span class="gp">   ....: </span>    <span class="nb">print</span><span class="p">(</span><span class="n">ai</span><span class="p">,</span> <span class="n">ai</span> <span class="o">==</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
 <span class="gp">   ....: </span>
-<span class="go">6x^2 + 5x + 4 True</span>
-<span class="go">x^3 + 5x + 6 True</span>
-<span class="go">x^3 + 2x^2 + 2x + 4 True</span>
+<span class="go">5x^2 + x + 1 True</span>
+<span class="go">3x^2 + 2x + 2 True</span>
+<span class="go">x^4 + 2x^3 + 5x + 6 True</span>
 </code></pre></div>
 </div>
 </div>

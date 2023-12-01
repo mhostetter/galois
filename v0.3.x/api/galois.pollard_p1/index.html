@@ -7915,13 +7915,13 @@ exception of one prime factor <span class="math notranslate nohighlight">\(B &lt
 <span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
 <span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">galois</span><span class="o">.</span><span class="n">pollard_p1</span><span class="p">(</span><span class="n">p</span><span class="o">*</span><span class="n">q</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span>
 
-<span class="nn">File /opt/hostedtoolcache/Python/3.11.6/x64/lib/python3.11/site-packages/galois/_prime.py:1175,</span> in <span class="ni">pollard_p1</span><span class="nt">(n, B, B2)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1172</span>     <span class="k">if</span> <span class="n">d</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">]:</span>
-<span class="g g-Whitespace">   </span><span class="mi">1173</span>         <span class="k">return</span> <span class="n">d</span>
-<span class="ne">-&gt; </span><span class="mi">1175</span> <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-<span class="g g-Whitespace">   </span><span class="mi">1176</span>     <span class="sa">f</span><span class="s2">&quot;A non-trivial factor of </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2"> could not be found using the Pollard p-1 algorithm &quot;</span>
-<span class="g g-Whitespace">   </span><span class="mi">1177</span>     <span class="sa">f</span><span class="s2">&quot;with smoothness bound </span><span class="si">{</span><span class="n">B</span><span class="si">}</span><span class="s2"> and secondary bound </span><span class="si">{</span><span class="n">B2</span><span class="si">}</span><span class="s2">.&quot;</span>
-<span class="g g-Whitespace">   </span><span class="mi">1178</span> <span class="p">)</span>
+<span class="nn">File /opt/hostedtoolcache/Python/3.11.6/x64/lib/python3.11/site-packages/galois/_prime.py:1189,</span> in <span class="ni">pollard_p1</span><span class="nt">(n, B, B2)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1186</span>     <span class="k">if</span> <span class="n">d</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">]:</span>
+<span class="g g-Whitespace">   </span><span class="mi">1187</span>         <span class="k">return</span> <span class="n">d</span>
+<span class="ne">-&gt; </span><span class="mi">1189</span> <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+<span class="g g-Whitespace">   </span><span class="mi">1190</span>     <span class="sa">f</span><span class="s2">&quot;A non-trivial factor of </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2"> could not be found using the Pollard p-1 algorithm &quot;</span>
+<span class="g g-Whitespace">   </span><span class="mi">1191</span>     <span class="sa">f</span><span class="s2">&quot;with smoothness bound </span><span class="si">{</span><span class="n">B</span><span class="si">}</span><span class="s2"> and secondary bound </span><span class="si">{</span><span class="n">B2</span><span class="si">}</span><span class="s2">.&quot;</span>
+<span class="g g-Whitespace">   </span><span class="mi">1192</span> <span class="p">)</span>
 
 <span class="ne">RuntimeError</span>: A non-trivial factor of 1934313240757 could not be found using the Pollard p-1 algorithm with smoothness bound 15 and secondary bound None.
 </code></pre></div>
