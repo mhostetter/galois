@@ -58,6 +58,17 @@ def test_next_prime(next_prime):
         assert galois.next_prime(x) == z
 
 
+def test_next_prime_bug_528():
+    """
+    https://github.com/mhostetter/galois/issues/528
+    """
+    assert galois.next_prime(100000034) == 100000037
+    assert galois.next_prime(100000035) == 100000037
+    assert galois.next_prime(100000036) == 100000037
+    assert galois.next_prime(100000037) == 100000039
+    assert galois.next_prime(100000038) == 100000039
+
+
 def test_random_prime_exceptions():
     with pytest.raises(TypeError):
         galois.random_prime(10.0)
