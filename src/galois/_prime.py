@@ -172,19 +172,15 @@ def prev_prime(n: int) -> int:
 
     shifts = [29, 23, 19, 17, 13, 11, 7, 1]  # Factorization wheel for basis {2, 3, 5}
     base = n // 30 * 30  # Wheel factorization starting point
-    found = False  # Success flag
 
-    while not found:
+    while True:
         for shift in shifts:
             i = base + shift  # May be bigger than n
             if i >= n:
                 continue
             if is_prime(i):
-                found = True
-                break
+                return i
         base -= 30
-
-    return i
 
 
 @export
@@ -219,19 +215,15 @@ def next_prime(n: int) -> int:
 
     shifts = [1, 7, 11, 13, 17, 19, 23, 29]  # Factorization wheel for basis {2, 3, 5}
     base = n // 30 * 30  # Wheel factorization starting point. May be less than n.
-    found = False  # Success flag
 
-    while not found:
+    while True:
         for shift in shifts:
             i = base + shift
             if i <= n:
                 continue
             if is_prime(i):
-                found = True
-                break
+                return i
         base += 30
-
-    return i
 
 
 @export
