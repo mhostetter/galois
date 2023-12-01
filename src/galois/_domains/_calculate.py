@@ -2,10 +2,11 @@
 A module containing various ufunc dispatchers with explicit calculation arithmetic added. Various algorithms for
 each type of arithmetic are implemented here.
 """
-from typing import Type
+from typing import Callable, Type
 
 import numba
 import numpy as np
+import numpy.typing as npt
 
 from .._prime import factors
 from . import _lookup
@@ -15,11 +16,30 @@ from ._array import Array
 # Helper JIT functions
 ###############################################################################
 
+CHARACTERISTIC: int
+DEGREE: int
+ORDER: int
+IRREDUCIBLE_POLY: int
+
+INT_TO_VECTOR: Callable[[int, int, int], npt.NDArray]
+VECTOR_TO_INT: Callable[[npt.NDArray, int, int], int]
+EGCD: Callable[[int, int], npt.NDArray]
+CRT: Callable[[npt.NDArray, npt.NDArray], int]
 DTYPE = np.int64
+
+MULTIPLY: Callable[[int, int], int]
+RECIPROCAL: Callable[[int], int]
+SUBFIELD_RECIPROCAL: Callable[[int], int]
+POWER: Callable[[int, int], int]
+POSITIVE_POWER: Callable[[int, int], int]
+BRUTE_FORCE_LOG: Callable[[int, int], int]
+
+FACTORS: npt.NDArray
+MULTIPLICITIES: npt.NDArray
 
 
 @numba.jit(["int64[:](int64, int64, int64)"], nopython=True, cache=True)
-def int_to_vector(a: int, characteristic: int, degree: int) -> np.ndarray:
+def int_to_vector(a: int, characteristic: int, degree: int) -> npt.NDArray:
     """
     Converts the integer representation to vector/polynomial representation.
     """
@@ -33,7 +53,7 @@ def int_to_vector(a: int, characteristic: int, degree: int) -> np.ndarray:
 
 
 @numba.jit(["int64(int64[:], int64, int64)"], nopython=True, cache=True)
-def vector_to_int(a_vec: np.ndarray, characteristic: int, degree: int) -> int:
+def vector_to_int(a_vec: npt.NDArray, characteristic: int, degree: int) -> int:
     """
     Converts the vector/polynomial representation to the integer representation.
     """
@@ -47,7 +67,7 @@ def vector_to_int(a_vec: np.ndarray, characteristic: int, degree: int) -> int:
 
 
 @numba.jit(["int64[:](int64, int64)"], nopython=True, cache=True)
-def egcd(a: int, b: int) -> np.ndarray:  # pragma: no cover
+def egcd(a: int, b: int) -> npt.NDArray:  # pragma: no cover
     """
     Computes the Extended Euclidean Algorithm. Returns (d, s, t).
 
@@ -72,12 +92,11 @@ def egcd(a: int, b: int) -> np.ndarray:  # pragma: no cover
 
     return np.array([r2, s2, t2], dtype=DTYPE)
 
-
 EGCD = egcd
 
 
 @numba.jit(["int64(int64[:], int64[:])"], nopython=True, cache=True)
-def crt(remainders: np.ndarray, moduli: np.ndarray) -> int:  # pragma: no cover
+def crt(remainders: npt.NDArray, moduli: npt.NDArray) -> int:  # pragma: no cover
     """
     Computes the simultaneous solution to the system of congruences xi == ai (mod mi).
     """

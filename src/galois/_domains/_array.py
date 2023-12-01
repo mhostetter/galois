@@ -6,7 +6,7 @@ from __future__ import annotations
 import abc
 import contextlib
 import random
-from typing import Generator
+from typing import Generator, cast, no_type_check
 
 import numpy as np
 import numpy.typing as npt
@@ -85,7 +85,7 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
 
     @classmethod
     @abc.abstractmethod
-    def _verify_element_types_and_convert(cls, array: np.ndarray, object_=False) -> np.ndarray:
+    def _verify_element_types_and_convert(cls, array: npt.NDArray, object_=False) -> npt.NDArray:
         """
         Iterate across each element and verify it's a valid type. Also, convert strings to integers along the way.
         """
@@ -99,7 +99,7 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
 
     @classmethod
     @abc.abstractmethod
-    def _verify_array_values(cls, array: np.ndarray):
+    def _verify_array_values(cls, array: npt.NDArray):
         """
         Verify all the elements of the integer array are within the valid range [0, order).
         """
@@ -117,7 +117,7 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
 
     @classmethod
     @abc.abstractmethod
-    def _convert_iterable_to_elements(cls, iterable: IterableLike) -> np.ndarray:
+    def _convert_iterable_to_elements(cls, iterable: IterableLike) -> npt.NDArray:
         """
         Convert an iterable (recursive) to a NumPy integer array. Convert any strings to integers along the way.
         """
@@ -127,7 +127,7 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
     ###############################################################################
 
     @classmethod
-    def _view(cls, array: np.ndarray) -> Self:
+    def _view(cls, array: npt.NDArray) -> Self:
         """
         View the input array to the Array subclass `A` using the `_view_without_verification()` context manager.
         This disables bounds checking on the array elements. Instead of `x.view(A)` use `A._view(x)`.
@@ -136,7 +136,7 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
         """
         with cls._view_without_verification():
             array = array.view(cls)
-        return array
+        return cast(cls, array)
 
     @classmethod
     @contextlib.contextmanager
@@ -271,7 +271,7 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
         if seed is not None:
             if not isinstance(seed, (int, np.integer, np.random.Generator)):
                 raise ValueError("Seed must be an integer, a numpy.random.Generator or None.")
-            if isinstance(seed, (int, np.integer)) and seed < 0:
+            if isinstance(seed, int) and seed < 0:
                 raise ValueError("Seed must be non-negative.")
 
         if dtype != np.object_:
@@ -408,7 +408,7 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
     # Override getters/setters and type conversion functions
     ###############################################################################
 
-    def __getitem__(self, key):
+    def __getitem__(self, key) -> Self:
         """
         Ensure that slices that return a single value return a 0-D Galois field array and not a single integer. This
         ensures subsequent arithmetic with the finite field scalar works properly.
@@ -452,92 +452,122 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
     # Override arithmetic operators so type checking is appeased
     ###############################################################################
 
+    @no_type_check
     def __add__(self, other: npt.NDArray) -> Self:
         return super().__add__(other)
 
+    @no_type_check
     def __iadd__(self, other: npt.NDArray) -> Self:
         return super().__iadd__(other)
 
+    @no_type_check
     def __radd__(self, other: npt.NDArray) -> Self:
         return super().__radd__(other)
 
+    @no_type_check
     def __sub__(self, other: npt.NDArray) -> Self:
         return super().__sub__(other)
 
+    @no_type_check
     def __isub__(self, other: npt.NDArray) -> Self:
         return super().__isub__(other)
 
+    @no_type_check
     def __rsub__(self, other: npt.NDArray) -> Self:
         return super().__rsub__(other)
 
+    @no_type_check
     def __mul__(self, other: int | npt.NDArray) -> Self:
         return super().__mul__(other)
 
+    @no_type_check
     def __imul__(self, other: int | npt.NDArray) -> Self:
         return super().__imul__(other)
 
+    @no_type_check
     def __rmul__(self, other: int | npt.NDArray) -> Self:
         return super().__rmul__(other)
 
+    @no_type_check
     def __truediv__(self, other: npt.NDArray) -> Self:
         return super().__truediv__(other)
 
+    @no_type_check
     def __itruediv__(self, other: npt.NDArray) -> Self:
         return super().__itruediv__(other)
 
+    @no_type_check
     def __rtruediv__(self, other: npt.NDArray) -> Self:
         return super().__rtruediv__(other)
 
+    @no_type_check
     def __floordiv__(self, other: npt.NDArray) -> Self:
         return super().__floordiv__(other)
 
+    @no_type_check
     def __ifloordiv__(self, other: npt.NDArray) -> Self:
         return super().__ifloordiv__(other)
 
+    @no_type_check
     def __rfloordiv__(self, other: npt.NDArray) -> Self:
         return super().__rfloordiv__(other)
 
+    @no_type_check
     def __neg__(self) -> Self:
         return super().__neg__()
 
+    @no_type_check
     def __mod__(self, other: npt.NDArray) -> Self:
         return super().__mod__(other)
 
+    @no_type_check
     def __imod__(self, other: npt.NDArray) -> Self:
         return super().__imod__(other)
 
+    @no_type_check
     def __rmod__(self, other: npt.NDArray) -> Self:
         return super().__rmod__(other)
 
+    @no_type_check
     def __pow__(self, other: int | npt.NDArray) -> Self:
         return super().__pow__(other)
 
+    @no_type_check
     def __ipow__(self, other: int | npt.NDArray) -> Self:
         return super().__ipow__(other)
 
+    # @no_type_check
     # def __rpow__(self, other) -> Self:
     #     return super().__rpow__(other)
 
+    @no_type_check
     def __matmul__(self, other: npt.NDArray) -> Self:
         return super().__matmul__(other)
 
+    @no_type_check
     def __rmatmul__(self, other: npt.NDArray) -> Self:
         return super().__rmatmul__(other)
 
+    @no_type_check
     def __lshift__(self, other: int | npt.NDArray) -> Self:
         return super().__lshift__(other)
 
+    @no_type_check
     def __ilshift__(self, other: int | npt.NDArray) -> Self:
         return super().__ilshift__(other)
 
+    # @no_type_check
     # def __rlshift__(self, other) -> Self:
     #     return super().__rlshift__(other)
 
+    @no_type_check
     def __rshift__(self, other: int | npt.NDArray) -> Self:
         return super().__rshift__(other)
 
+    @no_type_check
     def __irshift__(self, other: int | npt.NDArray) -> Self:
         return super().__irshift__(other)
 
+    # @no_type_check
     # def __rrshift__(self, other) -> Self:
     #     return super().__rrshift__(other)

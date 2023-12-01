@@ -3,9 +3,10 @@ A module containing general Reed-Solomon (RS) codes.
 """
 from __future__ import annotations
 
-from typing import overload
+from typing import Any, Type, cast, overload
 
 import numpy as np
+import numpy.typing as npt
 from typing_extensions import Literal
 
 from .._fields import Field, FieldArray
@@ -13,7 +14,7 @@ from .._helper import export, extend_docstring, verify_isinstance, verify_issubc
 from .._math import ilog
 from .._polys import Poly, matlab_primitive_poly
 from ..typing import ArrayLike, ElementLike
-from ._bch import bch_decode_jit
+from ._bm_decoder import berlekamp_decode_jit
 from ._cyclic import _CyclicCode
 
 
@@ -181,7 +182,7 @@ class ReedSolomon(_CyclicCode):
         super().__init__(n, k, d, generator_poly, roots, systematic)
 
         # TODO: Do this?? How to standardize G and H?
-        self._H = np.power.outer(roots, np.arange(n - 1, -1, -1, dtype=field.dtypes[-1]))
+        self._H = cast(FieldArray, np.power.outer(roots, np.arange(n - 1, -1, -1, dtype=field.dtypes[-1])))
 
     def __repr__(self) -> str:
         r"""
@@ -428,7 +429,7 @@ class ReedSolomon(_CyclicCode):
                         rs.detect(c)
         """,
     )
-    def detect(self, codeword: ArrayLike) -> bool | np.ndarray:
+    def detect(self, codeword: ArrayLike) -> bool | npt.NDArray:
         return super().detect(codeword)
 
     @overload
@@ -446,7 +447,7 @@ class ReedSolomon(_CyclicCode):
         codeword: ArrayLike,
         output: Literal["message", "codeword"] = "message",
         errors: Literal[True] = True,
-    ) -> tuple[FieldArray, int | np.ndarray]:
+    ) -> tuple[FieldArray, int | npt.NDArray]:
         ...
 
     @extend_docstring(
@@ -603,11 +604,11 @@ class ReedSolomon(_CyclicCode):
                         np.array_equal(d, m)
         """,
     )
-    def decode(self, codeword, output="message", errors=False):
+    def decode(self, codeword: Any, output: Any = "message", errors: Any = False) -> Any:
         return super().decode(codeword, output=output, errors=errors)
 
-    def _decode_codeword(self, codeword: FieldArray) -> tuple[FieldArray, np.ndarray]:
-        func = reed_solomon_decode_jit(self.field, self.field)
+    def _decode_codeword(self, codeword: FieldArray) -> tuple[FieldArray, npt.NDArray]:
+        func = berlekamp_decode_jit(self.field, self.field)
         dec_codeword, N_errors = func(codeword, self.n, int(self.alpha), self.c, self.roots)
         dec_codeword = dec_codeword.view(self.field)
         return dec_codeword, N_errors
@@ -638,6 +639,7 @@ class ReedSolomon(_CyclicCode):
     def field(self) -> type[FieldArray]:
         return super().field
 
+    @property
     @extend_docstring(
         _CyclicCode.n,
         {},
@@ -658,10 +660,10 @@ class ReedSolomon(_CyclicCode):
                 rs.n
         """,
     )
-    @property
     def n(self) -> int:
         return super().n
 
+    @property
     @extend_docstring(
         _CyclicCode.k,
         {},
@@ -682,10 +684,10 @@ class ReedSolomon(_CyclicCode):
                 rs.k
         """,
     )
-    @property
     def k(self) -> int:
         return super().k
 
+    @property
     @extend_docstring(
         _CyclicCode.d,
         {},
@@ -706,10 +708,10 @@ class ReedSolomon(_CyclicCode):
                 rs.d
         """,
     )
-    @property
     def d(self) -> int:
         return super().d
 
+    @property
     @extend_docstring(
         _CyclicCode.t,
         {},
@@ -730,10 +732,10 @@ class ReedSolomon(_CyclicCode):
                 rs.t
         """,
     )
-    @property
     def t(self) -> int:
         return super().t
 
+    @property
     @extend_docstring(
         _CyclicCode.generator_poly,
         {},
@@ -762,10 +764,10 @@ class ReedSolomon(_CyclicCode):
                 rs.generator_poly(rs.roots)
         """,
     )
-    @property
     def generator_poly(self) -> Poly:
         return super().generator_poly
 
+    @property
     @extend_docstring(
         _CyclicCode.parity_check_poly,
         {},
@@ -788,10 +790,10 @@ class ReedSolomon(_CyclicCode):
                 rs.H
         """,
     )
-    @property
     def parity_check_poly(self) -> Poly:
         return super().parity_check_poly
 
+    @property
     @extend_docstring(
         _CyclicCode.roots,
         {},
@@ -822,7 +824,6 @@ class ReedSolomon(_CyclicCode):
                 rs.generator_poly(rs.roots)
         """,
     )
-    @property
     def roots(self) -> FieldArray:
         return super().roots
 
@@ -889,6 +890,7 @@ class ReedSolomon(_CyclicCode):
         """
         return self._c
 
+    @property
     @extend_docstring(
         _CyclicCode.G,
         {},
@@ -915,10 +917,10 @@ class ReedSolomon(_CyclicCode):
                 rs.generator_poly
         """,
     )
-    @property
     def G(self) -> FieldArray:
         return super().G
 
+    @property
     @extend_docstring(
         _CyclicCode.H,
         {},
@@ -941,7 +943,6 @@ class ReedSolomon(_CyclicCode):
                 rs.parity_check_poly
         """,
     )
-    @property
     def H(self) -> FieldArray:
         return super().H
 
@@ -1001,6 +1002,7 @@ class ReedSolomon(_CyclicCode):
         """
         return self._is_narrow_sense
 
+    @property
     @extend_docstring(
         _CyclicCode.is_systematic,
         {},
@@ -1024,17 +1026,5 @@ class ReedSolomon(_CyclicCode):
                 rs.generator_poly
         """,
     )
-    @property
     def is_systematic(self) -> bool:
         return super().is_systematic
-
-
-class reed_solomon_decode_jit(bch_decode_jit):
-    """
-    Performs general BCH and Reed-Solomon decoding.
-
-    References:
-        - Lin, S. and Costello, D. Error Control Coding. Section 7.4.
-    """
-
-    # NOTE: Making a subclass so that these compiled functions are stored in a new namespace

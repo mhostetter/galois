@@ -3,9 +3,10 @@ A module containing common functions for linear block codes.
 """
 from __future__ import annotations
 
-from typing import overload
+from typing import Any, cast, overload
 
 import numpy as np
+import numpy.typing as npt
 from typing_extensions import Literal
 
 from .._fields import FieldArray
@@ -90,7 +91,7 @@ class _LinearCode:
         parity = self._convert_codeword_to_parity(codeword)
         return parity
 
-    def detect(self, codeword: ArrayLike) -> bool | np.ndarray:
+    def detect(self, codeword: ArrayLike) -> bool | npt.NDArray:
         r"""
         Detects if errors are present in the codeword $\mathbf{c}$.
 
@@ -111,7 +112,7 @@ class _LinearCode:
         detected = self._detect_errors(codeword)
 
         if is_codeword_1d:
-            detected = bool(detected[0])
+            return bool(detected[0])
 
         return detected
 
@@ -130,10 +131,10 @@ class _LinearCode:
         codeword: ArrayLike,
         output: Literal["message", "codeword"] = "message",
         errors: Literal[True] = True,
-    ) -> tuple[FieldArray, int | np.ndarray]:
+    ) -> tuple[FieldArray, int | npt.NDArray]:
         ...
 
-    def decode(self, codeword, output="message", errors=False):
+    def decode(self, codeword: Any, output: Any = "message", errors: Any = False) -> Any:
         r"""
         Decodes the codeword $\mathbf{c}$ into the message $\mathbf{m}$.
 
@@ -215,11 +216,11 @@ class _LinearCode:
 
         # Record if the original message was 1-D and then convert to 2-D
         is_message_1d = message.ndim == 1
-        message = np.atleast_2d(message)
+        message = cast(FieldArray, np.atleast_2d(message))
 
         return message, is_message_1d
 
-    def _check_and_convert_codeword(self, codeword: FieldArray) -> FieldArray:
+    def _check_and_convert_codeword(self, codeword: ArrayLike) -> tuple[FieldArray, bool]:
         """
         Converts the array-like codeword into a 2-D FieldArray with shape (N, ns).
         """
@@ -241,7 +242,7 @@ class _LinearCode:
 
         # Record if the original codeword was 1-D and then convert to 2-D
         is_codeword_1d = codeword.ndim == 1
-        codeword = np.atleast_2d(codeword)
+        codeword = cast(FieldArray, np.atleast_2d(codeword))
 
         return codeword, is_codeword_1d
 
@@ -270,13 +271,13 @@ class _LinearCode:
 
         if self.is_systematic:
             parity = message @ self.G[-ks:, self.k :]
-            codeword = np.hstack((message, parity))
+            codeword = cast(FieldArray, np.hstack((message, parity)))
         else:
             codeword = message @ self.G
 
         return codeword
 
-    def _detect_errors(self, codeword: FieldArray) -> np.ndarray:
+    def _detect_errors(self, codeword: FieldArray) -> npt.NDArray:
         """
         Returns a boolean array (N,) indicating if errors are present in the codeword.
         """
@@ -290,7 +291,7 @@ class _LinearCode:
 
         return detected
 
-    def _decode_codeword(self, codeword: FieldArray) -> tuple[FieldArray, np.ndarray]:
+    def _decode_codeword(self, codeword: FieldArray) -> tuple[FieldArray, npt.NDArray]:
         """
         Decodes errors in the received codeword. Returns the corrected codeword (N, ns) and array of number of
         corrected errors (N,).
@@ -410,7 +411,7 @@ def generator_to_parity_check_matrix(G: FieldArray) -> FieldArray:
 
     P = G[:, k:]
     I = field.Identity(n - k)
-    H = np.hstack((-P.T, I))
+    H = cast(FieldArray, np.hstack((-P.T, I)))
 
     return H
 
@@ -451,6 +452,6 @@ def parity_check_to_generator_matrix(H: FieldArray) -> FieldArray:
 
     P = -H[:, 0:k].T
     I = field.Identity(k)
-    G = np.hstack((I, P))
+    G = cast(FieldArray, np.hstack((I, P)))
 
     return G

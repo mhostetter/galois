@@ -47,8 +47,10 @@ class PrimeFactorsDatabase(DatabaseInterface):
         if hasattr(sys, "set_int_max_str_digits"):
             default_limit = sys.get_int_max_str_digits()
             sys.set_int_max_str_digits(0)
-            n = str(n)
+            n_str = str(n)
             sys.set_int_max_str_digits(default_limit)
+        else:
+            n_str = str(n)
 
         self.cursor.execute(
             """
@@ -56,7 +58,7 @@ class PrimeFactorsDatabase(DatabaseInterface):
             FROM factorizations
             WHERE value=?
             """,
-            (str(n),),
+            (n_str,),
         )
         result = self.cursor.fetchone()
 

@@ -3,7 +3,7 @@ A module that contains polymorphic math functions that work on integers and poly
 """
 from __future__ import annotations
 
-from typing import Sequence, overload
+from typing import Any, Sequence, overload
 
 import numpy as np
 
@@ -36,7 +36,7 @@ def gcd(a: Poly, b: Poly) -> Poly:
 
 
 @export
-def gcd(a, b):
+def gcd(a: Any, b: Any) -> Any:
     r"""
     Finds the greatest common divisor of $a$ and $b$.
 
@@ -88,7 +88,7 @@ def gcd(a, b):
     Group:
         number-theory-divisibility
     """
-    if isinstance(a, (int, np.integer)) and isinstance(b, (int, np.integer)):
+    if isinstance(a, int) and isinstance(b, int):
         return int_gcd(a, b)
     if isinstance(a, Poly) and isinstance(b, Poly):
         return poly_gcd(a, b)
@@ -106,7 +106,7 @@ def egcd(a: Poly, b: Poly) -> tuple[Poly, Poly, Poly]:
 
 
 @export
-def egcd(a, b):
+def egcd(a: Any, b: Any) -> Any:
     r"""
     Finds the multiplicands of $a$ and $b$ such that $a s + b t = \mathrm{gcd}(a, b)$.
 
@@ -168,7 +168,7 @@ def egcd(a, b):
     Group:
         number-theory-divisibility
     """
-    if isinstance(a, (int, np.integer)) and isinstance(b, (int, np.integer)):
+    if isinstance(a, int) and isinstance(b, int):
         return int_egcd(a, b)
     if isinstance(a, Poly) and isinstance(b, Poly):
         return poly_egcd(a, b)
@@ -186,7 +186,7 @@ def lcm(*values: Poly) -> Poly:
 
 
 @export
-def lcm(*values):
+def lcm(*values: Any) -> Any:
     r"""
     Computes the least common multiple of the arguments.
 
@@ -235,7 +235,7 @@ def lcm(*values):
     if not len(values) > 0:
         raise ValueError("At least one argument must be provided.")
 
-    if all(isinstance(value, (int, np.integer)) for value in values):
+    if all(isinstance(value, int) for value in values):
         return int_lcm(*values)
     if all(isinstance(value, Poly) for value in values):
         return poly_lcm(*values)
@@ -253,7 +253,7 @@ def prod(*values: Poly) -> Poly:
 
 
 @export
-def prod(*values):
+def prod(*values: Any) -> Any:
     r"""
     Computes the product of the arguments.
 
@@ -301,7 +301,7 @@ def prod(*values):
     if not len(values) > 0:
         raise ValueError("At least one argument must be provided.")
 
-    if all(isinstance(value, (int, np.integer)) for value in values):
+    if all(isinstance(value, int) for value in values):
         return int_prod(*values)
     if all(isinstance(value, Poly) for value in values):
         return poly_prod(*values)
@@ -319,7 +319,7 @@ def are_coprime(*values: Poly) -> bool:
 
 
 @export
-def are_coprime(*values):
+def are_coprime(*values: Any) -> Any:
     r"""
     Determines if the arguments are pairwise coprime.
 
@@ -368,10 +368,7 @@ def are_coprime(*values):
     Group:
         number-theory-divisibility
     """
-    if not (
-        all(isinstance(value, (int, np.integer)) for value in values)
-        or all(isinstance(value, Poly) for value in values)
-    ):
+    if not (all(isinstance(value, int) for value in values) or all(isinstance(value, Poly) for value in values)):
         raise TypeError(f"All arguments must be either int or galois.Poly, not {[type(value) for value in values]}.")
     if not len(values) > 0:
         raise ValueError("At least one argument must be provided.")
@@ -395,7 +392,7 @@ def crt(remainders: Sequence[Poly], moduli: Sequence[Poly]) -> Poly:
 
 
 @export
-def crt(remainders, moduli):
+def crt(remainders: Any, moduli: Any) -> Any:
     r"""
     Solves the simultaneous system of congruences for $x$.
 
@@ -478,12 +475,12 @@ def crt(remainders, moduli):
     """
     if not (
         isinstance(remainders, (tuple, list))
-        and (all(isinstance(x, (int, np.integer)) for x in remainders) or all(isinstance(x, Poly) for x in remainders))
+        and (all(isinstance(x, int) for x in remainders) or all(isinstance(x, Poly) for x in remainders))
     ):
         raise TypeError(f"Argument 'remainders' must be a tuple or list of int or Poly, not {remainders}.")
     if not (
         isinstance(moduli, (tuple, list))
-        and (all(isinstance(x, (int, np.integer)) for x in moduli) or all(isinstance(x, Poly) for x in moduli))
+        and (all(isinstance(x, int) for x in moduli) or all(isinstance(x, Poly) for x in moduli))
     ):
         raise TypeError(f"Argument 'moduli' must be a tuple or list of int or Poly, not {moduli}.")
     if not len(remainders) == len(moduli) >= 2:
@@ -548,7 +545,7 @@ def factors(value: Poly) -> tuple[list[Poly], list[int]]:
 
 
 @export
-def factors(value):
+def factors(value: Any) -> Any:
     r"""
     Computes the prime factors of a positive integer or the irreducible factors of a non-constant, monic polynomial.
 
@@ -646,7 +643,7 @@ def factors(value):
     Group:
         factorization-prime
     """
-    if isinstance(value, (int, np.integer)):
+    if isinstance(value, int):
         return int_factors(value)
     if isinstance(value, Poly):
         return value.factors()
@@ -664,7 +661,7 @@ def is_square_free(value: Poly) -> bool:
 
 
 @export
-def is_square_free(value):
+def is_square_free(value: Any) -> Any:
     r"""
     Determines if an integer or polynomial is square-free.
 
@@ -728,7 +725,7 @@ def is_square_free(value):
     Group:
         primes-tests
     """
-    if isinstance(value, (int, np.integer)):
+    if isinstance(value, int):
         return int_is_square_free(value)
     if isinstance(value, Poly):
         return value.is_square_free()

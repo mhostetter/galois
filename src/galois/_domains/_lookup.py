@@ -8,11 +8,19 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import numpy as np
+import numpy.typing as npt
 
 from . import _ufunc
 
 if TYPE_CHECKING:
     from ._array import Array
+
+ORDER: int
+
+LOG: npt.NDArray
+EXP: npt.NDArray
+ZECH_LOG: npt.NDArray
+ZECH_E: int
 
 
 class add_ufunc(_ufunc.add_ufunc):

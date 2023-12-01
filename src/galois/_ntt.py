@@ -3,6 +3,8 @@ A module that contains functions to perform the forward and reverse Number-Theor
 """
 from __future__ import annotations
 
+from typing import cast
+
 import numpy as np
 
 from ._fields import Field, FieldArray
@@ -235,7 +237,14 @@ def intt(
     return _ntt(X, size=size, modulus=modulus, forward=False, scaled=scaled)
 
 
-def _ntt(x, size=None, modulus=None, forward=True, scaled=True):
+def _ntt(
+    x: ArrayLike,
+    size: int | None = None,
+    modulus: int | None = None,
+    forward: bool = True,
+    scaled: bool = True,
+) -> FieldArray:
+    x = np.asarray(x)
     verify_isinstance(size, int, optional=True)
     verify_isinstance(modulus, int, optional=True)
     verify_isinstance(forward, bool)
@@ -273,5 +282,6 @@ def _ntt(x, size=None, modulus=None, forward=True, scaled=True):
     else:
         norm = "backward" if scaled else "forward"
         y = np.fft.ifft(x, n=size, norm=norm)
+    y = cast(FieldArray, y)
 
     return y

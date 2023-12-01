@@ -89,15 +89,15 @@ class UFuncMixin_2_1(UFuncMixin):
 
     def __init_subclass__(cls) -> None:
         super().__init_subclass__()
-        cls._add = add_ufunc(cls, override=np.bitwise_xor)
-        cls._negative = negative_ufunc(cls, override=np.positive)
-        cls._subtract = subtract_ufunc(cls, override=np.bitwise_xor)
-        cls._multiply = multiply_ufunc(cls, override=np.bitwise_and)
-        cls._reciprocal = reciprocal(cls)
-        cls._divide = divide(cls)
-        cls._power = power(cls)
-        cls._log = log(cls)
-        cls._sqrt = sqrt(cls)
+        cls._add = add_ufunc(cls, override=np.bitwise_xor)  # type: ignore
+        cls._negative = negative_ufunc(cls, override=np.positive)  # type: ignore
+        cls._subtract = subtract_ufunc(cls, override=np.bitwise_xor)  # type: ignore
+        cls._multiply = multiply_ufunc(cls, override=np.bitwise_and)  # type: ignore
+        cls._reciprocal = reciprocal(cls)  # type: ignore
+        cls._divide = divide(cls)  # type: ignore
+        cls._power = power(cls)  # type: ignore
+        cls._log = log(cls)  # type: ignore
+        cls._sqrt = sqrt(cls)  # type: ignore
 
 
 # NOTE: There is a "verbatim" block in the docstring because we were not able to monkey-patch GF2 like the
