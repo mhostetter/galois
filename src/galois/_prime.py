@@ -176,7 +176,7 @@ def prev_prime(n: int) -> int:
     while True:
         for shift in shifts:
             i = base + shift  # May be bigger than n
-            if i >= n:
+            if i > n:
                 continue
             if is_prime(i):
                 return i

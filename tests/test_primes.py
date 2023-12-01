@@ -47,6 +47,17 @@ def test_prev_prime(prev_prime):
         assert galois.prev_prime(x) == z
 
 
+def test_prev_prime_large():
+    """
+    https://github.com/mhostetter/galois/issues/529
+    """
+    assert galois.prev_prime(100000034) == 100000007
+    assert galois.prev_prime(100000035) == 100000007
+    assert galois.prev_prime(100000036) == 100000007
+    assert galois.prev_prime(100000037) == 100000037
+    assert galois.prev_prime(100000038) == 100000037
+
+
 def test_next_prime_exceptions():
     with pytest.raises(TypeError):
         galois.next_prime(20.0)
@@ -58,7 +69,7 @@ def test_next_prime(next_prime):
         assert galois.next_prime(x) == z
 
 
-def test_next_prime_bug_528():
+def test_next_prime_large():
     """
     https://github.com/mhostetter/galois/issues/528
     """
