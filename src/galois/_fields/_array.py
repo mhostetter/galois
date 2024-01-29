@@ -1044,7 +1044,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             k = np.log(x)  # x as an exponent of α
             order = (field.order - 1) // np.gcd(field.order - 1, k)
         else:
-            d = np.array(divisors(field.order - 1))  # Divisors d such that d | p^m - 1
+            d = np.array(divisors(field.order - 1), dtype=field.dtypes[-1])  # Divisors d such that d | p^m - 1
             y = np.power.outer(x, d)  # x^d -- the first divisor d for which x^d == 1 is the order of x
             idxs = np.argmin(y, axis=-1)  # First index of divisors, which is the order of x
             order = d[idxs]  # The order of each element of x

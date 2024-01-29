@@ -6,6 +6,8 @@ import random
 import numpy as np
 import pytest
 
+import galois
+
 
 def test_additive_order(field_additive_order):
     GF, X, Z = field_additive_order["GF"], field_additive_order["X"], field_additive_order["Z"]
@@ -32,6 +34,14 @@ def test_multiplicative_order(field_multiplicative_order):
         GF(0).multiplicative_order()
     with pytest.raises(ArithmeticError):
         GF.Range(0, 2).multiplicative_order()
+
+
+def test_issue_532():
+    """
+    https://github.com/mhostetter/galois/issues/532
+    """
+    GF = galois.GF(2**64 - 59)
+    assert GF(1).multiplicative_order() == 1
 
 
 def test_characteristic_poly_element(field_characteristic_poly_element):
