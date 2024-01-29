@@ -8001,21 +8001,21 @@ With the default line width, the array is quite difficult to read.</p>
 
 <span class="gp">In [40]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">));</span> <span class="n">x</span>
 <span class="gh">Out[40]: </span>
-<span class="go">GF([[     α^4 + α^3 + α^2 + 1,       2α^4 + α^2 + α + 2,</span>
-<span class="go">                     2α^3 + 1,         2α^4 + 2α^2 + 2α,</span>
-<span class="go">           2α^4 + α^2 + α + 2],</span>
-<span class="go">    [α^4 + 2α^3 + α^2 + α + 2,       α^4 + α^2 + 2α + 1,</span>
-<span class="go">      α^4 + α^3 + α^2 + α + 1,     2α^4 + 2α^3 + 2α + 2,</span>
-<span class="go">                  2α^3 + 2α^2],</span>
-<span class="go">    [   2α^4 + 2α^3 + α^2 + α,            2α^3 + 2α + 1,</span>
-<span class="go">     α^4 + α^3 + 2α^2 + α + 1,             α^2 + 2α + 1,</span>
-<span class="go">            α^3 + α^2 + α + 1],</span>
-<span class="go">    [                       2,      2α^4 + 2α^2 + α + 2,</span>
-<span class="go">                α^4 + α^3 + 2,  α^4 + α^3 + α^2 + α + 2,</span>
-<span class="go">      2α^4 + 2α^3 + 2α^2 + 2α],</span>
-<span class="go">    [        2α^4 + α^3 + α^2,       2α^4 + α^2 + α + 1,</span>
-<span class="go">           α^4 + 2α^3 + α + 2,      2α^4 + 2α^3 + α + 2,</span>
-<span class="go">                 α^3 + 2α + 1]], order=3^5)</span>
+<span class="go">GF([[            α^4 + 2α^3 + 1,                 α^3 + 2α^2,</span>
+<span class="go">         2α^4 + 2α^3 + 2α^2 + 1,      α^4 + 2α^3 + α^2 + 2α,</span>
+<span class="go">                  α^3 + α^2 + α],</span>
+<span class="go">    [       α^4 + 2α^2 + 2α + 2,                2α^3 + 2α^2,</span>
+<span class="go">     2α^4 + α^3 + 2α^2 + 2α + 2,                      α + 2,</span>
+<span class="go">             2α^4 + α^3 + α + 1],</span>
+<span class="go">    [               α^3 + α + 1,              α^4 + α^2 + 1,</span>
+<span class="go">          α^4 + α^3 + 2α^2 + 2α,         2α^3 + α^2 + α + 1,</span>
+<span class="go">               α^4 + 2α^3 + α^2],</span>
+<span class="go">    [       α^4 + 2α^2 + 2α + 2,               α^3 + 2α + 2,</span>
+<span class="go">                  α^4 + α^2 + α,         2α^4 + α^3 + α + 2,</span>
+<span class="go">                α^4 + α^3 + α^2],</span>
+<span class="go">    [            α^3 + 2α^2 + 1,              α^4 + α^3 + 2,</span>
+<span class="go">      α^4 + α^3 + 2α^2 + 2α + 1,      2α^4 + α^3 + 2α^2 + α,</span>
+<span class="go">                      α^3 + α^2]], order=3^5)</span>
 </code></pre></div>
 </div>
 <p>The readability is improved by increasing the line width using <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.set_printoptions.html#numpy.set_printoptions" title="(in NumPy v1.26)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.set_printoptions()</span></code></a>.</p>
@@ -8023,11 +8023,11 @@ With the default line width, the array is quite difficult to read.</p>
 
 <span class="gp">In [42]: </span><span class="n">x</span>
 <span class="gh">Out[42]: </span>
-<span class="go">GF([[     α^4 + α^3 + α^2 + 1,       2α^4 + α^2 + α + 2,                 2α^3 + 1,         2α^4 + 2α^2 + 2α,       2α^4 + α^2 + α + 2],</span>
-<span class="go">    [α^4 + 2α^3 + α^2 + α + 2,       α^4 + α^2 + 2α + 1,  α^4 + α^3 + α^2 + α + 1,     2α^4 + 2α^3 + 2α + 2,              2α^3 + 2α^2],</span>
-<span class="go">    [   2α^4 + 2α^3 + α^2 + α,            2α^3 + 2α + 1, α^4 + α^3 + 2α^2 + α + 1,             α^2 + 2α + 1,        α^3 + α^2 + α + 1],</span>
-<span class="go">    [                       2,      2α^4 + 2α^2 + α + 2,            α^4 + α^3 + 2,  α^4 + α^3 + α^2 + α + 2,  2α^4 + 2α^3 + 2α^2 + 2α],</span>
-<span class="go">    [        2α^4 + α^3 + α^2,       2α^4 + α^2 + α + 1,       α^4 + 2α^3 + α + 2,      2α^4 + 2α^3 + α + 2,             α^3 + 2α + 1]], order=3^5)</span>
+<span class="go">GF([[            α^4 + 2α^3 + 1,                 α^3 + 2α^2,     2α^4 + 2α^3 + 2α^2 + 1,      α^4 + 2α^3 + α^2 + 2α,              α^3 + α^2 + α],</span>
+<span class="go">    [       α^4 + 2α^2 + 2α + 2,                2α^3 + 2α^2, 2α^4 + α^3 + 2α^2 + 2α + 2,                      α + 2,         2α^4 + α^3 + α + 1],</span>
+<span class="go">    [               α^3 + α + 1,              α^4 + α^2 + 1,      α^4 + α^3 + 2α^2 + 2α,         2α^3 + α^2 + α + 1,           α^4 + 2α^3 + α^2],</span>
+<span class="go">    [       α^4 + 2α^2 + 2α + 2,               α^3 + 2α + 2,              α^4 + α^2 + α,         2α^4 + α^3 + α + 2,            α^4 + α^3 + α^2],</span>
+<span class="go">    [            α^3 + 2α^2 + 1,              α^4 + α^3 + 2,  α^4 + α^3 + 2α^2 + 2α + 1,      2α^4 + α^3 + 2α^2 + α,                  α^3 + α^2]], order=3^5)</span>
 </code></pre></div>
 </div>
 <h2 id="representation-comparisons">Representation comparisons<a class="headerlink" href="#representation-comparisons" title="Permalink to this heading">¶</a></h2>
