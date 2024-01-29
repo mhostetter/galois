@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Wait on build.yaml to build the wheel
-        uses: lewagon/wait-on-check-action@v1.0.0
+        uses: lewagon/wait-on-check-action@v1.3.1
         with:
           # When triggered on a pull request, github.sha is a temporary merge commit for the PR. The wait
           # action must wait on the SHA of the commit that triggered the workflow, which is the HEAD of the
