@@ -7826,9 +7826,23 @@ formatting.</p>
 <span class="w">    </span><span class="s2">&quot;UP&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1"># pyupgrade</span>
 <span class="w">    </span><span class="s2">&quot;B&quot;</span><span class="p">,</span><span class="w">  </span><span class="c1"># flake8-bugbear</span>
 <span class="w">    </span><span class="c1"># &quot;SIM&quot;,# flake8-simplify</span>
-<span class="w">    </span><span class="s2">&quot;I&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1"># isort</span>
+<span class="w">    </span><span class="s2">&quot;I&quot;</span><span class="p">,</span><span class="w">  </span><span class="c1"># isort</span>
+<span class="w">    </span><span class="s2">&quot;PL&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1"># pylint</span>
 <span class="p">]</span>
-<span class="n">ignore</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;E501&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;E713&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;E714&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;E741&quot;</span><span class="p">]</span>
+<span class="n">ignore</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="s2">&quot;E501&quot;</span><span class="p">,</span><span class="w">    </span><span class="c1"># line-too-long</span>
+<span class="w">    </span><span class="s2">&quot;E713&quot;</span><span class="p">,</span><span class="w">    </span><span class="c1"># not-in-test</span>
+<span class="w">    </span><span class="s2">&quot;E714&quot;</span><span class="p">,</span><span class="w">    </span><span class="c1"># not-is-test</span>
+<span class="w">    </span><span class="s2">&quot;E741&quot;</span><span class="p">,</span><span class="w">    </span><span class="c1"># ambiguous-variable-name</span>
+<span class="w">    </span><span class="s2">&quot;PLR0911&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1"># too-many-return-statements</span>
+<span class="w">    </span><span class="s2">&quot;PLR0912&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1"># too-many-branches</span>
+<span class="w">    </span><span class="s2">&quot;PLR0913&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1"># too-many-arguments</span>
+<span class="w">    </span><span class="s2">&quot;PLR0915&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1"># too-many-statements</span>
+<span class="w">    </span><span class="s2">&quot;PLR2004&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1"># magic-value-comparison</span>
+<span class="w">    </span><span class="s2">&quot;PLR5501&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1"># collapsible-else-if</span>
+<span class="w">    </span><span class="s2">&quot;PLW0603&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1"># global-statement</span>
+<span class="w">    </span><span class="s2">&quot;PLW2901&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1"># redefined-loop-name</span>
+<span class="p">]</span>
 
 <span class="k">[tool.ruff.lint.per-file-ignores]</span>
 <span class="s2">&quot;__init__.py&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;F401&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;F403&quot;</span><span class="p">]</span>
@@ -7860,7 +7874,7 @@ formatting.</p>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">end-of-file-fixer</span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">trailing-whitespace</span>
 <span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">repo</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://github.com/astral-sh/ruff-pre-commit</span>
-<span class="w">  </span><span class="nt">rev</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v0.1.4</span>
+<span class="w">  </span><span class="nt">rev</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v0.1.15</span>
 <span class="w">  </span><span class="nt">hooks</span><span class="p">:</span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ruff</span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ruff-format</span>
@@ -7890,7 +7904,7 @@ VS Code will run the linter and formatter as you view and edit files.</p>
   <small>
     
       Last update:
-      Jan 31, 2024
+      Feb 01, 2024
     
   </small>
 </div>
