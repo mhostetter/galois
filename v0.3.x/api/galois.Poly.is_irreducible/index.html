@@ -7826,13 +7826,13 @@ $f(x)\ <a href="#id1"><span class="problematic" id="id2">|</span></a>\ (x^{q^m} 
 </code></pre></div>
 </div>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [4]: </span><span class="n">g</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">irreducible_poly</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;random&quot;</span><span class="p">);</span> <span class="n">g</span>
-<span class="gh">Out[4]: </span><span class="go">Poly(x^2 + 6x + 13, GF(2^4))</span>
+<span class="gh">Out[4]: </span><span class="go">Poly(x^2 + 7x + 2, GF(2^4))</span>
 
 <span class="gp">In [5]: </span><span class="n">h</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">irreducible_poly</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;random&quot;</span><span class="p">);</span> <span class="n">h</span>
-<span class="gh">Out[5]: </span><span class="go">Poly(x^3 + 13x^2 + 9x + 4, GF(2^4))</span>
+<span class="gh">Out[5]: </span><span class="go">Poly(x^3 + 2x^2 + 4x + 10, GF(2^4))</span>
 
 <span class="gp">In [6]: </span><span class="n">f</span> <span class="o">=</span> <span class="n">g</span> <span class="o">*</span> <span class="n">h</span><span class="p">;</span> <span class="n">f</span>
-<span class="gh">Out[6]: </span><span class="go">Poly(x^5 + 11x^4 + 12x^3 + 9x^2 + 4x + 1, GF(2^4))</span>
+<span class="gh">Out[6]: </span><span class="go">Poly(x^5 + 5x^4 + 8x^3 + x^2 + 11x + 7, GF(2^4))</span>
 
 <span class="gp">In [7]: </span><span class="n">f</span><span class="o">.</span><span class="n">is_irreducible</span><span class="p">()</span>
 <span class="gh">Out[7]: </span><span class="go">False</span>

@@ -278,3 +278,18 @@ tocdepth: 2
 
 - [@avadov](https://github.com/avadov)
 - Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
+
+## v0.3.8
+
+*Released February 1, 2024*
+
+### Changes
+
+- Added support for Python 3.12. ([#534](https://github.com/mhostetter/galois/pull/534))
+- Added support for NumPy 1.26. ([#534](https://github.com/mhostetter/galois/pull/534))
+- Added support for Numba 0.59. ([#534](https://github.com/mhostetter/galois/pull/534))
+- Fixed bug in `FieldArray.multiplicative_order()` for large fields. ([#533](https://github.com/mhostetter/galois/pull/533))
+
+### Contributors
+
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
