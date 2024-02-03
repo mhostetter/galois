@@ -3,7 +3,7 @@ A module containing a class for univariate polynomials over finite fields.
 """
 from __future__ import annotations
 
-from typing import Sequence, overload
+from typing import Sequence, Type, overload
 
 import numpy as np
 from typing_extensions import Literal, Self
@@ -57,7 +57,7 @@ class Poly:
     # Special private attributes that are once computed. There are three arithmetic types for polynomials: "dense",
     # "binary", and "sparse". All types define _field, "dense" defines _coeffs, "binary" defines "_integer", and
     # "sparse" defines _nonzero_degrees and _nonzero_coeffs. The other properties are created when needed.
-    _field: type[Array]
+    _field: Type[Array]
     _degrees: np.ndarray
     _coeffs: Array
     _nonzero_degrees: np.ndarray
@@ -72,7 +72,7 @@ class Poly:
     def __init__(
         self,
         coeffs: ArrayLike,
-        field: type[Array] | None = None,
+        field: Type[Array] | None = None,
         order: Literal["desc", "asc"] = "desc",
     ):
         r"""
@@ -126,7 +126,7 @@ class Poly:
             self._type = "dense"
 
     @classmethod
-    def _PolyLike(cls, poly_like: PolyLike, field: type[Array] | None = None) -> Self:
+    def _PolyLike(cls, poly_like: PolyLike, field: Type[Array] | None = None) -> Self:
         """
         A private alternate constructor that converts a poly-like object into a polynomial, given a finite field.
         """
@@ -151,7 +151,7 @@ class Poly:
     ###############################################################################
 
     @classmethod
-    def Zero(cls, field: type[Array] | None = None) -> Self:
+    def Zero(cls, field: Type[Array] | None = None) -> Self:
         r"""
         Constructs the polynomial $f(x) = 0$ over $\mathrm{GF}(p^m)$.
 
@@ -179,7 +179,7 @@ class Poly:
         return Poly([0], field=field)
 
     @classmethod
-    def One(cls, field: type[Array] | None = None) -> Self:
+    def One(cls, field: Type[Array] | None = None) -> Self:
         r"""
         Constructs the polynomial $f(x) = 1$ over $\mathrm{GF}(p^m)$.
 
@@ -207,7 +207,7 @@ class Poly:
         return Poly([1], field=field)
 
     @classmethod
-    def Identity(cls, field: type[Array] | None = None) -> Self:
+    def Identity(cls, field: Type[Array] | None = None) -> Self:
         r"""
         Constructs the polynomial $f(x) = x$ over $\mathrm{GF}(p^m)$.
 
@@ -239,7 +239,7 @@ class Poly:
         cls,
         degree: int,
         seed: int | np.integer | np.random.Generator | None = None,
-        field: type[Array] | None = None,
+        field: Type[Array] | None = None,
     ) -> Self:
         r"""
         Constructs a random polynomial over $\mathrm{GF}(p^m)$ with degree $d$.
@@ -300,7 +300,7 @@ class Poly:
         return Poly(coeffs)
 
     @classmethod
-    def Str(cls, string: str, field: type[Array] | None = None) -> Self:
+    def Str(cls, string: str, field: Type[Array] | None = None) -> Self:
         r"""
         Constructs a polynomial over $\mathrm{GF}(p^m)$ from its string representation.
 
@@ -350,7 +350,7 @@ class Poly:
         return Poly.Degrees(degrees, coeffs, field=field)
 
     @classmethod
-    def Int(cls, integer: int, field: type[Array] | None = None) -> Self:
+    def Int(cls, integer: int, field: Type[Array] | None = None) -> Self:
         r"""
         Constructs a polynomial over $\mathrm{GF}(p^m)$ from its integer representation.
 
@@ -429,7 +429,7 @@ class Poly:
         cls,
         degrees: Sequence[int] | np.ndarray,
         coeffs: ArrayLike | None = None,
-        field: type[Array] | None = None,
+        field: Type[Array] | None = None,
     ) -> Self:
         r"""
         Constructs a polynomial over $\mathrm{GF}(p^m)$ from its non-zero degrees.
@@ -518,7 +518,7 @@ class Poly:
         cls,
         roots: ArrayLike,
         multiplicities: Sequence[int] | np.ndarray | None = None,
-        field: type[Array] | None = None,
+        field: Type[Array] | None = None,
     ) -> Self:
         r"""
         Constructs a monic polynomial over $\mathrm{GF}(p^m)$ from its roots.
@@ -1002,7 +1002,7 @@ class Poly:
 
     @overload
     def __call__(
-        self, at: ElementLike | ArrayLike, field: type[Array] | None = None, elementwise: bool = True
+        self, at: ElementLike | ArrayLike, field: Type[Array] | None = None, elementwise: bool = True
     ) -> Array:
         ...
 
@@ -1449,7 +1449,7 @@ class Poly:
     ###############################################################################
 
     @property
-    def field(self) -> type[Array]:
+    def field(self) -> Type[Array]:
         """
         The :obj:`~galois.Array` subclass for the finite field the coefficients are over.
 
@@ -1632,7 +1632,7 @@ class Poly:
         return self.nonzero_coeffs[0] == 1
 
 
-def _convert_coeffs(coeffs: ArrayLike, field: type[Array] | None = None) -> tuple[Array, type[Array]]:
+def _convert_coeffs(coeffs: ArrayLike, field: Type[Array] | None = None) -> tuple[Array, Type[Array]]:
     """
     Converts the coefficient-like input into a Galois field array based on the `field` keyword argument.
     """
@@ -1712,7 +1712,7 @@ def _evaluate_poly(f: Poly, g: Poly) -> Poly:
     return h
 
 
-def _check_input_is_poly(a: Poly | Array, field: type[Array]):
+def _check_input_is_poly(a: Poly | Array, field: Type[Array]):
     """
     Verify polynomial arithmetic operands are either galois.Poly or scalars in a finite field.
     """
@@ -1734,7 +1734,7 @@ def _check_input_is_poly(a: Poly | Array, field: type[Array]):
         raise TypeError(f"Both polynomial operands must be over the same field, not {a_field.name} and {field.name}.")
 
 
-def _check_input_is_poly_or_int(a: Poly | Array | int, field: type[Array]):
+def _check_input_is_poly_or_int(a: Poly | Array | int, field: Type[Array]):
     """
     Verify polynomial arithmetic operands are either galois.Poly, scalars in a finite field, or an integer scalar.
     """
@@ -1743,7 +1743,7 @@ def _check_input_is_poly_or_int(a: Poly | Array | int, field: type[Array]):
     _check_input_is_poly(a, field)
 
 
-def _check_input_is_poly_or_none(a: Poly | Array | None, field: type[Array]):
+def _check_input_is_poly_or_none(a: Poly | Array | None, field: Type[Array]):
     """
     Verify polynomial arithmetic operands are either galois.Poly, scalars in a finite field, or None.
     """
@@ -1752,7 +1752,7 @@ def _check_input_is_poly_or_none(a: Poly | Array | None, field: type[Array]):
     _check_input_is_poly(a, field)
 
 
-def _convert_to_coeffs(a: Poly | Array | int, field: type[Array]) -> Array:
+def _convert_to_coeffs(a: Poly | Array | int, field: Type[Array]) -> Array:
     """
     Convert the polynomial or finite field scalar into a coefficient array.
     """
@@ -1767,7 +1767,7 @@ def _convert_to_coeffs(a: Poly | Array | int, field: type[Array]) -> Array:
     return coeffs
 
 
-def _convert_to_integer(a: Poly | Array | int, field: type[Array]) -> int:
+def _convert_to_integer(a: Poly | Array | int, field: Type[Array]) -> int:
     """
     Convert the polynomial or finite field scalar into its integer representation.
     """
@@ -1780,7 +1780,7 @@ def _convert_to_integer(a: Poly | Array | int, field: type[Array]) -> int:
     return integer
 
 
-def _convert_to_sparse_coeffs(a: Poly | Array | int, field: type[Array]) -> tuple[np.ndarray, Array]:
+def _convert_to_sparse_coeffs(a: Poly | Array | int, field: Type[Array]) -> tuple[np.ndarray, Array]:
     """
     Convert the polynomial or finite field scalar into its non-zero degrees and coefficients.
     """

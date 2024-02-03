@@ -4,7 +4,7 @@ included in NumPy are also included.
 """
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Type
 
 import numba
 import numpy as np
@@ -18,7 +18,7 @@ if TYPE_CHECKING:
     from ._array import Array
 
 
-def _lapack_linalg(field: type[Array], a: Array, b: Array, function, out=None, n_sum=None) -> Array:
+def _lapack_linalg(field: Type[Array], a: Array, b: Array, function, out=None, n_sum=None) -> Array:
     """
     In prime fields GF(p), it's much more efficient to use LAPACK/BLAS implementations of linear algebra
     and then reduce modulo p rather than compute manually.
