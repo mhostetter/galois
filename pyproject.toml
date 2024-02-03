@@ -95,8 +95,9 @@ select = [
     "UP", # pyupgrade
     "B",  # flake8-bugbear
     # "SIM",# flake8-simplify
-    "I",  # isort
-    "PL", # pylint
+    "DTZ", # flake8-datetimez
+    "I",   # isort
+    "PL",  # pylint
 ]
 ignore = [
     "E501",    # line-too-long
