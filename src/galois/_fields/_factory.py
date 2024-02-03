@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import sys
 import types
-from typing import overload
+from typing import Type, overload
 
 from typing_extensions import Literal
 
@@ -29,7 +29,7 @@ def GF(
     verify: bool = True,
     compile: Literal["auto", "jit-lookup", "jit-calculate", "python-calculate"] | None = None,
     repr: Literal["int", "poly", "power"] | None = None,
-) -> type[FieldArray]:
+) -> Type[FieldArray]:
     ...
 
 
@@ -43,7 +43,7 @@ def GF(
     verify: bool = True,
     compile: Literal["auto", "jit-lookup", "jit-calculate", "python-calculate"] | None = None,
     repr: Literal["int", "poly", "power"] | None = None,
-) -> type[FieldArray]:
+) -> Type[FieldArray]:
     ...
 
 
@@ -307,7 +307,7 @@ def Field(
     verify: bool = True,
     compile: Literal["auto", "jit-lookup", "jit-calculate", "python-calculate"] | None = None,
     repr: Literal["int", "poly", "power"] | None = None,
-) -> type[FieldArray]:
+) -> Type[FieldArray]:
     ...
 
 
@@ -321,7 +321,7 @@ def Field(
     verify: bool = True,
     compile: Literal["auto", "jit-lookup", "jit-calculate", "python-calculate"] | None = None,
     repr: Literal["int", "poly", "power"] | None = None,
-) -> type[FieldArray]:
+) -> Type[FieldArray]:
     ...
 
 
@@ -356,7 +356,7 @@ def _GF_prime(
     verify: bool = True,
     compile: Literal["auto", "jit-lookup", "jit-calculate", "python-calculate"] | None = None,
     repr: Literal["int", "poly", "power"] | None = None,
-) -> type[FieldArray]:
+) -> Type[FieldArray]:
     """
     Class factory for prime fields GF(p).
     """
@@ -426,7 +426,7 @@ def _GF_extension(
     verify: bool = True,
     compile: Literal["auto", "jit-lookup", "jit-calculate", "python-calculate"] | None = None,
     repr: Literal["int", "poly", "power"] | None = None,
-) -> type[FieldArray]:
+) -> Type[FieldArray]:
     """
     Class factory for extension fields GF(p^m).
     """

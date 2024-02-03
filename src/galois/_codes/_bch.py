@@ -3,7 +3,7 @@ A module containing general Bose-Chaudhuri-Hocquenghem (BCH) codes over GF(q).
 """
 from __future__ import annotations
 
-from typing import overload
+from typing import Type, overload
 
 import numba
 import numpy as np
@@ -83,8 +83,8 @@ class BCH(_CyclicCode):
         n: int,
         k: int | None = None,
         d: int | None = None,
-        field: type[FieldArray] | None = None,
-        extension_field: type[FieldArray] | None = None,
+        field: Type[FieldArray] | None = None,
+        extension_field: Type[FieldArray] | None = None,
         alpha: ElementLike | None = None,
         c: int = 1,
         systematic: bool = True,
@@ -683,11 +683,11 @@ class BCH(_CyclicCode):
                 print(bch.field.properties)
         """,
     )
-    def field(self) -> type[FieldArray]:
+    def field(self) -> Type[FieldArray]:
         return super().field
 
     @property
-    def extension_field(self) -> type[FieldArray]:
+    def extension_field(self) -> Type[FieldArray]:
         r"""
         The Galois field $\mathrm{GF}(q^m)$ that defines the BCH syndrome arithmetic.
 
@@ -1111,7 +1111,7 @@ class BCH(_CyclicCode):
 
 def _generator_poly_from_d(
     d: int,
-    field: type[FieldArray],
+    field: Type[FieldArray],
     alpha: FieldArray,
     c: int,
 ) -> tuple[Poly, FieldArray]:
@@ -1134,8 +1134,8 @@ def _generator_poly_from_d(
 def _generator_poly_from_k(
     n: int,
     k: int,
-    field: type[FieldArray],
-    extension_field: type[FieldArray],
+    field: Type[FieldArray],
+    extension_field: Type[FieldArray],
     alpha: FieldArray,
     c: int,
 ) -> tuple[Poly, FieldArray]:
@@ -1194,7 +1194,7 @@ class bch_decode_jit(Function):
         - Lin, S. and Costello, D. Error Control Coding. Section 7.4.
     """
 
-    def __init__(self, field: type[FieldArray], extension_field: type[FieldArray]):
+    def __init__(self, field: Type[FieldArray], extension_field: Type[FieldArray]):
         super().__init__(field)
         self.extension_field = extension_field
 

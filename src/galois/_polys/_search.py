@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import functools
 import random
-from typing import Iterator, Sequence
+from typing import Iterator, Sequence, Type
 
 import numpy as np
 
@@ -18,7 +18,7 @@ from ._poly import Poly
 
 @functools.lru_cache(maxsize=8192)
 def _deterministic_search(
-    field: type[Array],
+    field: Type[Array],
     start: int,
     stop: int,
     step: int,

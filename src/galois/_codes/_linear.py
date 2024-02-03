@@ -3,7 +3,7 @@ A module containing common functions for linear block codes.
 """
 from __future__ import annotations
 
-from typing import overload
+from typing import Type, overload
 
 import numpy as np
 from typing_extensions import Literal
@@ -302,7 +302,7 @@ class _LinearCode:
     ###############################################################################
 
     @property
-    def field(self) -> type[FieldArray]:
+    def field(self) -> Type[FieldArray]:
         r"""
         The Galois field $\mathrm{GF}(q)$ that defines the codeword alphabet.
         """

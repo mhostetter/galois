@@ -4,7 +4,7 @@ sequences.
 """
 from __future__ import annotations
 
-from typing import overload
+from typing import Type, overload
 
 import numba
 import numpy as np
@@ -142,7 +142,7 @@ class _LFSR:
         return y
 
     @property
-    def field(self) -> type[FieldArray]:
+    def field(self) -> Type[FieldArray]:
         return self._field
 
     @property
@@ -526,7 +526,7 @@ class FLFSR(_LFSR):
         return GLFSR(self.feedback_poly, state=state)
 
     @property
-    def field(self) -> type[FieldArray]:
+    def field(self) -> Type[FieldArray]:
         """
         The :obj:`~galois.FieldArray` subclass for the finite field that defines the linear arithmetic.
 
@@ -1135,7 +1135,7 @@ class GLFSR(_LFSR):
         return FLFSR(self.feedback_poly, state=state)
 
     @property
-    def field(self) -> type[FieldArray]:
+    def field(self) -> Type[FieldArray]:
         """
         The :obj:`~galois.FieldArray` subclass for the finite field that defines the linear arithmetic.
 

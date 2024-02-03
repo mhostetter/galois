@@ -3,7 +3,7 @@ A module containing general Reed-Solomon (RS) codes.
 """
 from __future__ import annotations
 
-from typing import overload
+from typing import Type, overload
 
 import numpy as np
 from typing_extensions import Literal
@@ -79,7 +79,7 @@ class ReedSolomon(_CyclicCode):
         n: int,
         k: int | None = None,
         d: int | None = None,
-        field: type[FieldArray] | None = None,
+        field: Type[FieldArray] | None = None,
         alpha: ElementLike | None = None,
         c: int = 1,
         systematic: bool = True,
@@ -635,7 +635,7 @@ class ReedSolomon(_CyclicCode):
                 print(rs.field.properties)
         """,
     )
-    def field(self) -> type[FieldArray]:
+    def field(self) -> Type[FieldArray]:
         return super().field
 
     @extend_docstring(
