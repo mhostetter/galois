@@ -109,6 +109,7 @@ ignore = [
     "PLR5501", # collapsible-else-if
     "PLW0603", # global-statement
     "PLW2901", # redefined-loop-name
+    "UP006",   # non-pep585-annotation, type[FieldArray] renders wrong in docs
 ]
 
 [tool.ruff.lint.per-file-ignores]

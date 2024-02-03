@@ -3,7 +3,7 @@ A module that defines the metaclass for the abstract base class FieldArray.
 """
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Type
 
 import numpy as np
 from typing_extensions import Literal
@@ -439,7 +439,7 @@ class FieldArrayMeta(ArrayMeta):
         return cls._degree > 1
 
     @property
-    def prime_subfield(cls) -> type[FieldArray]:
+    def prime_subfield(cls) -> Type[FieldArray]:
         r"""
         The prime subfield $\mathrm{GF}(p)$ of the extension field $\mathrm{GF}(p^m)$.
 

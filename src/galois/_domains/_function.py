@@ -4,7 +4,7 @@ dispatcher classes have snake_case naming because they are act like functions.
 """
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING, Callable, Type
 
 import numba
 import numpy as np
@@ -25,7 +25,7 @@ class Function:
 
     _CACHE = {}  # A cache of compiled functions
 
-    def __init__(self, field: type[Array]):
+    def __init__(self, field: Type[Array]):
         self.field = field
 
     def __call__(self):
