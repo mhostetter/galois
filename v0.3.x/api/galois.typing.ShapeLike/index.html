@@ -7756,7 +7756,7 @@ You're not viewing the latest version.
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="mi">5</span><span class="p">)</span>
 
 <span class="gp">In [2]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span> <span class="n">x</span>
-<span class="gh">Out[2]: </span><span class="go">GF([215,  95, 202, 132], order=3^5)</span>
+<span class="gh">Out[2]: </span><span class="go">GF([ 44, 152, 163, 104], order=3^5)</span>
 
 <span class="gp">In [3]: </span><span class="n">x</span><span class="o">.</span><span class="n">shape</span>
 <span class="gh">Out[3]: </span><span class="go">(4,)</span>
@@ -7767,27 +7767,27 @@ You're not viewing the latest version.
 iterable, <code class="code highlight python docutils literal highlight-python"><span class="p">()</span></code> or <code class="code highlight python docutils literal highlight-python"><span class="p">[]</span></code>, represents a 0-D array (scalar).</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [4]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">));</span> <span class="n">x</span>
 <span class="gh">Out[4]: </span>
-<span class="go">GF([[142,  26, 211],</span>
-<span class="go">    [195, 196,  59]], order=3^5)</span>
+<span class="go">GF([[130, 191,  65],</span>
+<span class="go">    [ 90,  42, 239]], order=3^5)</span>
 
 <span class="gp">In [5]: </span><span class="n">x</span><span class="o">.</span><span class="n">shape</span>
 <span class="gh">Out[5]: </span><span class="go">(2, 3)</span>
 
 <span class="gp">In [6]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]);</span> <span class="n">x</span>
 <span class="gh">Out[6]: </span>
-<span class="go">GF([[[215, 167, 170,  61],</span>
-<span class="go">     [226,  27, 213,  70],</span>
-<span class="go">     [ 98, 197, 217,  84]],</span>
+<span class="go">GF([[[ 59, 234, 231,  64],</span>
+<span class="go">     [106,  32,  90, 127],</span>
+<span class="go">     [ 91, 170,  61, 172]],</span>
 
-<span class="go">    [[ 29, 198,  95, 165],</span>
-<span class="go">     [ 60, 220,  32, 196],</span>
-<span class="go">     [ 96,  39, 161,  48]]], order=3^5)</span>
+<span class="go">    [[143, 215, 120, 178],</span>
+<span class="go">     [144,  95,  78, 166],</span>
+<span class="go">     [221, 168, 110, 217]]], order=3^5)</span>
 
 <span class="gp">In [7]: </span><span class="n">x</span><span class="o">.</span><span class="n">shape</span>
 <span class="gh">Out[7]: </span><span class="go">(2, 3, 4)</span>
 
 <span class="gp">In [8]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(());</span> <span class="n">x</span>
-<span class="gh">Out[8]: </span><span class="go">GF(81, order=3^5)</span>
+<span class="gh">Out[8]: </span><span class="go">GF(1, order=3^5)</span>
 
 <span class="gp">In [9]: </span><span class="n">x</span><span class="o">.</span><span class="n">shape</span>
 <span class="gh">Out[9]: </span><span class="go">()</span>
@@ -7869,7 +7869,7 @@ iterable, <code class="code highlight python docutils literal highlight-python">
       <div class="md-copyright">
   
     <div class="md-footer-copyright__highlight">
-        &#169; Copyright 2020-2023, Matt Hostetter.
+        &#169; Copyright 2020-2024, Matt Hostetter.
         
     </div>
   
