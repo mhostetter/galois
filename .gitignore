@@ -1,10 +1,10 @@
 __pycache__/
 .benchmarks/
+.coverage
 .ipynb_checkpoints/
 .pytest_cache/
+.venv/
 build/
 dist/
-env/
 src/*.egg-info
 src/galois/_version.py
-.coverage
