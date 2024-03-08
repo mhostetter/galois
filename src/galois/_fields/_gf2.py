@@ -17,6 +17,7 @@ from .._domains._lookup import (
     subtract_ufunc,
 )
 from .._domains._ufunc import UFuncMixin
+from .._domains._function import Function
 from .._helper import export
 from ._array import FieldArray
 
@@ -106,9 +107,50 @@ class UFuncMixin_2_1(UFuncMixin):
 # document class properties... :(
 
 
+class solve(Function):
+    """
+    Solves a linear matrix equation, or system of linear scalar equations `A * x = b` in GF2.
+
+    Arguments:
+        A: Coefficient matrix.
+
+        b: Dependent variable values.
+            
+    Returns:
+        Solution to the system `A * x = b` in GF2. Returned shape is identical to b.
+    """
+
+    def __call__(self, A: FieldArray, b: FieldArray) -> FieldArray:
+        raise NotImplementedError
+        # TODO: imolementation
+        if not (A.ndim == 2 and A.shape[0] == A.shape[1]):
+            raise np.linalg.LinAlgError(f"Argument 'A' must be square, not {A.shape}.")
+        if not b.ndim in [1, 2]:
+            raise np.linalg.LinAlgError(f"Argument 'b' must have dimension equal to 'A' or one less, not {b.ndim}.")
+        if not A.shape[-1] == b.shape[0]:
+            raise np.linalg.LinAlgError(
+                f"The last dimension of 'A' must equal the first dimension of 'b', not {A.shape} and {b.shape}."
+            )
+
+        A_inv = inv_jit(self.field)(A)
+        x = A_inv @ b
+
+        return x
+
+
+class FieldArray_2_1(FieldArray):
+    """
+    A FieldArray class wrapper that provides explicit solve function for GF(2).
+    """
+
+    def __init_subclass__(cls) -> None:
+        super().__init_subclass__()
+        cls._solve = solve(cls)
+
+
 @export
 class GF2(
-    FieldArray,
+    FieldArray_2_1,
     UFuncMixin_2_1,
     characteristic=2,
     degree=1,
@@ -150,6 +192,41 @@ class GF2(
         galois-fields
     """
 
+    ###############################################################################
+    # Class methods that are only available for GF2
+    ###############################################################################
+
+    # I am *almost* sure, that it will not be able to be called
+    # FieldArray <- Array <- LinalgFunctionMixin, and _solve is in LinalgFunctionMixin
+    # but this solution works only foe GF2
+    # P.S. I did FieldArray_2_1 ust like UFuncMixin_2_1 that should call proposed function instead of np.linalg.solve
+    @classmethod
+    def solve(
+        cls, 
+        A: FieldArray | None = None,
+        b: FieldArray | None = None,
+    ) -> FieldArray:
+        """
+        Solves a linear matrix equation, or system of linear scalar equations `A * x = b` in GF2.
+
+        Arguments:
+            A: Coefficient matrix.
+
+            b: Dependent variable values.
+            
+        Returns:
+            Solution to the system `A * x = b` in GF2. Returned shape is identical to b.
+        """
+        raise NotImplementedError
+        # TODO: imolementation
+        if not (A.ndim == 2 and A.shape[0] == A.shape[1]):
+            raise np.linalg.LinAlgError(f"Argument 'A' must be square, not {A.shape}.")
+        if not b.ndim in [1, 2]:
+            raise np.linalg.LinAlgError(f"Argument 'b' must have dimension equal to 'A' or one less, not {b.ndim}.")
+        if not A.shape[-1] == b.shape[0]:
+            raise np.linalg.LinAlgError(
+                f"The last dimension of 'A' must equal the first dimension of 'b', not {A.shape} and {b.shape}."
+            )
 
 GF2._default_ufunc_mode = "jit-calculate"
 GF2._ufunc_modes = ["jit-calculate"]
