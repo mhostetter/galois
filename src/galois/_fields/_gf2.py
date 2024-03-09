@@ -121,20 +121,30 @@ class solve(Function):
     """
 
     def __call__(self, A: FieldArray, b: FieldArray) -> FieldArray:
-        raise NotImplementedError
-        # TODO: imolementation
-        if not (A.ndim == 2 and A.shape[0] == A.shape[1]):
-            raise np.linalg.LinAlgError(f"Argument 'A' must be square, not {A.shape}.")
-        if not b.ndim in [1, 2]:
-            raise np.linalg.LinAlgError(f"Argument 'b' must have dimension equal to 'A' or one less, not {b.ndim}.")
-        if not A.shape[-1] == b.shape[0]:
-            raise np.linalg.LinAlgError(
-                f"The last dimension of 'A' must equal the first dimension of 'b', not {A.shape} and {b.shape}."
-            )
+        if A.ndim != 2 or b.ndim != 1:
+            raise np.linalg.LinAlgError("'A' must be a matrix and 'b' must be a vector.")
+        if A.shape[0] != b.shape[0]:
+            raise np.linalg.LinAlgError("Dimensionally incorrect input.")
+        
+        C = np.concatenate((A, np.array([b]).T), axis=1).row_reduce()
+        r, c = C.shape
 
-        A_inv = inv_jit(self.field)(A)
-        x = A_inv @ b
-
+        # inconsistency check
+        for a in range(r):
+            is_inconsistent = True
+            for b in range(c-1):
+                if C[a, b] != 0:
+                    is_inconsistent = False
+            if is_inconsistent and C[a, c-1] != 0:
+                raise np.linalg.LinAlgError("Inconsistent system")
+            
+        x = GF2.Zeros(c-1)
+        for p in range(r):
+            if C[p, c-1] == 1:
+                for n in range(c-1):
+                    if C[p, n] == 1:
+                        x[n] = 1
+                        break
         return x
 
 
@@ -217,16 +227,32 @@ class GF2(
         Returns:
             Solution to the system `A * x = b` in GF2. Returned shape is identical to b.
         """
-        raise NotImplementedError
-        # TODO: imolementation
-        if not (A.ndim == 2 and A.shape[0] == A.shape[1]):
-            raise np.linalg.LinAlgError(f"Argument 'A' must be square, not {A.shape}.")
-        if not b.ndim in [1, 2]:
-            raise np.linalg.LinAlgError(f"Argument 'b' must have dimension equal to 'A' or one less, not {b.ndim}.")
-        if not A.shape[-1] == b.shape[0]:
-            raise np.linalg.LinAlgError(
-                f"The last dimension of 'A' must equal the first dimension of 'b', not {A.shape} and {b.shape}."
-            )
+        if A.ndim != 2 or b.ndim != 1:
+            raise np.linalg.LinAlgError("'A' must be a matrix and 'b' must be a vector.")
+        if A.shape[0] != b.shape[0]:
+            raise np.linalg.LinAlgError("Dimensionally incorrect input.")
+        
+        C = np.concatenate((A, np.array([b]).T), axis=1).row_reduce()
+        r, c = C.shape
+
+        # inconsistency check
+        for a in range(r):
+            is_inconsistent = True
+            for b in range(c-1):
+                if C[a, b] != 0:
+                    is_inconsistent = False
+            if is_inconsistent and C[a, c-1] != 0:
+                raise np.linalg.LinAlgError("Inconsistent system")
+            
+        x = cls.Zeros(c-1)
+        for p in range(r):
+            if C[p, c-1] == 1:
+                for n in range(c-1):
+                    if C[p, n] == 1:
+                        x[n] = 1
+                        break
+        return x
+
 
 GF2._default_ufunc_mode = "jit-calculate"
 GF2._ufunc_modes = ["jit-calculate"]
