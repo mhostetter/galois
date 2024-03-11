@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import numpy as np
 
+from .._domains._function import Function
 from .._domains._lookup import (
     add_ufunc,
     divide_ufunc,
@@ -17,7 +18,6 @@ from .._domains._lookup import (
     subtract_ufunc,
 )
 from .._domains._ufunc import UFuncMixin
-from .._domains._function import Function
 from .._helper import export
 from ._array import FieldArray
 
