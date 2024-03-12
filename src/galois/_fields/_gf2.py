@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import numpy as np
 
+from .._domains._function import Function
 from .._domains._lookup import (
     add_ufunc,
     divide_ufunc,
@@ -106,9 +107,69 @@ class UFuncMixin_2_1(UFuncMixin):
 # document class properties... :(
 
 
+class solve(Function):
+    """
+    Solves a linear matrix equation, or system of linear scalar equations `A * x = b` in GF2.
+
+    Arguments:
+        A: Coefficient matrix.
+
+        b: Dependent variable values.
+            
+    Returns:
+        Solution to the system `A * x = b` in GF2. Returned shape is identical to b.
+    """
+
+    def __call__(self, A: FieldArray, b: FieldArray) -> FieldArray:
+        if A.ndim != 2 or b.ndim != 1:
+            raise np.linalg.LinAlgError("'A' must be a matrix and 'b' must be a vector.")
+        if A.shape[0] != b.shape[0]:
+            raise np.linalg.LinAlgError("Dimensionally incorrect input.")
+        
+        C = np.concatenate((A, np.array([b]).T), axis=1).row_reduce()
+        r, c = C.shape
+
+        # inconsistency check
+        for a in range(r):
+            is_inconsistent = True
+            for b in range(c-1):
+                if C[a, b] != 0:
+                    is_inconsistent = False
+            if is_inconsistent and C[a, c-1] != 0:
+                raise np.linalg.LinAlgError("Inconsistent system")
+            
+        x = GF2.Zeros(c-1)
+        for p in range(r):
+            if C[p, c-1] == 1:
+                for n in range(c-1):
+                    if C[p, n] == 1:
+                        x[n] = 1
+                        break
+        return x
+
+
+class FieldArray_2_1(FieldArray):
+    """
+    A FieldArray class wrapper that provides explicit solve function for GF(2).
+    """
+
+    _OVERRIDDEN_FUNCTIONS = {
+        **FieldArray._OVERRIDDEN_FUNCTIONS,
+        **{
+            np.linalg.lstsq: "_lstsq",
+        },
+    }
+
+    _lstsq: Function
+
+    def __init_subclass__(cls) -> None:
+        super().__init_subclass__()
+        cls._lstsq = solve(cls)
+
+
 @export
 class GF2(
-    FieldArray,
+    FieldArray_2_1,
     UFuncMixin_2_1,
     characteristic=2,
     degree=1,
@@ -149,6 +210,57 @@ class GF2(
     Group:
         galois-fields
     """
+
+    ###############################################################################
+    # Class methods that are only available for GF2
+    ###############################################################################
+
+    # I am *almost* sure, that it will not be able to be called
+    # FieldArray <- Array <- LinalgFunctionMixin, and _solve is in LinalgFunctionMixin
+    # but this solution works only foe GF2
+    # P.S. I did FieldArray_2_1 ust like UFuncMixin_2_1 that should call proposed function instead of np.linalg.solve
+    @classmethod
+    def solve(
+        cls, 
+        A: FieldArray | None = None,
+        b: FieldArray | None = None,
+    ) -> FieldArray:
+        """
+        Solves a linear matrix equation, or system of linear scalar equations `A * x = b` in GF2.
+
+        Arguments:
+            A: Coefficient matrix.
+
+            b: Dependent variable values.
+            
+        Returns:
+            Solution to the system `A * x = b` in GF2. Returned shape is identical to b.
+        """
+        if A.ndim != 2 or b.ndim != 1:
+            raise np.linalg.LinAlgError("'A' must be a matrix and 'b' must be a vector.")
+        if A.shape[0] != b.shape[0]:
+            raise np.linalg.LinAlgError("Dimensionally incorrect input.")
+        
+        C = np.concatenate((A, np.array([b]).T), axis=1).row_reduce()
+        r, c = C.shape
+
+        # inconsistency check
+        for a in range(r):
+            is_inconsistent = True
+            for b in range(c-1):
+                if C[a, b] != 0:
+                    is_inconsistent = False
+            if is_inconsistent and C[a, c-1] != 0:
+                raise np.linalg.LinAlgError("Inconsistent system")
+            
+        x = cls.Zeros(c-1)
+        for p in range(r):
+            if C[p, c-1] == 1:
+                for n in range(c-1):
+                    if C[p, n] == 1:
+                        x[n] = 1
+                        break
+        return x
 
 
 GF2._default_ufunc_mode = "jit-calculate"
