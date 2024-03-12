@@ -153,9 +153,18 @@ class FieldArray_2_1(FieldArray):
     A FieldArray class wrapper that provides explicit solve function for GF(2).
     """
 
+    _OVERRIDDEN_FUNCTIONS = {
+        **FieldArray._OVERRIDDEN_FUNCTIONS,
+        **{
+            np.linalg.lstsq: "_lstsq",
+        },
+    }
+
+    _lstsq: Function
+
     def __init_subclass__(cls) -> None:
         super().__init_subclass__()
-        cls._solve = solve(cls)
+        cls._lstsq = solve(cls)
 
 
 @export
