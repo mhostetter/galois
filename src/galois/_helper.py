@@ -109,6 +109,8 @@ def extend_docstring(method, replace=None, docstring=""):
 
     def decorator(obj):
         parent_docstring = getattr(method, "__doc__", "")
+        if parent_docstring is None:
+            return obj
         for from_str, to_str in replace.items():
             parent_docstring = parent_docstring.replace(from_str, to_str)
         obj.__doc__ = parent_docstring + "\n" + docstring
