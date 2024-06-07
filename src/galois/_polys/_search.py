@@ -4,6 +4,7 @@ A module containing functions that search for monic irreducible or primitive pol
 Searches are performed in lexicographic, reverse lexicographic, or random order. Additionally, a fixed number
 of non-zero terms may be specified. Memoization is heavily used to prevent repeated, expensive searches.
 """
+
 from __future__ import annotations
 
 import functools

@@ -1,6 +1,7 @@
 """
 A pytest module to test Galois field polynomial instantiation.
 """
+
 import random
 
 import numpy as np

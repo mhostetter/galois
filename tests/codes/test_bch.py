@@ -1,6 +1,7 @@
 """
 A pytest module to test general BCH codes.
 """
+
 import random
 
 import numpy as np

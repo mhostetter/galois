@@ -1,6 +1,7 @@
 """
 A module containing functions to find and test Conway polynomials.
 """
+
 from __future__ import annotations
 
 import functools

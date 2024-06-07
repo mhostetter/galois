@@ -1,6 +1,7 @@
 """
 A module containing general Reed-Solomon (RS) codes.
 """
+
 from __future__ import annotations
 
 from typing import Type, overload
@@ -437,8 +438,7 @@ class ReedSolomon(_CyclicCode):
         codeword: ArrayLike,
         output: Literal["message", "codeword"] = "message",
         errors: Literal[False] = False,
-    ) -> FieldArray:
-        ...
+    ) -> FieldArray: ...
 
     @overload
     def decode(
@@ -446,8 +446,7 @@ class ReedSolomon(_CyclicCode):
         codeword: ArrayLike,
         output: Literal["message", "codeword"] = "message",
         errors: Literal[True] = True,
-    ) -> tuple[FieldArray, int | np.ndarray]:
-        ...
+    ) -> tuple[FieldArray, int | np.ndarray]: ...
 
     @extend_docstring(
         _CyclicCode.decode,

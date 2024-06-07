@@ -1,6 +1,7 @@
 """
 A module containing polynomial arithmetic for polynomials with dense coefficients.
 """
+
 from __future__ import annotations
 
 import numba

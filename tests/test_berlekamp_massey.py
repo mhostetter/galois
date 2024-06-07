@@ -5,6 +5,7 @@ Notes
 -----
 I discovered a bug in Sage's Berlekmap-Massey implementation and filed it here https://trac.sagemath.org/ticket/33537.
 """
+
 import numpy as np
 import pytest
 

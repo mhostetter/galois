@@ -1,6 +1,7 @@
 """
 A pytest module to test the Fibonacci LFSR implementation.
 """
+
 import numpy as np
 import pytest
 

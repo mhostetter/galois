@@ -1,6 +1,7 @@
 """
 A module containing functions for interpolation polynomials over finite fields.
 """
+
 from __future__ import annotations
 
 import numba

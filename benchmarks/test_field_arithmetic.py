@@ -1,6 +1,7 @@
 """
 A pytest module to benchmark FieldArray arithmetic.
 """
+
 import numpy as np
 import pytest
 

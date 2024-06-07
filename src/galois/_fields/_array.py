@@ -1,6 +1,7 @@
 """
 A module that defines the abstract base class FieldArray.
 """
+
 from __future__ import annotations
 
 from typing import Generator

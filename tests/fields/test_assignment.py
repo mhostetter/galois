@@ -1,6 +1,7 @@
 """
 A pytest module to test FieldArray assignment.
 """
+
 import numpy as np
 import pytest
 

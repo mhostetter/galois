@@ -1,6 +1,7 @@
 """
 A pytest module to test methods of FieldArray subclasses.
 """
+
 import numpy as np
 import pytest
 

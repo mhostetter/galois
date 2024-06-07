@@ -1,6 +1,7 @@
 """
 A module containing routines for prime number generation, prime factorization, and primality testing.
 """
+
 from __future__ import annotations
 
 import bisect

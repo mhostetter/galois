@@ -1,6 +1,7 @@
 """
 A pytest module to test exception raising for invalid FieldArray arithmetic.
 """
+
 import numpy as np
 import pytest
 

@@ -1,6 +1,7 @@
 """
 A pytest module to test various Galois field properties.
 """
+
 import random
 
 import numpy as np

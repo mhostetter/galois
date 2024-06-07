@@ -3,6 +3,7 @@ A module containing various ufunc dispatchers with lookup table arithmetic added
 exponential, logarithm (base primitive element), and Zech logarithm (base primitive element) lookup tables to reduce
 the complex finite field arithmetic to a few table lookups and an integer addition/subtraction.
 """
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING

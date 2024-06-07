@@ -1,6 +1,7 @@
 """
 A pytest module to test the accuracy of Galois field arithmetic methods/operations.
 """
+
 import random
 
 import numpy as np

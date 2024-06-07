@@ -1,6 +1,7 @@
 """
 A pytest module to test linear algebra routines over Galois fields.
 """
+
 import random
 
 import numpy as np

@@ -1,6 +1,7 @@
 """
 A module that contains polymorphic math functions that work on integers and polynomials.
 """
+
 from __future__ import annotations
 
 from typing import Sequence, overload
@@ -26,13 +27,11 @@ from ._prime import is_square_free as int_is_square_free
 
 
 @overload
-def gcd(a: int, b: int) -> int:
-    ...
+def gcd(a: int, b: int) -> int: ...
 
 
 @overload
-def gcd(a: Poly, b: Poly) -> Poly:
-    ...
+def gcd(a: Poly, b: Poly) -> Poly: ...
 
 
 @export
@@ -96,13 +95,11 @@ def gcd(a, b):
 
 
 @overload
-def egcd(a: int, b: int) -> tuple[int, int, int]:
-    ...
+def egcd(a: int, b: int) -> tuple[int, int, int]: ...
 
 
 @overload
-def egcd(a: Poly, b: Poly) -> tuple[Poly, Poly, Poly]:
-    ...
+def egcd(a: Poly, b: Poly) -> tuple[Poly, Poly, Poly]: ...
 
 
 @export
@@ -176,13 +173,11 @@ def egcd(a, b):
 
 
 @overload
-def lcm(*values: int) -> int:
-    ...
+def lcm(*values: int) -> int: ...
 
 
 @overload
-def lcm(*values: Poly) -> Poly:
-    ...
+def lcm(*values: Poly) -> Poly: ...
 
 
 @export
@@ -243,13 +238,11 @@ def lcm(*values):
 
 
 @overload
-def prod(*values: int) -> int:
-    ...
+def prod(*values: int) -> int: ...
 
 
 @overload
-def prod(*values: Poly) -> Poly:
-    ...
+def prod(*values: Poly) -> Poly: ...
 
 
 @export
@@ -309,13 +302,11 @@ def prod(*values):
 
 
 @overload
-def are_coprime(*values: int) -> bool:
-    ...
+def are_coprime(*values: int) -> bool: ...
 
 
 @overload
-def are_coprime(*values: Poly) -> bool:
-    ...
+def are_coprime(*values: Poly) -> bool: ...
 
 
 @export
@@ -385,13 +376,11 @@ def are_coprime(*values):
 
 
 @overload
-def crt(remainders: Sequence[int], moduli: Sequence[int]) -> int:
-    ...
+def crt(remainders: Sequence[int], moduli: Sequence[int]) -> int: ...
 
 
 @overload
-def crt(remainders: Sequence[Poly], moduli: Sequence[Poly]) -> Poly:
-    ...
+def crt(remainders: Sequence[Poly], moduli: Sequence[Poly]) -> Poly: ...
 
 
 @export
@@ -538,13 +527,11 @@ def crt(remainders, moduli):
 
 
 @overload
-def factors(value: int) -> tuple[list[int], list[int]]:
-    ...
+def factors(value: int) -> tuple[list[int], list[int]]: ...
 
 
 @overload
-def factors(value: Poly) -> tuple[list[Poly], list[int]]:
-    ...
+def factors(value: Poly) -> tuple[list[Poly], list[int]]: ...
 
 
 @export
@@ -654,13 +641,11 @@ def factors(value):
 
 
 @overload
-def is_square_free(value: int) -> bool:
-    ...
+def is_square_free(value: int) -> bool: ...
 
 
 @overload
-def is_square_free(value: Poly) -> bool:
-    ...
+def is_square_free(value: Poly) -> bool: ...
 
 
 @export

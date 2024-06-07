@@ -1,6 +1,7 @@
 """
 A module containing functions to generate and test primitive elements of finite fields.
 """
+
 from __future__ import annotations
 
 import random

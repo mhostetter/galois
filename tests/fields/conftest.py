@@ -1,6 +1,7 @@
 """
 A pytest conftest module that provides pytest fixtures for galois/fields/ tests.
 """
+
 import json
 import os
 import pickle

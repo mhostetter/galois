@@ -1,6 +1,7 @@
 """
 A module containing functions for modular arithmetic.
 """
+
 from __future__ import annotations
 
 import functools

@@ -1,6 +1,7 @@
 """
 A pytest module to test number theoretic functions.
 """
+
 import pytest
 
 import galois

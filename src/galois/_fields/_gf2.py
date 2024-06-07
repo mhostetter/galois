@@ -1,6 +1,7 @@
 """
 A module that defines the GF(2) array class.
 """
+
 from __future__ import annotations
 
 import numpy as np

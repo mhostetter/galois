@@ -1,6 +1,7 @@
 """
 A module containing general Bose-Chaudhuri-Hocquenghem (BCH) codes over GF(q).
 """
+
 from __future__ import annotations
 
 from typing import Type, overload
@@ -481,8 +482,7 @@ class BCH(_CyclicCode):
         codeword: ArrayLike,
         output: Literal["message", "codeword"] = "message",
         errors: Literal[False] = False,
-    ) -> FieldArray:
-        ...
+    ) -> FieldArray: ...
 
     @overload
     def decode(
@@ -490,8 +490,7 @@ class BCH(_CyclicCode):
         codeword: ArrayLike,
         output: Literal["message", "codeword"] = "message",
         errors: Literal[True] = True,
-    ) -> tuple[FieldArray, int | np.ndarray]:
-        ...
+    ) -> tuple[FieldArray, int | np.ndarray]: ...
 
     @extend_docstring(
         _CyclicCode.decode,
