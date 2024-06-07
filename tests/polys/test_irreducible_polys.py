@@ -1,6 +1,7 @@
 """
 A pytest module to test generating irreducible polynomials over finite fields.
 """
+
 import time
 
 import numpy as np

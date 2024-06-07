@@ -4,6 +4,7 @@ A pytest module to test polynomial arithmetic using the "binary" and "sparse" im
 We don't need to verify the arithmetic is correct (that was already done in test_arithmetic.py). We
 just need to make sure the arithmetic is the same for the different implementations.
 """
+
 import random
 
 import galois

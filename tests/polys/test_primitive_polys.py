@@ -5,6 +5,7 @@ References
 ----------
 * https://baylor-ir.tdl.org/bitstream/handle/2104/8793/GF3%20Polynomials.pdf?sequence=1&isAllowed=y
 """
+
 import numpy as np
 import pytest
 

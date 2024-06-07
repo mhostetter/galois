@@ -2,6 +2,7 @@
 A module that contains a NumPy function dispatcher and an Array mixin class that override NumPy functions. The function
 dispatcher classes have snake_case naming because they are act like functions.
 """
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Callable, Type

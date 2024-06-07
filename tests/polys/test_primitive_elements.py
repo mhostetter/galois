@@ -1,6 +1,7 @@
 """
 A pytest module to test generating primitive elements.
 """
+
 import random
 
 import pytest

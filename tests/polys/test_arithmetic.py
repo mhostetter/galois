@@ -1,6 +1,7 @@
 """
 A pytest module to test polynomial arithmetic over Galois fields.
 """
+
 import numpy as np
 
 import galois

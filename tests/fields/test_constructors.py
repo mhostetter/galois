@@ -1,6 +1,7 @@
 """
 A pytest module to test instantiation of new FieldArrays through alternate constructors.
 """
+
 import numpy as np
 import pytest
 

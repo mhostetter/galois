@@ -1,6 +1,7 @@
 """
 A pytest module to test factoring polynomials over finite fields.
 """
+
 import random
 
 import pytest

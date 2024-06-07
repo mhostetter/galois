@@ -1,6 +1,7 @@
 """
 A pytest module to test the DFT over arbitrary finite fields.
 """
+
 import numpy as np
 import pytest
 

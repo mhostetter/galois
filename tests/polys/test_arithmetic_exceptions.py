@@ -1,6 +1,7 @@
 """
 A pytest module to test type errors for polynomial arithmetic over Galois fields.
 """
+
 import pytest
 
 import galois

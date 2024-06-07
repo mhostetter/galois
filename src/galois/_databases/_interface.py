@@ -1,6 +1,7 @@
 """
 A module that handles interfacing with the SQLite databases.
 """
+
 from __future__ import annotations
 
 import sqlite3

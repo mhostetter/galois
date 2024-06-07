@@ -1,6 +1,7 @@
 """
 A module that defines a mixin classes for Galois field arithmetic.
 """
+
 from __future__ import annotations
 
 import numpy as np

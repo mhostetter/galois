@@ -1,6 +1,7 @@
 """
 A module containing common functions for linear block codes.
 """
+
 from __future__ import annotations
 
 from typing import Type, overload
@@ -121,8 +122,7 @@ class _LinearCode:
         codeword: ArrayLike,
         output: Literal["message", "codeword"] = "message",
         errors: Literal[False] = False,
-    ) -> FieldArray:
-        ...
+    ) -> FieldArray: ...
 
     @overload
     def decode(
@@ -130,8 +130,7 @@ class _LinearCode:
         codeword: ArrayLike,
         output: Literal["message", "codeword"] = "message",
         errors: Literal[True] = True,
-    ) -> tuple[FieldArray, int | np.ndarray]:
-        ...
+    ) -> tuple[FieldArray, int | np.ndarray]: ...
 
     def decode(self, codeword, output="message", errors=False):
         r"""

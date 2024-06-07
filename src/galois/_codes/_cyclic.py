@@ -1,6 +1,7 @@
 """
 A module containing common functions for cyclic codes.
 """
+
 from __future__ import annotations
 
 from typing import overload
@@ -88,8 +89,7 @@ class _CyclicCode(_LinearCode):
         codeword: ArrayLike,
         output: Literal["message", "codeword"] = "message",
         errors: Literal[False] = False,
-    ) -> FieldArray:
-        ...
+    ) -> FieldArray: ...
 
     @overload
     def decode(
@@ -97,8 +97,7 @@ class _CyclicCode(_LinearCode):
         codeword: ArrayLike,
         output: Literal["message", "codeword"] = "message",
         errors: Literal[True] = True,
-    ) -> tuple[FieldArray, int | np.ndarray]:
-        ...
+    ) -> tuple[FieldArray, int | np.ndarray]: ...
 
     @extend_docstring(
         _LinearCode.decode,

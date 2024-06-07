@@ -8,6 +8,7 @@ Sage:
     R = F['x']
     R.lagrange_polynomial(points)
 """
+
 import numpy as np
 import pytest
 

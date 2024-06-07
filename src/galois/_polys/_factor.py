@@ -1,6 +1,7 @@
 """
 A module containing functions to factor univariate polynomials over finite fields.
 """
+
 from __future__ import annotations
 
 from .._helper import method_of, verify_isinstance

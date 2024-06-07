@@ -5,6 +5,7 @@ Sources:
  - Gadiel Seroussi. Table of Low-Weight Binary Irreducible Polynomials (1998): https://www.hpl.hp.com/techreports/98/HPL-98-135.html
 
 """
+
 from __future__ import annotations
 
 import hashlib

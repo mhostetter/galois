@@ -1,6 +1,7 @@
 """
 A module containing a class for univariate polynomials over finite fields.
 """
+
 from __future__ import annotations
 
 from typing import Sequence, Type, overload
@@ -684,12 +685,10 @@ class Poly:
         return Poly(self.coeffs[::-1])
 
     @overload
-    def roots(self, multiplicity: Literal[False] = False) -> Array:
-        ...
+    def roots(self, multiplicity: Literal[False] = False) -> Array: ...
 
     @overload
-    def roots(self, multiplicity: Literal[True]) -> tuple[Array, np.ndarray]:
-        ...
+    def roots(self, multiplicity: Literal[True]) -> tuple[Array, np.ndarray]: ...
 
     def roots(self, multiplicity=False):
         r"""
@@ -1003,12 +1002,10 @@ class Poly:
     @overload
     def __call__(
         self, at: ElementLike | ArrayLike, field: Type[Array] | None = None, elementwise: bool = True
-    ) -> Array:
-        ...
+    ) -> Array: ...
 
     @overload
-    def __call__(self, at: Poly) -> Poly:
-        ...
+    def __call__(self, at: Poly) -> Poly: ...
 
     def __call__(self, at, field=None, elementwise=True):
         r"""

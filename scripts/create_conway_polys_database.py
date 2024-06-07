@@ -1,6 +1,7 @@
 """
 A script to create a database of Conway polynomials using Frank Luebeck's compilation of polynomials.
 """
+
 from __future__ import annotations
 
 import hashlib

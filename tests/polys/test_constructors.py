@@ -1,6 +1,7 @@
 """
 A pytest module to test Galois field polynomial alternate constructors.
 """
+
 import numpy as np
 import pytest
 

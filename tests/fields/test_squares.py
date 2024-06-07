@@ -37,6 +37,7 @@ Sage:
     print(non_squares)
     print(b)
 """
+
 import numpy as np
 
 import galois

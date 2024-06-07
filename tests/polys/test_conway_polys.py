@@ -1,6 +1,7 @@
 """
 A pytest module to test generating and testing Conway polynomials.
 """
+
 import pytest
 
 import galois

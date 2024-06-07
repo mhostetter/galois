@@ -1,6 +1,7 @@
 """
 A module containing polynomial arithmetic for polynomials with sparse coefficients.
 """
+
 from __future__ import annotations
 
 import numpy as np

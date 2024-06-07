@@ -2,6 +2,7 @@
 A module containing classes and functions for generating and analyzing linear feedback shift registers and their
 sequences.
 """
+
 from __future__ import annotations
 
 from typing import Type, overload
@@ -1409,18 +1410,15 @@ class galois_lfsr_step_backward_jit(Function):
 
 
 @overload
-def berlekamp_massey(sequence: FieldArray, output: Literal["minimal"] = "minimal") -> Poly:
-    ...
+def berlekamp_massey(sequence: FieldArray, output: Literal["minimal"] = "minimal") -> Poly: ...
 
 
 @overload
-def berlekamp_massey(sequence: FieldArray, output: Literal["fibonacci"]) -> FLFSR:
-    ...
+def berlekamp_massey(sequence: FieldArray, output: Literal["fibonacci"]) -> FLFSR: ...
 
 
 @overload
-def berlekamp_massey(sequence: FieldArray, output: Literal["galois"]) -> GLFSR:
-    ...
+def berlekamp_massey(sequence: FieldArray, output: Literal["galois"]) -> GLFSR: ...
 
 
 @export

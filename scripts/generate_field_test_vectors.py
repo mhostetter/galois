@@ -4,6 +4,7 @@ Script to generate unit test vectors for finite field arithmetic.
 Install SageMath:
 * `sudo apt install sagemath`
 """
+
 import json
 import os
 import pickle

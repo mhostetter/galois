@@ -1,6 +1,7 @@
 """
 A pytest module to test the functions relating to primes.
 """
+
 import random
 
 import pytest

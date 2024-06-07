@@ -1,6 +1,7 @@
 """
 A pytest module to test the class attributes of FieldArray subclasses.
 """
+
 import pickle
 
 import numpy as np

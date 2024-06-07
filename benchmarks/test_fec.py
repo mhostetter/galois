@@ -1,6 +1,7 @@
 """
 A pytest module to benchmark forward-error correction encoding/decoding.
 """
+
 import numpy as np
 import pytest
 

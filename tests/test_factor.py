@@ -18,6 +18,7 @@ Sage:
         print(f"    ({n}, {list(f)}, {list(m)}),")
     print("]\n")
 """
+
 import random
 
 import pytest
