@@ -6,6 +6,7 @@ The ufunc dispatchers (eg `add_ufunc`) and the UFuncMixin will be subclassed in 
 arithmetic and lookup table construction. Then in `_calculate.py` the ufunc dispatchers will be subclassed to add
 unique explicit calculation algorithms.
 """
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Callable, Type

@@ -1,6 +1,7 @@
 """
 A module with functions for polynomials over Galois fields.
 """
+
 from __future__ import annotations
 
 from ._poly import Poly

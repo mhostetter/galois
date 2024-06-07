@@ -1,6 +1,7 @@
 """
 A module that defines the metaclass for the abstract base class Array.
 """
+
 from __future__ import annotations
 
 import abc

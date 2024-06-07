@@ -1,6 +1,7 @@
 """
 A module to implement the Galois field class factory `GF()`.
 """
+
 from __future__ import annotations
 
 import sys
@@ -29,8 +30,7 @@ def GF(
     verify: bool = True,
     compile: Literal["auto", "jit-lookup", "jit-calculate", "python-calculate"] | None = None,
     repr: Literal["int", "poly", "power"] | None = None,
-) -> Type[FieldArray]:
-    ...
+) -> Type[FieldArray]: ...
 
 
 @overload
@@ -43,8 +43,7 @@ def GF(
     verify: bool = True,
     compile: Literal["auto", "jit-lookup", "jit-calculate", "python-calculate"] | None = None,
     repr: Literal["int", "poly", "power"] | None = None,
-) -> Type[FieldArray]:
-    ...
+) -> Type[FieldArray]: ...
 
 
 @export
@@ -307,8 +306,7 @@ def Field(
     verify: bool = True,
     compile: Literal["auto", "jit-lookup", "jit-calculate", "python-calculate"] | None = None,
     repr: Literal["int", "poly", "power"] | None = None,
-) -> Type[FieldArray]:
-    ...
+) -> Type[FieldArray]: ...
 
 
 @overload
@@ -321,8 +319,7 @@ def Field(
     verify: bool = True,
     compile: Literal["auto", "jit-lookup", "jit-calculate", "python-calculate"] | None = None,
     repr: Literal["int", "poly", "power"] | None = None,
-) -> Type[FieldArray]:
-    ...
+) -> Type[FieldArray]: ...
 
 
 @export

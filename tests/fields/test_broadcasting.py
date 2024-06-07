@@ -1,6 +1,7 @@
 """
 A pytest module to test proper FieldArray broadcasting.
 """
+
 import numpy as np
 
 from .conftest import randint

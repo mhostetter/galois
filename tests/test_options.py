@@ -1,6 +1,7 @@
 """
 A pytest module to test the printing options of the package.
 """
+
 import pytest
 
 import galois

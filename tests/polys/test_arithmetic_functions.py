@@ -1,6 +1,7 @@
 """
 A pytest module to test polynomial arithmetic functions.
 """
+
 import numpy as np
 import pytest
 

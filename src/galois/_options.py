@@ -1,6 +1,7 @@
 """
 A module to get or set package-wide options.
 """
+
 import contextlib
 from typing import Any, Dict, Generator
 

@@ -2,6 +2,7 @@
 A module that contains Array mixin classes that override NumPy linear algebra functions. Additional functions not
 included in NumPy are also included.
 """
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Type

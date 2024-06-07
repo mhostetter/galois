@@ -2,6 +2,7 @@
 A script to create a database of prime factorizations of p^n +/- 1 using the Cunningham Project's tables.
 https://homes.cerias.purdue.edu/~ssw/cun/
 """
+
 from __future__ import annotations
 
 import os

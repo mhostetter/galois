@@ -1,6 +1,7 @@
 """
 A pytest module to test the polynomial conversion functions.
 """
+
 import random
 
 import pytest

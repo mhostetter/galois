@@ -1,6 +1,7 @@
 """
 A module that contains functions to perform the forward and reverse Number-Theoretic Transform (NTT).
 """
+
 from __future__ import annotations
 
 import numpy as np

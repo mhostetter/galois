@@ -1,6 +1,7 @@
 """
 A pytest module to test the functions in _math.py.
 """
+
 import numpy as np
 import pytest
 

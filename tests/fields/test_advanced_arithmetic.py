@@ -1,6 +1,7 @@
 """
 A pytest module to test the accuracy of FieldArray advanced arithmetic.
 """
+
 import random
 
 import numpy as np

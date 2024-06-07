@@ -2,6 +2,7 @@
 A module that contains various functions to convert between polynomial strings, coefficients, and integer
 representations.
 """
+
 from __future__ import annotations
 
 import numpy as np

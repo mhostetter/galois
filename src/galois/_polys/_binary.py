@@ -1,6 +1,7 @@
 """
 A module containing polynomial arithmetic for polynomials over GF(2).
 """
+
 from __future__ import annotations
 
 

@@ -1,6 +1,7 @@
 """
 A pytest module to test general Reed-Solomon codes.
 """
+
 import numpy as np
 import pytest
 

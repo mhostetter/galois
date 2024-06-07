@@ -1,6 +1,7 @@
 """
 A module containing functions to generate and test irreducible polynomials.
 """
+
 from __future__ import annotations
 
 import functools

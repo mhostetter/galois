@@ -1,6 +1,7 @@
 """
 A pytest module to test polynomial and non-polynomial arithmetic.
 """
+
 import pytest
 
 import galois
