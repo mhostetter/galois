@@ -86,8 +86,12 @@ jobs:
         exclude:  # Python < v3.8 does not support Apple Silicon ARM64
           - python-version: "3.7"
             os: macos-latest
+          - python-version: "3.8"
+            os: macos-latest
         include:  # So run those legacy versions on Intel CPUs
           - python-version: "3.7"
+            os: macos-13
+          - python-version: "3.8"
             os: macos-13
     runs-on: ${{ matrix.os }}
     steps:
