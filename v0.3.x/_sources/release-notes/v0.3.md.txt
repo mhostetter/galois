@@ -293,3 +293,17 @@ tocdepth: 2
 ### Contributors
 
 - Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
+
+## v0.3.9
+
+*Released June 10, 2024*
+
+### Changes
+
+- Added support for `python -OO` optimization. ([#545](https://github.com/mhostetter/galois/pull/545))
+- Improved documentation in minor ways.
+
+### Contributors
+
+- Justin Charlong ([@jcharlong](https://github.com/jcharlong))
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
