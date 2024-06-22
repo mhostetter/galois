@@ -464,7 +464,7 @@ class reciprocal_itoh_tsujii(_lookup.reciprocal_ufunc):
         ORDER = self.field.order
         MULTIPLY = self.field._multiply.ufunc
         POSITIVE_POWER = self.field._positive_power.ufunc
-        SUBFIELD_RECIPROCAL = self.field.prime_subfield._reciprocal.ufunc
+        SUBFIELD_RECIPROCAL = getattr(self.field.prime_subfield._reciprocal, self.field.ufunc_mode.replace("-", "_"))
 
     @staticmethod
     def calculate(a: int) -> int:
