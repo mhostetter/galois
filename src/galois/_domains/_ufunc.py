@@ -394,7 +394,11 @@ class multiply_ufunc(UFunc):
             self._verify_operands_in_field_or_int(ufunc, inputs, meta)
             inputs, kwargs = self._view_inputs_as_ndarray(inputs, kwargs)
             i = meta["non_field_operands"][0]  # Scalar multiplicand
-            inputs[i] = np.mod(inputs[i], self.field.characteristic)
+            if meta["dtype"] == np.object_:
+                # Need to explicitly cast to np.object_ in NumPy v2.0 or the integer will overflow
+                inputs[i] = np.mod(inputs[i], self.field.characteristic, dtype=np.object_)
+            else:
+                inputs[i] = np.mod(inputs[i], self.field.characteristic)
         inputs, kwargs = self._view_inputs_as_ndarray(inputs, kwargs)
         output = getattr(self.ufunc, method)(*inputs, **kwargs)
         output = self._view_output_as_field(output, self.field, meta["dtype"])
