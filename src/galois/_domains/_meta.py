@@ -41,10 +41,10 @@ class ArrayMeta(abc.ABCMeta):
             cls._ufunc_modes = ["python-calculate"]
         elif cls._order <= 2**20:
             cls._default_ufunc_mode = "jit-lookup"
-            cls._ufunc_modes = ["jit-lookup", "jit-calculate"]
+            cls._ufunc_modes = ["jit-lookup", "jit-calculate", "python-calculate"]
         else:
             cls._default_ufunc_mode = "jit-calculate"
-            cls._ufunc_modes = ["jit-lookup", "jit-calculate"]
+            cls._ufunc_modes = ["jit-lookup", "jit-calculate", "python-calculate"]
         cls._ufunc_mode = None  # This is set in the first call to compile
 
         cls._name = "Undefined"  # Needs overridden
