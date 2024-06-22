@@ -38,6 +38,7 @@ FIELDS = [
 FIELDS_DIFF_MODES = [
     # Binary field
     pytest.param("GF(2)-jit-calculate"),
+    pytest.param("GF(2)-python-calculate"),
     # Binary extension fields
     pytest.param("GF(2^2)-jit-lookup"),
     pytest.param("GF(2^2)-jit-calculate"),
@@ -52,8 +53,10 @@ FIELDS_DIFF_MODES = [
     # Prime fields
     pytest.param("GF(5)-jit-lookup"),
     pytest.param("GF(5)-jit-calculate"),
+    pytest.param("GF(5)-python-calculate"),
     pytest.param("GF(7)-jit-lookup"),
     pytest.param("GF(7)-jit-calculate"),
+    pytest.param("GF(7)-python-calculate"),
     pytest.param("GF(31)-jit-lookup"),
     pytest.param("GF(31)-jit-calculate"),
     pytest.param("GF(3191)-jit-lookup"),
@@ -76,7 +79,7 @@ def construct_field(folder):
         ufunc_mode = "auto"
 
     if folder == "GF(2)":
-        GF = galois.GF2
+        GF = galois.GF(2, compile=ufunc_mode)
 
     elif folder == "GF(5)":
         GF = galois.GF(5, compile=ufunc_mode)
