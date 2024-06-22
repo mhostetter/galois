@@ -516,6 +516,8 @@ class log_ufunc(UFunc):
         inputs = list(inputs) + [int(self.field.primitive_element)]
         inputs, kwargs = self._view_inputs_as_ndarray(inputs, kwargs)
         output = getattr(self.ufunc, method)(*inputs, **kwargs)
+        if output.dtype == np.object_:
+            output = output.astype(int)
         return output
 
 
