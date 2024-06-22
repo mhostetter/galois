@@ -5,6 +5,7 @@ A pytest module to test the accuracy of FieldArray arithmetic.
 import random
 
 import numpy as np
+import pytest
 
 import galois
 
@@ -218,11 +219,12 @@ def test_log_different_base(field_log):
     assert np.array_equal(beta**z, x)
 
 
-def test_log_pollard_rho():
+@pytest.mark.parametrize("ufunc_mode", ["jit-calculate", "python-calculate"])
+def test_log_pollard_rho(ufunc_mode):
     """
     The Pollard-rho discrete logarithm algorithm is only applicable for fields when p^m - 1 is prime.
     """
-    GF = galois.GF(2**19, compile="jit-calculate")
+    GF = galois.GF(2**5, compile=ufunc_mode)
     assert isinstance(GF._log, galois._domains._calculate.log_pollard_rho)
     dtype = random.choice(GF.dtypes)
     x = GF.Random(10, low=1, dtype=dtype)
