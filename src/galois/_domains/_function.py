@@ -308,7 +308,7 @@ class FunctionMixin(np.ndarray, metaclass=ArrayMeta):
         np.unpackbits,
         np.unwrap,
         np.around,
-        np.round_,
+        np.round,
         np.fix,
         np.gradient,
         np.trapz,
