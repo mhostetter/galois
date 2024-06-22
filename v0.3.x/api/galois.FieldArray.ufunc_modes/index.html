@@ -7757,16 +7757,16 @@ You're not viewing the latest version.
 <p class="rubric" id="notes">Notes<a class="headerlink" href="#notes" title="Permalink to this headline">¶</a></p>
 <p>The ufuncs may be recompiled with <a class="reference internal" href="../galois.FieldArray.compile/" title="galois.FieldArray.compile (Python method) — Recompile the just-in-time compiled ufuncs for a new calculation mode."><code class="xref py py-func docutils literal notranslate"><span class="pre">compile()</span></code></a>.</p>
 <p class="example rubric" id="examples">Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></p>
-<p>Fields whose elements and arithmetic can fit within <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.int64" title="(in NumPy v1.26)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.int64</span></code></a> can be JIT compiled
+<p>Fields whose elements and arithmetic can fit within <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.int64" title="(in NumPy v2.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.int64</span></code></a> can be JIT compiled
 to use either lookup tables or explicit calculation.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">65537</span><span class="p">)</span><span class="o">.</span><span class="n">ufunc_modes</span>
-<span class="gh">Out[1]: </span><span class="go">[&#39;jit-lookup&#39;, &#39;jit-calculate&#39;]</span>
+<span class="gh">Out[1]: </span><span class="go">[&#39;jit-lookup&#39;, &#39;jit-calculate&#39;, &#39;python-calculate&#39;]</span>
 
 <span class="gp">In [2]: </span><span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">32</span><span class="p">)</span><span class="o">.</span><span class="n">ufunc_modes</span>
-<span class="gh">Out[2]: </span><span class="go">[&#39;jit-lookup&#39;, &#39;jit-calculate&#39;]</span>
+<span class="gh">Out[2]: </span><span class="go">[&#39;jit-lookup&#39;, &#39;jit-calculate&#39;, &#39;python-calculate&#39;]</span>
 </code></pre></div>
 </div>
-<p>Fields whose elements and arithmetic cannot fit within <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.int64" title="(in NumPy v1.26)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.int64</span></code></a> may only use pure-Python explicit
+<p>Fields whose elements and arithmetic cannot fit within <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.int64" title="(in NumPy v2.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.int64</span></code></a> may only use pure-Python explicit
 calculation.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [3]: </span><span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">36893488147419103183</span><span class="p">)</span><span class="o">.</span><span class="n">ufunc_modes</span>
 <span class="gh">Out[3]: </span><span class="go">[&#39;python-calculate&#39;]</span>
