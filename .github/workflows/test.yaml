@@ -93,6 +93,7 @@ jobs:
             os: macos-13
           - python-version: "3.8"
             os: macos-13
+      fail-fast: false
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
@@ -153,6 +154,7 @@ jobs:
         include:  # So run those legacy versions on Intel CPUs
           - python-version: "3.7"
             os: macos-13
+      fail-fast: false
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
