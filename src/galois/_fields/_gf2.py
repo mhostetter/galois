@@ -153,5 +153,5 @@ class GF2(
 
 
 GF2._default_ufunc_mode = "jit-calculate"
-GF2._ufunc_modes = ["jit-calculate"]
+GF2._ufunc_modes = ["jit-calculate", "python-calculate"]
 GF2.compile("auto")
