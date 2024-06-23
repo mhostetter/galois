@@ -77,3 +77,9 @@
   /* Parameters (function/method arguments) */
   --objinfo-icon-fg-sub-data: var(--md-code-hl-function-color);
 }
+
+/* Change the "class" and "property" label colors. */
+.md-typeset dl.objdesc>dt .property {
+  color: var(--md-code-hl-constant-color);
+  font-style: italic;
+}
