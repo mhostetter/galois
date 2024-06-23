@@ -312,8 +312,9 @@ sphinx_immaterial_custom_admonitions = [
         "override": True,
     },
     {
+        # This needs to be defined here so the icon is available when referenced in _templates/base.html
         "name": "star",
-        "icon": "octicons/star-16",
+        "icon": "fontawesome/regular/star",
         "color": (255, 233, 3),  # Gold
     },
     {
