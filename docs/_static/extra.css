@@ -49,7 +49,7 @@
 
 /* Override announcement banner colors */
 .md-banner {
-  background-color: var(--md-typeset-mark-color);
+  background-color: var(--md-default-bg-color--lighter);
   color: var(--md-default-fg-color);
 }
 
