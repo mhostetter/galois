@@ -298,6 +298,36 @@ sphinx_immaterial_custom_admonitions = [
         "override": True,
     },
     {
+        "name": "info",
+        "icon": "fontawesome/solid/circle-info",
+        "override": True,
+    },
+    {
+        "name": "tip",
+        "icon": "fontawesome/regular/lightbulb",
+        "override": True,
+    },
+    {
+        "name": "abstract",
+        "icon": "fontawesome/regular/file-lines",
+        "override": True,
+    },
+    {
+        "name": "important",
+        "icon": "fontawesome/solid/bolt",
+        "override": True,
+    },
+    {
+        "name": "example",
+        "icon": "fontawesome/solid/terminal",
+        "override": True,
+    },
+    {
+        "name": "quote",
+        "icon": "fontawesome/solid/quote-left",
+        "override": True,
+    },
+    {
         "name": "seealso",
         "title": "See also",
         "classes": ["collapsible"],
