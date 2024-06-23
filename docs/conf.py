@@ -280,11 +280,35 @@ object_description_options = [
 
 sphinx_immaterial_custom_admonitions = [
     {
+        "name": "note",
+        "title": "Note",
+        "classes": ["collapsible"],
+        "icon": "fontawesome/solid/pencil",
+        "override": True,
+    },
+    {
+        "name": "warning",
+        "title": "Warning",
+        "classes": ["collapsible"],
+        "icon": "fontawesome/solid/triangle-exclamation",
+        "override": True,
+    },
+    {
         "name": "seealso",
         "title": "See also",
         "classes": ["collapsible"],
         "icon": "fontawesome/solid/magnifying-glass",
         "color": (108, 117, 125),  # --sd-color-secondary
+        "override": True,
+    },
+    {
+        "name": "versionadded",
+        "icon": "fontawesome/solid/code-commit",
+        "override": True,
+    },
+    {
+        "name": "versionchanged",
+        "icon": "fontawesome/solid/code-branch",
         "override": True,
     },
     {
