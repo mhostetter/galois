@@ -510,9 +510,10 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
                 - `"jit-calculate"`: JIT compiles arithmetic ufuncs to use explicit calculation. The `"jit-calculate"`
                   mode is designed for large fields that cannot or should not store lookup tables in RAM. Generally,
                   the `"jit-calculate"` mode is slower than `"jit-lookup"`.
-                - `"python-calculate"`: Uses pure-Python ufuncs with explicit calculation. This is reserved for fields
+                - `"python-calculate"`: Uses pure-Python ufuncs with explicit calculation. This is intended for fields
                   whose elements cannot be represented with :obj:`numpy.int64` and instead use :obj:`numpy.object_`
-                  with Python :obj:`int` (which has arbitrary precision).
+                  with Python :obj:`int` (which has arbitrary precision). However, this mode can be used for any
+                  field, enabling the code to run without Numba JIT compilation.
 
         Group:
             Arithmetic compilation
