@@ -283,7 +283,7 @@ sphinx_immaterial_custom_admonitions = [
         "name": "seealso",
         "title": "See also",
         "classes": ["collapsible"],
-        "icon": "fontawesome/regular/eye",
+        "icon": "fontawesome/solid/magnifying-glass",
         "color": (108, 117, 125),  # --sd-color-secondary
         "override": True,
     },
