@@ -989,7 +989,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         if x.ndim == 0:
             order = 1 if x == 0 else field.characteristic
         else:
-            order = field.characteristic * np.ones(x.shape, dtype=np.int64)
+            order = field.characteristic * np.ones(x.shape, dtype=field.dtypes[-1])
             order[np.where(x == 0)] = 1
 
         return order
