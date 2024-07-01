@@ -487,7 +487,7 @@ class roots_jit(Function):
         # Test if 0 is a root
         if nonzero_degrees[-1] != 0:
             roots.append(0)
-            powers.append(-1)
+            powers.append(nonzero_degrees[-1])  # 0 has multiplicity equal to the lowest degree of x that is non-zero
 
         # Test if 1 is a root
         _sum = 0
