@@ -510,4 +510,4 @@ class roots_jit(Function):
             if len(roots) == degree:
                 break
 
-        return np.array([roots, powers], dtype=nonzero_coeffs.dtype)
+        return np.array([roots, powers])
