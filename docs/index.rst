@@ -161,6 +161,7 @@ If this library was useful to you in your research, please cite us. Following th
    :hidden:
 
    release-notes/versioning.rst
+   release-notes/v0.4.md
    release-notes/v0.3.md
    release-notes/v0.2.md
    release-notes/v0.1.md
