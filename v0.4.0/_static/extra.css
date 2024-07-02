@@ -1,0 +1,85 @@
+/* Set the colors for the light theme */
+/* [data-md-color-scheme="default"] {
+  --md-primary-fg-color: #344FA1;
+  --md-accent-fg-color: #4564C3;
+} */
+
+/* Set the colors for the dark theme */
+/* [data-md-color-scheme="slate"] {
+  --md-primary-fg-color: #EAA915;
+  --md-accent-fg-color: #EEBA44;
+} */
+
+/* [data-md-color-scheme="slate"] .md-header {
+  background-color: #344FA1;
+}
+
+[data-md-color-scheme="slate"] .md-tabs {
+  background-color: #344FA1;
+} */
+
+/* @media screen and (max-width: 76.1875em) */
+/* .md-nav--primary .md-nav__title[for=__drawer] {
+  background-color: #344FA1;
+}
+
+.md-source {
+  background-color: #344FA1;
+} */
+
+/* Fix line numbers in code blocks */
+.linenos {
+  background-color: var(--md-default-bg-color--light);
+  margin-right: 0.5rem;
+}
+
+/* Override md-tab-set colors. */
+.md-typeset .tabbed-labels {
+  --md-accent-fg-color: var(--md-typeset-a-color);
+}
+
+/* Modify Sphinx Immaterial python-apigen linkable parameter coloring. */
+.sig-param a.reference span .pre {
+  color: var(--md-code-hl-generic-color);
+}
+
+.sig-param a.reference span .pre:hover {
+  color: var(--md-accent-fg-color);
+}
+
+/* Override announcement banner colors */
+.md-banner {
+  background-color: var(--md-default-bg-color--lighter);
+  color: var(--md-default-fg-color);
+}
+
+/* Change the object info colors. */
+[data-md-color-scheme="default"] {
+  /* --objinfo-icon-fg-default: var(--md-code-hl-keyword-color); */
+  /* Properties */
+  --objinfo-icon-fg-alias: var(--md-code-hl-constant-color);
+  /* Classes */
+  --objinfo-icon-fg-data: var(--md-code-hl-string-color);
+  /* Functions, methods */
+  --objinfo-icon-fg-procedure: var(--md-code-hl-keyword-color);
+  /* Parameters (function/method arguments) */
+  --objinfo-icon-fg-sub-data: var(--md-code-hl-function-color);
+}
+
+[data-md-color-scheme="slate"] {
+  /* --objinfo-icon-fg-default: var(--md-code-hl-keyword-color); */
+  /* Properties */
+  --objinfo-icon-fg-alias: var(--md-code-hl-constant-color);
+  /* Classes */
+  --objinfo-icon-fg-data: var(--md-code-hl-string-color);
+  /* Functions, methods */
+  --objinfo-icon-fg-procedure: var(--md-code-hl-keyword-color);
+  /* Parameters (function/method arguments) */
+  --objinfo-icon-fg-sub-data: var(--md-code-hl-function-color);
+}
+
+/* Change the "class" and "property" label colors. */
+.md-typeset dl.objdesc>dt .property {
+  color: var(--md-code-hl-constant-color);
+  font-style: italic;
+}
