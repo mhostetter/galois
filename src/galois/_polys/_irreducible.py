@@ -33,7 +33,7 @@ def is_irreducible(f: Poly) -> bool:
     .. question:: Why is this a method and not a property?
         :collapsible:
 
-        This is a method to indicate it is a computationally-expensive task.
+        This is a method to indicate it is a computationally expensive task.
 
     Returns:
         `True` if the polynomial is irreducible.
@@ -145,8 +145,8 @@ def irreducible_poly(
 
         method: The search method for finding the irreducible polynomial.
 
-            - `"min"` (default): Returns the lexicographically-first polynomial.
-            - `"max"`: Returns the lexicographically-last polynomial.
+            - `"min"` (default): Returns the lexicographically first polynomial.
+            - `"max"`: Returns the lexicographically last polynomial.
             - `"random"`: Returns a random polynomial.
 
     .. fast-performance::
@@ -176,7 +176,7 @@ def irreducible_poly(
         $\mathrm{GF}(q)$.
 
     Examples:
-        Find the lexicographically-first, lexicographically-last, and a random monic irreducible polynomial.
+        Find the lexicographically first, lexicographically last, and a random monic irreducible polynomial.
 
         .. ipython:: python
 
@@ -184,13 +184,13 @@ def irreducible_poly(
             galois.irreducible_poly(7, 3, method="max")
             galois.irreducible_poly(7, 3, method="random")
 
-        Find the lexicographically-first monic irreducible polynomial with four terms.
+        Find the lexicographically first monic irreducible polynomial with four terms.
 
         .. ipython:: python
 
             galois.irreducible_poly(7, 3, terms=4)
 
-        Find the lexicographically-first monic irreducible polynomial with the minimum number of non-zero terms.
+        Find the lexicographically first monic irreducible polynomial with the minimum number of non-zero terms.
 
         .. ipython:: python
 

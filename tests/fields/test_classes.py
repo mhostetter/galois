@@ -95,7 +95,7 @@ def test_cant_set_attribute(attribute):
 
 def test_is_primitive_poly():
     """
-    Verify the `is_primitive_poly` boolean is calculated correctly for fields constructed with explicitly-specified
+    Verify the `is_primitive_poly` boolean is calculated correctly for fields constructed with explicitly specified
     irreducible polynomials.
     """
     # GF(2^m) with integer dtype

@@ -19,7 +19,7 @@ def is_square_free(f) -> bool:
     .. question:: Why is this a method and not a property?
         :collapsible:
 
-        This is a method to indicate it is a computationally-expensive task.
+        This is a method to indicate it is a computationally expensive task.
 
     Returns:
         `True` if the polynomial is square-free.

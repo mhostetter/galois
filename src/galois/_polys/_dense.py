@@ -335,7 +335,7 @@ class pow_jit(Function):
         assert a.ndim == 1 and c.ndim == 1 if c is not None else True
         dtype = a.dtype
 
-        # Convert the integer b into a vector of uint64 [MSWord, ..., LSWord] so arbitrarily-large exponents may be
+        # Convert the integer b into a vector of uint64 [MSWord, ..., LSWord] so arbitrarily large exponents may be
         # passed into the JIT-compiled version
         b_vec = []  # Pop on LSWord -> MSWord
         while b >= 2**64:
@@ -366,7 +366,7 @@ class pow_jit(Function):
     @staticmethod
     def implementation(a, b_vec, c):
         """
-        b is a vector of uint64 [MSWord, ..., LSWord] so that arbitrarily-large exponents may be passed
+        b is a vector of uint64 [MSWord, ..., LSWord] so that arbitrarily large exponents may be passed
         """
         if b_vec.size == 1 and b_vec[0] == 0:
             return np.array([1], dtype=a.dtype)
