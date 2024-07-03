@@ -54,7 +54,7 @@ Scalars are 0-D :obj:`~galois.Array` objects.
       # Ascending degrees
       GF("2 + 2x + x^2")
 
-- :obj:`~galois.Array`: A previously-created scalar :obj:`~galois.Array` object. No coercion is necessary.
+- :obj:`~galois.Array`: A previously created scalar :obj:`~galois.Array` object. No coercion is necessary.
 
 .. rubric:: Alias
 """
@@ -115,7 +115,7 @@ A :obj:`~typing.Union` representing objects that can be coerced into a Galois fi
       x = np.array([[17, 4], [148, 205]]); x
       GF(x)
 
-- :obj:`~galois.Array`: A previously-created :obj:`~galois.Array` object. No coercion is necessary.
+- :obj:`~galois.Array`: A previously created :obj:`~galois.Array` object. No coercion is necessary.
 
 .. rubric:: Alias
 """
@@ -225,7 +225,7 @@ A :obj:`~typing.Union` representing objects that can be coerced into a polynomia
       galois.Poly([2, 0, 1], field=GF)
       galois.Poly(GF([2, 0, 1]))
 
-- :obj:`~galois.Poly`: A previously-created :obj:`~galois.Poly` object. No coercion is necessary.
+- :obj:`~galois.Poly`: A previously created :obj:`~galois.Poly` object. No coercion is necessary.
 
 .. rubric:: Alias
 """

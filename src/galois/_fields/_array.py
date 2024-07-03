@@ -128,7 +128,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         if isinstance(x, (int, np.integer)):
             cls._verify_scalar_value(x)
         elif isinstance(x, cls):
-            # This was a previously-created and vetted array -- there's no need to re-verify
+            # This was a previously created and vetted array -- there's no need to re-verify
             if x.ndim == 0:
                 # Ensure that in "large" fields with dtype=object that FieldArray objects aren't assigned to the array.
                 # The arithmetic functions are designed to operate on Python ints.

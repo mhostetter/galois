@@ -32,7 +32,7 @@ def is_primitive(f: Poly) -> bool:
     .. question:: Why is this a method and not a property?
         :collapsible:
 
-        This is a method to indicate it is a computationally-expensive task.
+        This is a method to indicate it is a computationally expensive task.
 
     Returns:
         `True` if the polynomial is primitive.
@@ -125,8 +125,8 @@ def primitive_poly(
 
         method: The search method for finding the primitive polynomial.
 
-            - `"min"` (default): Returns the lexicographically-first polynomial.
-            - `"max"`: Returns the lexicographically-last polynomial.
+            - `"min"` (default): Returns the lexicographically first polynomial.
+            - `"max"`: Returns the lexicographically last polynomial.
             - `"random"`: Returns a random polynomial.
 
     Returns:
@@ -149,7 +149,7 @@ def primitive_poly(
         $\mathrm{GF}(q^m) = \{0, 1, \alpha, \alpha^2, \dots, \alpha^{q^m-2}\}$.
 
     Examples:
-        Find the lexicographically-first, lexicographically-last, and a random monic primitive polynomial.
+        Find the lexicographically first, lexicographically last, and a random monic primitive polynomial.
 
         .. ipython:: python
 
@@ -157,20 +157,20 @@ def primitive_poly(
             galois.primitive_poly(7, 3, method="max")
             galois.primitive_poly(7, 3, method="random")
 
-        Find the lexicographically-first monic primitive polynomial with four terms.
+        Find the lexicographically first monic primitive polynomial with four terms.
 
         .. ipython:: python
 
             galois.primitive_poly(7, 3, terms=4)
 
-        Find the lexicographically-first monic irreducible polynomial with the minimum number of non-zero terms.
+        Find the lexicographically first monic irreducible polynomial with the minimum number of non-zero terms.
 
         .. ipython:: python
 
             galois.primitive_poly(7, 3, terms="min")
 
-        Notice :func:`~galois.primitive_poly` returns the lexicographically-first primitive polynomial but
-        :func:`~galois.conway_poly` returns the lexicographically-first primitive polynomial that is *consistent*
+        Notice :func:`~galois.primitive_poly` returns the lexicographically first primitive polynomial but
+        :func:`~galois.conway_poly` returns the lexicographically first primitive polynomial that is *consistent*
         with smaller Conway polynomials. This is sometimes the same polynomial.
 
         .. ipython:: python
@@ -371,7 +371,7 @@ def matlab_primitive_poly(characteristic: int, degree: int) -> Poly:
         Poly.is_primitive, primitive_poly, conway_poly
 
     Notes:
-        This function returns the same result as Matlab's `gfprimdf(m, p)`. Matlab uses the lexicographically-first
+        This function returns the same result as Matlab's `gfprimdf(m, p)`. Matlab uses the lexicographically first
         primitive polynomial with minimum terms, which is equivalent to `galois.primitive_poly(p, m, terms="min")`.
         There are three notable exceptions, however:
 
@@ -416,18 +416,18 @@ def matlab_primitive_poly(characteristic: int, degree: int) -> Poly:
             f"Argument 'degree' must be at least 1, not {degree}. There are no primitive polynomials with degree 0."
         )
 
-    # Textbooks and Matlab use the lexicographically-first primitive polynomial with minimal terms for the default.
+    # Textbooks and Matlab use the lexicographically first primitive polynomial with minimal terms for the default.
     # But for some reason, there are three exceptions. I can't determine why.
     if characteristic == 2 and degree == 7:
-        # Not the lexicographically-first of x^7 + x + 1.
+        # Not the lexicographically first of x^7 + x + 1.
         return Poly.Degrees([7, 3, 0])
 
     if characteristic == 2 and degree == 14:
-        # Not the lexicographically-first of x^14 + x^5 + x^3 + x + 1.
+        # Not the lexicographically first of x^14 + x^5 + x^3 + x + 1.
         return Poly.Degrees([14, 10, 6, 1, 0])
 
     if characteristic == 2 and degree == 16:
-        # Not the lexicographically-first of x^16 + x^5 + x^3 + x^2 + 1.
+        # Not the lexicographically first of x^16 + x^5 + x^3 + x^2 + 1.
         return Poly.Degrees([16, 12, 3, 1, 0])
 
     return primitive_poly(characteristic, degree)

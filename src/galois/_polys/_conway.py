@@ -24,7 +24,7 @@ def is_conway(f: Poly, search: bool = False) -> bool:
     .. question:: Why is this a method and not a property?
         :collapsible:
 
-        This is a method to indicate it is a computationally-expensive task.
+        This is a method to indicate it is a computationally expensive task.
 
     Arguments:
         search: Manually search for Conway polynomials if they are not included in `Frank Luebeck's database
@@ -81,7 +81,7 @@ def is_conway(f: Poly, search: bool = False) -> bool:
             f.is_conway_consistent()
             g.is_conway_consistent()
 
-        Among the multiple candidate Conway polynomials, the lexicographically-first (accordingly to a special
+        Among the multiple candidate Conway polynomials, the lexicographically first (accordingly to a special
         lexicographical order) is the Conway polynomial.
 
         .. ipython:: python
@@ -111,7 +111,7 @@ def is_conway_consistent(f: Poly, search: bool = False) -> bool:
     .. question:: Why is this a method and not a property?
         :collapsible:
 
-        This is a method to indicate it is a computationally-expensive task.
+        This is a method to indicate it is a computationally expensive task.
 
     Arguments:
         search: Manually search for Conway polynomials if they are not included in `Frank Luebeck's database
@@ -164,7 +164,7 @@ def is_conway_consistent(f: Poly, search: bool = False) -> bool:
             f.is_conway_consistent()
             g.is_conway_consistent()
 
-        Among the multiple candidate Conway polynomials, the lexicographically-first (accordingly to a special
+        Among the multiple candidate Conway polynomials, the lexicographically first (accordingly to a special
         lexicographical order) is the Conway polynomial.
 
         .. ipython:: python
@@ -268,7 +268,7 @@ def conway_poly(characteristic: int, degree: int, search: bool = False) -> Poly:
             f.is_conway_consistent()
             g.is_conway_consistent()
 
-        Among the multiple candidate Conway polynomials, the lexicographically-first (accordingly to a special
+        Among the multiple candidate Conway polynomials, the lexicographically first (accordingly to a special
         lexicographical order) is the Conway polynomial.
 
         .. ipython:: python

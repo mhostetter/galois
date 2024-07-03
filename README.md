@@ -33,7 +33,7 @@ The new ufuncs are written in pure Python and [just-in-time compiled](https://nu
 
 ## Features
 
-- Supports all [Galois fields](https://mhostetter.github.io/galois/latest/api/galois.GF/) $\mathrm{GF}(p^m)$, even arbitrarily-large fields!
+- Supports all [Galois fields](https://mhostetter.github.io/galois/latest/api/galois.GF/) $\mathrm{GF}(p^m)$, even arbitrarily large fields!
 - [**Faster**](https://mhostetter.github.io/galois/latest/performance/prime-fields/) than native NumPy! `GF(x) * GF(y)` is faster than `(x * y) % p` for $\mathrm{GF}(p)$.
 - Seamless integration with NumPy -- normal NumPy functions work on [`FieldArray`](https://mhostetter.github.io/galois/latest/api/galois.FieldArray/)s.
 - Linear algebra over finite fields using normal [`np.linalg`](https://mhostetter.github.io/galois/latest/basic-usage/array-arithmetic/#linear-algebra) functions.

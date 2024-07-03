@@ -88,7 +88,7 @@ def GF(
             :func:`~galois.FieldArray.compile` method. See :doc:`/basic-usage/compilation-modes` for a further
             discussion.
 
-            - `None` (default): For a newly-created :obj:`~galois.FieldArray` subclass, `None` corresponds to
+            - `None` (default): For a newly created :obj:`~galois.FieldArray` subclass, `None` corresponds to
               `"auto"`. If the :obj:`~galois.FieldArray` subclass already exists, `None` does not modify its current
               compilation mode.
             - `"auto"`: Selects `"jit-lookup"` for fields with order less than $2^{20}$, `"jit-calculate"` for
@@ -109,7 +109,7 @@ def GF(
             :func:`~galois.FieldArray.repr` method. See :doc:`/basic-usage/element-representation` for a further
             discussion.
 
-            - `None` (default): For a newly-created :obj:`~galois.FieldArray` subclass, `None` corresponds to `"int"`.
+            - `None` (default): For a newly created :obj:`~galois.FieldArray` subclass, `None` corresponds to `"int"`.
               If the :obj:`~galois.FieldArray` subclass already exists, `None` does not modify its current element
               representation.
             - `"int"`: Sets the element representation to the :ref:`integer representation <int-repr>`.
@@ -191,7 +191,7 @@ def GF(
                     GF = galois.GF(3**5, irreducible_poly="x^5 + 2x + 2")
                     print(GF.properties)
 
-        Finite fields with arbitrarily-large orders are supported.
+        Finite fields with arbitrarily large orders are supported.
 
         .. md-tab-set::
 

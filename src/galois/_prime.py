@@ -89,7 +89,7 @@ def primes(n: int) -> list[int]:
     p = (prime_idxs * 2 + 3).tolist()  # Convert indices back to odd integers
     p.insert(0, 2)  # Add the only even prime, 2
 
-    # Replace the global primes lookup table with the newly-created, larger list
+    # Replace the global primes lookup table with the newly created, larger list
     PRIMES = p
     MAX_K = len(PRIMES)
     MAX_N = n
@@ -97,7 +97,7 @@ def primes(n: int) -> list[int]:
     return p
 
 
-# TODO: Don't build a large lookup table at import time. Instead, use the progressively-growing nature of PRIMES.
+# TODO: Don't build a large lookup table at import time. Instead, use the progressively growing nature of PRIMES.
 # Generate a prime lookup table for efficient lookup in other algorithms
 PRIMES = primes(10_000_000)
 MAX_K = len(PRIMES)

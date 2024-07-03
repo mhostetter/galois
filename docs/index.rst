@@ -40,7 +40,7 @@ calculation (for memory savings).
 Features
 --------
 
-- Supports all Galois fields $\mathrm{GF}(p^m)$, even arbitrarily-large fields!
+- Supports all Galois fields $\mathrm{GF}(p^m)$, even arbitrarily large fields!
 - **Faster** than native NumPy! `GF(x) * GF(y)` is faster than `(x * y) % p` for $\mathrm{GF}(p)$.
 - Seamless integration with NumPy -- normal NumPy functions work on :obj:`~galois.FieldArray` instances.
 - Linear algebra over finite fields using normal :obj:`numpy.linalg` functions.

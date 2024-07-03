@@ -1,5 +1,5 @@
 """
-A module containing LUTs for lexicographically-first irreducible polynomials with minimal terms.
+A module containing LUTs for lexicographically first irreducible polynomials with minimal terms.
 
 LUT items obtained by randomly picking degrees and checking the PDF,
 
