@@ -82,7 +82,7 @@ def euler_phi(n: int) -> int:
     Notes:
         This function implements the Euler totient function
 
-        $$\phi(n) = n \prod_{p\ |\ n} \bigg(1 - \frac{1}{p}\bigg) = \prod_{i=1}^{k} p_i^{e_i-1} \big(p_i - 1\big)$$
+        $$\phi(n) = n \prod_{p \mid n} \bigg(1 - \frac{1}{p}\bigg) = \prod_{i=1}^{k} p_i^{e_i-1} \big(p_i - 1\big)$$
 
         for prime $p$ and the prime factorization $n = p_1^{e_1} \dots p_k^{e_k}$.
 

@@ -644,7 +644,7 @@ def legendre_symbol(a: int, p: int) -> int:
         .. math::
             \bigg(\frac{a}{p}\bigg) =
                 \begin{cases}
-                    0, & p\ |\ a
+                    0, & p \mid a
 
                     1, & a \in Q_p
 
@@ -1278,7 +1278,7 @@ def pollard_rho(n: int, c: int = 1) -> int:
 @export
 def divisors(n: int) -> list[int]:
     r"""
-    Computes all positive integer divisors $d$ of the integer $n$ such that $d\ |\ n$.
+    Computes all positive integer divisors $d$ of the integer $n$ such that $d \mid n$.
 
     Arguments:
         n: An integer.

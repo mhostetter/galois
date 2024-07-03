@@ -292,7 +292,7 @@ Advanced arithmetic
     :collapsible:
 
     The Discrete Fourier Transform (DFT) of size $n$ over the finite field $\mathrm{GF}(p^m)$ exists when
-    there exists a primitive $n$-th root of unity. This occurs when $n\ |\ p^m - 1$.
+    there exists a primitive $n$-th root of unity. This occurs when $n \mid p^m - 1$.
 
     .. ipython-with-reprs:: int,poly,power
 
@@ -310,7 +310,7 @@ Advanced arithmetic
     :collapsible:
 
     The inverse Discrete Fourier Transform (DFT) of size $n$ over the finite field $\mathrm{GF}(p^m)$
-    exists when there exists a primitive $n$-th root of unity. This occurs when $n\ |\ p^m - 1$.
+    exists when there exists a primitive $n$-th root of unity. This occurs when $n \mid p^m - 1$.
 
     .. ipython-with-reprs:: int,poly,power
 
