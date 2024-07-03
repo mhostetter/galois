@@ -3587,7 +3587,7 @@ You're not viewing the latest version.
   
     <li class="md-nav__item">
       <a href="../galois.Poly.is_conway_consistent/" class="md-nav__link">
-        <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="galois.Poly.is_conway_consistent (Python method) — Determines whether the degree-$m$ polynomial $f(x)$ over $mathrm{GF}(p)$ is consistent with smaller Conway polynomials $C_{p,n}(x)$ for all $n|m$." class="md-ellipsis">is_<wbr>conway_<wbr>consistent</span>
+        <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="galois.Poly.is_conway_consistent (Python method) — Determines whether the degree-$m$ polynomial $f(x)$ over $mathrm{GF}(p)$ is consistent with smaller Conway polynomials $C_{p,n}(x)$ for all $n mid m$." class="md-ellipsis">is_<wbr>conway_<wbr>consistent</span>
       </a>
     </li>
   
@@ -6970,7 +6970,7 @@ You're not viewing the latest version.
   
     <li class="md-nav__item">
       <a href="../galois.divisors/" class="md-nav__link">
-        <span aria-label="Python function" class="objinfo-icon objinfo-icon__procedure" title="Python function">F</span><span title="galois.divisors (Python function) — Computes all positive integer divisors $d$ of the integer $n$ such that $d|n$." class="md-ellipsis">divisors</span>
+        <span aria-label="Python function" class="objinfo-icon objinfo-icon__procedure" title="Python function">F</span><span title="galois.divisors (Python function) — Computes all positive integer divisors $d$ of the integer $n$ such that $d mid n$." class="md-ellipsis">divisors</span>
       </a>
     </li>
   
@@ -7852,7 +7852,9 @@ You're not viewing the latest version.
 </div>
 <p class="rubric" id="notes">Notes<a class="headerlink" href="#notes" title="Permalink to this headline">¶</a></p>
 <p>This function implements the Euler totient function</p>
-<p>$$phi(n) = n prod_{p<a href="#id1"><span class="problematic" id="id2">|</span></a>n} bigg(1 - frac{1}{p}bigg) = prod_{i=1}^{k} p_i^{e_i-1} big(p_i - 1big)$$</p>
+<p><div class="math notranslate nohighlight">
+\[\phi(n) = n \prod_{p \mid n} \bigg(1 - \frac{1}{p}\bigg) = \prod_{i=1}^{k} p_i^{e_i-1} \big(p_i - 1\big)\]</div>
+</p>
 <p>for prime <span class="math notranslate nohighlight">\(p\)</span> and the prime factorization <span class="math notranslate nohighlight">\(n = p_1^{e_1} \dots p_k^{e_k}\)</span>.</p>
 <p class="rubric" id="references">References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></p>
 <ul class="simple">

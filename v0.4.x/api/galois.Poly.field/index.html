@@ -3631,7 +3631,7 @@ You're not viewing the latest version.
   
     <li class="md-nav__item">
       <a href="../galois.Poly.is_conway_consistent/" class="md-nav__link">
-        <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="galois.Poly.is_conway_consistent (Python method) — Determines whether the degree-$m$ polynomial $f(x)$ over $mathrm{GF}(p)$ is consistent with smaller Conway polynomials $C_{p,n}(x)$ for all $n|m$." class="md-ellipsis">is_<wbr>conway_<wbr>consistent</span>
+        <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="galois.Poly.is_conway_consistent (Python method) — Determines whether the degree-$m$ polynomial $f(x)$ over $mathrm{GF}(p)$ is consistent with smaller Conway polynomials $C_{p,n}(x)$ for all $n mid m$." class="md-ellipsis">is_<wbr>conway_<wbr>consistent</span>
       </a>
     </li>
   
@@ -6931,7 +6931,7 @@ You're not viewing the latest version.
   
     <li class="md-nav__item">
       <a href="../galois.divisors/" class="md-nav__link">
-        <span aria-label="Python function" class="objinfo-icon objinfo-icon__procedure" title="Python function">F</span><span title="galois.divisors (Python function) — Computes all positive integer divisors $d$ of the integer $n$ such that $d|n$." class="md-ellipsis">divisors</span>
+        <span aria-label="Python function" class="objinfo-icon objinfo-icon__procedure" title="Python function">F</span><span title="galois.divisors (Python function) — Computes all positive integer divisors $d$ of the integer $n$ such that $d mid n$." class="md-ellipsis">divisors</span>
       </a>
     </li>
   
@@ -7757,7 +7757,7 @@ You're not viewing the latest version.
 <dd><p>The <a class="reference internal" href="../galois.Array/" title="galois.Array (Python class) — An abstract ndarray subclass over a Galois field or Galois ring."><code class="xref py py-obj docutils literal notranslate"><span class="pre">Array</span></code></a> subclass for the finite field the coefficients are over.</p>
 <p class="example rubric" id="examples">Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">a</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">Poly</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span> <span class="n">a</span>
-<span class="gh">Out[1]: </span><span class="go">Poly(x^5 + x^3 + x + 1, GF(2))</span>
+<span class="gh">Out[1]: </span><span class="go">Poly(x^5 + x^4 + x^3 + x^2 + x, GF(2))</span>
 
 <span class="gp">In [2]: </span><span class="n">a</span><span class="o">.</span><span class="n">field</span>
 <span class="gh">Out[2]: </span><span class="go">&lt;class &#39;galois.GF(2)&#39;&gt;</span>
@@ -7766,7 +7766,7 @@ You're not viewing the latest version.
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [3]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">8</span><span class="p">)</span>
 
 <span class="gp">In [4]: </span><span class="n">b</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">Poly</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">GF</span><span class="p">);</span> <span class="n">b</span>
-<span class="gh">Out[4]: </span><span class="go">Poly(13x^5 + 175x^4 + 143x^3 + 115x^2 + 74x + 179, GF(2^8))</span>
+<span class="gh">Out[4]: </span><span class="go">Poly(73x^5 + 46x^4 + 162x^3 + 82x^2 + 19x + 57, GF(2^8))</span>
 
 <span class="gp">In [5]: </span><span class="n">b</span><span class="o">.</span><span class="n">field</span>
 <span class="gh">Out[5]: </span><span class="go">&lt;class &#39;galois.GF(2^8)&#39;&gt;</span>
