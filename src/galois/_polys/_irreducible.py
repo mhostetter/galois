@@ -49,7 +49,7 @@ def is_irreducible(f: Poly) -> bool:
 
         This function implements Rabin's irreducibility test. It says a degree-$m$ polynomial $f(x)$
         over $\mathrm{GF}(q)$ for prime power $q$ is irreducible if and only if
-        $f(x)\ |\ (x^{q^m} - x)$ and $\textrm{gcd}(f(x),\ x^{q^{m_i}} - x) = 1$ for
+        $f(x) \mid (x^{q^m} - x)$ and $\textrm{gcd}(f(x),\ x^{q^{m_i}} - x) = 1$ for
         $1 \le i \le k$, where $m_i = m/p_i$ for the $k$ prime divisors $p_i$ of $m$.
 
     References:

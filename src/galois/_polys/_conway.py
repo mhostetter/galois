@@ -47,10 +47,10 @@ def is_conway(f: Poly, search: bool = False) -> bool:
     Notes:
         A degree-$m$ polynomial $f(x)$ over $\mathrm{GF}(p)$ is the *Conway polynomial*
         $C_{p,m}(x)$ if it is monic, primitive, compatible with Conway polynomials $C_{p,n}(x)$ for all
-        $n\ |\ m$, and is lexicographically first according to a special ordering.
+        $n \mid m$, and is lexicographically first according to a special ordering.
 
         A Conway polynomial $C_{p,m}(x)$ is *compatible* with Conway polynomials $C_{p,n}(x)$ for
-        $n\ |\ m$ if $C_{p,n}(x^r)$ divides $C_{p,m}(x)$, where $r = \frac{p^m - 1}{p^n - 1}$.
+        $n \mid m$ if $C_{p,n}(x^r)$ divides $C_{p,m}(x)$, where $r = \frac{p^m - 1}{p^n - 1}$.
 
         The Conway lexicographic ordering is defined as follows. Given two degree-$m$ polynomials
         $g(x) = \sum_{i=0}^m g_i x^i$ and $h(x) = \sum_{i=0}^m h_i x^i$, then $g < h$ if and only if
@@ -106,7 +106,7 @@ def is_conway(f: Poly, search: bool = False) -> bool:
 def is_conway_consistent(f: Poly, search: bool = False) -> bool:
     r"""
     Determines whether the degree-$m$ polynomial $f(x)$ over $\mathrm{GF}(p)$ is consistent
-    with smaller Conway polynomials $C_{p,n}(x)$ for all $n\ |\ m$.
+    with smaller Conway polynomials $C_{p,n}(x)$ for all $n \mid m$.
 
     .. question:: Why is this a method and not a property?
         :collapsible:
@@ -123,7 +123,7 @@ def is_conway_consistent(f: Poly, search: bool = False) -> bool:
 
     Returns:
         `True` if the polynomial $f(x)$ is primitive and consistent with smaller Conway polynomials
-        $C_{p,n}(x)$ for all $n\ |\ m$.
+        $C_{p,n}(x)$ for all $n \mid m$.
 
     Raises:
         LookupError: If `search=False` and a smaller Conway polynomial $C_{p,n}$ is not found in Frank Luebeck's
@@ -134,7 +134,7 @@ def is_conway_consistent(f: Poly, search: bool = False) -> bool:
 
     Notes:
         A degree-$m$ polynomial $f(x)$ over $\mathrm{GF}(p)$ is *compatible* with Conway polynomials
-        $C_{p,n}(x)$ for $n\ |\ m$ if $C_{p,n}(x^r)$ divides $f(x)$, where
+        $C_{p,n}(x)$ for $n \mid m$ if $C_{p,n}(x^r)$ divides $f(x)$, where
         $r = \frac{p^m - 1}{p^n - 1}$.
 
         A Conway-consistent polynomial has all the properties of a Conway polynomial except that it is not
@@ -230,10 +230,10 @@ def conway_poly(characteristic: int, degree: int, search: bool = False) -> Poly:
     Notes:
         A degree-$m$ polynomial $f(x)$ over $\mathrm{GF}(p)$ is the *Conway polynomial*
         $C_{p,m}(x)$ if it is monic, primitive, compatible with Conway polynomials $C_{p,n}(x)$ for all
-        $n\ |\ m$, and is lexicographically first according to a special ordering.
+        $n \mid m$, and is lexicographically first according to a special ordering.
 
         A Conway polynomial $C_{p,m}(x)$ is *compatible* with Conway polynomials $C_{p,n}(x)$ for
-        $n\ |\ m$ if $C_{p,n}(x^r)$ divides $C_{p,m}(x)$, where $r = \frac{p^m - 1}{p^n - 1}$.
+        $n \mid m$ if $C_{p,n}(x^r)$ divides $C_{p,m}(x)$, where $r = \frac{p^m - 1}{p^n - 1}$.
 
         The Conway lexicographic ordering is defined as follows. Given two degree-$m$ polynomials
         $g(x) = \sum_{i=0}^m g_i x^i$ and $h(x) = \sum_{i=0}^m h_i x^i$, then $g < h$ if and only if

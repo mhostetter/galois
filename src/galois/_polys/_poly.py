@@ -903,7 +903,7 @@ class Poly:
     def is_conway_consistent(self) -> bool:
         r"""
         Determines whether the degree-$m$ polynomial $f(x)$ over $\mathrm{GF}(p)$ is consistent
-        with smaller Conway polynomials $C_{p,n}(x)$ for all $n\ |\ m$.
+        with smaller Conway polynomials $C_{p,n}(x)$ for all $n \mid m$.
         """
         # Will be monkey-patched in `_conway.py`
         raise NotImplementedError

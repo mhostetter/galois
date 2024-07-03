@@ -383,11 +383,11 @@ def generator_to_parity_check_matrix(G: FieldArray) -> FieldArray:
 
     Arguments:
         G: The $(k, n)$ generator matrix $\mathbf{G}$ in systematic form
-            $\mathbf{G} = [\mathbf{I}_{k,k}\ |\ \mathbf{P}_{k,n-k}]$.
+            $\mathbf{G} = [\mathbf{I}_{k,k} \mid \mathbf{P}_{k,n-k}]$.
 
     Returns:
         The $(n-k, n)$ parity-check matrix
-        $\mathbf{H} = [-\mathbf{P}_{k,n-k}^T\ |\ \mathbf{I}_{n-k,n-k}]$`.
+        $\mathbf{H} = [-\mathbf{P}_{k,n-k}^T \mid \mathbf{I}_{n-k,n-k}]$`.
 
     Examples:
         .. ipython:: python
@@ -423,10 +423,10 @@ def parity_check_to_generator_matrix(H: FieldArray) -> FieldArray:
 
     Arguments:
         H: The $(n-k, n)$ parity-check matrix $\mathbf{G}$ in systematic form
-            $\mathbf{H} = [-\mathbf{P}_{k,n-k}^T\ |\ \mathbf{I}_{n-k,n-k}]$`.
+            $\mathbf{H} = [-\mathbf{P}_{k,n-k}^T \mid \mathbf{I}_{n-k,n-k}]$`.
 
     Returns:
-        The $(k, n)$ generator matrix $\mathbf{G} = [\mathbf{I}_{k,k}\ |\ \mathbf{P}_{k,n-k}]$.
+        The $(k, n)$ generator matrix $\mathbf{G} = [\mathbf{I}_{k,k} \mid \mathbf{P}_{k,n-k}]$.
 
     Examples:
         .. ipython:: python

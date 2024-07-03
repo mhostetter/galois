@@ -42,7 +42,7 @@ def is_primitive(f: Poly) -> bool:
 
     Notes:
         A degree-$m$ polynomial $f(x)$ over $\mathrm{GF}(q)$ is *primitive* if it is
-        irreducible and $f(x)\ |\ (x^k - 1)$ for $k = q^m - 1$ and no $k$ less than
+        irreducible and $f(x) \mid (x^k - 1)$ for $k = q^m - 1$ and no $k$ less than
         $q^m - 1$.
 
     References:
