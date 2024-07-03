@@ -173,7 +173,7 @@ tocdepth: 2
   Poly(x^9 + 3x^2 + 4, GF(7))
   ```
 - Added a database of binary irreducible polynomials with degrees less than 10,000. These polynomials are
-  lexicographically-first and have the minimum number of non-zero terms. The database is accessed in
+  lexicographically first and have the minimum number of non-zero terms. The database is accessed in
   `irreducible_poly()` when `terms="min"` and `method="min"`. ([#462](https://github.com/mhostetter/galois/pull/462))
   ```ipython
   In [1]: import galois

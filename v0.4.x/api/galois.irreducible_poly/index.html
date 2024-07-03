@@ -7894,8 +7894,8 @@ You're not viewing the latest version.
 </dd>
 <dt id="p-method"><span class="n sig-name">method</span><span class="p">:</span><span class="w">   </span><span class="n"><span class="desctype"><span class="s">'min'</span><span class="w">   </span><span class="p">|</span><span class="w">   </span><span class="s">'max'</span><span class="w">   </span><span class="p">|</span><span class="w">   </span><span class="s">'random'</span></span></span><span class="w">   </span><span class="o">=</span><span class="w">   </span><code class="code python default_value docutils literal highlight highlight-python"><span class="s1">&#39;min&#39;</span></code><a class="headerlink" href="#p-method" title="Permalink to this definition">¶</a></dt><dd><p><p>The search method for finding the irreducible polynomial.</p>
 <ul class="simple">
-<li><p><code class="code highlight python docutils literal highlight-python"><span class="s2">&quot;min&quot;</span></code> (default): Returns the lexicographically-first polynomial.</p></li>
-<li><p><code class="code highlight python docutils literal highlight-python"><span class="s2">&quot;max&quot;</span></code>: Returns the lexicographically-last polynomial.</p></li>
+<li><p><code class="code highlight python docutils literal highlight-python"><span class="s2">&quot;min&quot;</span></code> (default): Returns the lexicographically first polynomial.</p></li>
+<li><p><code class="code highlight python docutils literal highlight-python"><span class="s2">&quot;max&quot;</span></code>: Returns the lexicographically last polynomial.</p></li>
 <li><p><code class="code highlight python docutils literal highlight-python"><span class="s2">&quot;random&quot;</span></code>: Returns a random polynomial.</p></li>
 </ul>
 </p>
@@ -7931,7 +7931,7 @@ Under these conditions, this function returns very quickly.</p>
 <p>In addition to other applications, <span class="math notranslate nohighlight">\(f(x)\)</span> produces the field extension <span class="math notranslate nohighlight">\(\mathrm{GF}(q^m)\)</span> of
 <span class="math notranslate nohighlight">\(\mathrm{GF}(q)\)</span>.</p>
 <p class="example rubric" id="examples">Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></p>
-<p>Find the lexicographically-first, lexicographically-last, and a random monic irreducible polynomial.</p>
+<p>Find the lexicographically first, lexicographically last, and a random monic irreducible polynomial.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">galois</span><span class="o">.</span><span class="n">irreducible_poly</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 <span class="gh">Out[1]: </span><span class="go">Poly(x^3 + 2, GF(7))</span>
 
@@ -7939,15 +7939,15 @@ Under these conditions, this function returns very quickly.</p>
 <span class="gh">Out[2]: </span><span class="go">Poly(x^3 + 6x^2 + 6x + 4, GF(7))</span>
 
 <span class="gp">In [3]: </span><span class="n">galois</span><span class="o">.</span><span class="n">irreducible_poly</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;random&quot;</span><span class="p">)</span>
-<span class="gh">Out[3]: </span><span class="go">Poly(x^3 + 5x^2 + 3x + 4, GF(7))</span>
+<span class="gh">Out[3]: </span><span class="go">Poly(x^3 + 3x^2 + 3x + 4, GF(7))</span>
 </code></pre></div>
 </div>
-<p>Find the lexicographically-first monic irreducible polynomial with four terms.</p>
+<p>Find the lexicographically first monic irreducible polynomial with four terms.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [4]: </span><span class="n">galois</span><span class="o">.</span><span class="n">irreducible_poly</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">terms</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
 <span class="gh">Out[4]: </span><span class="go">Poly(x^3 + x^2 + x + 2, GF(7))</span>
 </code></pre></div>
 </div>
-<p>Find the lexicographically-first monic irreducible polynomial with the minimum number of non-zero terms.</p>
+<p>Find the lexicographically first monic irreducible polynomial with the minimum number of non-zero terms.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [5]: </span><span class="n">galois</span><span class="o">.</span><span class="n">irreducible_poly</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">terms</span><span class="o">=</span><span class="s2">&quot;min&quot;</span><span class="p">)</span>
 <span class="gh">Out[5]: </span><span class="go">Poly(x^3 + 2, GF(7))</span>
 </code></pre></div>
@@ -7956,13 +7956,13 @@ Under these conditions, this function returns very quickly.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [6]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
 
 <span class="gp">In [7]: </span><span class="n">f</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">irreducible_poly</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;random&quot;</span><span class="p">);</span> <span class="n">f</span>
-<span class="gh">Out[7]: </span><span class="go">Poly(x^5 + 3x^4 + 6x^3 + x^2 + 3x + 5, GF(7))</span>
+<span class="gh">Out[7]: </span><span class="go">Poly(x^5 + x^3 + 6x^2 + 6x + 6, GF(7))</span>
 
 <span class="gp">In [8]: </span><span class="n">f</span><span class="o">.</span><span class="n">is_irreducible</span><span class="p">()</span>
 <span class="gh">Out[8]: </span><span class="go">True</span>
 
 <span class="gp">In [9]: </span><span class="n">g</span> <span class="o">=</span> <span class="n">f</span> <span class="o">*</span> <span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span> <span class="n">g</span>
-<span class="gh">Out[9]: </span><span class="go">Poly(3x^5 + 2x^4 + 4x^3 + 3x^2 + 2x + 1, GF(7))</span>
+<span class="gh">Out[9]: </span><span class="go">Poly(3x^5 + 3x^3 + 4x^2 + 4x + 4, GF(7))</span>
 
 <span class="gp">In [10]: </span><span class="n">g</span><span class="o">.</span><span class="n">is_irreducible</span><span class="p">()</span>
 <span class="gh">Out[10]: </span><span class="go">True</span>
