@@ -246,7 +246,7 @@ def GF(
         verify_isinstance(order, int)
         p, e = factors(order)
         if not len(p) == len(e) == 1:
-            s = " + ".join([f"{pi}**{ei}" for pi, ei in zip(p, e)])
+            s = " * ".join([f"{pi}^{ei}" for pi, ei in zip(p, e)])
             raise ValueError(f"Argument 'order' must be a prime power, not {order} = {s}.")
         characteristic, degree = p[0], e[0]
     elif len(args) == 2:
