@@ -7,6 +7,7 @@ from __future__ import annotations
 import sqlite3
 import sys
 from pathlib import Path
+from threading import Lock
 
 
 class DatabaseInterface:
@@ -14,15 +15,17 @@ class DatabaseInterface:
     An abstract class to interface with SQLite databases.
     """
 
-    singleton = None
+    _lock = Lock()
+    _singleton = None
     file: Path
 
     def __new__(cls):
-        if cls.singleton is None:
-            cls.singleton = super().__new__(cls)
-            cls.conn = sqlite3.connect(cls.file)
-            cls.cursor = cls.conn.cursor()
-        return cls.singleton
+        with cls._lock:
+            if cls._singleton is None:
+                cls._singleton = super().__new__(cls)
+                cls.conn = sqlite3.connect(cls.file, check_same_thread=False)
+                cls.cursor = cls.conn.cursor()
+        return cls._singleton
 
 
 class PrimeFactorsDatabase(DatabaseInterface):
@@ -30,7 +33,6 @@ class PrimeFactorsDatabase(DatabaseInterface):
     A class to interface with the prime factors database.
     """
 
-    singleton = None
     file = Path(__file__).parent / "prime_factors.db"
 
     def fetch(self, n: int) -> tuple[list[int], list[int], int]:
@@ -51,15 +53,16 @@ class PrimeFactorsDatabase(DatabaseInterface):
             n = str(n)
             sys.set_int_max_str_digits(default_limit)
 
-        self.cursor.execute(
-            """
-            SELECT factors, multiplicities, composite
-            FROM factorizations
-            WHERE value=?
-            """,
-            (str(n),),
-        )
-        result = self.cursor.fetchone()
+        with self._lock:
+            self.cursor.execute(
+                """
+                SELECT factors, multiplicities, composite
+                FROM factorizations
+                WHERE value=?
+                """,
+                (str(n),),
+            )
+            result = self.cursor.fetchone()
 
         if result is None:
             raise LookupError(f"The prime factors database does not contain an entry for {n}.")
@@ -76,7 +79,6 @@ class IrreduciblePolyDatabase(DatabaseInterface):
     A class to interface with the irreducible polynomials database.
     """
 
-    singleton = None
     file = Path(__file__).parent / "irreducible_polys.db"
 
     def fetch(self, characteristic: int, degree: int) -> tuple[list[int], list[int]]:
@@ -90,14 +92,15 @@ class IrreduciblePolyDatabase(DatabaseInterface):
         Returns:
             A tuple containing the non-zero degrees and coefficients of the irreducible polynomial.
         """
-        self.cursor.execute(
-            """
-            SELECT nonzero_degrees, nonzero_coeffs
-            FROM polys
-            WHERE characteristic=? AND degree=?""",
-            (characteristic, degree),
-        )
-        result = self.cursor.fetchone()
+        with self._lock:
+            self.cursor.execute(
+                """
+                SELECT nonzero_degrees, nonzero_coeffs
+                FROM polys
+                WHERE characteristic=? AND degree=?""",
+                (characteristic, degree),
+            )
+            result = self.cursor.fetchone()
 
         if result is None:
             raise LookupError(
@@ -116,7 +119,6 @@ class ConwayPolyDatabase(DatabaseInterface):
     A class to interface with the Conway polynomials database.
     """
 
-    singleton = None
     file = Path(__file__).parent / "conway_polys.db"
 
     def fetch(self, characteristic: int, degree: int) -> tuple[list[int], list[int]]:
@@ -130,15 +132,16 @@ class ConwayPolyDatabase(DatabaseInterface):
         Returns:
             A tuple containing the non-zero degrees and coefficients of the Conway polynomial.
         """
-        self.cursor.execute(
-            """
-            SELECT nonzero_degrees, nonzero_coeffs
-            FROM polys
-            WHERE characteristic=? AND degree=?
-            """,
-            (characteristic, degree),
-        )
-        result = self.cursor.fetchone()
+        with self._lock:
+            self.cursor.execute(
+                """
+                SELECT nonzero_degrees, nonzero_coeffs
+                FROM polys
+                WHERE characteristic=? AND degree=?
+                """,
+                (characteristic, degree),
+            )
+            result = self.cursor.fetchone()
 
         if result is None:
             raise LookupError(
