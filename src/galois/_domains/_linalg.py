@@ -5,7 +5,7 @@ included in NumPy are also included.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Type
+from typing import TYPE_CHECKING, Type, cast
 
 import numba
 import numpy as np
@@ -32,31 +32,31 @@ def _lapack_linalg(field: Type[Array], a: Array, b: Array, function, out=None, n
     else:
         return_dtype = a.dtype if np.iinfo(a.dtype).max < np.iinfo(b.dtype).max else b.dtype
 
-    a = a.view(np.ndarray)
-    b = b.view(np.ndarray)
+    a_np = a.view(np.ndarray)
+    b_np = b.view(np.ndarray)
 
     # Determine the minimum dtype to hold the entire product and summation without overflowing
     if n_sum is None:
-        n_sum = 1 if len(a.shape) == 0 else max(a.shape)
+        n_sum = 1 if len(a_np.shape) == 0 else max(a_np.shape)
     max_value = n_sum * (field.characteristic - 1) ** 2
     dtypes = [dtype for dtype in DTYPES if np.iinfo(dtype).max >= max_value]
     dtype = np.object_ if len(dtypes) == 0 else dtypes[0]
-    a = a.astype(dtype)
-    b = b.astype(dtype)
+    a_np = a_np.astype(dtype)
+    b_np = b_np.astype(dtype)
 
     # Compute result using native NumPy LAPACK/BLAS implementation
     if function in [np.inner, np.vdot]:
         # These functions don't have and `out` keyword argument
-        c = function(a, b)
+        cc = function(a_np, b_np)
     else:
-        c = function(a, b, out=out)
-    c = c % field.characteristic  # Reduce the result mod p
+        cc = function(a_np, b_np, out=out)
+    cc = cc % field.characteristic  # Reduce the result mod p
 
-    if np.isscalar(c):
+    if np.isscalar(cc):
         # TODO: Sometimes the scalar c is a float?
-        c = field(int(c), dtype=return_dtype)
+        c = field(int(cc), dtype=return_dtype)
     else:
-        c = field._view(c.astype(return_dtype))
+        c = field._view(cc.astype(return_dtype))
 
     return c
 
@@ -114,8 +114,8 @@ class vdot_jit(Function):
         if self.field._is_prime_field:
             return _lapack_linalg(self.field, a, b, np.vdot)
 
-        a = a.flatten()
-        b = b.flatten().reshape(a.shape)  # This is done to mimic NumPy's error scenarios
+        a = cast(Array, a.flatten())
+        b = cast(Array, b.flatten().reshape(a.shape))  # This is done to mimic NumPy's error scenarios
 
         return np.sum(a * b)
 
@@ -160,7 +160,7 @@ class outer_jit(Function):
         if self.field._is_prime_field:
             return _lapack_linalg(self.field, a, b, np.outer, out=out, n_sum=1)
 
-        return np.multiply.outer(a.ravel(), b.ravel(), out=out)
+        return cast(Array, np.multiply.outer(a.ravel(), b.ravel(), out=out))
 
 
 class matmul_jit(Function):
@@ -192,10 +192,10 @@ class matmul_jit(Function):
 
         prepend, append = False, False
         if A.ndim == 1:
-            A = A.reshape((1, A.size))
+            A = cast(Array, A.reshape((1, A.size)))
             prepend = True
         if B.ndim == 1:
-            B = B.reshape((B.size, 1))
+            B = cast(Array, B.reshape((B.size, 1)))
             append = True
 
         if not A.shape[-1] == B.shape[-2]:
@@ -533,11 +533,11 @@ class LinalgFunctionMixin(FunctionMixin):
 
     def __init_subclass__(cls) -> None:
         super().__init_subclass__()
-        cls._dot = dot_jit(cls)
-        cls._vdot = vdot_jit(cls)
-        cls._inner = inner_jit(cls)
-        cls._outer = outer_jit(cls)
-        cls._det = det_jit(cls)
-        cls._matrix_rank = matrix_rank_jit(cls)
-        cls._solve = solve_jit(cls)
-        cls._inv = inv_jit(cls)
+        cls._dot = dot_jit(cls)  # type: ignore
+        cls._vdot = vdot_jit(cls)  # type: ignore
+        cls._inner = inner_jit(cls)  # type: ignore
+        cls._outer = outer_jit(cls)  # type: ignore
+        cls._det = det_jit(cls)  # type: ignore
+        cls._matrix_rank = matrix_rank_jit(cls)  # type: ignore
+        cls._solve = solve_jit(cls)  # type: ignore
+        cls._inv = inv_jit(cls)  # type: ignore

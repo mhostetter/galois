@@ -4,9 +4,10 @@ A module containing a class for univariate polynomials over finite fields.
 
 from __future__ import annotations
 
-from typing import Sequence, Type, overload
+from typing import Any, Sequence, Type, cast, overload
 
 import numpy as np
+import numpy.typing as npt
 from typing_extensions import Literal, Self
 
 from .._domains import Array, _factory
@@ -59,9 +60,9 @@ class Poly:
     # "binary", and "sparse". All types define _field, "dense" defines _coeffs, "binary" defines "_integer", and
     # "sparse" defines _nonzero_degrees and _nonzero_coeffs. The other properties are created when needed.
     _field: Type[Array]
-    _degrees: np.ndarray
+    _degrees: npt.NDArray
     _coeffs: Array
-    _nonzero_degrees: np.ndarray
+    _nonzero_degrees: npt.NDArray
     _nonzero_coeffs: Array
     _integer: int
     _degree: int
@@ -110,11 +111,11 @@ class Poly:
         self._coeffs, self._field = _convert_coeffs(coeffs, field)
 
         if self._coeffs.ndim == 0:
-            self._coeffs = np.atleast_1d(self._coeffs)
+            self._coeffs = cast(Array, np.atleast_1d(self._coeffs))
         if order == "asc":
-            self._coeffs = np.flip(self._coeffs)  # Ensure it's in descending-degree order
+            self._coeffs = cast(Array, np.flip(self._coeffs))  # Ensure it's in descending-degree order
         if self._coeffs[0] == 0:
-            self._coeffs = np.trim_zeros(self._coeffs, "f")  # Remove leading zeros
+            self._coeffs = cast(Array, np.trim_zeros(self._coeffs, "f"))  # Remove leading zeros
         if self._coeffs.size == 0:
             self._coeffs = self._field([0])
 
@@ -132,12 +133,12 @@ class Poly:
         A private alternate constructor that converts a poly-like object into a polynomial, given a finite field.
         """
         if isinstance(poly_like, int):
-            poly = Poly.Int(poly_like, field=field)
+            poly = cls.Int(poly_like, field=field)
         elif isinstance(poly_like, str):
-            poly = Poly.Str(poly_like, field=field)
+            poly = cls.Str(poly_like, field=field)
         elif isinstance(poly_like, (tuple, list, np.ndarray)):
-            poly = Poly(poly_like, field=field)
-        elif isinstance(poly_like, Poly):
+            poly = cls(poly_like, field=field)
+        elif isinstance(poly_like, cls):
             poly = poly_like
         else:
             raise TypeError(
@@ -177,7 +178,7 @@ class Poly:
                 GF = galois.GF(3**5)
                 galois.Poly.Zero(GF)
         """
-        return Poly([0], field=field)
+        return cls([0], field=field)
 
     @classmethod
     def One(cls, field: Type[Array] | None = None) -> Self:
@@ -205,7 +206,7 @@ class Poly:
                 GF = galois.GF(3**5)
                 galois.Poly.One(GF)
         """
-        return Poly([1], field=field)
+        return cls([1], field=field)
 
     @classmethod
     def Identity(cls, field: Type[Array] | None = None) -> Self:
@@ -233,7 +234,7 @@ class Poly:
                 GF = galois.GF(3**5)
                 galois.Poly.Identity(GF)
         """
-        return Poly([1, 0], field=field)
+        return cls([1, 0], field=field)
 
     @classmethod
     def Random(
@@ -298,7 +299,7 @@ class Poly:
         if coeffs[0] == 0:
             coeffs[0] = field.Random(low=1, seed=rng)  # Ensure leading coefficient is non-zero
 
-        return Poly(coeffs)
+        return cls(coeffs)
 
     @classmethod
     def Str(cls, string: str, field: Type[Array] | None = None) -> Self:
@@ -348,7 +349,7 @@ class Poly:
 
         degrees, coeffs = str_to_sparse_poly(string)
 
-        return Poly.Degrees(degrees, coeffs, field=field)
+        return cls.Degrees(degrees, coeffs, field=field)
 
     @classmethod
     def Int(cls, integer: int, field: Type[Array] | None = None) -> Self:
@@ -428,7 +429,7 @@ class Poly:
     @classmethod
     def Degrees(
         cls,
-        degrees: Sequence[int] | np.ndarray,
+        degrees: Sequence[int] | npt.NDArray,
         coeffs: ArrayLike | None = None,
         field: Type[Array] | None = None,
     ) -> Self:
@@ -518,7 +519,7 @@ class Poly:
     def Roots(
         cls,
         roots: ArrayLike,
-        multiplicities: Sequence[int] | np.ndarray | None = None,
+        multiplicities: Sequence[int] | npt.NDArray | None = None,
         field: Type[Array] | None = None,
     ) -> Self:
         r"""
@@ -586,8 +587,8 @@ class Poly:
                 f"not {len(roots)} and {len(multiplicities)}."
             )
 
-        poly = Poly.One(field=field)
-        x = Poly.Identity(field=field)
+        poly = cls.One(field=field)
+        x = cls.Identity(field=field)
         for root, multiplicity in zip(roots, multiplicities):
             poly *= (x - root) ** multiplicity
 
@@ -655,7 +656,7 @@ class Poly:
         coeffs = self.field.Zeros(size)
         coeffs[-len(self) :] = self.coeffs
         if order == "asc":
-            coeffs = np.flip(coeffs)
+            coeffs = cast(Array, np.flip(coeffs))
 
         return coeffs
 
@@ -688,9 +689,9 @@ class Poly:
     def roots(self, multiplicity: Literal[False] = False) -> Array: ...
 
     @overload
-    def roots(self, multiplicity: Literal[True]) -> tuple[Array, np.ndarray]: ...
+    def roots(self, multiplicity: Literal[True]) -> tuple[Array, npt.NDArray]: ...
 
-    def roots(self, multiplicity=False):
+    def roots(self, multiplicity: Any = False) -> Any:
         r"""
         Calculates the roots $r$ of the polynomial $f(x)$, such that $f(r) = 0$.
 
@@ -1007,7 +1008,7 @@ class Poly:
     @overload
     def __call__(self, at: Poly) -> Poly: ...
 
-    def __call__(self, at, field=None, elementwise=True):
+    def __call__(self, at: Any, field: Any = None, elementwise: Any = True) -> Any:
         r"""
         Evaluates the polynomial $f(x)$ at $x_0$ or the polynomial composition $f(g(x))$.
 
@@ -1163,10 +1164,10 @@ class Poly:
         types = [getattr(self, "_type", None), getattr(other, "_type", None)]
 
         if "binary" in types:
-            a = _convert_to_integer(self, self.field)
-            b = _convert_to_integer(other, self.field)
-            c = _binary.add(a, b)
-            output = Poly.Int(c, field=self.field)
+            a_int = _convert_to_integer(self, self.field)
+            b_int = _convert_to_integer(other, self.field)
+            c_int = _binary.add(a_int, b_int)
+            output = Poly.Int(c_int, field=self.field)
         elif "sparse" in types:
             a_degrees, a_coeffs = _convert_to_sparse_coeffs(self, self.field)
             b_degrees, b_coeffs = _convert_to_sparse_coeffs(other, self.field)
@@ -1185,10 +1186,10 @@ class Poly:
         types = [getattr(self, "_type", None), getattr(other, "_type", None)]
 
         if "binary" in types:
-            a = _convert_to_integer(other, self.field)
-            b = _convert_to_integer(self, self.field)
-            c = _binary.add(a, b)
-            output = Poly.Int(c, field=self.field)
+            a_int = _convert_to_integer(other, self.field)
+            b_int = _convert_to_integer(self, self.field)
+            c_int = _binary.add(a_int, b_int)
+            output = Poly.Int(c_int, field=self.field)
         elif "sparse" in types:
             a_degrees, a_coeffs = _convert_to_sparse_coeffs(other, self.field)
             b_degrees, b_coeffs = _convert_to_sparse_coeffs(self, self.field)
@@ -1204,9 +1205,9 @@ class Poly:
 
     def __neg__(self):
         if self._type == "binary":
-            a = _convert_to_integer(self, self.field)
-            c = _binary.negative(a)
-            output = Poly.Int(c, field=self.field)
+            a_int = _convert_to_integer(self, self.field)
+            c_int = _binary.negative(a_int)
+            output = Poly.Int(c_int, field=self.field)
         elif self._type == "sparse":
             a_degrees, a_coeffs = _convert_to_sparse_coeffs(self, self.field)
             c_degrees, c_coeffs = _sparse.negative(a_degrees, a_coeffs)
@@ -1223,10 +1224,10 @@ class Poly:
         types = [getattr(self, "_type", None), getattr(other, "_type", None)]
 
         if "binary" in types:
-            a = _convert_to_integer(self, self.field)
-            b = _convert_to_integer(other, self.field)
-            c = _binary.subtract(a, b)
-            output = Poly.Int(c, field=self.field)
+            a_int = _convert_to_integer(self, self.field)
+            b_int = _convert_to_integer(other, self.field)
+            c_int = _binary.subtract(a_int, b_int)
+            output = Poly.Int(c_int, field=self.field)
         elif "sparse" in types:
             a_degrees, a_coeffs = _convert_to_sparse_coeffs(self, self.field)
             b_degrees, b_coeffs = _convert_to_sparse_coeffs(other, self.field)
@@ -1245,10 +1246,10 @@ class Poly:
         types = [getattr(self, "_type", None), getattr(other, "_type", None)]
 
         if "binary" in types:
-            a = _convert_to_integer(other, self.field)
-            b = _convert_to_integer(self, self.field)
-            c = _binary.subtract(a, b)
-            output = Poly.Int(c, field=self.field)
+            a_int = _convert_to_integer(other, self.field)
+            b_int = _convert_to_integer(self, self.field)
+            c_int = _binary.subtract(a_int, b_int)
+            output = Poly.Int(c_int, field=self.field)
         elif "sparse" in types:
             a_degrees, a_coeffs = _convert_to_sparse_coeffs(other, self.field)
             b_degrees, b_coeffs = _convert_to_sparse_coeffs(self, self.field)
@@ -1267,10 +1268,10 @@ class Poly:
         types = [getattr(self, "_type", None), getattr(other, "_type", None)]
 
         if "binary" in types:
-            a = _convert_to_integer(self, self.field)
-            b = _convert_to_integer(other, self.field)
-            c = _binary.multiply(a, b)
-            output = Poly.Int(c, field=self.field)
+            a_int = _convert_to_integer(self, self.field)
+            b_int = _convert_to_integer(other, self.field)
+            c_int = _binary.multiply(a_int, b_int)
+            output = Poly.Int(c_int, field=self.field)
         elif "sparse" in types:
             a_degrees, a_coeffs = _convert_to_sparse_coeffs(self, self.field)
             b_degrees, b_coeffs = _convert_to_sparse_coeffs(other, self.field)
@@ -1289,10 +1290,10 @@ class Poly:
         types = [getattr(self, "_type", None), getattr(other, "_type", None)]
 
         if "binary" in types:
-            a = _convert_to_integer(other, self.field)
-            b = _convert_to_integer(self, self.field)
-            c = _binary.multiply(a, b)
-            output = Poly.Int(c, field=self.field)
+            a_int = _convert_to_integer(other, self.field)
+            b_int = _convert_to_integer(self, self.field)
+            c_int = _binary.multiply(a_int, b_int)
+            output = Poly.Int(c_int, field=self.field)
         elif "sparse" in types:
             a_degrees, a_coeffs = _convert_to_sparse_coeffs(other, self.field)
             b_degrees, b_coeffs = _convert_to_sparse_coeffs(self, self.field)
@@ -1311,10 +1312,10 @@ class Poly:
         types = [getattr(self, "_type", None), getattr(other, "_type", None)]
 
         if "binary" in types:
-            a = _convert_to_integer(self, self.field)
-            b = _convert_to_integer(other, self.field)
-            q, r = _binary.divmod(a, b)
-            output = Poly.Int(q, field=self.field), Poly.Int(r, field=self.field)
+            a_int = _convert_to_integer(self, self.field)
+            b_int = _convert_to_integer(other, self.field)
+            q_int, r_int = _binary.divmod(a_int, b_int)
+            output = Poly.Int(q_int, field=self.field), Poly.Int(r_int, field=self.field)
         else:
             a = _convert_to_coeffs(self, self.field)
             b = _convert_to_coeffs(other, self.field)
@@ -1328,10 +1329,10 @@ class Poly:
         types = [getattr(self, "_type", None), getattr(other, "_type", None)]
 
         if "binary" in types:
-            a = _convert_to_integer(other, self.field)
-            b = _convert_to_integer(self, self.field)
-            q, r = _binary.divmod(a, b)
-            output = Poly.Int(q, field=self.field), Poly.Int(r, field=self.field)
+            a_int = _convert_to_integer(other, self.field)
+            b_int = _convert_to_integer(self, self.field)
+            q_int, r_int = _binary.divmod(a_int, b_int)
+            output = Poly.Int(q_int, field=self.field), Poly.Int(r_int, field=self.field)
         else:
             a = _convert_to_coeffs(other, self.field)
             b = _convert_to_coeffs(self, self.field)
@@ -1357,10 +1358,10 @@ class Poly:
         types = [getattr(self, "_type", None), getattr(other, "_type", None)]
 
         if "binary" in types:
-            a = _convert_to_integer(self, self.field)
-            b = _convert_to_integer(other, self.field)
-            q = _binary.floordiv(a, b)
-            output = Poly.Int(q, field=self.field)
+            a_int = _convert_to_integer(self, self.field)
+            b_int = _convert_to_integer(other, self.field)
+            q_int = _binary.floordiv(a_int, b_int)
+            output = Poly.Int(q_int, field=self.field)
         else:
             a = _convert_to_coeffs(self, self.field)
             b = _convert_to_coeffs(other, self.field)
@@ -1374,10 +1375,10 @@ class Poly:
         types = [getattr(self, "_type", None), getattr(other, "_type", None)]
 
         if "binary" in types:
-            a = _convert_to_integer(other, self.field)
-            b = _convert_to_integer(self, self.field)
-            q = _binary.floordiv(a, b)
-            output = Poly.Int(q, field=self.field)
+            a_int = _convert_to_integer(other, self.field)
+            b_int = _convert_to_integer(self, self.field)
+            q_int = _binary.floordiv(a_int, b_int)
+            output = Poly.Int(q_int, field=self.field)
         else:
             a = _convert_to_coeffs(other, self.field)
             b = _convert_to_coeffs(self, self.field)
@@ -1391,10 +1392,10 @@ class Poly:
         types = [getattr(self, "_type", None), getattr(other, "_type", None)]
 
         if "binary" in types:
-            a = _convert_to_integer(self, self.field)
-            b = _convert_to_integer(other, self.field)
-            r = _binary.mod(a, b)
-            output = Poly.Int(r, field=self.field)
+            a_int = _convert_to_integer(self, self.field)
+            b_int = _convert_to_integer(other, self.field)
+            r_int = _binary.mod(a_int, b_int)
+            output = Poly.Int(r_int, field=self.field)
         else:
             a = _convert_to_coeffs(self, self.field)
             b = _convert_to_coeffs(other, self.field)
@@ -1408,10 +1409,10 @@ class Poly:
         types = [getattr(self, "_type", None), getattr(other, "_type", None)]
 
         if "binary" in types:
-            a = _convert_to_integer(other, self.field)
-            b = _convert_to_integer(self, self.field)
-            r = _binary.mod(a, b)
-            output = Poly.Int(r, field=self.field)
+            a_int = _convert_to_integer(other, self.field)
+            b_int = _convert_to_integer(self, self.field)
+            r_int = _binary.mod(a_int, b_int)
+            output = Poly.Int(r_int, field=self.field)
         else:
             a = _convert_to_coeffs(other, self.field)
             b = _convert_to_coeffs(self, self.field)
@@ -1429,10 +1430,10 @@ class Poly:
             raise ValueError(f"Can only exponentiate polynomials to non-negative integers, not {exponent}.")
 
         if "binary" in types:
-            a = _convert_to_integer(self, self.field)
-            b = _convert_to_integer(modulus, self.field) if modulus is not None else None
-            q = _binary.pow(a, exponent, b)
-            output = Poly.Int(q, field=self.field)
+            a_int = _convert_to_integer(self, self.field)
+            b_int = _convert_to_integer(modulus, self.field) if modulus is not None else None
+            q_int = _binary.pow(a_int, exponent, b_int)
+            output = Poly.Int(q_int, field=self.field)
         else:
             a = _convert_to_coeffs(self, self.field)
             b = _convert_to_coeffs(modulus, self.field) if modulus is not None else None
@@ -1577,7 +1578,7 @@ class Poly:
         return self._nonzero_coeffs.copy()
 
     @property
-    def nonzero_degrees(self) -> np.ndarray:
+    def nonzero_degrees(self) -> npt.NDArray:
         """
         An array of the polynomial degrees that have non-zero coefficients in descending order.
 
@@ -1646,7 +1647,7 @@ def _convert_coeffs(coeffs: ArrayLike, field: Type[Array] | None = None) -> tupl
             field = _factory.DEFAULT_ARRAY
         coeffs = np.array(coeffs, dtype=field.dtypes[-1])
         sign = np.sign(coeffs)
-        coeffs = sign * field(np.abs(coeffs))
+        coeffs = cast(Array, sign * field(np.abs(coeffs)))
 
     return coeffs, field
 
@@ -1757,9 +1758,9 @@ def _convert_to_coeffs(a: Poly | Array | int, field: Type[Array]) -> Array:
         coeffs = a.coeffs
     elif isinstance(a, int):
         # Scalar multiplication
-        coeffs = np.atleast_1d(field(a % field.characteristic))
+        coeffs = cast(Array, np.atleast_1d(field(a % field.characteristic)))
     else:
-        coeffs = np.atleast_1d(a)
+        coeffs = cast(Array, np.atleast_1d(a))
 
     return coeffs
 
@@ -1777,7 +1778,7 @@ def _convert_to_integer(a: Poly | Array | int, field: Type[Array]) -> int:
     return integer
 
 
-def _convert_to_sparse_coeffs(a: Poly | Array | int, field: Type[Array]) -> tuple[np.ndarray, Array]:
+def _convert_to_sparse_coeffs(a: Poly | Array | int, field: Type[Array]) -> tuple[npt.NDArray, Array]:
     """
     Convert the polynomial or finite field scalar into its non-zero degrees and coefficients.
     """
@@ -1787,9 +1788,9 @@ def _convert_to_sparse_coeffs(a: Poly | Array | int, field: Type[Array]) -> tupl
     elif isinstance(a, int):
         # Scalar multiplication
         degrees = np.array([0])
-        coeffs = np.atleast_1d(field(a % field.characteristic))
+        coeffs = cast(Array, np.atleast_1d(field(a % field.characteristic)))
     else:
         degrees = np.array([0])
-        coeffs = np.atleast_1d(a)
+        coeffs = cast(Array, np.atleast_1d(a))
 
     return degrees, coeffs

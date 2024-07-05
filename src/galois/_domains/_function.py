@@ -5,7 +5,8 @@ dispatcher classes have snake_case naming because they are act like functions.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Callable, Type
+from abc import abstractmethod
+from typing import TYPE_CHECKING, Callable, Type, cast
 
 import numba
 import numpy as np
@@ -29,7 +30,8 @@ class Function:
     def __init__(self, field: Type[Array]):
         self.field = field
 
-    def __call__(self):
+    @abstractmethod
+    def __call__(self, *args, **kwargs):
         """
         Invokes the function, either JIT-compiled or pure-Python, performing necessary input/output conversion.
         """
@@ -48,8 +50,12 @@ class Function:
     _PARALLEL = False
     """Indicates if parallel processing should be performed."""
 
-    implementation: Callable
-    """The function's implementation in pure Python."""
+    @staticmethod
+    def implementation(*args, **kwargs):
+        """
+        The function's implementation in pure Python.
+        """
+        pass
 
     ###############################################################################
     # Various ufuncs based on implementation and compilation
@@ -103,6 +109,13 @@ class Function:
 ###############################################################################
 # Ndarray function wrappers
 ###############################################################################
+
+CHARACTERISTIC: int
+IS_PRIME_FIELD: bool
+
+ADD: Callable[[int, int], int]
+SUBTRACT: Callable[[int, int], int]
+MULTIPLY: Callable[[int, int], int]
 
 
 class convolve_jit(Function):
@@ -182,7 +195,7 @@ class fft_jit(Function):
 
         if n is None:
             n = x.size
-        x = np.append(x, np.zeros(n - x.size, dtype=x.dtype))
+        x = cast(Array, np.append(x, np.zeros(n - x.size, dtype=x.dtype)))
 
         omega = self.field.primitive_root_of_unity(x.size)
         if self._direction == "backward":
@@ -342,9 +355,9 @@ class FunctionMixin(np.ndarray, metaclass=ArrayMeta):
 
     def __init_subclass__(cls) -> None:
         super().__init_subclass__()
-        cls._convolve = convolve_jit(cls)
-        cls._fft = fft_jit(cls)
-        cls._ifft = ifft_jit(cls)
+        cls._convolve = convolve_jit(cls)  # type: ignore
+        cls._fft = fft_jit(cls)  # type: ignore
+        cls._ifft = ifft_jit(cls)  # type: ignore
 
     def __array_function__(self, func, types, args, kwargs):
         """

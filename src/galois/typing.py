@@ -8,6 +8,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Sequence, Union
 
 import numpy as np
+import numpy.typing as npt
 
 # Obtain forward references
 if TYPE_CHECKING:
@@ -90,7 +91,7 @@ A :obj:`~typing.Union` representing iterable objects that can be coerced into a 
 """
 
 
-ArrayLike = Union[IterableLike, np.ndarray, "Array"]
+ArrayLike = Union[IterableLike, npt.NDArray, "Array"]
 """
 A :obj:`~typing.Union` representing objects that can be coerced into a Galois field array.
 

@@ -4,13 +4,26 @@ A module containing polynomial arithmetic for polynomials with dense coefficient
 
 from __future__ import annotations
 
+from typing import Callable, cast
+
 import numba
 import numpy as np
+import numpy.typing as npt
 from numba import int64, uint64
 
 from .._domains import Array
 from .._domains._function import Function
 from .._helper import verify_isinstance
+
+ORDER: int
+
+ADD: Callable[[int, int], int]
+SUBTRACT: Callable[[int, int], int]
+MULTIPLY: Callable[[int, int], int]
+RECIPROCAL: Callable[[int], int]
+POWER: Callable[[int, int], int]
+POLY_MULTIPLY: Callable[[npt.NDArray, npt.NDArray], npt.NDArray]
+POLY_MOD: Callable[[npt.NDArray, npt.NDArray], npt.NDArray]
 
 
 class add_jit(Function):
@@ -120,7 +133,7 @@ def multiply(a: Array, b: Array) -> Array:
     if a.ndim == 0 or b.ndim == 0:
         return a * b
 
-    return np.convolve(a, b)
+    return cast(Array, np.convolve(a, b))
 
 
 class divmod_jit(Function):
@@ -149,7 +162,7 @@ class divmod_jit(Function):
             assert 1 <= a.ndim <= 2 and b.ndim == 1
             dtype = a.dtype
             a_1d = a.ndim == 1
-            a = np.atleast_2d(a)
+            a = cast(Array, np.atleast_2d(a))
             # TODO: Do not support 2D -- it is no longer needed
 
             q_degree = a.shape[-1] - b.shape[-1]
@@ -166,8 +179,8 @@ class divmod_jit(Function):
             r = qr[:, q_degree + 1 : q_degree + 1 + r_degree + 1]
 
             if a_1d:
-                q = q.reshape(q.size)
-                r = r.reshape(r.size)
+                q = cast(Array, q.reshape(q.size))
+                r = cast(Array, r.reshape(r.size))
 
         return q, r
 
@@ -445,7 +458,7 @@ class roots_jit(Function):
     Finds the roots of the polynomial f(x).
     """
 
-    def __call__(self, nonzero_degrees: np.ndarray, nonzero_coeffs: Array) -> Array:
+    def __call__(self, nonzero_degrees: npt.NDArray, nonzero_coeffs: Array) -> Array:
         verify_isinstance(nonzero_degrees, np.ndarray)
         verify_isinstance(nonzero_coeffs, self.field)
         dtype = nonzero_coeffs.dtype
