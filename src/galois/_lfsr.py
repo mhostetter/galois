@@ -5,7 +5,7 @@ sequences.
 
 from __future__ import annotations
 
-from typing import Any, Callable, cast, overload
+from typing import Any, Callable, Type, cast, overload
 
 import numba
 import numpy as np

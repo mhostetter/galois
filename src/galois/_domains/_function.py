@@ -6,7 +6,7 @@ dispatcher classes have snake_case naming because they are act like functions.
 from __future__ import annotations
 
 from abc import abstractmethod
-from typing import TYPE_CHECKING, Callable, Hashable, Type, cast
+from typing import TYPE_CHECKING, Callable, Type, cast
 
 import numba
 import numpy as np

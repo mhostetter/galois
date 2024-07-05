@@ -4,7 +4,7 @@ A module containing common functions for linear block codes.
 
 from __future__ import annotations
 
-from typing import Any, cast, overload
+from typing import Any, Type, cast, overload
 
 import numpy as np
 import numpy.typing as npt

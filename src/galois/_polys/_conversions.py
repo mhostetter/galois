@@ -5,8 +5,6 @@ representations.
 
 from __future__ import annotations
 
-import numpy as np
-
 from .._math import ilog
 from .._options import get_printoptions
 

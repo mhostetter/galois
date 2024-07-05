@@ -6,8 +6,6 @@ from __future__ import annotations
 
 from typing import Any, Sequence, overload
 
-import numpy as np
-
 from ._helper import export
 from ._math import egcd as int_egcd
 from ._math import gcd as int_gcd
