@@ -94,9 +94,20 @@ def sparse_poly_to_str(degrees: list[int], coeffs: list[int], poly_var: str = "x
     # Use brackets around coefficients only when using the "poly" or "power" element representation
     brackets = hasattr(type(coeffs), "_element_repr") and type(coeffs)._element_repr in ["poly", "power"]
 
+    # If the element representation is polynomial and the irreducible polynomial is not primitive, convert x to z
+    # for the coefficients
+    convert_x_to_z = (
+        hasattr(type(coeffs), "_element_repr")
+        and type(coeffs)._element_repr == "poly"
+        and not type(coeffs).is_primitive_poly
+    )
+
     for degree, coeff in zip(degrees, coeffs):
         if coeff == 0:
             continue
+
+        if convert_x_to_z and coeff != 1:
+            coeff = str(coeff).replace("x", "z")
 
         if degree > 1:
             if coeff == 1:
