@@ -32,7 +32,7 @@
         <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
-        <link rel="stylesheet" type="text/css" href="../../_static/sphinx_immaterial_theme.c4ed526396076e92d.min.css" />
+        <link rel="stylesheet" type="text/css" href="../../_static/sphinx_immaterial_theme.2b45bf7261181b7a3.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/extra.css" />
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
@@ -7850,10 +7850,10 @@ Power</label></div>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="mi">5</span><span class="p">)</span>
 
 <span class="gp">In [2]: </span><span class="n">a</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">();</span> <span class="n">a</span>
-<span class="gh">Out[2]: </span><span class="go">GF(153, order=3^5)</span>
+<span class="gh">Out[2]: </span><span class="go">GF(109, order=3^5)</span>
 
 <span class="gp">In [3]: </span><span class="n">poly</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">characteristic_poly</span><span class="p">();</span> <span class="n">poly</span>
-<span class="gh">Out[3]: </span><span class="go">Poly(x^5 + 2x^4 + 2x^2 + 2, GF(3))</span>
+<span class="gh">Out[3]: </span><span class="go">Poly(x^5 + 2x^3 + 2x^2 + 2x + 1, GF(3))</span>
 
 <span class="go"># The characteristic polynomial annihilates a</span>
 <span class="gp">In [4]: </span><span class="n">poly</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">GF</span><span class="p">)</span>
@@ -7865,10 +7865,10 @@ Power</label></div>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [5]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="mi">5</span><span class="p">,</span> <span class="nb">repr</span><span class="o">=</span><span class="s2">&quot;poly&quot;</span><span class="p">)</span>
 
 <span class="gp">In [6]: </span><span class="n">a</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">();</span> <span class="n">a</span>
-<span class="gh">Out[6]: </span><span class="go">GF(2α^4 + α^3 + 2α, order=3^5)</span>
+<span class="gh">Out[6]: </span><span class="go">GF(α^3 + 2α^2 + α + 1, order=3^5)</span>
 
 <span class="gp">In [7]: </span><span class="n">poly</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">characteristic_poly</span><span class="p">();</span> <span class="n">poly</span>
-<span class="gh">Out[7]: </span><span class="go">Poly(x^5 + x^4 + x + 2, GF(3))</span>
+<span class="gh">Out[7]: </span><span class="go">Poly(x^5 + x^4 + 2x^3 + 2x^2 + 1, GF(3))</span>
 
 <span class="go"># The characteristic polynomial annihilates a</span>
 <span class="gp">In [8]: </span><span class="n">poly</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">GF</span><span class="p">)</span>
@@ -7880,10 +7880,10 @@ Power</label></div>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [9]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="mi">5</span><span class="p">,</span> <span class="nb">repr</span><span class="o">=</span><span class="s2">&quot;power&quot;</span><span class="p">)</span>
 
 <span class="gp">In [10]: </span><span class="n">a</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">();</span> <span class="n">a</span>
-<span class="gh">Out[10]: </span><span class="go">GF(α^133, order=3^5)</span>
+<span class="gh">Out[10]: </span><span class="go">GF(α^39, order=3^5)</span>
 
 <span class="gp">In [11]: </span><span class="n">poly</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">characteristic_poly</span><span class="p">();</span> <span class="n">poly</span>
-<span class="gh">Out[11]: </span><span class="go">Poly(x^5 + x^4 + x^2 + x + 1, GF(3))</span>
+<span class="gh">Out[11]: </span><span class="go">Poly(x^5 + x^4 + x^3 + x + 1, GF(3))</span>
 
 <span class="go"># The characteristic polynomial annihilates a</span>
 <span class="gp">In [12]: </span><span class="n">poly</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">GF</span><span class="p">)</span>
@@ -7905,12 +7905,12 @@ Power</label></div>
 
 <span class="gp">In [14]: </span><span class="n">A</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">));</span> <span class="n">A</span>
 <span class="gh">Out[14]: </span>
-<span class="go">GF([[235,  73,  61],</span>
-<span class="go">    [ 26, 218, 198],</span>
-<span class="go">    [ 30, 117, 151]], order=3^5)</span>
+<span class="go">GF([[ 46, 143, 242],</span>
+<span class="go">    [132, 141, 149],</span>
+<span class="go">    [214, 173,  78]], order=3^5)</span>
 
 <span class="gp">In [15]: </span><span class="n">poly</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">characteristic_poly</span><span class="p">();</span> <span class="n">poly</span>
-<span class="gh">Out[15]: </span><span class="go">Poly(x^3 + 86x^2 + 112x + 90, GF(3^5))</span>
+<span class="gh">Out[15]: </span><span class="go">Poly(x^3 + 215x^2 + 70x + 159, GF(3^5))</span>
 
 <span class="go"># The x^0 coefficient is det(-A)</span>
 <span class="gp">In [16]: </span><span class="n">poly</span><span class="o">.</span><span class="n">coeffs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="o">-</span><span class="n">A</span><span class="p">)</span>
@@ -7934,15 +7934,15 @@ Power</label></div>
 
 <span class="gp">In [20]: </span><span class="n">A</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">));</span> <span class="n">A</span>
 <span class="gh">Out[20]: </span>
-<span class="go">GF([[           2α^4 + α^2 + 2α,   2α^4 + α^3 + α^2 + α + 2,</span>
-<span class="go">                  α^3 + α^2 + 2],</span>
-<span class="go">    [             2α^2 + 2α + 2,      α^4 + 2α^3 + α^2 + 2α,</span>
-<span class="go">       α^4 + α^3 + α^2 + 2α + 1],</span>
-<span class="go">    [            2α^4 + α^3 + 2,       2α^4 + 2α^3 + 2α + 1,</span>
-<span class="go">     α^4 + 2α^3 + 2α^2 + 2α + 1]], order=3^5)</span>
+<span class="go">GF([[                       0,            α^4 + α^3 + α,</span>
+<span class="go">                     2α^4 + α],</span>
+<span class="go">    [                  2α + 2, α^4 + α^3 + 2α^2 + α + 2,</span>
+<span class="go">              2α^3 + 2α^2 + 1],</span>
+<span class="go">    [            2α^4 + α + 2, 2α^4 + α^3 + α^2 + α + 2,</span>
+<span class="go">                α^4 + α^2 + 2]], order=3^5)</span>
 
 <span class="gp">In [21]: </span><span class="n">poly</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">characteristic_poly</span><span class="p">();</span> <span class="n">poly</span>
-<span class="gh">Out[21]: </span><span class="go">Poly(x^3 + (2α^4 + 2α^3 + 2α^2 + 2)x^2 + (α + 1)x + (2α^3 + α), GF(3^5))</span>
+<span class="gh">Out[21]: </span><span class="go">Poly(x^3 + (α^4 + 2α^3 + 2α + 2)x^2 + (α^4 + α^2 + α + 1)x + (α^4 + 2α^3 + 2α^2 + 2α), GF(3^5))</span>
 
 <span class="go"># The x^0 coefficient is det(-A)</span>
 <span class="gp">In [22]: </span><span class="n">poly</span><span class="o">.</span><span class="n">coeffs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="o">-</span><span class="n">A</span><span class="p">)</span>
@@ -7966,12 +7966,12 @@ Power</label></div>
 
 <span class="gp">In [26]: </span><span class="n">A</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">));</span> <span class="n">A</span>
 <span class="gh">Out[26]: </span>
-<span class="go">GF([[α^219, α^177, α^209],</span>
-<span class="go">    [ α^44,  α^21,  α^10],</span>
-<span class="go">    [α^151,  α^23, α^189]], order=3^5)</span>
+<span class="go">GF([[α^173, α^110,  α^28],</span>
+<span class="go">    [α^161, α^107,  α^59],</span>
+<span class="go">    [ α^99,  α^72,  α^31]], order=3^5)</span>
 
 <span class="gp">In [27]: </span><span class="n">poly</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">characteristic_poly</span><span class="p">();</span> <span class="n">poly</span>
-<span class="gh">Out[27]: </span><span class="go">Poly(x^3 + (α^147)x^2 + (α^98)x + α^84, GF(3^5))</span>
+<span class="gh">Out[27]: </span><span class="go">Poly(x^3 + (α^161)x^2 + (α^107)x + α^100, GF(3^5))</span>
 
 <span class="go"># The x^0 coefficient is det(-A)</span>
 <span class="gp">In [28]: </span><span class="n">poly</span><span class="o">.</span><span class="n">coeffs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="o">-</span><span class="n">A</span><span class="p">)</span>
