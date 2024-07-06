@@ -328,6 +328,14 @@ sphinx_immaterial_custom_admonitions = [
         "override": True,
     },
     {
+        "name": "question",
+        "title": "Question",
+        "classes": ["collapsible"],
+        "icon": "fontawesome/solid/question",
+        "color": (108, 117, 125),  # --sd-color-secondary
+        "override": True,
+    },
+    {
         "name": "seealso",
         "title": "See also",
         "classes": ["collapsible"],
