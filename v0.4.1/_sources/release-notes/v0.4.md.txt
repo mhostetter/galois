@@ -1,0 +1,36 @@
+---
+tocdepth: 2
+---
+
+# v0.4
+
+## v0.4.0
+
+*Released July 2, 2024*
+
+### Changes
+
+- Added support for NumPy 2.0. ([#550](https://github.com/mhostetter/galois/pull/550))
+- Added support for Numba 0.60. ([#550](https://github.com/mhostetter/galois/pull/550))
+
+### Contributors
+
+- Iyán Méndez Veiga ([@iyanmv](https://github.com/iyanmv))
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
+
+## v0.4.1
+
+*Released July 6, 2024*
+
+### Changes
+
+- Fixed multithreading incompatibility. Previously only one thread could read from the SQLite databases. ([#558](https://github.com/mhostetter/galois/pull/558))
+- Clarified `Poly` string representation when underlying field is non-primitive and uses the `"poly"` element representation. ([#329](https://github.com/mhostetter/galois/issues/329))
+- Fixed typo in error message. ([#557](https://github.com/mhostetter/galois/pull/557))
+- Made minor documentation improvements.
+
+### Contributors
+
+- Semjon Kravtšenko ([@semjon00](https://github.com/semjon00))
+- [@MrVeka](https://github.com/MrVeka)
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
