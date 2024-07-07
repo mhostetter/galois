@@ -294,7 +294,7 @@ sphinx_immaterial_custom_admonitions = [
         "name": "warning",
         "title": "Warning",
         "classes": ["collapsible"],
-        "icon": "fontawesome/solid/triangle-exclamation",
+        "icon": "fontawesome/solid/exclamation",
         "override": True,
     },
     {
