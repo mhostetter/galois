@@ -360,6 +360,13 @@ sphinx_immaterial_custom_admonitions = [
         "color": (255, 233, 3),  # Gold
     },
     {
+        "name": "nomenclature",
+        "title": "Variable nomenclature",
+        "classes": ["collapsible"],
+        "icon": "fontawesome/solid/arrow-down-a-z",
+        "color": (108, 117, 125),  # --sd-color-secondary
+    },
+    {
         "name": "fast-performance",
         "title": "Faster performance",
         "icon": "material/speedometer",
