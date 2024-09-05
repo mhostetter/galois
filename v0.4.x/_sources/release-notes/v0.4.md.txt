@@ -34,3 +34,15 @@ tocdepth: 2
 - Semjon Kravtšenko ([@semjon00](https://github.com/semjon00))
 - [@MrVeka](https://github.com/MrVeka)
 - Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
+
+## v0.4.2
+
+*Released September 5, 2024*
+
+### Changes
+
+- Added support for NumPy 2.1. ([#567](https://github.com/mhostetter/galois/issues/567))
+
+### Contributors
+
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
