@@ -32,7 +32,7 @@
         <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
-        <link rel="stylesheet" type="text/css" href="../../_static/sphinx_immaterial_theme.4f7e605c6bcfb1460.min.css" />
+        <link rel="stylesheet" type="text/css" href="../../_static/sphinx_immaterial_theme.1bb656dc03e6a87a2.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/extra.css" />
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
@@ -7974,7 +7974,7 @@ and the modulus is taken as <span class="math notranslate nohighlight">\(p\)</sp
 <span class="gh">Out[11]: </span><span class="go">GF([1, 2, 3, 4], order=13)</span>
 </code></pre></div>
 </div>
-<p>The <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.fft.ifft.html#numpy.fft.ifft" title="(in NumPy v2.0)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.fft.ifft()</span></code></a> function may also be used to compute the inverse NTT over <span class="math notranslate nohighlight">\(\mathrm{GF}(p)\)</span>.</p>
+<p>The <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.fft.ifft.html#numpy.fft.ifft" title="(in NumPy v2.1)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.fft.ifft()</span></code></a> function may also be used to compute the inverse NTT over <span class="math notranslate nohighlight">\(\mathrm{GF}(p)\)</span>.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [12]: </span><span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">x</span><span class="p">);</span> <span class="n">X</span>
 <span class="gh">Out[12]: </span><span class="go">GF([10,  8, 11,  1], order=13)</span>
 
