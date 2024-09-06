@@ -1,0 +1,120 @@
+---
+tocdepth: 2
+---
+
+# v0.1
+
+## v0.1.0
+
+*Released August 27, 2022*
+
+### Changes
+
+- First beta release!
+- Fixed PyPI package metadata.
+
+### Contributors
+
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
+
+## v0.1.1
+
+*Released September 2, 2022*
+
+### Changes
+
+- Added support for NumPy 1.23. ([#414](https://github.com/mhostetter/galois/pull/414))
+- Added `seed` keyword argument to `random_prime()`. ([#409](https://github.com/mhostetter/galois/pull/409))
+  ```python
+  >>> galois.random_prime(100, seed=1)
+  2218840874040723579228056294021
+  >>> galois.random_prime(100, seed=1)
+  2218840874040723579228056294021
+  ```
+- Deployed documentation to [https://mhostetter.github.io/galois/latest/](https://mhostetter.github.io/galois/latest/) with GitHub Pages. ([#408](https://github.com/mhostetter/galois/pull/408))
+
+### Contributors
+
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
+
+## v0.1.2
+
+*Released November 9, 2022*
+
+### Changes
+
+- Fixed major inefficiency when dividing an array by a scalar or smaller (broadcasted) array. ([#429](https://github.com/mhostetter/galois/pull/429))
+  ```ipython
+  In [1]: import galois
+
+  In [2]: GF = galois.GF(31**5)
+
+  In [3]: x = GF.Random(10_000, seed=1); x
+  Out[3]:
+  GF([13546990, 14653018, 21619804, ..., 15507037, 24669161, 19116362],
+     order=31^5)
+
+  In [4]: y = GF.Random(1, seed=2); y
+  Out[4]: GF([23979074], order=31^5)
+
+  # v0.1.1
+  In [5]: %timeit x / y
+  261 ms ± 5.67 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)
+
+  # v0.1.2
+  In [5]: %timeit x / y
+  8.23 ms ± 51 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+  ```
+- Optimized [`lagrange_poly()`](https://mhostetter.github.io/galois/v0.1.2/api/galois.lagrange_poly/) by adding a custom JIT-compilable routine. ([#432](https://github.com/mhostetter/galois/pull/432))
+  ```ipython
+  In [1]: import galois
+
+  In [2]: GF = galois.GF(13693)
+
+  In [3]: x = GF.Random(100, seed=1)
+
+  In [4]: y = GF.Random(100, seed=2)
+
+  # v0.1.1
+  In [5]: %timeit galois.lagrange_poly(x, y)
+  2.85 s ± 3.25 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)
+
+  # v0.1.2
+  In [5]: %timeit galois.lagrange_poly(x, y)
+  4.77 ms ± 190 µs per loop (mean ± std. dev. of 7 runs, 1 loop each)
+  ```
+- Added ability in [`FieldArray.row_reduce()`](https://mhostetter.github.io/galois/v0.1.2/api/galois.FieldArray.row_reduce/) to solve for an identity matrix on the right side of a matrix using the `eye` keyword argument. ([#426](https://github.com/mhostetter/galois/pull/426))
+  ```python
+  >>> import galois
+  >>> GF = galois.GF(31)
+  >>> A = GF([[16, 12, 1, 25], [1, 10, 27, 29], [1, 0, 3, 19]])
+  >>> A.row_reduce()
+  GF([[ 1,  0,  0, 11],
+      [ 0,  1,  0,  7],
+      [ 0,  0,  1, 13]], order=31)
+  >>> A.row_reduce(eye="right")
+  GF([[ 5,  1,  0,  0],
+      [27,  0,  1,  0],
+      [17,  0,  0,  1]], order=31)
+  ```
+- Removed comma separators in [`FieldArray.__str__()`](https://mhostetter.github.io/galois/v0.1.2/api/galois.FieldArray.__str__/) to be consistent with NumPy's use of `str()` and `repr()`. ([#432](https://github.com/mhostetter/galois/pull/432))
+  ```python
+  >>> import galois
+  >>> GF = galois.GF(3**5, display="power")
+  >>> x = GF.Random((3, 4), seed=1)
+  >>> x
+  GF([[α^185, α^193,  α^49, α^231],
+      [ α^81,  α^60,   α^5,  α^41],
+      [ α^50, α^161, α^151, α^171]], order=3^5)
+  >>> print(x)
+  [[α^185 α^193  α^49 α^231]
+   [ α^81  α^60   α^5  α^41]
+   [ α^50 α^161 α^151 α^171]]
+  ```
+- Modernized type annotations to use abbreviated notation. For example, `a | b` instead of `Union[a, b]`. ([#418](https://github.com/mhostetter/galois/pull/418))
+- Added `Self` type annotation where appropriate. ([#420](https://github.com/mhostetter/galois/pull/420))
+- Updated documentation and improved examples. ([#424](https://github.com/mhostetter/galois/pull/424), [#430](https://github.com/mhostetter/galois/pull/430))
+
+### Contributors
+
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))

@@ -1,0 +1,321 @@
+---
+tocdepth: 2
+---
+
+# v0.3
+
+## v0.3.0
+
+*Released December 9, 2022*
+
+### Breaking changes
+
+- Increased minimum NumPy version to 1.21.0. ([#441](https://github.com/mhostetter/galois/pull/441))
+- Increased minimum Numba version to 0.55.0 ([#441](https://github.com/mhostetter/galois/pull/441))
+- Modified `galois.GF()` and `galois.Field()` so that keyword arguments `irreducible_poly`, `primitive_element`, `verify`, `compile`, and `repr` may no longer be passed as positional arguments. ([#442](https://github.com/mhostetter/galois/pull/442))
+
+### Changes
+
+- Added a `galois.GF(p, m)` call signature in addition to `galois.GF(p**m)`. This also applies to `galois.Field()`. Separately specifying $p$ and $m$ eliminates the need to factor the order $p^m$ in very large finite fields. ([#442](https://github.com/mhostetter/galois/pull/442))
+  ```python
+  >>> import galois
+  # This is faster than galois.GF(2**409)
+  >>> GF = galois.GF(2, 409)
+  >>> print(GF.properties)
+  Galois Field:
+    name: GF(2^409)
+    characteristic: 2
+    degree: 409
+    order: 1322111937580497197903830616065542079656809365928562438569297590548811582472622691650378420879430569695182424050046716608512
+    irreducible_poly: x^409 + x^7 + x^5 + x^3 + 1
+    is_primitive_poly: True
+    primitive_element: x
+  ```
+- Optimized matrix multiplication by parallelizing across multiple cores. ([#440](https://github.com/mhostetter/galois/pull/440))
+  ```ipython
+  In [1]: import galois
+
+  In [2]: GF = galois.GF(3**5)
+
+  In [3]: A = GF.Random((300, 400), seed=1)
+
+  In [4]: B = GF.Random((400, 500), seed=2)
+
+  # v0.2.0
+  In [5]: %timeit A @ B
+  664 ms ± 3.31 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)
+
+  # v0.3.0
+  In [5]: %timeit A @ B
+  79.1 ms ± 7.32 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)
+  ```
+- Optimized polynomial evaluation by parallelizing across multiple cores. ([#440](https://github.com/mhostetter/galois/pull/440))
+  ```ipython
+  In [1]: import galois
+
+  In [2]: GF = galois.GF(3**5)
+
+  In [3]: f = galois.Poly.Random(100, seed=1, field=GF)
+
+  In [4]: x = GF.Random(100_000, seed=1)
+
+  # v0.2.0
+  In [5]: %timeit f(x)
+  776 ms ± 2.12 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)
+
+  # v0.3.0
+  In [5]: %timeit f(x)
+  13.9 ms ± 2.51 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)
+  ```
+- Fixed an occasional arithmetic type error in binary extension fields $\mathrm{GF}(2^m)$ when using the built-in `np.bitwise_xor()`. ([#441](https://github.com/mhostetter/galois/pull/441))
+
+### Contributors
+
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
+
+## v0.3.1
+
+*Released December 12, 2022*
+
+### Changes
+
+- Fixed a bug in the Pollard $\rho$ factorization algorithm that caused an occasional infinite loop. ([#450](https://github.com/mhostetter/galois/pull/450))
+  ```ipython
+  In [1]: import galois
+
+  # v0.3.0
+  In [2]: %time galois.GF(2400610585866217)
+  # Never returns...
+
+  # v0.3.1
+  In [2]: %time galois.GF(2400610585866217)
+  Wall time: 96 ms
+  Out[2]: <class 'galois.GF(2400610585866217)'>
+  ```
+- Formatted the code and unit tests with `black` and `isort`. ([#446](https://github.com/mhostetter/galois/pull/446), [#449](https://github.com/mhostetter/galois/pull/449))
+
+### Contributors
+
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
+- [@pivis](https://github.com/pivis)
+
+## v0.3.2
+
+*Released December 18, 2022*
+
+### Changes
+
+- Added a prime factorization database for $n = b^k \pm 1$, with $b \in \{2, 3, 5, 6, 7, 10, 11, 12\}$.
+  The factorizations are from the [Cunningham Book](https://homes.cerias.purdue.edu/~ssw/cun/third/index.html).
+  This speeds up the creation of large finite fields. ([#452](https://github.com/mhostetter/galois/pull/452))
+  ```ipython
+  In [1]: import galois
+
+  # v0.3.1
+  In [2]: %time galois.factors(2**256 - 1)
+  # Took forever...
+
+  # v0.3.2
+  In [2]: %time galois.factors(2**256 - 1)
+  Wall time: 1 ms
+  Out[2]:
+  ([3,
+    5,
+    17,
+    257,
+    641,
+    65537,
+    274177,
+    6700417,
+    67280421310721,
+    59649589127497217,
+    5704689200685129054721],
+   [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
+  ```
+- Added speed-up when factoring powers of small primes. This speeds up the creation of large finite fields. ([#454](https://github.com/mhostetter/galois/pull/454))
+  ```ipython
+  In [1]: import galois
+
+  # v0.3.1
+  In [2]: %time galois.factors(2**471)
+  Wall time: 4.18 s
+  Out[2]: ([2], [471])
+
+  # v0.3.2
+  In [2]: %time galois.factors(2**471)
+  Wall time: 2 ms
+  Out[2]: ([2], [471])
+  ```
+- Added four additional Mersenne primes that were discovered between 2013-2018. ([#452](https://github.com/mhostetter/galois/pull/452))
+
+### Contributors
+
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
+
+## v0.3.3
+
+*Released February 1, 2023*
+
+### Changes
+
+- Added a `terms` keyword argument to `irreducible_poly()`, `irreducible_polys()`, `primitive_poly()`, and
+  `primitive_polys()` to find a polynomial with a desired number of non-zero terms. This may be set to an integer
+  or to `"min"`. ([#463](https://github.com/mhostetter/galois/pull/463))
+  ```python
+  >>> import galois
+  >>> galois.irreducible_poly(7, 9)
+  Poly(x^9 + 2, GF(7))
+  >>> galois.irreducible_poly(7, 9, terms=3)
+  Poly(x^9 + x + 1, GF(7))
+  >>> galois.primitive_poly(7, 9)
+  Poly(x^9 + x^2 + x + 2, GF(7))
+  >>> galois.primitive_poly(7, 9, terms="min")
+  Poly(x^9 + 3x^2 + 4, GF(7))
+  ```
+- Added a database of binary irreducible polynomials with degrees less than 10,000. These polynomials are
+  lexicographically first and have the minimum number of non-zero terms. The database is accessed in
+  `irreducible_poly()` when `terms="min"` and `method="min"`. ([#462](https://github.com/mhostetter/galois/pull/462))
+  ```ipython
+  In [1]: import galois
+
+  # Manual search
+  In [2]: %time galois.irreducible_poly(2, 1001)
+  CPU times: user 6.8 s, sys: 0 ns, total: 6.8 s
+  Wall time: 6.81 s
+  Out[2]: Poly(x^1001 + x^5 + x^3 + x + 1, GF(2))
+
+  # With the database
+  In [3]: %time galois.irreducible_poly(2, 1001, terms="min")
+  CPU times: user 745 µs, sys: 0 ns, total: 745 µs
+  Wall time: 1.4 ms
+  Out[3]: Poly(x^1001 + x^17 + 1, GF(2))
+  ```
+- Memoized expensive polynomial tests `Poly.is_irreducible()` and `Poly.is_primitive()`. Now, the expense of those
+  calculations for a given polynomial is only incurred once. ([#470](https://github.com/mhostetter/galois/pull/470))
+  ```ipython
+  In [1]: import galois
+
+  In [2]: f = galois.Poly.Str("x^1001 + x^17 + 1"); f
+  Out[2]: Poly(x^1001 + x^17 + 1, GF(2))
+
+  In [3]: %time f.is_irreducible()
+  CPU times: user 1.05 s, sys: 3.47 ms, total: 1.05 s
+  Wall time: 1.06 s
+  Out[3]: True
+
+  In [4]: %time f.is_irreducible()
+  CPU times: user 57 µs, sys: 30 µs, total: 87 µs
+  Wall time: 68.2 µs
+  Out[4]: True
+  ```
+- Added tests for Conway polynomials `Poly.is_conway()` and `Poly.is_conway_consistent()`.
+  ([#469](https://github.com/mhostetter/galois/pull/469))
+- Added the ability to manually search for a Conway polynomial if it is not found in Frank Luebeck's database,
+  using `conway_poly(p, m, search=True)`. ([#469](https://github.com/mhostetter/galois/pull/469))
+- Various documentation improvements.
+
+### Contributors
+
+- Iyán Méndez Veiga ([@iyanmv](https://github.com/iyanmv))
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
+
+## v0.3.4
+
+*Released May 2, 2023*
+
+### Changes
+
+- Added support for Python 3.11. ([#415](https://github.com/mhostetter/galois/pull/415))
+- Added support for NumPy 1.24. ([#415](https://github.com/mhostetter/galois/pull/415))
+- Fixed indexing bug in `FieldArray.plu_decompose()` for certain input arrays. ([#477](https://github.com/mhostetter/galois/pull/477))
+
+### Contributors
+
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
+
+## v0.3.5
+
+*Released May 9, 2023*
+
+### Changes
+
+- Added `py.typed` file to indicate to `mypy` and other type checkers that `galois` supports typing. ([#481](https://github.com/mhostetter/galois/pull/481))
+- Fixed bug with multiple, concurrent BCH and/or Reed Solomon decoders. ([#484](https://github.com/mhostetter/galois/pull/484))
+
+### Contributors
+
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
+
+## v0.3.6
+
+*Released October 1, 2023*
+
+### Changes
+
+- Added support for NumPy 1.25. ([#507](https://github.com/mhostetter/galois/pull/507))
+- Added support for Numba 0.58. ([#507](https://github.com/mhostetter/galois/pull/507))
+- Fixed rare overflow with computing a large modular exponentiation of polynomials. ([#488](https://github.com/mhostetter/galois/pull/488))
+- Resolved various deprecations warnings with NumPy 1.25. ([#492](https://github.com/mhostetter/galois/pull/492))
+
+### Contributors
+
+- Iyán Méndez Veiga ([@iyanmv](https://github.com/iyanmv))
+- [@Lasagnenator](https://github.com/Lasagnenator)
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
+
+## v0.3.7
+
+*Released November 30, 2023*
+
+### Changes
+
+- Added wheel factorization for finding large primes. ([#527](https://github.com/mhostetter/galois/pull/527))
+- Improved type annotations. ([#510](https://github.com/mhostetter/galois/pull/510), [#511](https://github.com/mhostetter/galois/pull/511))
+- Removed optional `[dev]` extra. If developing, install from `requirements-dev.txt`. ([#521](https://github.com/mhostetter/galois/pull/521))
+- Fixed bugs in `prev_prime()` and `next_prime()` for large primes. ([#527](https://github.com/mhostetter/galois/pull/527))
+
+### Contributors
+
+- [@avadov](https://github.com/avadov)
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
+
+## v0.3.8
+
+*Released February 1, 2024*
+
+### Changes
+
+- Added support for Python 3.12. ([#534](https://github.com/mhostetter/galois/pull/534))
+- Added support for NumPy 1.26. ([#534](https://github.com/mhostetter/galois/pull/534))
+- Added support for Numba 0.59. ([#534](https://github.com/mhostetter/galois/pull/534))
+- Fixed bug in `FieldArray.multiplicative_order()` for large fields. ([#533](https://github.com/mhostetter/galois/pull/533))
+
+### Contributors
+
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
+
+## v0.3.9
+
+*Released June 10, 2024*
+
+### Changes
+
+- Added support for `python -OO` optimization. ([#545](https://github.com/mhostetter/galois/pull/545))
+- Improved documentation in minor ways.
+
+### Contributors
+
+- Justin Charlong ([@jcharlong](https://github.com/jcharlong))
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
+
+## v0.3.10
+
+*Released June 23, 2024*
+
+### Changes
+
+- Added support for `ufunc_mode="python-calculate"` for all fields. ([#551](https://github.com/mhostetter/galois/pull/551))
+
+### Contributors
+
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
