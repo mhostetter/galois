@@ -32,7 +32,7 @@
         <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
-        <link rel="stylesheet" type="text/css" href="../../_static/sphinx_immaterial_theme.1bb656dc03e6a87a2.min.css" />
+        <link rel="stylesheet" type="text/css" href="../../_static/sphinx_immaterial_theme.3fb2ae7f940abc704.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/extra.css" />
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
@@ -7785,21 +7785,16 @@ Power</label></div>
 <div class="tabbed-block docutils">
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">31</span><span class="p">)</span>
 
-<span class="gp">In [2]: </span><span class="n">GF</span><span class="o">.</span><span class="n">elements</span>
-<span class="gh">Out[2]: </span>
-<span class="go">GF([ 0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16,</span>
-<span class="go">    17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30], order=31)</span>
+<span class="gp">In [2]: </span><span class="n">GF</span><span class="o">.</span><span class="n">primitive_element</span>
+<span class="gh">Out[2]: </span><span class="go">GF(3, order=31)</span>
 </code></pre></div>
 </div>
 </div>
 <div class="tabbed-block docutils">
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [3]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">31</span><span class="p">,</span> <span class="nb">repr</span><span class="o">=</span><span class="s2">&quot;power&quot;</span><span class="p">)</span>
 
-<span class="gp">In [4]: </span><span class="n">GF</span><span class="o">.</span><span class="n">elements</span>
-<span class="gh">Out[4]: </span>
-<span class="go">GF([   0,    1, α^24,    α, α^18, α^20, α^25, α^28, α^12,  α^2, α^14,</span>
-<span class="go">    α^23, α^19, α^11, α^22, α^21,  α^6,  α^7, α^26,  α^4,  α^8, α^29,</span>
-<span class="go">    α^17, α^27, α^13, α^10,  α^5,  α^3, α^16,  α^9, α^15], order=31)</span>
+<span class="gp">In [4]: </span><span class="n">GF</span><span class="o">.</span><span class="n">primitive_element</span>
+<span class="gh">Out[4]: </span><span class="go">GF(α, order=31)</span>
 </code></pre></div>
 </div>
 </div>
@@ -7815,33 +7810,24 @@ Power</label></div>
 <div class="tabbed-block docutils">
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [5]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">5</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
 
-<span class="gp">In [6]: </span><span class="n">GF</span><span class="o">.</span><span class="n">elements</span>
-<span class="gh">Out[6]: </span>
-<span class="go">GF([ 0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16,</span>
-<span class="go">    17, 18, 19, 20, 21, 22, 23, 24], order=5^2)</span>
+<span class="gp">In [6]: </span><span class="n">GF</span><span class="o">.</span><span class="n">primitive_element</span>
+<span class="gh">Out[6]: </span><span class="go">GF(5, order=5^2)</span>
 </code></pre></div>
 </div>
 </div>
 <div class="tabbed-block docutils">
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [7]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">5</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="nb">repr</span><span class="o">=</span><span class="s2">&quot;poly&quot;</span><span class="p">)</span>
 
-<span class="gp">In [8]: </span><span class="n">GF</span><span class="o">.</span><span class="n">elements</span>
-<span class="gh">Out[8]: </span>
-<span class="go">GF([     0,      1,      2,      3,      4,      α,  α + 1,  α + 2,</span>
-<span class="go">     α + 3,  α + 4,     2α, 2α + 1, 2α + 2, 2α + 3, 2α + 4,     3α,</span>
-<span class="go">    3α + 1, 3α + 2, 3α + 3, 3α + 4,     4α, 4α + 1, 4α + 2, 4α + 3,</span>
-<span class="go">    4α + 4], order=5^2)</span>
+<span class="gp">In [8]: </span><span class="n">GF</span><span class="o">.</span><span class="n">primitive_element</span>
+<span class="gh">Out[8]: </span><span class="go">GF(α, order=5^2)</span>
 </code></pre></div>
 </div>
 </div>
 <div class="tabbed-block docutils">
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [9]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">5</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="nb">repr</span><span class="o">=</span><span class="s2">&quot;power&quot;</span><span class="p">)</span>
 
-<span class="gp">In [10]: </span><span class="n">GF</span><span class="o">.</span><span class="n">elements</span>
-<span class="gh">Out[10]: </span>
-<span class="go">GF([   0,    1,  α^6, α^18, α^12,    α, α^22, α^15,  α^2, α^17,  α^7,</span>
-<span class="go">     α^8,  α^4, α^23, α^21, α^19,  α^9, α^11, α^16, α^20, α^13,  α^5,</span>
-<span class="go">    α^14,  α^3, α^10], order=5^2)</span>
+<span class="gp">In [10]: </span><span class="n">GF</span><span class="o">.</span><span class="n">primitive_element</span>
+<span class="gh">Out[10]: </span><span class="go">GF(α, order=5^2)</span>
 </code></pre></div>
 </div>
 </div>
