@@ -511,7 +511,7 @@ def _GF_extension(
     if is_primitive_poly is not None:
         field._is_primitive_poly = is_primitive_poly
     else:
-        field._is_primitive_poly = field._irreducible_poly(field._primitive_element, field=field) == 0
+        field._is_primitive_poly = bool(field._irreducible_poly(field._primitive_element, field=field) == 0)
 
     # Add class to dictionary of flyweights
     _GF_extension._classes[key] = field
