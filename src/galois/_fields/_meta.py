@@ -271,14 +271,14 @@ class FieldArrayMeta(ArrayMeta):
             .. ipython-with-reprs:: int,power
 
                 GF = galois.GF(31)
-                GF.elements
+                GF.primitive_element
 
             The smallest primitive element of the extension field $\mathrm{GF}(5^2)$.
 
             .. ipython-with-reprs:: int,poly,power
 
                 GF = galois.GF(5**2)
-                GF.elements
+                GF.primitive_element
 
         Group:
             Elements
@@ -305,14 +305,14 @@ class FieldArrayMeta(ArrayMeta):
             .. ipython-with-reprs:: int,power
 
                 GF = galois.GF(31)
-                GF.elements
+                GF.primitive_elements
 
             All primitive elements of the extension field $\mathrm{GF}(5^2)$ in lexicographical order.
 
             .. ipython-with-reprs:: int,poly,power
 
                 GF = galois.GF(5**2)
-                GF.elements
+                GF.primitive_elements
 
         Group:
             Elements
