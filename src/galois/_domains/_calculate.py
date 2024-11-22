@@ -783,11 +783,12 @@ class sqrt(_lookup.sqrt_ufunc):
             )
 
         p = self.field.characteristic
+        q = self.field.order
 
-        if p % 4 == 3:
+        if q % 4 == 3:
             roots = a ** ((self.field.order + 1) // 4)
 
-        elif p % 8 == 5:
+        elif q % 8 == 5:
             d = a ** ((self.field.order - 1) // 4)
             roots = self.field.Zeros(a.shape)
 
