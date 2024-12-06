@@ -53,10 +53,15 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
         dtype = cls._get_dtype(dtype)
 
         x = cls._verify_array_like_types_and_values(x)
-        array = np.array(x, dtype=dtype, copy=copy, order=order, ndmin=ndmin)
+        if cls._bitpacked:
+            array = np.packbits(x, axis=-1)
+        else:
+            array = np.array(x, dtype=dtype, copy=copy, order=order, ndmin=ndmin)
 
         # Perform view without verification since the elements were verified in _verify_array_like_types_and_values()
-        return cls._view(array)
+        galois_array = cls._view(array)
+        galois_array.original_shape = x.shape
+        return galois_array
 
     @classmethod
     def _get_dtype(cls, dtype: DTypeLike) -> np.dtype:
@@ -172,6 +177,9 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
         """
         dtype = cls._get_dtype(dtype)
         array = np.zeros(shape, dtype=dtype)
+        if cls._bitpacked:
+            array = np.packbits(array, axis=-1)
+
         return cls._view(array)
 
     @classmethod
@@ -190,6 +198,9 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
         """
         dtype = cls._get_dtype(dtype)
         array = np.ones(shape, dtype=dtype)
+        if cls._bitpacked:
+            array = np.packbits(array, axis=-1)
+
         return cls._view(array)
 
     @classmethod
@@ -227,6 +238,8 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
             raise ValueError(f"Argument 'stop' must be within the field's order {cls.order}, not {stop}.")
 
         array = np.arange(start, stop, step=step, dtype=dtype)
+        if cls._bitpacked:
+            array = np.packbits(array, axis=-1)
 
         return cls._view(array)
 
@@ -295,6 +308,8 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
             for _ in iterator:
                 array[iterator.multi_index] = random.randint(low, high - 1)
 
+        if cls._bitpacked:
+            array = np.packbits(array, axis=-1)
         return cls._view(array)
 
     @classmethod
@@ -313,6 +328,9 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
         """
         dtype = cls._get_dtype(dtype)
         array = np.identity(size, dtype=dtype)
+        if cls._bitpacked:
+            array = np.packbits(array, axis=-1)
+
         return cls._view(array)
 
     ###############################################################################

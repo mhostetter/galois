@@ -17,7 +17,7 @@ from .._domains._lookup import (
     sqrt_ufunc,
     subtract_ufunc,
 )
-from .._domains._ufunc import UFuncMixin
+from .._domains._ufunc import UFuncMixin, matmul_ufunc
 from .._helper import export
 from ._array import FieldArray
 
@@ -100,6 +100,98 @@ class UFuncMixin_2_1(UFuncMixin):
         cls._log = log(cls)
         cls._sqrt = sqrt(cls)
 
+class add_ufunc_bitpacked(add_ufunc):
+    """
+    Addition ufunc dispatcher w/ support for bit-packed fields.
+    """
+    def __call__(self, ufunc, method, inputs, kwargs, meta):
+        output = super().__call__(ufunc, method, inputs, kwargs, meta)
+        output.original_shape = inputs[0].original_shape
+        return output
+
+class subtract_ufunc_bitpacked(subtract_ufunc):
+    """
+    Subtraction ufunc dispatcher w/ support for bit-packed fields.
+    """
+    def __call__(self, ufunc, method, inputs, kwargs, meta):
+        output = super().__call__(ufunc, method, inputs, kwargs, meta)
+        output.original_shape = inputs[0].original_shape
+        return output
+
+class multiply_ufunc_bitpacked(multiply_ufunc):
+    """
+    Multiply ufunc dispatcher w/ support for bit-packed fields.
+    """
+    def __call__(self, ufunc, method, inputs, kwargs, meta):
+        output = super().__call__(ufunc, method, inputs, kwargs, meta)
+        output.original_shape = inputs[0].original_shape
+        return output
+
+class divide_ufunc_bitpacked(divide):
+    """
+    Divide ufunc dispatcher w/ support for bit-packed fields.
+    """
+    def __call__(self, ufunc, method, inputs, kwargs, meta):
+        output = super().__call__(ufunc, method, inputs, kwargs, meta)
+        output.original_shape = inputs[0].original_shape
+        return output
+
+class matmul_ufunc_bitpacked(matmul_ufunc):
+    """
+    Matmul ufunc dispatcher w/ support for bit-packed fields.
+    """
+    def __call__(self, ufunc, method, inputs, kwargs, meta):
+        a, b = inputs
+
+        if hasattr(a, "original_shape"):
+            a = np.unpackbits(a.view(np.ndarray), axis=-1, count=a.original_shape[-1]).view(GF2BP)
+        if hasattr(b, "original_shape"):
+            b = np.unpackbits(b.view(np.ndarray), axis=-1, count=b.original_shape[-1]).view(GF2BP)
+
+        inputs = (a, b)
+        output = super().__call__(ufunc, method, inputs, kwargs, meta)
+        original_shape = output.shape
+        output = self.field._view(np.packbits(output.view(np.ndarray), axis=-1))
+        output.original_shape = original_shape
+
+        return output
+
+
+def array_equal_bitpacked(a: FieldArray, b: FieldArray) -> bool:
+    if a.shape != b.shape:
+        if hasattr(a, "original_shape"):
+            a = np.unpackbits(a.view(np.ndarray), axis=-1, count=a.original_shape[-1])
+
+        if hasattr(b, "original_shape"):
+            b = np.unpackbits(b.view(np.ndarray), axis=-1, count=b.original_shape[-1])
+
+    return np.core.numeric.array_equal(a, b)
+
+
+class UFuncMixin_2_1_BitPacked(UFuncMixin):
+    """
+    A mixin class that provides explicit calculation arithmetic for GF(2).
+    """
+
+    def __init_subclass__(cls) -> None:
+        super().__init_subclass__()
+        cls._add = add_ufunc_bitpacked(cls, override=np.bitwise_xor)
+        cls._negative = negative_ufunc(cls, override=np.positive)
+        cls._subtract = subtract_ufunc_bitpacked(cls, override=np.bitwise_xor)
+        cls._multiply = multiply_ufunc_bitpacked(cls, override=np.bitwise_and)
+        cls._reciprocal = reciprocal(cls)
+        cls._divide = divide_ufunc_bitpacked(cls)
+        cls._power = power(cls)
+        cls._log = log(cls)
+        cls._sqrt = sqrt(cls)
+        cls._array_equal = array_equal_bitpacked
+
+    @classmethod
+    def _assign_ufuncs(cls):
+        super()._assign_ufuncs()
+
+        # We have to set this here because ArrayMeta would override it.
+        cls._matmul  = matmul_ufunc_bitpacked(cls)
 
 # NOTE: There is a "verbatim" block in the docstring because we were not able to monkey-patch GF2 like the
 # other classes in docs/conf.py. So, technically, at doc-build-time issubclass(galois.GF2, galois.FieldArray) == False
@@ -116,7 +208,52 @@ class GF2(
     order=2,
     irreducible_poly_int=3,
     is_primitive_poly=True,
+    primitive_element=1
+):
+    r"""
+    A :obj:`~galois.FieldArray` subclass over $\mathrm{GF}(2)$.
+
+    .. info::
+
+        This class is a pre-generated :obj:`~galois.FieldArray` subclass generated with `galois.GF(2)` and is
+        included in the API for convenience.
+
+    Examples:
+        This class is equivalent, and in fact identical, to the :obj:`~galois.FieldArray` subclass returned from the
+        class factory :func:`~galois.GF`.
+
+        .. ipython::
+
+            In [2]: galois.GF2 is galois.GF(2)
+
+            @verbatim
+            In [3]: issubclass(galois.GF2, galois.FieldArray)
+            Out[3]: True
+
+            In [4]: print(galois.GF2.properties)
+
+        Create a :obj:`~galois.FieldArray` instance using :obj:`~galois.GF2`'s constructor.
+
+        .. ipython:: python
+
+            x = galois.GF2([1, 0, 1, 1]); x
+            isinstance(x, galois.GF2)
+
+    Group:
+        galois-fields
+    """
+
+@export
+class GF2BP(
+    FieldArray,
+    UFuncMixin_2_1_BitPacked,
+    characteristic=2,
+    degree=1,
+    order=2,
+    irreducible_poly_int=3,
+    is_primitive_poly=True,
     primitive_element=1,
+    bitpacked=True,
 ):
     r"""
     A :obj:`~galois.FieldArray` subclass over $\mathrm{GF}(2)$.
@@ -155,3 +292,7 @@ class GF2(
 GF2._default_ufunc_mode = "jit-calculate"
 GF2._ufunc_modes = ["jit-calculate", "python-calculate"]
 GF2.compile("auto")
+
+GF2BP._default_ufunc_mode = "jit-calculate"
+GF2BP._ufunc_modes = ["jit-calculate", "python-calculate"]
+GF2BP.compile("auto")

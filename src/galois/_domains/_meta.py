@@ -35,6 +35,7 @@ class ArrayMeta(abc.ABCMeta):
         cls._irreducible_poly_int: int = kwargs.get("irreducible_poly_int", 0)
         cls._primitive_element: int = kwargs.get("primitive_element", 0)
         cls._dtypes = cls._determine_dtypes()
+        cls._bitpacked = kwargs.get("bitpacked", False)
 
         if cls._dtypes == [np.object_]:
             cls._default_ufunc_mode = "python-calculate"

@@ -334,6 +334,7 @@ class FunctionMixin(np.ndarray, metaclass=ArrayMeta):
         np.convolve: "_convolve",
         np.fft.fft: "_fft",
         np.fft.ifft: "_ifft",
+        np.array_equal: "_array_equal",
     }
 
     _convolve: Function
@@ -353,7 +354,10 @@ class FunctionMixin(np.ndarray, metaclass=ArrayMeta):
         field = type(self)
 
         if func in field._OVERRIDDEN_FUNCTIONS:
-            output = getattr(field, field._OVERRIDDEN_FUNCTIONS[func])(*args, **kwargs)
+            try:
+                output = getattr(field, field._OVERRIDDEN_FUNCTIONS[func])(*args, **kwargs)
+            except AttributeError:
+                output = super().__array_function__(func, types, args, kwargs)
 
         elif func in field._UNSUPPORTED_FUNCTIONS:
             raise NotImplementedError(
@@ -376,6 +380,7 @@ class FunctionMixin(np.ndarray, metaclass=ArrayMeta):
                 output = field._view(output) if not np.isscalar(output) else field(output, dtype=self.dtype)
 
         return output
+
 
     def dot(self, b, out=None):
         # The `np.dot(a, b)` ufunc is also available as `a.dot(b)`. Need to override this method for
