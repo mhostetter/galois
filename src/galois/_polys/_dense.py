@@ -6,7 +6,7 @@ from __future__ import annotations
 
 import numba
 import numpy as np
-from numba import int64, uint64
+from numba import int64
 
 from .._domains import Array
 from .._domains._function import Function
@@ -335,15 +335,15 @@ class pow_jit(Function):
         assert a.ndim == 1 and c.ndim == 1 if c is not None else True
         dtype = a.dtype
 
-        # Convert the integer b into a vector of uint64 [MSWord, ..., LSWord] so arbitrarily large exponents may be
-        # passed into the JIT-compiled version
+        # Convert the integer b into a vector of int64 [MSWord, ..., LSWord] so arbitrarily large exponents may be
+        # passed into the JIT-compiled version. Each element of b_vec is a 63-bit word.
         b_vec = []  # Pop on LSWord -> MSWord
-        while b >= 2**64:
-            q, r = divmod(b, 2**64)
+        while b >= 2**63:
+            q, r = divmod(b, 2**63)
             b_vec.append(r)
             b = q
         b_vec.append(b)
-        b_vec = np.array(b_vec[::-1], dtype=np.uint64)  # Make vector MSWord -> LSWord
+        b_vec = np.array(b_vec[::-1], dtype=np.int64)  # Make vector MSWord -> LSWord
 
         if self.field.ufunc_mode != "python-calculate":
             c_ = np.array([], dtype=np.int64) if c is None else c.astype(np.int64)
@@ -361,12 +361,12 @@ class pow_jit(Function):
         POLY_MULTIPLY = self.field._convolve.function
         POLY_MOD = mod_jit(self.field).function
 
-    _SIGNATURE = numba.types.FunctionType(int64[:](int64[:], uint64[:], int64[:]))
+    _SIGNATURE = numba.types.FunctionType(int64[:](int64[:], int64[:], int64[:]))
 
     @staticmethod
     def implementation(a, b_vec, c):
         """
-        b is a vector of uint64 [MSWord, ..., LSWord] so that arbitrarily large exponents may be passed
+        b is a vector of int64 [MSWord, ..., LSWord] so that arbitrarily large exponents may be passed
         """
         if b_vec.size == 1 and b_vec[0] == 0:
             return np.array([1], dtype=a.dtype)
@@ -376,8 +376,8 @@ class pow_jit(Function):
 
         # Loop from LSWord to MSWord
         for i in range(b_vec.size - 1, -1, -1):
-            j = 0  # Bit counter -- make sure we interate through 64 bits on all but the most-significant word
-            while j < 64:
+            j = 0  # Bit counter -- make sure we iterate through 63 bits on all but the most-significant word
+            while j < 63:
                 if i == 0 and b_vec[i] <= 1:
                     # This is the MSB and we already accounted for the most-significant bit -- can exit now
                     break
