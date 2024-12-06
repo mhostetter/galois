@@ -255,3 +255,15 @@ def test_prime_extension_field_3():
     b = x.is_square()
     assert np.array_equal(b, [True, True, True, True, True, False, True, False, True, False, False, True, True, False, False, False, False, False, True, True, False, False, True, False, True])  # fmt: skip
     assert isinstance(b, np.ndarray)
+
+
+def test_issue_573():
+    """
+    https://github.com/mhostetter/galois/issues/573
+    """
+    GF = galois.GF(11**2)
+    squares = GF.squares
+    square_roots = np.sqrt(squares)
+
+    assert np.array_equal(square_roots**2, squares)
+    assert type(square_roots) is GF
