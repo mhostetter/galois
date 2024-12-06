@@ -113,9 +113,20 @@ def test_minimum_terms_from_database(order, degree, polys):
     assert db_degrees == exp_degrees and db_coeffs == exp_coeffs
 
 
-def test_large_degree():
+def test_issue_360():
     """
     See https://github.com/mhostetter/galois/issues/360.
     """
     f = galois.Poly.Degrees([233, 74, 0])
+    assert f.is_irreducible()
+
+
+def test_issue_575():
+    """
+    See https://github.com/mhostetter/galois/issues/575.
+    """
+    p = 2**127 - 1
+    coeffs = [132937, -281708, 210865, -132177, 154492, -119403, 64244, -21729, 12062, -425, 325, 525, 110, 20, 4, 1, 1]
+    GF = galois.GF(p)
+    f = galois.Poly(coeffs[::-1], GF)
     assert f.is_irreducible()
