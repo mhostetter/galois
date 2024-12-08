@@ -50,6 +50,7 @@ jobs:
           workflow_conclusion: success
           commit: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
           # NOTE: Fake ternary operator, see https://github.com/actions/runner/issues/409
+          allow_forks: true
 
       # This is needed because Windows terminal cannot expand `pip install galois-*.whl`
       - name: Get wheel file name
@@ -102,6 +103,7 @@ jobs:
           workflow: build.yaml
           workflow_conclusion: success
           commit: ${{github.event.pull_request.head.sha}}
+          allow_forks: true
 
       # This is needed because Windows terminal cannot expand `pip install galois-*.whl`
       - name: Get wheel file name
@@ -164,6 +166,7 @@ jobs:
           workflow: build.yaml
           workflow_conclusion: success
           commit: ${{github.event.pull_request.head.sha}}
+          allow_forks: true
 
       # This is needed because Windows terminal cannot expand `pip install galois-*.whl`
       - name: Get wheel file name
