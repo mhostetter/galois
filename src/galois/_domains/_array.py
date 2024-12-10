@@ -53,14 +53,18 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
         dtype = cls._get_dtype(dtype)
 
         x = cls._verify_array_like_types_and_values(x)
-        if cls._bitpacked:
+        packed = False
+        if cls._bitpacked and x.size > 0:
             array = np.packbits(x, axis=-1)
+            packed = True
         else:
             array = np.array(x, dtype=dtype, copy=copy, order=order, ndmin=ndmin)
 
         # Perform view without verification since the elements were verified in _verify_array_like_types_and_values()
         galois_array = cls._view(array)
-        galois_array.original_shape = x.shape
+        if cls._bitpacked:
+            galois_array.original_shape = x.shape
+            galois_array.packed = packed
         return galois_array
 
     @classmethod
@@ -178,9 +182,16 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
         dtype = cls._get_dtype(dtype)
         array = np.zeros(shape, dtype=dtype)
         if cls._bitpacked:
+            original_shape = array.shape
             array = np.packbits(array, axis=-1)
 
-        return cls._view(array)
+        array = cls._view(array)
+
+        if cls._bitpacked:
+            array.packed = True
+            array.original_shape = original_shape
+
+        return array
 
     @classmethod
     def Ones(cls, shape: ShapeLike, dtype: DTypeLike | None = None) -> Self:
@@ -199,10 +210,16 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
         dtype = cls._get_dtype(dtype)
         array = np.ones(shape, dtype=dtype)
         if cls._bitpacked:
+            original_shape = array.shape
             array = np.packbits(array, axis=-1)
 
-        return cls._view(array)
+        array = cls._view(array)
 
+        if cls._bitpacked:
+            array.packed = True
+            array.original_shape = original_shape
+
+        return array
     @classmethod
     def Range(
         cls,
@@ -239,10 +256,16 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
 
         array = np.arange(start, stop, step=step, dtype=dtype)
         if cls._bitpacked:
+            original_shape = array.shape
             array = np.packbits(array, axis=-1)
 
-        return cls._view(array)
+        array = cls._view(array)
 
+        if cls._bitpacked:
+            array.packed = True
+            array.original_shape = original_shape
+
+        return array
     @classmethod
     def Random(
         cls,
@@ -309,9 +332,16 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
                 array[iterator.multi_index] = random.randint(low, high - 1)
 
         if cls._bitpacked:
+            original_shape = array.shape
             array = np.packbits(array, axis=-1)
-        return cls._view(array)
 
+        array = cls._view(array)
+
+        if cls._bitpacked:
+            array.packed = True
+            array.original_shape = original_shape
+
+        return array
     @classmethod
     def Identity(cls, size: int, dtype: DTypeLike | None = None) -> Self:
         r"""
@@ -329,9 +359,16 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
         dtype = cls._get_dtype(dtype)
         array = np.identity(size, dtype=dtype)
         if cls._bitpacked:
+            original_shape = array.shape
             array = np.packbits(array, axis=-1)
 
-        return cls._view(array)
+        array = cls._view(array)
+
+        if cls._bitpacked:
+            array.packed = True
+            array.original_shape = original_shape
+
+        return array
 
     ###############################################################################
     # Ufunc compilation routines

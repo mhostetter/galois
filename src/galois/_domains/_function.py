@@ -335,6 +335,7 @@ class FunctionMixin(np.ndarray, metaclass=ArrayMeta):
         np.fft.fft: "_fft",
         np.fft.ifft: "_ifft",
         np.array_equal: "_array_equal",
+        np.concatenate: "_concatenate",
     }
 
     _convolve: Function

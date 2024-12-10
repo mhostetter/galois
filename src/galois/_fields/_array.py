@@ -7,6 +7,7 @@ from __future__ import annotations
 from typing import Generator
 
 import numpy as np
+import numpy.typing as npt
 from typing_extensions import Literal, Self
 
 from .._domains import Array, _linalg
@@ -959,6 +960,45 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
     ###############################################################################
     # Instance methods
     ###############################################################################
+
+    @property
+    def shape(self) -> npt._shape:
+        if self._bitpacked and hasattr(self, "original_shape"):
+            return self.original_shape
+
+        return super().shape
+
+    @shape.setter
+    def shape(self, value: npt._shape) -> None:
+        if self._bitpacked:
+            raise NotImplementedError("You cannot set the shape on a bit-packed array.")
+
+        super().shape = value
+
+    def __array__(self) -> np.ndarray:
+        if self._bitpacked and hasattr(self, "original_shape"):
+            return np.unpackbits(self.view(np.ndarray), axis=-1, count=self.original_shape[-1])
+
+        return self
+
+    def __getitem__(self, index):
+        return self.__array__()[index]
+
+    def __setitem__(self, index, value):
+        array_unpacked = self.__array__()
+        array_unpacked[index] = value
+        self.view(np.ndarray)[:] = np.packbits(array_unpacked, axis=-1)[:]
+
+    @property
+    def T(self) -> Self:
+        if self._bitpacked and hasattr(self, "original_shape"):
+            transposed = np.unpackbits(self.view(np.ndarray), axis=-1, count=self.original_shape[-1]).T
+            original_shape = transposed.shape
+            transposed = np.packbits(transposed, axis=-1)
+            transposed.original_shape = original_shape
+            return transposed
+
+        return super().T
 
     def additive_order(self) -> int | np.ndarray:
         r"""

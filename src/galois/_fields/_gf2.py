@@ -145,8 +145,12 @@ class matmul_ufunc_bitpacked(matmul_ufunc):
 
         if hasattr(a, "original_shape"):
             a = np.unpackbits(a.view(np.ndarray), axis=-1, count=a.original_shape[-1]).view(GF2BP)
+        else:
+            a = a.view(GF2BP)
         if hasattr(b, "original_shape"):
             b = np.unpackbits(b.view(np.ndarray), axis=-1, count=b.original_shape[-1]).view(GF2BP)
+        else:
+            b = b.view(GF2BP)
 
         inputs = (a, b)
         output = super().__call__(ufunc, method, inputs, kwargs, meta)
@@ -158,14 +162,36 @@ class matmul_ufunc_bitpacked(matmul_ufunc):
 
 
 def array_equal_bitpacked(a: FieldArray, b: FieldArray) -> bool:
-    if a.shape != b.shape:
-        if hasattr(a, "original_shape"):
-            a = np.unpackbits(a.view(np.ndarray), axis=-1, count=a.original_shape[-1])
+    unpack_a = False
+    unpack_b = False
 
-        if hasattr(b, "original_shape"):
-            b = np.unpackbits(b.view(np.ndarray), axis=-1, count=b.original_shape[-1])
+    a_is_bitpacked = hasattr(a, "original_shape")
+    b_is_bitpacked = hasattr(b, "original_shape")
+    if a_is_bitpacked and b_is_bitpacked and a.shape != b.shape:
+        unpack_a = True
+        unpack_b = True
+    elif a_is_bitpacked:
+        unpack_a = True
+    elif b_is_bitpacked:
+        unpack_b = True
+
+    if unpack_a:
+        a = np.unpackbits(a.view(np.ndarray), axis=-1, count=a.original_shape[-1]).view(GF2)
+
+    if unpack_b:
+        b = np.unpackbits(b.view(np.ndarray), axis=-1, count=b.original_shape[-1]).view(GF2)
 
     return np.core.numeric.array_equal(a, b)
+
+def concatenate_bitpacked(arrays, axis=None, out=None, **kwargs):
+    array_list = list(arrays)
+    for i, array in enumerate(arrays):
+        if hasattr(array, "original_shape"):
+            array_list[i] = np.unpackbits(array.view(np.ndarray), axis=-1, count=array.original_shape[-1]).view(np.ndarray)
+        else:
+            array_list[i] = array.view(np.ndarray)
+
+    return np.core.multiarray.concatenate(tuple(array_list), axis=axis, out=out, **kwargs)
 
 
 class UFuncMixin_2_1_BitPacked(UFuncMixin):
@@ -185,6 +211,8 @@ class UFuncMixin_2_1_BitPacked(UFuncMixin):
         cls._log = log(cls)
         cls._sqrt = sqrt(cls)
         cls._array_equal = array_equal_bitpacked
+        cls._concatenate = concatenate_bitpacked
+        cls._inv = None
 
     @classmethod
     def _assign_ufuncs(cls):

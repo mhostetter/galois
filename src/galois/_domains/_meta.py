@@ -36,6 +36,8 @@ class ArrayMeta(abc.ABCMeta):
         cls._primitive_element: int = kwargs.get("primitive_element", 0)
         cls._dtypes = cls._determine_dtypes()
         cls._bitpacked = kwargs.get("bitpacked", False)
+        if cls._bitpacked and (cls._order != 2 or cls._degree != 1):
+            raise ValueError("Only fields over GF(2) support bit-packing.")
 
         if cls._dtypes == [np.object_]:
             cls._default_ufunc_mode = "python-calculate"
