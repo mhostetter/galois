@@ -7,6 +7,7 @@ from __future__ import annotations
 import abc
 import contextlib
 import random
+from numbers import Integral
 from typing import Generator
 
 import numpy as np
@@ -54,17 +55,17 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
 
         x = cls._verify_array_like_types_and_values(x)
         packed = False
-        if cls._bitpacked and x.size > 0:
-            array = np.packbits(x, axis=-1)
+        if cls._bitpacked and isinstance(x, np.ndarray) and x.size > 0:
+            array = np.packbits(x.view(np.ndarray), axis=-1)
             packed = True
         else:
             array = np.array(x, dtype=dtype, copy=copy, order=order, ndmin=ndmin)
 
         # Perform view without verification since the elements were verified in _verify_array_like_types_and_values()
         galois_array = cls._view(array)
-        if cls._bitpacked:
-            galois_array.original_shape = x.shape
-            galois_array.packed = packed
+        if cls._bitpacked and packed:
+            galois_array._unpacked_shape = x.shape
+        galois_array.packed = packed
         return galois_array
 
     @classmethod
@@ -189,7 +190,7 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
 
         if cls._bitpacked:
             array.packed = True
-            array.original_shape = original_shape
+            array._unpacked_shape = original_shape
 
         return array
 
@@ -217,9 +218,10 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
 
         if cls._bitpacked:
             array.packed = True
-            array.original_shape = original_shape
+            array._unpacked_shape = original_shape
 
         return array
+
     @classmethod
     def Range(
         cls,
@@ -263,9 +265,10 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
 
         if cls._bitpacked:
             array.packed = True
-            array.original_shape = original_shape
+            array._unpacked_shape = original_shape
 
         return array
+
     @classmethod
     def Random(
         cls,
@@ -339,9 +342,10 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
 
         if cls._bitpacked:
             array.packed = True
-            array.original_shape = original_shape
+            array._unpacked_shape = original_shape
 
         return array
+
     @classmethod
     def Identity(cls, size: int, dtype: DTypeLike | None = None) -> Self:
         r"""
@@ -366,7 +370,7 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
 
         if cls._bitpacked:
             array.packed = True
-            array.original_shape = original_shape
+            array._unpacked_shape = original_shape
 
         return array
 

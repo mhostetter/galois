@@ -963,8 +963,8 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
     @property
     def shape(self) -> npt._shape:
-        if self._bitpacked and hasattr(self, "original_shape"):
-            return self.original_shape
+        if self._bitpacked and hasattr(self, "_unpacked_shape"):
+            return self._unpacked_shape
 
         return super().shape
 
@@ -975,24 +975,26 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
         super().shape = value
 
-    def __array__(self) -> np.ndarray:
-        if self._bitpacked and hasattr(self, "original_shape"):
-            return np.unpackbits(self.view(np.ndarray), axis=-1, count=self.original_shape[-1])
-
-        return self
-
-    def __getitem__(self, index):
-        return self.__array__()[index]
-
-    def __setitem__(self, index, value):
-        array_unpacked = self.__array__()
-        array_unpacked[index] = value
-        self.view(np.ndarray)[:] = np.packbits(array_unpacked, axis=-1)[:]
+    # def __array__(self) -> np.ndarray:
+    #     if self._bitpacked and hasattr(self, "_unpacked_shape"):
+    #         return np.unpackbits(self.view(np.ndarray), axis=-1, count=self._unpacked_shape[-1])
+    #
+    #     return self
+    #
+    # def __getitem__(self, index):
+    #     return self.__array__()[index]
+    #
+    # def __setitem__(self, index, value):
+    #     array_unpacked = self.__array__()
+    #     array_unpacked[index] = value
+    #     self.view(np.ndarray)[:] = np.packbits(array_unpacked, axis=-1)[:]
 
     @property
     def T(self) -> Self:
-        if self._bitpacked and hasattr(self, "original_shape"):
-            transposed = np.unpackbits(self.view(np.ndarray), axis=-1, count=self.original_shape[-1]).T
+        if self._bitpacked and hasattr(self, "_unpacked_shape"):
+            transposed = np.unpackbits(
+                self.view(np.ndarray), axis=-1, count=self._unpacked_shape[-1]
+            ).T
             original_shape = transposed.shape
             transposed = np.packbits(transposed, axis=-1)
             transposed.original_shape = original_shape

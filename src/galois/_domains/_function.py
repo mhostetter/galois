@@ -335,7 +335,6 @@ class FunctionMixin(np.ndarray, metaclass=ArrayMeta):
         np.fft.fft: "_fft",
         np.fft.ifft: "_ifft",
         np.array_equal: "_array_equal",
-        np.concatenate: "_concatenate",
     }
 
     _convolve: Function
@@ -381,7 +380,6 @@ class FunctionMixin(np.ndarray, metaclass=ArrayMeta):
                 output = field._view(output) if not np.isscalar(output) else field(output, dtype=self.dtype)
 
         return output
-
 
     def dot(self, b, out=None):
         # The `np.dot(a, b)` ufunc is also available as `a.dot(b)`. Need to override this method for

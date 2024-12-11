@@ -4,8 +4,10 @@ A module that defines the GF(2) array class.
 
 from __future__ import annotations
 
+import numpy
 import numpy as np
 
+from ..typing import ElementLike, ArrayLike, DTypeLike
 from .._domains._lookup import (
     add_ufunc,
     divide_ufunc,
@@ -100,98 +102,79 @@ class UFuncMixin_2_1(UFuncMixin):
         cls._log = log(cls)
         cls._sqrt = sqrt(cls)
 
+
 class add_ufunc_bitpacked(add_ufunc):
     """
     Addition ufunc dispatcher w/ support for bit-packed fields.
     """
+
     def __call__(self, ufunc, method, inputs, kwargs, meta):
         output = super().__call__(ufunc, method, inputs, kwargs, meta)
-        output.original_shape = inputs[0].original_shape
+        output._unpacked_shape = inputs[0]._unpacked_shape
         return output
+
 
 class subtract_ufunc_bitpacked(subtract_ufunc):
     """
     Subtraction ufunc dispatcher w/ support for bit-packed fields.
     """
+
     def __call__(self, ufunc, method, inputs, kwargs, meta):
         output = super().__call__(ufunc, method, inputs, kwargs, meta)
-        output.original_shape = inputs[0].original_shape
+        output._unpacked_shape = inputs[0]._unpacked_shape
         return output
+
 
 class multiply_ufunc_bitpacked(multiply_ufunc):
     """
     Multiply ufunc dispatcher w/ support for bit-packed fields.
     """
+
     def __call__(self, ufunc, method, inputs, kwargs, meta):
         output = super().__call__(ufunc, method, inputs, kwargs, meta)
-        output.original_shape = inputs[0].original_shape
+        output._unpacked_shape = inputs[0]._unpacked_shape
         return output
+
 
 class divide_ufunc_bitpacked(divide):
     """
     Divide ufunc dispatcher w/ support for bit-packed fields.
     """
+
     def __call__(self, ufunc, method, inputs, kwargs, meta):
         output = super().__call__(ufunc, method, inputs, kwargs, meta)
-        output.original_shape = inputs[0].original_shape
+        output._unpacked_shape = inputs[0]._unpacked_shape
         return output
+
 
 class matmul_ufunc_bitpacked(matmul_ufunc):
     """
     Matmul ufunc dispatcher w/ support for bit-packed fields.
     """
+
     def __call__(self, ufunc, method, inputs, kwargs, meta):
         a, b = inputs
 
-        if hasattr(a, "original_shape"):
-            a = np.unpackbits(a.view(np.ndarray), axis=-1, count=a.original_shape[-1]).view(GF2BP)
-        else:
-            a = a.view(GF2BP)
-        if hasattr(b, "original_shape"):
-            b = np.unpackbits(b.view(np.ndarray), axis=-1, count=b.original_shape[-1]).view(GF2BP)
-        else:
-            b = b.view(GF2BP)
+        assert isinstance(a, GF2BP) and isinstance(b, GF2BP)
+        assert a.shape[-1] == b.shape[0]
+
+        # a has rows packed, so repack b's columns
+        b = np.packbits(
+            np.unpackbits(b.view(np.ndarray), axis=-1, count=b._unpacked_shape[-1]),
+            axis=0,
+        ).view(GF2BP)
 
         inputs = (a, b)
         output = super().__call__(ufunc, method, inputs, kwargs, meta)
-        original_shape = output.shape
+        unpacked_shape = output.shape
         output = self.field._view(np.packbits(output.view(np.ndarray), axis=-1))
-        output.original_shape = original_shape
+        output._unpacked_shape = unpacked_shape
 
         return output
 
 
-def array_equal_bitpacked(a: FieldArray, b: FieldArray) -> bool:
-    unpack_a = False
-    unpack_b = False
-
-    a_is_bitpacked = hasattr(a, "original_shape")
-    b_is_bitpacked = hasattr(b, "original_shape")
-    if a_is_bitpacked and b_is_bitpacked and a.shape != b.shape:
-        unpack_a = True
-        unpack_b = True
-    elif a_is_bitpacked:
-        unpack_a = True
-    elif b_is_bitpacked:
-        unpack_b = True
-
-    if unpack_a:
-        a = np.unpackbits(a.view(np.ndarray), axis=-1, count=a.original_shape[-1]).view(GF2)
-
-    if unpack_b:
-        b = np.unpackbits(b.view(np.ndarray), axis=-1, count=b.original_shape[-1]).view(GF2)
-
-    return np.core.numeric.array_equal(a, b)
-
-def concatenate_bitpacked(arrays, axis=None, out=None, **kwargs):
-    array_list = list(arrays)
-    for i, array in enumerate(arrays):
-        if hasattr(array, "original_shape"):
-            array_list[i] = np.unpackbits(array.view(np.ndarray), axis=-1, count=array.original_shape[-1]).view(np.ndarray)
-        else:
-            array_list[i] = array.view(np.ndarray)
-
-    return np.core.multiarray.concatenate(tuple(array_list), axis=axis, out=out, **kwargs)
+def not_implemented(*args, **kwargs):
+    return NotImplemented
 
 
 class UFuncMixin_2_1_BitPacked(UFuncMixin):
@@ -210,16 +193,14 @@ class UFuncMixin_2_1_BitPacked(UFuncMixin):
         cls._power = power(cls)
         cls._log = log(cls)
         cls._sqrt = sqrt(cls)
-        cls._array_equal = array_equal_bitpacked
-        cls._concatenate = concatenate_bitpacked
-        cls._inv = None
 
     @classmethod
     def _assign_ufuncs(cls):
         super()._assign_ufuncs()
 
         # We have to set this here because ArrayMeta would override it.
-        cls._matmul  = matmul_ufunc_bitpacked(cls)
+        cls._matmul = matmul_ufunc_bitpacked(cls)
+
 
 # NOTE: There is a "verbatim" block in the docstring because we were not able to monkey-patch GF2 like the
 # other classes in docs/conf.py. So, technically, at doc-build-time issubclass(galois.GF2, galois.FieldArray) == False
@@ -236,7 +217,7 @@ class GF2(
     order=2,
     irreducible_poly_int=3,
     is_primitive_poly=True,
-    primitive_element=1
+    primitive_element=1,
 ):
     r"""
     A :obj:`~galois.FieldArray` subclass over $\mathrm{GF}(2)$.
@@ -270,6 +251,13 @@ class GF2(
     Group:
         galois-fields
     """
+
+    def astype(self, dtype, **kwargs):
+        if dtype is GF2BP:
+            return GF2BP(self)  # bits are packed in initialization
+
+        return super().astype(dtype, **kwargs)
+
 
 @export
 class GF2BP(
@@ -284,7 +272,7 @@ class GF2BP(
     bitpacked=True,
 ):
     r"""
-    A :obj:`~galois.FieldArray` subclass over $\mathrm{GF}(2)$.
+    A :obj:`~galois.FieldArray` subclass over $\mathrm{GF}(2)$ with a bit-packed representation.
 
     .. info::
 
@@ -315,6 +303,29 @@ class GF2BP(
     Group:
         galois-fields
     """
+
+    def __init__(
+        self, x: ElementLike | ArrayLike, dtype: DTypeLike | None = None, **kwargs
+    ):
+        if isinstance(x, np.ndarray):
+            self.view(np.ndarray)[:] = np.packbits(x.view(np.ndarray), axis=-1)
+            self._unpacked_shape = x.shape
+            return
+
+        raise RuntimeError("BLAH")
+        # super().__init__(x, dtype, **kwargs)
+
+    def astype(self, dtype, **kwargs):
+        if dtype is GF2:
+            return GF2(
+                numpy.unpackbits(
+                    self.view(np.ndarray),
+                    axis=-1,
+                    count=self._unpacked_shape[-1],
+                )
+            )
+
+        return super().astype(dtype, **kwargs)
 
 
 GF2._default_ufunc_mode = "jit-calculate"
