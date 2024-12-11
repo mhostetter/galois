@@ -4,10 +4,8 @@ A module that defines the GF(2) array class.
 
 from __future__ import annotations
 
-import numpy
 import numpy as np
 
-from ..typing import ElementLike, ArrayLike, DTypeLike
 from .._domains._lookup import (
     add_ufunc,
     divide_ufunc,
@@ -21,6 +19,7 @@ from .._domains._lookup import (
 )
 from .._domains._ufunc import UFuncMixin, matmul_ufunc
 from .._helper import export
+from ..typing import ArrayLike, DTypeLike, ElementLike
 from ._array import FieldArray
 
 
@@ -156,19 +155,38 @@ class matmul_ufunc_bitpacked(matmul_ufunc):
         a, b = inputs
 
         assert isinstance(a, GF2BP) and isinstance(b, GF2BP)
-        assert a.shape[-1] == b.shape[0]
 
-        # a has rows packed, so repack b's columns
-        b = np.packbits(
-            np.unpackbits(b.view(np.ndarray), axis=-1, count=b._unpacked_shape[-1]),
-            axis=0,
-        ).view(GF2BP)
+        # a has rows packed, so unpack and repack b's columns
+        field = self.field
+        unpacked_shape = b._unpacked_shape
+        b = field._view(
+            np.packbits(
+                np.unpackbits(b.view(np.ndarray), axis=-1, count=b._unpacked_shape[-1]),
+                axis=0,
+            )
+        )
+        b._unpacked_shape = unpacked_shape
+
+        # Make sure the inner dimensions match (e.g. (M, N) x (N, P) -> (M, P))
+        assert a.shape[-1] == b.shape[1]
+        if len(b.shape) == 1:
+            final_shape = (a.shape[0],)
+        else:
+            final_shape = (a.shape[0], b.shape[-1])
 
         inputs = (a, b)
-        output = super().__call__(ufunc, method, inputs, kwargs, meta)
-        unpacked_shape = output.shape
-        output = self.field._view(np.packbits(output.view(np.ndarray), axis=-1))
-        output._unpacked_shape = unpacked_shape
+        # output = super().__call__(ufunc, method, inputs, kwargs, meta)
+        # output._unpacked_shape = a._unpacked_shape
+        if len(b.shape) == 1:
+            output = np.bitwise_xor.reduce(np.unpackbits((a & b).view(np.ndarray), axis=-1), axis=-1)
+        else:
+            output = GF2.Zeros(final_shape)
+            for i in range(b.shape[-1]):
+                # output[:, i] = np.bitwise_xor.reduce(np.unpackbits((a & b[:, i]).view(np.ndarray), axis=-1), axis=-1)
+                output[:, i] = np.bitwise_xor.reduce(np.bitwise_count((a & b[:, i]).view(np.ndarray)), axis=-1) % 2
+        output = field._view(np.packbits(output.view(np.ndarray), axis=-1))
+        # output = field._view(output)
+        output._unpacked_shape = final_shape
 
         return output
 
@@ -304,9 +322,7 @@ class GF2BP(
         galois-fields
     """
 
-    def __init__(
-        self, x: ElementLike | ArrayLike, dtype: DTypeLike | None = None, **kwargs
-    ):
+    def __init__(self, x: ElementLike | ArrayLike, dtype: DTypeLike | None = None, **kwargs):
         if isinstance(x, np.ndarray):
             self.view(np.ndarray)[:] = np.packbits(x.view(np.ndarray), axis=-1)
             self._unpacked_shape = x.shape
@@ -318,7 +334,7 @@ class GF2BP(
     def astype(self, dtype, **kwargs):
         if dtype is GF2:
             return GF2(
-                numpy.unpackbits(
+                np.unpackbits(
                     self.view(np.ndarray),
                     axis=-1,
                     count=self._unpacked_shape[-1],

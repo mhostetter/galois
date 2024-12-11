@@ -961,19 +961,19 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
     # Instance methods
     ###############################################################################
 
-    @property
-    def shape(self) -> npt._shape:
-        if self._bitpacked and hasattr(self, "_unpacked_shape"):
-            return self._unpacked_shape
-
-        return super().shape
-
-    @shape.setter
-    def shape(self, value: npt._shape) -> None:
-        if self._bitpacked:
-            raise NotImplementedError("You cannot set the shape on a bit-packed array.")
-
-        super().shape = value
+    # @property
+    # def shape(self) -> npt._shape:
+    #     if self._bitpacked and hasattr(self, "_unpacked_shape"):
+    #         return self._unpacked_shape
+    #
+    #     return super().shape
+    #
+    # @shape.setter
+    # def shape(self, value: npt._shape) -> None:
+    #     if self._bitpacked:
+    #         raise NotImplementedError("You cannot set the shape on a bit-packed array.")
+    #
+    #     super().shape = value
 
     # def __array__(self) -> np.ndarray:
     #     if self._bitpacked and hasattr(self, "_unpacked_shape"):
