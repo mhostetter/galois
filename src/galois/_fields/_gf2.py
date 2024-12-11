@@ -156,7 +156,7 @@ class matmul_ufunc_bitpacked(matmul_ufunc):
 
         assert isinstance(a, GF2BP) and isinstance(b, GF2BP)
 
-        # a has rows packed, so unpack and repack b's columns
+        # bit-packed matrices have rows packed by default, so unpack the second operand and repack to columns
         field = self.field
         unpacked_shape = b._unpacked_shape
         b = field._view(
@@ -174,18 +174,15 @@ class matmul_ufunc_bitpacked(matmul_ufunc):
         else:
             final_shape = (a.shape[0], b.shape[-1])
 
-        inputs = (a, b)
-        # output = super().__call__(ufunc, method, inputs, kwargs, meta)
-        # output._unpacked_shape = a._unpacked_shape
         if len(b.shape) == 1:
+            # matrix-vector multiplication
             output = np.bitwise_xor.reduce(np.unpackbits((a & b).view(np.ndarray), axis=-1), axis=-1)
         else:
+            # matrix-matrix multiplication
             output = GF2.Zeros(final_shape)
             for i in range(b.shape[-1]):
-                # output[:, i] = np.bitwise_xor.reduce(np.unpackbits((a & b[:, i]).view(np.ndarray), axis=-1), axis=-1)
                 output[:, i] = np.bitwise_xor.reduce(np.bitwise_count((a & b[:, i]).view(np.ndarray)), axis=-1) % 2
         output = field._view(np.packbits(output.view(np.ndarray), axis=-1))
-        # output = field._view(output)
         output._unpacked_shape = final_shape
 
         return output
