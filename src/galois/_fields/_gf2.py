@@ -284,7 +284,6 @@ class GF2BP(
     irreducible_poly_int=3,
     is_primitive_poly=True,
     primitive_element=1,
-    bitpacked=True,
 ):
     r"""
     A :obj:`~galois.FieldArray` subclass over $\mathrm{GF}(2)$ with a bit-packed representation.

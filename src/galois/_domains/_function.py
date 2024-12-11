@@ -334,7 +334,6 @@ class FunctionMixin(np.ndarray, metaclass=ArrayMeta):
         np.convolve: "_convolve",
         np.fft.fft: "_fft",
         np.fft.ifft: "_ifft",
-        np.array_equal: "_array_equal",
     }
 
     _convolve: Function
@@ -354,10 +353,7 @@ class FunctionMixin(np.ndarray, metaclass=ArrayMeta):
         field = type(self)
 
         if func in field._OVERRIDDEN_FUNCTIONS:
-            try:
-                output = getattr(field, field._OVERRIDDEN_FUNCTIONS[func])(*args, **kwargs)
-            except AttributeError:
-                output = super().__array_function__(func, types, args, kwargs)
+            output = getattr(field, field._OVERRIDDEN_FUNCTIONS[func])(*args, **kwargs)
 
         elif func in field._UNSUPPORTED_FUNCTIONS:
             raise NotImplementedError(

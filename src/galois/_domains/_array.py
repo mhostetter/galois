@@ -7,7 +7,6 @@ from __future__ import annotations
 import abc
 import contextlib
 import random
-from numbers import Integral
 from typing import Generator
 
 import numpy as np
@@ -54,19 +53,10 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
         dtype = cls._get_dtype(dtype)
 
         x = cls._verify_array_like_types_and_values(x)
-        packed = False
-        if cls._bitpacked and isinstance(x, np.ndarray) and x.size > 0:
-            array = np.packbits(x.view(np.ndarray), axis=-1)
-            packed = True
-        else:
-            array = np.array(x, dtype=dtype, copy=copy, order=order, ndmin=ndmin)
+        array = np.array(x, dtype=dtype, copy=copy, order=order, ndmin=ndmin)
 
         # Perform view without verification since the elements were verified in _verify_array_like_types_and_values()
-        galois_array = cls._view(array)
-        if cls._bitpacked and packed:
-            galois_array._unpacked_shape = x.shape
-        galois_array.packed = packed
-        return galois_array
+        return cls._view(array)
 
     @classmethod
     def _get_dtype(cls, dtype: DTypeLike) -> np.dtype:
@@ -182,17 +172,7 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
         """
         dtype = cls._get_dtype(dtype)
         array = np.zeros(shape, dtype=dtype)
-        if cls._bitpacked:
-            original_shape = array.shape
-            array = np.packbits(array, axis=-1)
-
-        array = cls._view(array)
-
-        if cls._bitpacked:
-            array.packed = True
-            array._unpacked_shape = original_shape
-
-        return array
+        return cls._view(array)
 
     @classmethod
     def Ones(cls, shape: ShapeLike, dtype: DTypeLike | None = None) -> Self:
@@ -210,17 +190,7 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
         """
         dtype = cls._get_dtype(dtype)
         array = np.ones(shape, dtype=dtype)
-        if cls._bitpacked:
-            original_shape = array.shape
-            array = np.packbits(array, axis=-1)
-
-        array = cls._view(array)
-
-        if cls._bitpacked:
-            array.packed = True
-            array._unpacked_shape = original_shape
-
-        return array
+        return cls._view(array)
 
     @classmethod
     def Range(
@@ -257,17 +227,8 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
             raise ValueError(f"Argument 'stop' must be within the field's order {cls.order}, not {stop}.")
 
         array = np.arange(start, stop, step=step, dtype=dtype)
-        if cls._bitpacked:
-            original_shape = array.shape
-            array = np.packbits(array, axis=-1)
 
-        array = cls._view(array)
-
-        if cls._bitpacked:
-            array.packed = True
-            array._unpacked_shape = original_shape
-
-        return array
+        return cls._view(array)
 
     @classmethod
     def Random(
@@ -334,17 +295,7 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
             for _ in iterator:
                 array[iterator.multi_index] = random.randint(low, high - 1)
 
-        if cls._bitpacked:
-            original_shape = array.shape
-            array = np.packbits(array, axis=-1)
-
-        array = cls._view(array)
-
-        if cls._bitpacked:
-            array.packed = True
-            array._unpacked_shape = original_shape
-
-        return array
+        return cls._view(array)
 
     @classmethod
     def Identity(cls, size: int, dtype: DTypeLike | None = None) -> Self:
@@ -362,17 +313,7 @@ class Array(LinalgFunctionMixin, FunctionMixin, UFuncMixin, np.ndarray, metaclas
         """
         dtype = cls._get_dtype(dtype)
         array = np.identity(size, dtype=dtype)
-        if cls._bitpacked:
-            original_shape = array.shape
-            array = np.packbits(array, axis=-1)
-
-        array = cls._view(array)
-
-        if cls._bitpacked:
-            array.packed = True
-            array._unpacked_shape = original_shape
-
-        return array
+        return cls._view(array)
 
     ###############################################################################
     # Ufunc compilation routines
