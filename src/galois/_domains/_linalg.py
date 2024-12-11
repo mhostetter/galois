@@ -438,6 +438,7 @@ class matrix_rank_jit(Function):
         verify_isinstance(A, self.field)
         A_rre, _ = row_reduce_jit(self.field)(A)
         rank = np.sum(~np.all(A_rre == 0, axis=1))
+        rank = int(rank)
         return rank
 
 

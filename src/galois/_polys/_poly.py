@@ -1626,7 +1626,7 @@ class Poly:
                 p = galois.Poly([3, 0, 4, 5], field=GF); p
                 p.is_monic
         """
-        return self.nonzero_coeffs[0] == 1
+        return bool(self.nonzero_coeffs[0] == 1)
 
 
 def _convert_coeffs(coeffs: ArrayLike, field: Type[Array] | None = None) -> tuple[Array, Type[Array]]:

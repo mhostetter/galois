@@ -783,19 +783,20 @@ class sqrt(_lookup.sqrt_ufunc):
             )
 
         p = self.field.characteristic
+        q = self.field.order
 
-        if p % 4 == 3:
-            roots = a ** ((self.field.order + 1) // 4)
+        if q % 4 == 3:
+            roots = a ** ((q + 1) // 4)
 
-        elif p % 8 == 5:
-            d = a ** ((self.field.order - 1) // 4)
+        elif q % 8 == 5:
+            d = a ** ((q - 1) // 4)
             roots = self.field.Zeros(a.shape)
 
             idxs = np.where(d == 1)
-            roots[idxs] = a[idxs] ** ((self.field.order + 3) // 8)
+            roots[idxs] = a[idxs] ** ((q + 3) // 8)
 
             idxs = np.where(d == p - 1)
-            roots[idxs] = 2 * a[idxs] * (4 * a[idxs]) ** ((self.field.order - 5) // 8)
+            roots[idxs] = 2 * a[idxs] * (4 * a[idxs]) ** ((q - 5) // 8)
 
         else:
             # Find a non-square element `b`
@@ -804,14 +805,14 @@ class sqrt(_lookup.sqrt_ufunc):
                 if not b.is_square():
                     break
 
-            # Write p - 1 = 2^s * t
-            n = self.field.order - 1
+            # Write q - 1 = 2^s * t
+            n = q - 1
             s = 0
             while n % 2 == 0:
                 n >>= 1
                 s += 1
             t = n
-            assert self.field.order - 1 == 2**s * t
+            assert q - 1 == 2**s * t
 
             roots = self.field.Zeros(a.shape)  # Empty array of roots
 
