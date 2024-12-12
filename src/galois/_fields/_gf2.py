@@ -5,6 +5,7 @@ A module that defines the GF(2) array class.
 from __future__ import annotations
 
 import numpy as np
+from typing_extensions import Literal, Self
 
 from .._domains._lookup import (
     add_ufunc,
@@ -168,7 +169,7 @@ class matmul_ufunc_bitpacked(matmul_ufunc):
         b._unpacked_shape = unpacked_shape
 
         # Make sure the inner dimensions match (e.g. (M, N) x (N, P) -> (M, P))
-        assert a.shape[-1] == b.shape[1]
+        assert a.shape[-1] == b.shape[0]
         if len(b.shape) == 1:
             final_shape = (a.shape[0],)
         else:
@@ -318,14 +319,29 @@ class GF2BP(
         galois-fields
     """
 
-    def __init__(self, x: ElementLike | ArrayLike, dtype: DTypeLike | None = None, **kwargs):
+    def __new__(
+        cls,
+        x: ElementLike | ArrayLike,
+        dtype: DTypeLike | None = None,
+        copy: bool = True,
+        order: Literal["K", "A", "C", "F"] = "K",
+        ndmin: int = 0,
+    ) -> Self:
         if isinstance(x, np.ndarray):
-            self.view(np.ndarray)[:] = np.packbits(x.view(np.ndarray), axis=-1)
-            self._unpacked_shape = x.shape
-            return
+            dtype = cls._get_dtype(dtype)
 
-        raise RuntimeError("BLAH")
-        # super().__init__(x, dtype, **kwargs)
+            x = cls._verify_array_like_types_and_values(x)
+            array = cls._view(np.packbits(np.array(x, dtype=dtype, copy=copy, order=order, ndmin=ndmin).view(np.ndarray), axis=-1))
+            array._unpacked_shape = x.shape
+
+            # Perform view without verification since the elements were verified in _verify_array_like_types_and_values()
+            return array
+
+        raise NotImplementedError(
+            "GF2BP is a custom bit-packed GF2 class with limited functionality. "
+            "If you were using an alternate constructor (e.g. Random), then use the GF2 class and convert it to the "
+            "bit-packed version by using `.astype(GF2BP)`."
+        )
 
     def astype(self, dtype, **kwargs):
         if dtype is GF2:
