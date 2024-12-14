@@ -304,8 +304,6 @@ class FunctionMixin(np.ndarray, metaclass=ArrayMeta):
 
     _UNSUPPORTED_FUNCTIONS = [
         # Unary
-        np.packbits,
-        np.unpackbits,
         np.unwrap,
         np.around,
         np.round,
@@ -334,6 +332,8 @@ class FunctionMixin(np.ndarray, metaclass=ArrayMeta):
         np.convolve: "_convolve",
         np.fft.fft: "_fft",
         np.fft.ifft: "_ifft",
+        np.packbits: "_packbits",
+        np.unpackbits: "_unpackbits",
     }
 
     _convolve: Function
@@ -353,7 +353,10 @@ class FunctionMixin(np.ndarray, metaclass=ArrayMeta):
         field = type(self)
 
         if func in field._OVERRIDDEN_FUNCTIONS:
-            output = getattr(field, field._OVERRIDDEN_FUNCTIONS[func])(*args, **kwargs)
+            try:
+                output = getattr(field, field._OVERRIDDEN_FUNCTIONS[func])(*args, **kwargs)
+            except AttributeError:
+                output = super().__array_function__(func, types, args, kwargs)
 
         elif func in field._UNSUPPORTED_FUNCTIONS:
             raise NotImplementedError(

@@ -5,7 +5,7 @@ A module that defines the GF(2) array class.
 from __future__ import annotations
 
 import numpy as np
-from typing_extensions import Literal, Self
+from typing_extensions import Literal, Self, Optional
 
 from .._domains._lookup import (
     add_ufunc,
@@ -84,6 +84,30 @@ class sqrt(sqrt_ufunc):
     def implementation(self, a: FieldArray) -> FieldArray:
         return a.copy()
 
+def packbits(a, axis=None, bitorder='big'):
+    if isinstance(a, GF2BP):
+        return a
+
+    if not isinstance(a, GF2):
+        raise TypeError("Bit-packing is only supported on instances of GF2.")
+
+    axis = -1 if axis is None else axis
+    packed = GF2BP(np.packbits(a.view(np.ndarray), axis=axis, bitorder=bitorder), a.shape[axis])
+    return packed
+
+
+def unpackbits(a, axis=None, count=None, bitorder='big'):
+    if isinstance(a, GF2):
+        return a
+
+    if not isinstance(a, GF2BP):
+        raise TypeError("Bit-unpacking is only supported on instances of GF2BP.")
+
+    if axis is None:
+        axis = -1
+
+    return GF2(np.unpackbits(a.view(np.ndarray), axis=axis, count=a._axis_count if count is None else count, bitorder=bitorder))
+
 
 class UFuncMixin_2_1(UFuncMixin):
     """
@@ -101,6 +125,8 @@ class UFuncMixin_2_1(UFuncMixin):
         cls._power = power(cls)
         cls._log = log(cls)
         cls._sqrt = sqrt(cls)
+        cls._packbits = packbits
+        cls._unpackbits = unpackbits
 
 
 class add_ufunc_bitpacked(add_ufunc):
@@ -110,7 +136,7 @@ class add_ufunc_bitpacked(add_ufunc):
 
     def __call__(self, ufunc, method, inputs, kwargs, meta):
         output = super().__call__(ufunc, method, inputs, kwargs, meta)
-        output._unpacked_shape = inputs[0]._unpacked_shape
+        output._axis_count = inputs[0]._axis_count
         return output
 
 
@@ -121,7 +147,7 @@ class subtract_ufunc_bitpacked(subtract_ufunc):
 
     def __call__(self, ufunc, method, inputs, kwargs, meta):
         output = super().__call__(ufunc, method, inputs, kwargs, meta)
-        output._unpacked_shape = inputs[0]._unpacked_shape
+        output._axis_count = inputs[0]._axis_count
         return output
 
 
@@ -132,7 +158,7 @@ class multiply_ufunc_bitpacked(multiply_ufunc):
 
     def __call__(self, ufunc, method, inputs, kwargs, meta):
         output = super().__call__(ufunc, method, inputs, kwargs, meta)
-        output._unpacked_shape = inputs[0]._unpacked_shape
+        output._axis_count = inputs[0]._axis_count
         return output
 
 
@@ -143,7 +169,7 @@ class divide_ufunc_bitpacked(divide):
 
     def __call__(self, ufunc, method, inputs, kwargs, meta):
         output = super().__call__(ufunc, method, inputs, kwargs, meta)
-        output._unpacked_shape = inputs[0]._unpacked_shape
+        output._axis_count = inputs[0]._axis_count
         return output
 
 
@@ -157,16 +183,16 @@ class matmul_ufunc_bitpacked(matmul_ufunc):
 
         assert isinstance(a, GF2BP) and isinstance(b, GF2BP)
 
-        # bit-packed matrices have rows packed by default, so unpack the second operand and repack to columns
+        # bit-packed matrices have columns packed by default, so unpack the second operand and repack to rows
         field = self.field
-        unpacked_shape = b._unpacked_shape
+        row_axis_count = b.shape[0]
         b = field._view(
             np.packbits(
-                np.unpackbits(b.view(np.ndarray), axis=-1, count=b._unpacked_shape[-1]),
+                np.unpackbits(b.view(np.ndarray), axis=-1, count=b._axis_count),
                 axis=0,
             )
         )
-        b._unpacked_shape = unpacked_shape
+        b._axis_count = row_axis_count
 
         # Make sure the inner dimensions match (e.g. (M, N) x (N, P) -> (M, P))
         assert a.shape[-1] == b.shape[0]
@@ -182,16 +208,17 @@ class matmul_ufunc_bitpacked(matmul_ufunc):
             # matrix-matrix multiplication
             output = GF2.Zeros(final_shape)
             for i in range(b.shape[-1]):
+                # TODO: Include alternate path for numpy < v2
+                # output[:, i] = np.bitwise_xor.reduce(np.unpackbits((a & b[:, i]).view(np.ndarray), axis=-1), axis=-1)
                 output[:, i] = np.bitwise_xor.reduce(np.bitwise_count((a & b[:, i]).view(np.ndarray)), axis=-1) % 2
         output = field._view(np.packbits(output.view(np.ndarray), axis=-1))
-        output._unpacked_shape = final_shape
+        output._axis_count = final_shape[-1]
 
         return output
 
 
 def not_implemented(*args, **kwargs):
     return NotImplemented
-
 
 class UFuncMixin_2_1_BitPacked(UFuncMixin):
     """
@@ -209,6 +236,8 @@ class UFuncMixin_2_1_BitPacked(UFuncMixin):
         cls._power = power(cls)
         cls._log = log(cls)
         cls._sqrt = sqrt(cls)
+        cls._packbits = packbits
+        cls._unpackbits = unpackbits
 
     @classmethod
     def _assign_ufuncs(cls):
@@ -268,12 +297,6 @@ class GF2(
         galois-fields
     """
 
-    def astype(self, dtype, **kwargs):
-        if dtype is GF2BP:
-            return GF2BP(self)  # bits are packed in initialization
-
-        return super().astype(dtype, **kwargs)
-
 
 @export
 class GF2BP(
@@ -322,39 +345,40 @@ class GF2BP(
     def __new__(
         cls,
         x: ElementLike | ArrayLike,
+        axis_element_count: Optional[int] = None,
         dtype: DTypeLike | None = None,
         copy: bool = True,
         order: Literal["K", "A", "C", "F"] = "K",
         ndmin: int = 0,
     ) -> Self:
-        if isinstance(x, np.ndarray):
-            dtype = cls._get_dtype(dtype)
+        # axis_element_count is required, but by making it optional it allows us to catch uses of the class that are not
+        # supported (e.g. Random)
+        if isinstance(x, np.ndarray) and axis_element_count is not None:
+            # NOTE: I'm not sure that we want to change the dtype specifically for the bit-packed version or how we verify
+            # dtype = cls._get_dtype(dtype)
+            # x = cls._verify_array_like_types_and_values(x)
 
-            x = cls._verify_array_like_types_and_values(x)
-            array = cls._view(np.packbits(np.array(x, dtype=dtype, copy=copy, order=order, ndmin=ndmin).view(np.ndarray), axis=-1))
-            array._unpacked_shape = x.shape
+            array = cls._view(np.array(x, dtype=dtype, copy=copy, order=order, ndmin=ndmin))
+            array._axis_count = axis_element_count
 
-            # Perform view without verification since the elements were verified in _verify_array_like_types_and_values()
             return array
 
         raise NotImplementedError(
             "GF2BP is a custom bit-packed GF2 class with limited functionality. "
             "If you were using an alternate constructor (e.g. Random), then use the GF2 class and convert it to the "
-            "bit-packed version by using `.astype(GF2BP)`."
+            "bit-packed version by using `np.packbits`."
         )
 
-    def astype(self, dtype, **kwargs):
-        if dtype is GF2:
-            return GF2(
-                np.unpackbits(
-                    self.view(np.ndarray),
-                    axis=-1,
-                    count=self._unpacked_shape[-1],
-                )
-            )
-
-        return super().astype(dtype, **kwargs)
-
+    def __init__(
+        self,
+        x: ElementLike | ArrayLike,
+        axis_element_count: Optional[int] = None,
+        dtype: DTypeLike | None = None,
+        copy: bool = True,
+        order: Literal["K", "A", "C", "F"] = "K",
+        ndmin: int = 0,
+    ):
+        pass
 
 GF2._default_ufunc_mode = "jit-calculate"
 GF2._ufunc_modes = ["jit-calculate", "python-calculate"]
