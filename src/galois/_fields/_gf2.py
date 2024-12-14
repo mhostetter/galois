@@ -147,7 +147,7 @@ class subtract_ufunc_bitpacked(subtract_ufunc):
 
     def __call__(self, ufunc, method, inputs, kwargs, meta):
         output = super().__call__(ufunc, method, inputs, kwargs, meta)
-        output._axis_count = inputs[0]._axis_count
+        output._axis_count = max(i._axis_count for i in inputs)
         return output
 
 
@@ -158,7 +158,7 @@ class multiply_ufunc_bitpacked(multiply_ufunc):
 
     def __call__(self, ufunc, method, inputs, kwargs, meta):
         output = super().__call__(ufunc, method, inputs, kwargs, meta)
-        output._axis_count = inputs[0]._axis_count
+        output._axis_count = max(i._axis_count for i in inputs)
         return output
 
 
@@ -169,7 +169,7 @@ class divide_ufunc_bitpacked(divide):
 
     def __call__(self, ufunc, method, inputs, kwargs, meta):
         output = super().__call__(ufunc, method, inputs, kwargs, meta)
-        output._axis_count = inputs[0]._axis_count
+        output._axis_count = max(i._axis_count for i in inputs)
         return output
 
 
@@ -218,6 +218,7 @@ class matmul_ufunc_bitpacked(matmul_ufunc):
 
 
 def not_implemented(*args, **kwargs):
+    # TODO: Add a better error message about limited support
     return NotImplemented
 
 class UFuncMixin_2_1_BitPacked(UFuncMixin):
@@ -231,10 +232,10 @@ class UFuncMixin_2_1_BitPacked(UFuncMixin):
         cls._negative = negative_ufunc(cls, override=np.positive)
         cls._subtract = subtract_ufunc_bitpacked(cls, override=np.bitwise_xor)
         cls._multiply = multiply_ufunc_bitpacked(cls, override=np.bitwise_and)
-        cls._reciprocal = reciprocal(cls)
+        cls._reciprocal = not_implemented # reciprocal(cls)
         cls._divide = divide_ufunc_bitpacked(cls)
-        cls._power = power(cls)
-        cls._log = log(cls)
+        cls._power = not_implemented # power(cls)
+        cls._log = not_implemented # log(cls)
         cls._sqrt = sqrt(cls)
         cls._packbits = packbits
         cls._unpackbits = unpackbits
