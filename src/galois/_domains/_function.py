@@ -334,6 +334,7 @@ class FunctionMixin(np.ndarray, metaclass=ArrayMeta):
         np.fft.ifft: "_ifft",
         np.packbits: "_packbits",
         np.unpackbits: "_unpackbits",
+        np.concatenate: "_concatenate",
     }
 
     _convolve: Function
@@ -375,8 +376,8 @@ class FunctionMixin(np.ndarray, metaclass=ArrayMeta):
 
             output = super().__array_function__(func, types, args, kwargs)
 
-            if func in field._FUNCTIONS_REQUIRING_VIEW:
-                output = field._view(output) if not np.isscalar(output) else field(output, dtype=self.dtype)
+        if func in field._FUNCTIONS_REQUIRING_VIEW:
+            output = field._view(output) if not np.isscalar(output) else field(output, dtype=self.dtype)
 
         return output
 

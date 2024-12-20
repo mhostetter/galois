@@ -4,9 +4,12 @@ A module that defines the GF(2) array class.
 
 from __future__ import annotations
 
+from typing import Sequence
+
 import numpy as np
 from typing_extensions import Literal, Self, Optional
 
+from .._domains._linalg import row_reduce_jit
 from .._domains._lookup import (
     add_ufunc,
     divide_ufunc,
@@ -19,7 +22,9 @@ from .._domains._lookup import (
     subtract_ufunc,
 )
 from .._domains._ufunc import UFuncMixin, matmul_ufunc
-from .._helper import export
+from .._domains._function import Function
+from .._domains._array import Array
+from .._helper import export, verify_isinstance
 from ..typing import ArrayLike, DTypeLike, ElementLike
 from ._array import FieldArray
 
@@ -216,6 +221,50 @@ class matmul_ufunc_bitpacked(matmul_ufunc):
 
         return output
 
+class concatenate_bitpacked(Function):
+    """Concatenates matrices together"""
+
+    def __call__(self, arrays: list[Array], **kwargs):
+        unpacked_arrays = []
+        for array in arrays:
+            verify_isinstance(array, self.field)
+            unpacked_arrays.append(np.unpackbits(array))
+
+        unpacked = np.concatenate(unpacked_arrays, **kwargs)
+        return np.packbits(unpacked)
+
+
+class inv_bitpacked(Function):
+    """
+    Computes the inverse of the square matrix.
+    """
+
+    def __call__(self, A: Array) -> Array:
+        verify_isinstance(A, self.field)
+        # if not (A.ndim == 2 and A.shape[0] == A.shape[1]):
+        #     raise np.linalg.LinAlgError(f"Argument 'A' must be square, not {A.shape}.")
+
+        n = A.shape[0]
+        I = self.field.Identity(n, dtype=A.dtype)
+
+        # Concatenate A and I to get the matrix AI = [A | I]
+        AI = np.concatenate((A, I), axis=-1)
+
+        # Perform Gaussian elimination to get the reduced row echelon form AI_rre = [I | A^-1]
+        AI_rre, _ = row_reduce_jit(self.field)(AI, ncols=n)
+
+        # The rank is the number of non-zero rows of the row reduced echelon form
+        rank = np.sum(~np.all(AI_rre[:, 0:n] == 0, axis=1))
+        if not rank == n:
+            raise np.linalg.LinAlgError(
+                f"Argument 'A' is singular and not invertible because it does not have full rank of {n}, "
+                f"but rank of {rank}."
+            )
+
+        A_inv = AI_rre[:, -n:]
+
+        return A_inv
+
 
 def not_implemented(*args, **kwargs):
     # TODO: Add a better error message about limited support
@@ -239,6 +288,7 @@ class UFuncMixin_2_1_BitPacked(UFuncMixin):
         cls._sqrt = sqrt(cls)
         cls._packbits = packbits
         cls._unpackbits = unpackbits
+        cls._concatenate = concatenate_bitpacked(cls)
 
     @classmethod
     def _assign_ufuncs(cls):
@@ -246,6 +296,7 @@ class UFuncMixin_2_1_BitPacked(UFuncMixin):
 
         # We have to set this here because ArrayMeta would override it.
         cls._matmul = matmul_ufunc_bitpacked(cls)
+        cls._inv = inv_bitpacked(cls)
 
 
 # NOTE: There is a "verbatim" block in the docstring because we were not able to monkey-patch GF2 like the
@@ -381,10 +432,57 @@ class GF2BP(
     ):
         pass
 
+    @classmethod
+    def Identity(cls, size: int, dtype: DTypeLike | None = None) -> Self:
+        r"""
+        Creates an $n \times n$ identity matrix.
+
+        Arguments:
+            size: The size $n$ along one dimension of the identity matrix.
+            dtype: The :obj:`numpy.dtype` of the array elements. The default is `None` which represents the smallest
+                unsigned data type for this :obj:`~galois.Array` subclass (the first element in
+                :obj:`~galois.Array.dtypes`).
+
+        Returns:
+            A 2-D identity matrix with shape `(size, size)`.
+        """
+        array = GF2.Identity(size, dtype=dtype)
+        return np.packbits(array)
+
+    def get_unpacked_slice(self, index):
+        if isinstance(index, Sequence):
+            if len(index) == 2:
+                row_index, col_index = index
+                if isinstance(col_index, int):
+                    post_index = (slice(None), col_index)
+                    index = (row_index, col_index // 8)
+                elif isinstance(col_index, slice):
+                    post_index = (slice(None), col_index)
+                    col_index = slice(col_index.start // 8, max(col_index.step // 8, 1), max(col_index.stop // 8, 1))
+                    index = (row_index, col_index)
+                elif isinstance(col_index, Sequence):
+                    post_index = (list(range(len(row_index))), col_index)
+                    col_index = tuple(s // 8 for s in col_index)
+                    index = (row_index, col_index)
+        elif isinstance(index, slice):
+            # TODO
+            pass
+
+        packed = self[index]
+        if len(packed.shape) == 1:
+            packed = packed[:, None]
+        unpacked = np.unpackbits(packed, axis=-1, count=self._axis_count)
+        return GF2._view(unpacked[post_index])
+
+
+    def set_unpacked_slice(self, index, value):
+        pass
+
+
 GF2._default_ufunc_mode = "jit-calculate"
 GF2._ufunc_modes = ["jit-calculate", "python-calculate"]
 GF2.compile("auto")
 
-GF2BP._default_ufunc_mode = "jit-calculate"
-GF2BP._ufunc_modes = ["jit-calculate", "python-calculate"]
-GF2BP.compile("auto")
+# GF2BP._default_ufunc_mode = "jit-calculate"
+# GF2BP._ufunc_modes = ["jit-calculate", "python-calculate"]
+# GF2BP.compile("auto")
