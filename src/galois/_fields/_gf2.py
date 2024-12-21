@@ -405,7 +405,7 @@ class GF2BP(
     ) -> Self:
         # axis_element_count is required, but by making it optional it allows us to catch uses of the class that are not
         # supported (e.g. Random)
-        if isinstance(x, np.ndarray) and axis_element_count is not None:
+        if isinstance(x, (tuple, list, np.ndarray, FieldArray)) and axis_element_count is not None:
             # NOTE: I'm not sure that we want to change the dtype specifically for the bit-packed version or how we verify
             # dtype = cls._get_dtype(dtype)
             # x = cls._verify_array_like_types_and_values(x)
@@ -450,7 +450,8 @@ class GF2BP(
         return np.packbits(array)
 
     def get_unpacked_slice(self, index):
-        if isinstance(index, Sequence):
+        post_index = NotImplemented
+        if isinstance(index, (Sequence, np.ndarray)):
             if len(index) == 2:
                 row_index, col_index = index
                 if isinstance(col_index, int):
@@ -464,16 +465,49 @@ class GF2BP(
                     post_index = (list(range(len(row_index))), col_index)
                     col_index = tuple(s // 8 for s in col_index)
                     index = (row_index, col_index)
+                elif col_index is None: # new axis
+                    post_index = (slice(None), None)
+                    index = (row_index,)
+            elif ((isinstance(index, np.ndarray) and index.ndim == 1) or
+                  (isinstance(index, list) and all(isinstance(x, int) for x in index))):
+                post_index = index
+                index = list(range((len(index) // 8) + 1))
+            elif isinstance(index, tuple) and any(x is Ellipsis for x in index):
+                post_index = index[1:]
+                axis_adjustment = (slice(None),) if index[-1] is Ellipsis else (index[-1] // 8,)
+                index = index[:-1] + axis_adjustment
         elif isinstance(index, slice):
-            # TODO
-            pass
+            if self.ndim > 1:
+                # Rows aren't packed, so we can index normally
+                post_index = slice(None)
+            if len(self.shape) == 1:
+                # Array is 1-D, so we need to adjust
+                post_index = index
+                index = slice(index.start // 8 if index.start is not None else index.start,
+                              max(index.step // 8, 1) if index.step is not None else index.step,
+                              max(index.stop // 8, 1) if index.stop is not None else index.stop)
+        elif isinstance(index, int):
+            post_index = index
+            index //= 8
 
-        packed = self[index]
-        if len(packed.shape) == 1:
+        if post_index is NotImplemented:
+            raise NotImplementedError(f"The following indexing scheme is not supported:\n{index}\n"
+                                      "If you believe this scheme should be supported, "
+                                      "please submit a GitHub issue at https://github.com/mhostetter/galois/issues.\n\n"
+                                      "If you'd like to perform this operation on the data, you should first call "
+                                      "`array = array.view(np.ndarray)` and then call the function."
+                                      )
+
+        packed = self.view(np.ndarray)[index]
+        if np.isscalar(packed):
+            packed = GF2BP([packed], self._axis_count).view(np.ndarray)
+        if packed.ndim == 1 and self.ndim > 1:
             packed = packed[:, None]
         unpacked = np.unpackbits(packed, axis=-1, count=self._axis_count)
         return GF2._view(unpacked[post_index])
 
+    def __getitem__(self, item):
+        return self.get_unpacked_slice(item)
 
     def set_unpacked_slice(self, index, value):
         pass
