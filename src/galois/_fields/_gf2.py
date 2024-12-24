@@ -566,12 +566,20 @@ class GF2BP(
         unpacked = np.unpackbits(packed, axis=-1, count=self._axis_count)
         unpacked[post_index] = value
         repacked = np.packbits(unpacked.view(np.ndarray), axis=-1)
-        if isinstance(packed_index[0], np.ndarray):
-            repacked_index = np.array(range(len(packed_index[0]))).reshape(packed_index.shape), packed_index[1]
-        elif isinstance(packed_index[0], int):
-            repacked_index = 0, packed_index[1]
+        if isinstance(packed_index, int) or isinstance(packed_index, slice) or len(packed_index) != 2:
+            repacked_index = packed_index
         else:
-            repacked_index = list(range(len(packed_index[0]))), packed_index[1]
+            packed_row_index, packed_col_index = packed_index
+            if isinstance(packed_row_index, np.ndarray):
+                repacked_index = np.array(range(len(packed_row_index))).reshape(packed_row_index.shape), packed_col_index
+            elif isinstance(packed_row_index, int):
+                repacked_index = 0, packed_col_index
+            elif isinstance(packed_row_index, slice):
+                repacked_index = slice(0 if packed_row_index.start is not None else packed_row_index.start,
+                                       (packed_row_index.stop - packed_row_index.start) // packed_row_index.step if packed_row_index.stop is not None else packed_row_index.stop,
+                                        1 if packed_row_index.step is not None else packed_row_index.step), packed_col_index
+            else:
+                repacked_index = list(range(len(packed_row_index))), packed_col_index
 
         self.view(np.ndarray)[packed_index] = repacked[repacked_index]
 
