@@ -352,12 +352,14 @@ class FunctionMixin(np.ndarray, metaclass=ArrayMeta):
         Override the standard NumPy function calls with the new finite field functions.
         """
         field = type(self)
+        output = None
 
         if func in field._OVERRIDDEN_FUNCTIONS:
             try:
                 output = getattr(field, field._OVERRIDDEN_FUNCTIONS[func])(*args, **kwargs)
             except AttributeError:
-                output = super().__array_function__(func, types, args, kwargs)
+                # fall through to use the default numpy function
+                pass
 
         elif func in field._UNSUPPORTED_FUNCTIONS:
             raise NotImplementedError(
@@ -368,12 +370,12 @@ class FunctionMixin(np.ndarray, metaclass=ArrayMeta):
                 "`array = array.view(np.ndarray)` and then call the function."
             )
 
-        else:
-            if func is np.insert:
-                args = list(args)
-                args[2] = self._verify_array_like_types_and_values(args[2])
-                args = tuple(args)
+        if func is np.insert:
+            args = list(args)
+            args[2] = self._verify_array_like_types_and_values(args[2])
+            args = tuple(args)
 
+        if output is None:
             output = super().__array_function__(func, types, args, kwargs)
 
         if func in field._FUNCTIONS_REQUIRING_VIEW:

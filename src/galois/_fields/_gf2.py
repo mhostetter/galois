@@ -97,7 +97,8 @@ def packbits(a, axis=None, bitorder='big'):
         raise TypeError("Bit-packing is only supported on instances of GF2.")
 
     axis = -1 if axis is None else axis
-    packed = GF2BP(np.packbits(a.view(np.ndarray), axis=axis, bitorder=bitorder), a.shape[axis])
+    axis_element_count = 1 if a.ndim == 0 else a.shape[axis]
+    packed = GF2BP(np.packbits(a.view(np.ndarray), axis=axis, bitorder=bitorder), axis_element_count)
     return packed
 
 
@@ -449,7 +450,7 @@ class GF2BP(
         array = GF2.Identity(size, dtype=dtype)
         return np.packbits(array)
 
-    def get_unpacked_slice(self, index):
+    def get_index_parameters(self, index):
         post_index = NotImplemented
         if isinstance(index, (Sequence, np.ndarray)):
             if len(index) == 2:
@@ -461,8 +462,11 @@ class GF2BP(
                     post_index = (slice(None), col_index)
                     col_index = slice(col_index.start // 8, max(col_index.step // 8, 1), max(col_index.stop // 8, 1))
                     index = (row_index, col_index)
-                elif isinstance(col_index, Sequence):
-                    post_index = (list(range(len(row_index))), col_index)
+                elif isinstance(col_index, (Sequence, np.ndarray)):
+                    if isinstance(row_index, np.ndarray):
+                        post_index = np.array(range(len(row_index))).reshape(row_index.shape), col_index
+                    else:
+                        post_index = list(range(len(row_index))), col_index
                     col_index = tuple(s // 8 for s in col_index)
                     index = (row_index, col_index)
                 elif col_index is None: # new axis
@@ -475,6 +479,13 @@ class GF2BP(
             elif isinstance(index, tuple) and any(x is Ellipsis for x in index):
                 post_index = index[1:]
                 axis_adjustment = (slice(None),) if index[-1] is Ellipsis else (index[-1] // 8,)
+                index = index[:-1] + axis_adjustment
+            elif isinstance(index, tuple) and any(isinstance(x, slice) for x in index):
+                post_index = index[1:]
+                axis_adjustment = (slice(index.start // 8 if index.start is not None else index.start,
+                                        max(index.step // 8, 1) if index.step is not None else index.step,
+                                        max(index.stop // 8, 1) if index.stop is not None else index.stop)
+                                   if isinstance(index[-1], slice) else (index[-1] // 8,))
                 index = index[:-1] + axis_adjustment
         elif isinstance(index, slice):
             if self.ndim > 1:
@@ -490,6 +501,11 @@ class GF2BP(
             post_index = index
             index //= 8
 
+        return index, post_index
+
+    def get_unpacked_slice(self, index):
+        # Numpy indexing is handled primarily in https://github.com/numpy/numpy/blob/maintenance/1.26.x/numpy/core/src/multiarray/mapping.c#L1435
+        index, post_index = self.get_index_parameters(index)
         if post_index is NotImplemented:
             raise NotImplementedError(f"The following indexing scheme is not supported:\n{index}\n"
                                       "If you believe this scheme should be supported, "
@@ -510,7 +526,24 @@ class GF2BP(
         return self.get_unpacked_slice(item)
 
     def set_unpacked_slice(self, index, value):
-        pass
+        assert not isinstance(value, GF2BP)
+
+        packed_index, post_index = self.get_index_parameters(index)
+
+        packed = self.view(np.ndarray)[packed_index]
+        if np.isscalar(packed):
+            packed = GF2BP([packed], self._axis_count).view(np.ndarray)
+        if packed.ndim == 1 and self.ndim > 1:
+            packed = packed[:, None]
+
+        unpacked = np.unpackbits(packed, axis=-1, count=self._axis_count)
+        unpacked[post_index] = value
+        repacked = np.packbits(unpacked.view(np.ndarray), axis=-1)
+
+        self.view(np.ndarray)[packed_index] = repacked[packed_index]
+
+    def __setitem__(self, item, value):
+        self.set_unpacked_slice(item, value)
 
 
 GF2._default_ufunc_mode = "jit-calculate"
