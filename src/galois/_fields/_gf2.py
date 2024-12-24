@@ -226,6 +226,7 @@ class concatenate_bitpacked(Function):
     """Concatenates matrices together"""
 
     def __call__(self, arrays: list[Array], **kwargs):
+        # TODO: Should we only unpack arrays that have column counts %8 != 0 and concatenate those first?
         unpacked_arrays = []
         for array in arrays:
             verify_isinstance(array, self.field)
@@ -433,6 +434,20 @@ class GF2BP(
     ):
         pass
 
+    def __array_finalize__(self, obj):
+        """
+        A NumPy dunder method that is called after "new", "view", or "new from template". It is used here to ensure
+        that view casting to a Galois field array has the appropriate dtype and that the values are in the field.
+        """
+        super().__array_finalize__(obj)
+
+        # Pass along _axis_count if it has been set already
+        try:
+            self._axis_count = obj._axis_count
+        except AttributeError:
+            pass
+
+
     @classmethod
     def Identity(cls, size: int, dtype: DTypeLike | None = None) -> Self:
         r"""
@@ -459,8 +474,20 @@ class GF2BP(
                     post_index = (slice(None), col_index)
                     index = (row_index, col_index // 8)
                 elif isinstance(col_index, slice):
-                    post_index = (slice(None), col_index)
-                    col_index = slice(col_index.start // 8, max(col_index.step // 8, 1), max(col_index.stop // 8, 1))
+                    if isinstance(row_index, np.ndarray):
+                        post_index = np.array(range(len(row_index))).reshape(row_index.shape), col_index
+                    elif isinstance(row_index, int):
+                        post_index = 0, col_index
+                    elif isinstance(row_index, slice):
+                        post_index = slice(0 if row_index.start is not None else row_index.start,
+                                           (row_index.stop - row_index.start) // row_index.step if row_index.stop is not None else row_index.stop,
+                                            1 if row_index.step is not None else row_index.step), col_index
+                    else:
+                        post_index = list(range(len(row_index))), col_index
+
+                    col_index = slice(col_index.start // 8 if col_index.start is not None else col_index.start,
+                                    max(col_index.stop // 8, 1) if col_index.stop is not None else col_index.stop,
+                                    max(col_index.step // 8, 1) if col_index.step is not None else col_index.step)
                     index = (row_index, col_index)
                 elif isinstance(col_index, (Sequence, np.ndarray)):
                     if isinstance(row_index, np.ndarray):
@@ -483,8 +510,8 @@ class GF2BP(
             elif isinstance(index, tuple) and any(isinstance(x, slice) for x in index):
                 post_index = index[1:]
                 axis_adjustment = (slice(index.start // 8 if index.start is not None else index.start,
-                                        max(index.step // 8, 1) if index.step is not None else index.step,
-                                        max(index.stop // 8, 1) if index.stop is not None else index.stop)
+                                        max(index.stop // 8, 1) if index.stop is not None else index.stop,
+                                        max(index.step // 8, 1) if index.step is not None else index.step)
                                    if isinstance(index[-1], slice) else (index[-1] // 8,))
                 index = index[:-1] + axis_adjustment
         elif isinstance(index, slice):
@@ -495,8 +522,8 @@ class GF2BP(
                 # Array is 1-D, so we need to adjust
                 post_index = index
                 index = slice(index.start // 8 if index.start is not None else index.start,
-                              max(index.step // 8, 1) if index.step is not None else index.step,
-                              max(index.stop // 8, 1) if index.stop is not None else index.stop)
+                              max(index.stop // 8, 1) if index.stop is not None else index.stop,
+                              max(index.step // 8, 1) if index.step is not None else index.step)
         elif isinstance(index, int):
             post_index = index
             index //= 8
@@ -505,7 +532,7 @@ class GF2BP(
 
     def get_unpacked_slice(self, index):
         # Numpy indexing is handled primarily in https://github.com/numpy/numpy/blob/maintenance/1.26.x/numpy/core/src/multiarray/mapping.c#L1435
-        index, post_index = self.get_index_parameters(index)
+        packed_index, post_index = self.get_index_parameters(index)
         if post_index is NotImplemented:
             raise NotImplementedError(f"The following indexing scheme is not supported:\n{index}\n"
                                       "If you believe this scheme should be supported, "
@@ -514,7 +541,7 @@ class GF2BP(
                                       "`array = array.view(np.ndarray)` and then call the function."
                                       )
 
-        packed = self.view(np.ndarray)[index]
+        packed = self.view(np.ndarray)[packed_index]
         if np.isscalar(packed):
             packed = GF2BP([packed], self._axis_count).view(np.ndarray)
         if packed.ndim == 1 and self.ndim > 1:
@@ -539,8 +566,14 @@ class GF2BP(
         unpacked = np.unpackbits(packed, axis=-1, count=self._axis_count)
         unpacked[post_index] = value
         repacked = np.packbits(unpacked.view(np.ndarray), axis=-1)
+        if isinstance(packed_index[0], np.ndarray):
+            repacked_index = np.array(range(len(packed_index[0]))).reshape(packed_index.shape), packed_index[1]
+        elif isinstance(packed_index[0], int):
+            repacked_index = 0, packed_index[1]
+        else:
+            repacked_index = list(range(len(packed_index[0]))), packed_index[1]
 
-        self.view(np.ndarray)[packed_index] = repacked[packed_index]
+        self.view(np.ndarray)[packed_index] = repacked[repacked_index]
 
     def __setitem__(self, item, value):
         self.set_unpacked_slice(item, value)
