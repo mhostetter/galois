@@ -4,6 +4,8 @@ A module that defines the GF(2) array class.
 
 from __future__ import annotations
 
+import operator
+from functools import reduce
 from typing import Sequence
 
 import numpy as np
@@ -163,8 +165,30 @@ class multiply_ufunc_bitpacked(multiply_ufunc):
     """
 
     def __call__(self, ufunc, method, inputs, kwargs, meta):
-        output = super().__call__(ufunc, method, inputs, kwargs, meta)
-        output._axis_count = max(i._axis_count for i in inputs)
+        is_outer_product = method == "outer"
+        if is_outer_product and np.all(len(i.unpacked_shape) == 1 for i in inputs):
+            result_shape = reduce(operator.add, (i.unpacked_shape for i in inputs))
+        else:
+            result_shape = np.broadcast_shapes(*(i.unpacked_shape for i in inputs))
+
+        if is_outer_product and len(inputs) == 2:
+            a = np.unpackbits(inputs[0])
+            output = a[:, np.newaxis].view(np.ndarray) * inputs[1].view(np.ndarray)
+        else:
+            output = super().__call__(ufunc, method, inputs, kwargs, meta)
+
+        assert len(output.shape) == len(result_shape)
+        # output = output.view(np.ndarray)
+        # if output.shape != result_shape:
+        #     for axis, shape in enumerate(zip(output.shape, result_shape)):
+        #         if axis == len(result_shape) - 1:
+        #             # The last axis remains packed
+        #             break
+        #
+        #         if shape[0] != shape[1]:
+        #             output = np.unpackbits(output, axis=axis, count=shape[1])
+        output = self.field._view(output)
+        output._axis_count = result_shape[-1]
         return output
 
 
@@ -529,6 +553,11 @@ class GF2BP(
             index //= 8
 
         return index, post_index
+
+    # TODO: Should this be the default shape returned and a cast (i.e. .view(np.ndarray) is needed to get the packed shape?
+    @property
+    def unpacked_shape(self):
+        return self.shape[:-1] + (self._axis_count,)
 
     def get_unpacked_slice(self, index):
         # Numpy indexing is handled primarily in https://github.com/numpy/numpy/blob/maintenance/1.26.x/numpy/core/src/multiarray/mapping.c#L1435
