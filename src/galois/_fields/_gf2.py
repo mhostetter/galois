@@ -6,7 +6,7 @@ from __future__ import annotations
 
 import operator
 from functools import reduce
-from typing import Sequence
+from typing import Sequence, Final
 
 import numpy as np
 from typing_extensions import Literal, Self, Optional
@@ -275,6 +275,7 @@ class inv_bitpacked(Function):
 
         # Concatenate A and I to get the matrix AI = [A | I]
         AI = np.concatenate((A, I), axis=-1)
+        AI[0]
 
         # Perform Gaussian elimination to get the reduced row echelon form AI_rre = [I | A^-1]
         AI_rre, _ = row_reduce_jit(self.field)(AI, ncols=n)
@@ -419,6 +420,7 @@ class GF2BP(
     Group:
         galois-fields
     """
+    BIT_WIDTH = 8
 
     def __new__(
         cls,
@@ -489,70 +491,181 @@ class GF2BP(
         array = GF2.Identity(size, dtype=dtype)
         return np.packbits(array)
 
-    def get_index_parameters(self, index):
-        post_index = NotImplemented
-        if isinstance(index, (Sequence, np.ndarray)):
-            if len(index) == 2:
-                row_index, col_index = index
-                if isinstance(col_index, int):
-                    post_index = (slice(None), col_index)
-                    index = (row_index, col_index // 8)
-                elif isinstance(col_index, slice):
-                    if isinstance(row_index, np.ndarray):
-                        post_index = np.array(range(len(row_index))).reshape(row_index.shape), col_index
-                    elif isinstance(row_index, int):
-                        post_index = 0, col_index
-                    elif isinstance(row_index, slice):
-                        post_index = slice(0 if row_index.start is not None else row_index.start,
-                                           (row_index.stop - row_index.start) // row_index.step if row_index.stop is not None else row_index.stop,
-                                            1 if row_index.step is not None else row_index.step), col_index
-                    else:
-                        post_index = list(range(len(row_index))), col_index
+    @staticmethod
+    def _normalize_indexing_to_tuple(index):
+        """
+        Normalize indexing into a tuple of slices, integers, and ellipses.
 
-                    col_index = slice(col_index.start // 8 if col_index.start is not None else col_index.start,
-                                    max(col_index.stop // 8, 1) if col_index.stop is not None else col_index.stop,
-                                    max(col_index.step // 8, 1) if col_index.step is not None else col_index.step)
-                    index = (row_index, col_index)
-                elif isinstance(col_index, (Sequence, np.ndarray)):
-                    if isinstance(row_index, np.ndarray):
-                        post_index = np.array(range(len(row_index))).reshape(row_index.shape), col_index
-                    else:
-                        post_index = list(range(len(row_index))), col_index
-                    col_index = tuple(s // 8 for s in col_index)
-                    index = (row_index, col_index)
-                elif col_index is None: # new axis
-                    post_index = (slice(None), None)
-                    index = (row_index,)
-            elif ((isinstance(index, np.ndarray) and index.ndim == 1) or
-                  (isinstance(index, list) and all(isinstance(x, int) for x in index))):
-                post_index = index
-                index = list(range((len(index) // 8) + 1))
-            elif isinstance(index, tuple) and any(x is Ellipsis for x in index):
-                post_index = index[1:]
-                axis_adjustment = (slice(None),) if index[-1] is Ellipsis else (index[-1] // 8,)
-                index = index[:-1] + axis_adjustment
-            elif isinstance(index, tuple) and any(isinstance(x, slice) for x in index):
-                post_index = index[1:]
-                axis_adjustment = (slice(index.start // 8 if index.start is not None else index.start,
-                                        max(index.stop // 8, 1) if index.stop is not None else index.stop,
-                                        max(index.step // 8, 1) if index.step is not None else index.step)
-                                   if isinstance(index[-1], slice) else (index[-1] // 8,))
-                index = index[:-1] + axis_adjustment
+        Args:
+            index: The indexing expression (int, slice, list, etc.).
+
+        Returns:
+            A tuple of slices, integers, and ellipses.
+        """
+        if isinstance(index, int):
+            return (index,)
         elif isinstance(index, slice):
-            if self.ndim > 1:
-                # Rows aren't packed, so we can index normally
-                post_index = slice(None)
-            if len(self.shape) == 1:
-                # Array is 1-D, so we need to adjust
-                post_index = index
-                index = slice(index.start // 8 if index.start is not None else index.start,
-                              max(index.stop // 8, 1) if index.stop is not None else index.stop,
-                              max(index.step // 8, 1) if index.step is not None else index.step)
-        elif isinstance(index, int):
-            post_index = index
-            index //= 8
+            return (index,)
+        elif isinstance(index, list):
+            # Lists cannot be directly converted to slices, so leave as-is
+            return (index,)
+        elif isinstance(index, tuple):
+            normalized = []
+            for i in index:
+                if isinstance(i, (int, slice, np.ndarray)) or i is Ellipsis or i is np.newaxis:
+                    normalized.append(i)
+                else:
+                    raise TypeError(f"Unsupported index type: {type(i)}")
+            return tuple(normalized)
+        elif index is Ellipsis:
+            return (Ellipsis,)
+        elif isinstance(index, (Sequence, np.ndarray)):
+            if index.dtype == bool:
+                # Boolean mask can remain as-is
+                return (index,)
+            else:
+                raise TypeError("Cannot normalize NumPy arrays directly into slices.")
+        else:
+            raise TypeError(f"Unsupported index type: {type(index)}")
 
-        return index, post_index
+    def get_index_parameters(self, index):
+        # Convert the many different forms of indexing into a normalized form of slices
+        # normalized_index = tuple()
+        # if not isinstance(index, tuple):
+        #     index = (index,)
+
+        normalized_index = self._normalize_indexing_to_tuple(index)
+
+        assert isinstance(normalized_index, tuple)
+
+        bit_width: Final[int] = self.BIT_WIDTH
+        packed_index = tuple()
+        packed_stop = -1
+        unpacked_index = tuple()
+        unpacked_start = -1
+        for axis, i in enumerate(normalized_index):
+            is_unpacked_axis = axis != self.ndim - 1  # only the last axis is packed
+            if isinstance(i, int):
+                if is_unpacked_axis and self.ndim > 1:
+                    packed_index += (i,)
+                    unpacked_index = (0,)
+                else:
+                    packed_index += (i // bit_width,)
+                    unpacked_index += (i,)
+            elif isinstance(i, slice):
+                if is_unpacked_axis:
+                    packed_index += (i,)
+                    packed_stop = -1
+                    unpacked_index += (slice(0 if i.start is not None else i.start,
+                                       (i.stop - i.start) // i.step if i.stop is not None else i.stop,
+                                       1 if i.step is not None else i.step),)
+                    unpacked_start = -2
+                else:
+                    packed_index += (slice(i.start // bit_width if i.start is not None else i.start,
+                                        max(i.stop // bit_width, 1) if i.stop is not None else i.stop,
+                                        max(i.step // bit_width, 1) if i.step is not None else i.step),)
+                    unpacked_index += (i,)
+            elif isinstance(i, (Sequence, np.ndarray)):
+                if is_unpacked_axis:
+                    packed_index += (i,)
+                    if isinstance(i, np.ndarray):
+                        unpacked_index += (np.array(range(len(i))).reshape(i.shape),)
+                        if i.ndim > 1:
+                            packed_stop = None
+                            unpacked_start = None
+                    else:
+                        unpacked_index += np.array(range(len(i)))
+                else:
+                    if all(isinstance(x, int) for x in index):
+                        packed_index += ((s // bit_width for s in i),)
+                    else:
+                        packed_index += (i // bit_width,)
+
+                    if isinstance(i, np.ndarray) and i.ndim > 1:
+                        packed_stop = None
+                        unpacked_start = None
+
+                    unpacked_index += (i,)
+            elif i is np.newaxis:
+                packed_index += (i,)
+                packed_stop = -1
+                unpacked_index += (i,)
+                unpacked_start = -2
+            elif i is Ellipsis:
+                packed_index += (i,)
+                packed_stop = -1
+                unpacked_index += (i,)
+                unpacked_start = -2
+            else:
+                raise NotImplementedError(f"The following indexing scheme is not supported:\n{index}\n"
+                                          "If you believe this scheme should be supported, "
+                                          "please submit a GitHub issue at https://github.com/mhostetter/galois/issues.\n\n"
+                                          "If you'd like to perform this operation on the data, you should first call "
+                                          "`array = array.view(np.ndarray)` and then call the function."
+                                          )
+
+        # if len(index) == 2:
+        #     row_index, col_index = index
+        #     if isinstance(col_index, int):
+        #         post_index = (slice(None), col_index)
+        #         index = (row_index, col_index // 8)
+        #     elif isinstance(col_index, slice):
+        #         if isinstance(row_index, np.ndarray):
+        #             post_index = np.array(range(len(row_index))).reshape(row_index.shape), col_index
+        #         elif isinstance(row_index, int):
+        #             post_index = 0, col_index
+        #         elif isinstance(row_index, slice):
+        #             post_index = slice(0 if row_index.start is not None else row_index.start,
+        #                                (row_index.stop - row_index.start) // row_index.step if row_index.stop is not None else row_index.stop,
+        #                                 1 if row_index.step is not None else row_index.step), col_index
+        #         else:
+        #             post_index = list(range(len(row_index))), col_index
+        #
+        #         col_index = slice(col_index.start // 8 if col_index.start is not None else col_index.start,
+        #                         max(col_index.stop // 8, 1) if col_index.stop is not None else col_index.stop,
+        #                         max(col_index.step // 8, 1) if col_index.step is not None else col_index.step)
+        #         index = (row_index, col_index)
+        #     elif isinstance(col_index, (Sequence, np.ndarray)):
+        #         if isinstance(row_index, np.ndarray):
+        #             post_index = np.array(range(len(row_index))).reshape(row_index.shape), col_index
+        #         else:
+        #             post_index = list(range(len(row_index))), col_index
+        #         col_index = tuple(s // 8 for s in col_index)
+        #         index = (row_index, col_index)
+        #     elif col_index is None: # new axis
+        #         post_index = (slice(None), None)
+        #         index = (row_index,)
+        # elif ((isinstance(index, np.ndarray) and index.ndim == 1) or
+        #       (isinstance(index, list) and all(isinstance(x, int) for x in index))):
+        #     post_index = index
+        #     index = list(range((len(index) // 8) + 1))
+        # elif isinstance(index, tuple) and any(x is Ellipsis for x in index):
+        #     post_index = index[1:]
+        #     axis_adjustment = (slice(None),) if index[-1] is Ellipsis else (index[-1] // 8,)
+        #     index = index[:-1] + axis_adjustment
+        # elif isinstance(index, tuple) and any(isinstance(x, slice) for x in index):
+        #     post_index = index[1:]
+        #     axis_adjustment = (slice(index.start // 8 if index.start is not None else index.start,
+        #                             max(index.stop // 8, 1) if index.stop is not None else index.stop,
+        #                             max(index.step // 8, 1) if index.step is not None else index.step)
+        #                        if isinstance(index[-1], slice) else (index[-1] // 8,))
+        #     index = index[:-1] + axis_adjustment
+        # elif isinstance(index, slice):
+        #     if self.ndim > 1:
+        #         # Rows aren't packed, so we can index normally
+        #         post_index = slice(None)
+        #     if len(self.shape) == 1:
+        #         # Array is 1-D, so we need to adjust
+        #         post_index = index
+        #         index = slice(index.start // 8 if index.start is not None else index.start,
+        #                       max(index.stop // 8, 1) if index.stop is not None else index.stop,
+        #                       max(index.step // 8, 1) if index.step is not None else index.step)
+        # elif isinstance(index, int):
+        #     post_index = index
+        #     index //= 8
+
+        return (packed_index[:packed_stop] if packed_stop is not None else packed_index,
+                unpacked_index[unpacked_start:] if unpacked_start is not None else tuple())
 
     # TODO: Should this be the default shape returned and a cast (i.e. .view(np.ndarray) is needed to get the packed shape?
     @property
@@ -561,22 +674,17 @@ class GF2BP(
 
     def get_unpacked_slice(self, index):
         # Numpy indexing is handled primarily in https://github.com/numpy/numpy/blob/maintenance/1.26.x/numpy/core/src/multiarray/mapping.c#L1435
-        packed_index, post_index = self.get_index_parameters(index)
-        if post_index is NotImplemented:
-            raise NotImplementedError(f"The following indexing scheme is not supported:\n{index}\n"
-                                      "If you believe this scheme should be supported, "
-                                      "please submit a GitHub issue at https://github.com/mhostetter/galois/issues.\n\n"
-                                      "If you'd like to perform this operation on the data, you should first call "
-                                      "`array = array.view(np.ndarray)` and then call the function."
-                                      )
+        packed_index, unpacked_index = self.get_index_parameters(index)
 
         packed = self.view(np.ndarray)[packed_index]
         if np.isscalar(packed):
             packed = GF2BP([packed], self._axis_count).view(np.ndarray)
-        if packed.ndim == 1 and self.ndim > 1:
-            packed = packed[:, None]
+        # if packed.ndim == 1 and self.ndim > 1: # for some reason this is causing an issue when the column count > 8
+        #     packed = packed[:, None]
         unpacked = np.unpackbits(packed, axis=-1, count=self._axis_count)
-        return GF2._view(unpacked[post_index])
+        # if unpacked.ndim == 1 and self.ndim > 1: # for some reason this is causing an issue when the column count > 8
+        #     unpacked = unpacked[None, :]
+        return GF2._view(unpacked[unpacked_index])
 
     def __getitem__(self, item):
         return self.get_unpacked_slice(item)
@@ -589,28 +697,29 @@ class GF2BP(
         packed = self.view(np.ndarray)[packed_index]
         if np.isscalar(packed):
             packed = GF2BP([packed], self._axis_count).view(np.ndarray)
-        if packed.ndim == 1 and self.ndim > 1:
-            packed = packed[:, None]
+        # if packed.ndim == 1 and self.ndim > 1:
+        #     packed = packed[:, None]
 
         unpacked = np.unpackbits(packed, axis=-1, count=self._axis_count)
         unpacked[post_index] = value
         repacked = np.packbits(unpacked.view(np.ndarray), axis=-1)
-        if isinstance(packed_index, int) or isinstance(packed_index, slice) or len(packed_index) != 2:
-            repacked_index = packed_index
-        else:
-            packed_row_index, packed_col_index = packed_index
-            if isinstance(packed_row_index, np.ndarray):
-                repacked_index = np.array(range(len(packed_row_index))).reshape(packed_row_index.shape), packed_col_index
-            elif isinstance(packed_row_index, int):
-                repacked_index = 0, packed_col_index
-            elif isinstance(packed_row_index, slice):
-                repacked_index = slice(0 if packed_row_index.start is not None else packed_row_index.start,
-                                       (packed_row_index.stop - packed_row_index.start) // packed_row_index.step if packed_row_index.stop is not None else packed_row_index.stop,
-                                        1 if packed_row_index.step is not None else packed_row_index.step), packed_col_index
-            else:
-                repacked_index = list(range(len(packed_row_index))), packed_col_index
+        repacked_index = packed_index
+        # if isinstance(packed_index, int) or isinstance(packed_index, slice) or len(packed_index) != 2:
+        #     repacked_index = packed_index
+        # else:
+        #     packed_row_index, packed_col_index = packed_index
+        #     if isinstance(packed_row_index, np.ndarray):
+        #         repacked_index = np.array(range(len(packed_row_index))).reshape(packed_row_index.shape), packed_col_index
+        #     elif isinstance(packed_row_index, int):
+        #         repacked_index = 0, packed_col_index
+        #     elif isinstance(packed_row_index, slice):
+        #         repacked_index = slice(0 if packed_row_index.start is not None else packed_row_index.start,
+        #                                (packed_row_index.stop - packed_row_index.start) // packed_row_index.step if packed_row_index.stop is not None else packed_row_index.stop,
+        #                                 1 if packed_row_index.step is not None else packed_row_index.step), packed_col_index
+        #     else:
+        #         repacked_index = list(range(len(packed_row_index))), packed_col_index
 
-        self.view(np.ndarray)[packed_index] = repacked[repacked_index]
+        self.view(np.ndarray)[packed_index] = repacked
 
     def __setitem__(self, item, value):
         self.set_unpacked_slice(item, value)
