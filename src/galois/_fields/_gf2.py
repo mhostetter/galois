@@ -547,31 +547,42 @@ class GF2BP(
         for axis, i in enumerate(normalized_index):
             is_unpacked_axis = axis != self.ndim - 1  # only the last axis is packed
             if isinstance(i, int):
-                shape += (1,)
                 if is_unpacked_axis and self.ndim > 1:
                     packed_index += (i,)
 
                     # If we have multidimensional indexing, then we will need to re-index the same way after reshaping
                     if axes_in_index > 1:
                         unpacked_index = (0,)
+                        shape += (1,)
                 else:
                     packed_index += (i // bit_width,)
                     unpacked_index += (i,)
+                    if axes_in_index > 1:
+                        shape += (1,)
+                    else:
+                        shape += (self.shape[axis],)
             elif isinstance(i, slice):
-                shape += (self.shape[axis],)
                 if is_unpacked_axis:
                     packed_index += (i,)
-                    unpacked_index += (slice(0 if i.start is not None else i.start,
-                                       (i.stop - i.start) // i.step if i.stop is not None else i.stop,
-                                       1 if i.step is not None else i.step),)
+                    # the packed index will already filter, so we just select everything after
+                    unpacked_index += (slice(None),)
                 else:
                     packed_index += (slice(i.start // bit_width if i.start is not None else i.start,
                                         max(i.stop // bit_width, 1) if i.stop is not None else i.stop,
                                         max(i.step // bit_width, 1) if i.step is not None else i.step),)
                     unpacked_index += (i,)
+
+                packed_slice = packed_index[-1]
+                packed_slice = slice(0 if packed_slice.start is None else packed_slice.start,
+                                     self.shape[axis] if packed_slice.stop is None else packed_slice.stop,
+                                     1 if packed_slice.step is None else packed_slice.step)
+                slice_size = max(0, (packed_slice.stop - packed_slice.start + packed_slice.step - 1) // packed_slice.step)
+                shape += (slice_size,)
             elif isinstance(i, (Sequence, np.ndarray)):
                 if is_unpacked_axis:
+                    shape += (len(i),)
                     packed_index += (i,)
+                    unpacked_index += (slice(None),)
                 else:
                     if isinstance(index, np.ndarray) and index.dtype == np.bool:
                         mask_packed = [False] * self.shape[axis]
@@ -597,6 +608,7 @@ class GF2BP(
                             data = data[np.sort(unique_indices)]
 
                         packed_index += (data,)
+                        shape += (self.shape[axis],)
                         if axes_in_index == 1:
                             unpacked_index += (i,)
             elif i is np.newaxis:
@@ -630,7 +642,11 @@ class GF2BP(
             packed = packed.reshape(shape)
 
         unpacked = np.unpackbits(packed, axis=-1, count=self._axis_count)
-        return GF2._view(unpacked[unpacked_index])
+        value = unpacked[unpacked_index]
+        if np.isscalar(value):
+            return GF2(value, dtype=self.dtype)
+
+        return GF2._view(value)
 
     def __getitem__(self, item):
         return self.get_unpacked_value(item)
