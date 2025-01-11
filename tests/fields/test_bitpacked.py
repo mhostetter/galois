@@ -1,6 +1,7 @@
 import numpy as np
 import galois
 from galois import GF2
+import operator as ops
 
 
 def test_galois_array_indexing():
@@ -176,14 +177,15 @@ def test_arithmetic():
     assert np.array_equal(np.unpackbits(cm_gf2bp @ cm3_gf2bp), cm_GF2 @ cm3_GF2)
 
 def test_broadcasting():
-    a = np.random.randint(0, 2, 10)
-    b = np.random.randint(0, 2, 10)
-    x = np.packbits(GF2(a))
-    y = np.packbits(GF2(b))
+    a = GF2(np.random.randint(0, 2, 10))
+    b = GF2(np.random.randint(0, 2, 10))
+    x = np.packbits(a)
+    y = np.packbits(b)
 
-    c = a * b
-    z = x * y
-    assert c.shape == z.shape == np.unpackbits(z).shape  # (10,)
+    for op in [ops.add, ops.sub, ops.mul]:
+        c = op(a, b)
+        z = op(x, y)
+        assert c.shape == z.shape == np.unpackbits(z).shape  # (10,)
 
     c = np.multiply.outer(a, b)
     z = np.multiply.outer(x, y)
@@ -191,15 +193,16 @@ def test_broadcasting():
     assert c.shape == z.shape == np.unpackbits(z).shape  # (10, 10)
 
 def test_advanced_broadcasting():
-    a = np.random.randint(0, 2, (1, 2, 3))
-    b = np.random.randint(0, 2, (2, 2, 1))
-    x = np.packbits(GF2(a))
-    y = np.packbits(GF2(b))
+    a = GF2(np.random.randint(0, 2, (1, 2, 3)))
+    b = GF2(np.random.randint(0, 2, (2, 2, 1)))
+    x = np.packbits(a)
+    y = np.packbits(b)
 
-    c = a * b
-    z = x * y
-    assert np.array_equal(np.unpackbits(z), c)
-    assert c.shape == z.shape == np.unpackbits(z).shape  # (2, 2, 3)
+    for op in [ops.add, ops.sub, ops.mul]:
+        c = op(a, b)
+        z = op(x, y)
+        assert np.array_equal(np.unpackbits(z), c)
+        assert c.shape == z.shape == np.unpackbits(z).shape  # (2, 2, 3)
 
     c = np.multiply.outer(a, b)
     z = np.multiply.outer(x, y)

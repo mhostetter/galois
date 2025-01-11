@@ -144,8 +144,15 @@ class add_ufunc_bitpacked(add_ufunc):
     """
 
     def __call__(self, ufunc, method, inputs, kwargs, meta):
-        output = super().__call__(ufunc, method, inputs, kwargs, meta)
-        output._axis_count = inputs[0]._axis_count
+        result_shape = np.broadcast_shapes(*(i.shape for i in inputs))
+        if any(i.shape != inputs[0].shape for i in inputs):
+            # We can't do simple bitwise addition when the shapes aren't the same due to broadcasting
+            inputs = [np.unpackbits(i) for i in inputs]
+            output = reduce(operator.add, inputs)  # We need this to use GF2's addition
+            output = np.packbits(output)
+        else:
+            output = super().__call__(ufunc, method, inputs, kwargs, meta)
+        output._axis_count = result_shape[-1]
         return output
 
 
@@ -155,8 +162,15 @@ class subtract_ufunc_bitpacked(subtract_ufunc):
     """
 
     def __call__(self, ufunc, method, inputs, kwargs, meta):
-        output = super().__call__(ufunc, method, inputs, kwargs, meta)
-        output._axis_count = max(i._axis_count for i in inputs)
+        result_shape = np.broadcast_shapes(*(i.shape for i in inputs))
+        if any(i.shape != inputs[0].shape for i in inputs):
+            # We can't do simple bitwise subtraction when the shapes aren't the same due to broadcasting
+            inputs = [np.unpackbits(i) for i in inputs]
+            output = reduce(operator.sub, inputs)  # We need this to use GF2's subtraction
+            output = np.packbits(output)
+        else:
+            output = super().__call__(ufunc, method, inputs, kwargs, meta)
+        output._axis_count = result_shape[-1]
         return output
 
 
@@ -197,8 +211,15 @@ class divide_ufunc_bitpacked(divide):
     """
 
     def __call__(self, ufunc, method, inputs, kwargs, meta):
-        output = super().__call__(ufunc, method, inputs, kwargs, meta)
-        output._axis_count = max(i._axis_count for i in inputs)
+        result_shape = np.broadcast_shapes(*(i.shape for i in inputs))
+        if any(i.shape != inputs[0].shape for i in inputs):
+            # We can't do simple bitwise division when the shapes aren't the same due to broadcasting
+            inputs = [np.unpackbits(i) for i in inputs]
+            output = reduce(operator.truediv, inputs)  # We need this to use GF2's division
+            output = np.packbits(output)
+        else:
+            output = super().__call__(ufunc, method, inputs, kwargs, meta)
+        output._axis_count = result_shape[-1]
         return output
 
 
