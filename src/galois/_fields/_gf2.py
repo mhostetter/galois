@@ -172,22 +172,20 @@ class multiply_ufunc_bitpacked(multiply_ufunc):
         else:
             result_shape = np.broadcast_shapes(*(i.shape for i in inputs))
 
-        if is_outer_product and len(inputs) == 2:
-            a = np.unpackbits(inputs[0])
-            output = a[:, np.newaxis].view(np.ndarray) * inputs[1].view(np.ndarray)
+        if is_outer_product:
+            assert len(inputs) == 2
+            # Unpack the first argument and propagate the bitpacked second argument
+            inputs = [np.unpackbits(x).view(np.ndarray) if i == 0 else x.view(np.ndarray) for i, x in enumerate(inputs)]
+            output = np.multiply.outer(*inputs)
         else:
-            output = super().__call__(ufunc, method, inputs, kwargs, meta)
+            if any(i.shape != inputs[0].shape for i in inputs):
+                # We can't do simple bitwise multiplication when the shapes aren't the same due to broadcasting
+                inputs = [np.unpackbits(i) for i in inputs]
+                output = reduce(operator.mul, inputs)  # We need this to use GF2's multiply
+                output = np.packbits(output)
+            else:
+                output = super().__call__(ufunc, method, inputs, kwargs, meta)
 
-        assert len(output.view(np.ndarray).shape) == len(result_shape)
-        # output = output.view(np.ndarray)
-        # if output.shape != result_shape:
-        #     for axis, shape in enumerate(zip(output.shape, result_shape)):
-        #         if axis == len(result_shape) - 1:
-        #             # The last axis remains packed
-        #             break
-        #
-        #         if shape[0] != shape[1]:
-        #             output = np.unpackbits(output, axis=axis, count=shape[1])
         output = self.field._view(output)
         output._axis_count = result_shape[-1]
         return output

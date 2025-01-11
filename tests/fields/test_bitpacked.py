@@ -1,5 +1,7 @@
 import numpy as np
 import galois
+from galois import GF2
+
 
 def test_galois_array_indexing():
     # Define a Galois field array
@@ -59,9 +61,6 @@ def test_galois_array_indexing():
     # 11. Indexing with np.take
     # taken = np.take(arr, [0, 2])
     # assert np.array_equal(taken, GF([1, 1]))
-
-    print("All tests passed.")
-
 
 def test_galois_array_setting():
     # Define a Galois field array
@@ -134,9 +133,77 @@ def test_galois_array_setting():
     arr_2d[np.ix_(row_indices, col_indices)] = GF([[0, 0], [0, 0]])
     assert np.array_equal(arr_2d, np.packbits(GF([[0, 0], [0, 0]])))
 
-    print("All set-indexing tests passed.")
+def test_inv():
+    N = 10
+    u = GF2.Random((N, N), seed=2)
+    p = np.packbits(u)
+    # print(x.get_unpacked_slice(1))
+    # index = np.index_exp[:,1:4:2]
+    # index = np.index_exp[[0,1], [0, 1]]
+    # print(a)
+    # print(a[index])
+    # print(x.get_unpacked_slice(index))
+    print(np.linalg.inv(u))
+    print(np.unpackbits(np.linalg.inv(p)))
+    assert np.array_equal(np.linalg.inv(u), np.unpackbits(np.linalg.inv(p)))
 
+def test_arithmetic():
+    size = (20, 10)
+    cm = np.random.randint(2, size=size, dtype=np.uint8)
+    cm2 = np.random.randint(2, size=size, dtype=np.uint8)
+    vec = np.random.randint(2, size=size[1], dtype=np.uint8)
 
-if __name__ == "__main__":
-    test_galois_array_indexing()
-    test_galois_array_setting()
+    cm_GF2 = GF2(cm)
+    cm2_GF2 = GF2(cm2)
+    cm3_GF2 = GF2(cm2.T)
+    vec_GF2 = GF2(vec)
+
+    cm_gf2bp = np.packbits(cm_GF2)
+    cm2_gf2bp = np.packbits(cm2_GF2)
+    cm3_gf2bp = np.packbits(cm2_GF2.T)
+    vec_gf2bp = np.packbits(vec_GF2)
+
+    # Addition
+    assert np.array_equal(np.unpackbits(cm_gf2bp + cm2_gf2bp), cm_GF2 + cm2_GF2)
+
+    # Multiplication
+    assert np.array_equal(np.unpackbits(cm_gf2bp * cm2_gf2bp), cm_GF2 * cm2_GF2)
+
+    # Matrix-vector product
+    assert np.array_equal(np.unpackbits(cm_gf2bp @ vec_gf2bp), cm_GF2 @ vec_GF2)
+
+    # Matrix-matrix product
+    assert np.array_equal(np.unpackbits(cm_gf2bp @ cm3_gf2bp), cm_GF2 @ cm3_GF2)
+
+def test_broadcasting():
+    a = np.random.randint(0, 2, 10)
+    b = np.random.randint(0, 2, 10)
+    x = np.packbits(GF2(a))
+    y = np.packbits(GF2(b))
+
+    c = a * b
+    z = x * y
+    assert c.shape == z.shape == np.unpackbits(z).shape  # (10,)
+
+    c = np.multiply.outer(a, b)
+    z = np.multiply.outer(x, y)
+    assert np.array_equal(np.unpackbits(z), c)
+    assert c.shape == z.shape == np.unpackbits(z).shape  # (10, 10)
+
+def test_advanced_broadcasting():
+    a = np.random.randint(0, 2, (1, 2, 3))
+    b = np.random.randint(0, 2, (2, 2, 1))
+    x = np.packbits(GF2(a))
+    y = np.packbits(GF2(b))
+
+    c = a * b
+    z = x * y
+    assert np.array_equal(np.unpackbits(z), c)
+    assert c.shape == z.shape == np.unpackbits(z).shape  # (2, 2, 3)
+
+    c = np.multiply.outer(a, b)
+    z = np.multiply.outer(x, y)
+    print(c.shape)
+    print(z.shape)
+    assert np.array_equal(np.unpackbits(z), c)
+    assert c.shape == z.shape == np.unpackbits(z).shape  # (1, 2, 3, 2, 2, 1)
