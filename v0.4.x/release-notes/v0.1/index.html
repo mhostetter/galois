@@ -32,7 +32,7 @@
         <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
-        <link rel="stylesheet" type="text/css" href="../../_static/sphinx_immaterial_theme.3fb2ae7f940abc704.min.css" />
+        <link rel="stylesheet" type="text/css" href="../../_static/sphinx_immaterial_theme.902975e1179e135ad.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/extra.css" />
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
@@ -7809,7 +7809,7 @@ You're not viewing the latest version.
 <h3 id="id3">Changes<a class="headerlink" href="#id3" title="Permalink to this heading">¶</a></h3>
 <ul>
 <li><p>Fixed major inefficiency when dividing an array by a scalar or smaller (broadcasted) array. (<a class="reference external" href="https://github.com/mhostetter/galois/pull/429">#429</a>)</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="kn">import</span> <span class="nn">galois</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="kn">import</span><span class="w"> </span><span class="nn">galois</span>
 
 <span class="gp">In [2]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">31</span><span class="o">**</span><span class="mi">5</span><span class="p">)</span>
 
@@ -7832,7 +7832,7 @@ You're not viewing the latest version.
 </div>
 </li>
 <li><p>Optimized <a class="reference external" href="https://mhostetter.github.io/galois/v0.1.2/api/galois.lagrange_poly/"><code class="docutils literal notranslate"><span class="pre">lagrange_poly()</span></code></a> by adding a custom JIT-compilable routine. (<a class="reference external" href="https://github.com/mhostetter/galois/pull/432">#432</a>)</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="kn">import</span> <span class="nn">galois</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="kn">import</span><span class="w"> </span><span class="nn">galois</span>
 
 <span class="gp">In [2]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">13693</span><span class="p">)</span>
 
@@ -7851,7 +7851,7 @@ You're not viewing the latest version.
 </div>
 </li>
 <li><p>Added ability in <a class="reference external" href="https://mhostetter.github.io/galois/v0.1.2/api/galois.FieldArray.row_reduce/"><code class="docutils literal notranslate"><span class="pre">FieldArray.row_reduce()</span></code></a> to solve for an identity matrix on the right side of a matrix using the <code class="docutils literal notranslate"><span class="pre">eye</span></code> keyword argument. (<a class="reference external" href="https://github.com/mhostetter/galois/pull/426">#426</a>)</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">galois</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">galois</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">31</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">GF</span><span class="p">([[</span><span class="mi">16</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">25</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">27</span><span class="p">,</span> <span class="mi">29</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">19</span><span class="p">]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">A</span><span class="o">.</span><span class="n">row_reduce</span><span class="p">()</span>
@@ -7866,7 +7866,7 @@ You're not viewing the latest version.
 </div>
 </li>
 <li><p>Removed comma separators in <a class="reference external" href="https://mhostetter.github.io/galois/v0.1.2/api/galois.FieldArray.__str__/"><code class="docutils literal notranslate"><span class="pre">FieldArray.__str__()</span></code></a> to be consistent with NumPy’s use of <code class="docutils literal notranslate"><span class="pre">str()</span></code> and <code class="docutils literal notranslate"><span class="pre">repr()</span></code>. (<a class="reference external" href="https://github.com/mhostetter/galois/pull/432">#432</a>)</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">galois</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">galois</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="mi">5</span><span class="p">,</span> <span class="n">display</span><span class="o">=</span><span class="s2">&quot;power&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">seed</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x</span>

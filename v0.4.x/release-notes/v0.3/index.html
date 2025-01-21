@@ -32,7 +32,7 @@
         <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
-        <link rel="stylesheet" type="text/css" href="../../_static/sphinx_immaterial_theme.3fb2ae7f940abc704.min.css" />
+        <link rel="stylesheet" type="text/css" href="../../_static/sphinx_immaterial_theme.902975e1179e135ad.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/extra.css" />
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
@@ -7897,7 +7897,7 @@ You're not viewing the latest version.
 <h3 id="changes">Changes<a class="headerlink" href="#changes" title="Permalink to this heading">¶</a></h3>
 <ul>
 <li><p>Added a <code class="docutils literal notranslate"><span class="pre">galois.GF(p,</span> <span class="pre">m)</span></code> call signature in addition to <code class="docutils literal notranslate"><span class="pre">galois.GF(p**m)</span></code>. This also applies to <code class="docutils literal notranslate"><span class="pre">galois.Field()</span></code>. Separately specifying <span class="math notranslate nohighlight">\(p\)</span> and <span class="math notranslate nohighlight">\(m\)</span> eliminates the need to factor the order <span class="math notranslate nohighlight">\(p^m\)</span> in very large finite fields. (<a class="reference external" href="https://github.com/mhostetter/galois/pull/442">#442</a>)</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">galois</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">galois</span>
 <span class="go"># This is faster than galois.GF(2**409)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">409</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">GF</span><span class="o">.</span><span class="n">properties</span><span class="p">)</span>
@@ -7913,7 +7913,7 @@ You're not viewing the latest version.
 </div>
 </li>
 <li><p>Optimized matrix multiplication by parallelizing across multiple cores. (<a class="reference external" href="https://github.com/mhostetter/galois/pull/440">#440</a>)</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="kn">import</span> <span class="nn">galois</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="kn">import</span><span class="w"> </span><span class="nn">galois</span>
 
 <span class="gp">In [2]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="mi">5</span><span class="p">)</span>
 
@@ -7932,7 +7932,7 @@ You're not viewing the latest version.
 </div>
 </li>
 <li><p>Optimized polynomial evaluation by parallelizing across multiple cores. (<a class="reference external" href="https://github.com/mhostetter/galois/pull/440">#440</a>)</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="kn">import</span> <span class="nn">galois</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="kn">import</span><span class="w"> </span><span class="nn">galois</span>
 
 <span class="gp">In [2]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="mi">5</span><span class="p">)</span>
 
@@ -7961,7 +7961,7 @@ You're not viewing the latest version.
 <h3 id="id1">Changes<a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h3>
 <ul>
 <li><p>Fixed a bug in the Pollard <span class="math notranslate nohighlight">\(\rho\)</span> factorization algorithm that caused an occasional infinite loop. (<a class="reference external" href="https://github.com/mhostetter/galois/pull/450">#450</a>)</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="kn">import</span> <span class="nn">galois</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="kn">import</span><span class="w"> </span><span class="nn">galois</span>
 
 <span class="go"># v0.3.0</span>
 <span class="gp">In [2]: </span><span class="o">%</span><span class="k">time</span> galois.GF(2400610585866217)
@@ -7988,7 +7988,7 @@ You're not viewing the latest version.
 <li><p>Added a prime factorization database for <span class="math notranslate nohighlight">\(n = b^k \pm 1\)</span>, with <span class="math notranslate nohighlight">\(b \in \{2, 3, 5, 6, 7, 10, 11, 12\}\)</span>.
 The factorizations are from the <a class="reference external" href="https://homes.cerias.purdue.edu/~ssw/cun/third/index.html">Cunningham Book</a>.
 This speeds up the creation of large finite fields. (<a class="reference external" href="https://github.com/mhostetter/galois/pull/452">#452</a>)</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="kn">import</span> <span class="nn">galois</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="kn">import</span><span class="w"> </span><span class="nn">galois</span>
 
 <span class="go"># v0.3.1</span>
 <span class="gp">In [2]: </span><span class="o">%</span><span class="k">time</span> galois.factors(2**256 - 1)
@@ -8014,7 +8014,7 @@ This speeds up the creation of large finite fields. (<a class="reference externa
 </div>
 </li>
 <li><p>Added speed-up when factoring powers of small primes. This speeds up the creation of large finite fields. (<a class="reference external" href="https://github.com/mhostetter/galois/pull/454">#454</a>)</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="kn">import</span> <span class="nn">galois</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="kn">import</span><span class="w"> </span><span class="nn">galois</span>
 
 <span class="go"># v0.3.1</span>
 <span class="gp">In [2]: </span><span class="o">%</span><span class="k">time</span> galois.factors(2**471)
@@ -8041,7 +8041,7 @@ This speeds up the creation of large finite fields. (<a class="reference externa
 <li><p>Added a <code class="docutils literal notranslate"><span class="pre">terms</span></code> keyword argument to <code class="docutils literal notranslate"><span class="pre">irreducible_poly()</span></code>, <code class="docutils literal notranslate"><span class="pre">irreducible_polys()</span></code>, <code class="docutils literal notranslate"><span class="pre">primitive_poly()</span></code>, and
 <code class="docutils literal notranslate"><span class="pre">primitive_polys()</span></code> to find a polynomial with a desired number of non-zero terms. This may be set to an integer
 or to <code class="docutils literal notranslate"><span class="pre">&quot;min&quot;</span></code>. (<a class="reference external" href="https://github.com/mhostetter/galois/pull/463">#463</a>)</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">galois</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">galois</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">galois</span><span class="o">.</span><span class="n">irreducible_poly</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">)</span>
 <span class="go">Poly(x^9 + 2, GF(7))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">galois</span><span class="o">.</span><span class="n">irreducible_poly</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="n">terms</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
@@ -8056,7 +8056,7 @@ or to <code class="docutils literal notranslate"><span class="pre">&quot;min&quo
 <li><p>Added a database of binary irreducible polynomials with degrees less than 10,000. These polynomials are
 lexicographically first and have the minimum number of non-zero terms. The database is accessed in
 <code class="docutils literal notranslate"><span class="pre">irreducible_poly()</span></code> when <code class="docutils literal notranslate"><span class="pre">terms=&quot;min&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">method=&quot;min&quot;</span></code>. (<a class="reference external" href="https://github.com/mhostetter/galois/pull/462">#462</a>)</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="kn">import</span> <span class="nn">galois</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="kn">import</span><span class="w"> </span><span class="nn">galois</span>
 
 <span class="go"># Manual search</span>
 <span class="gp">In [2]: </span><span class="o">%</span><span class="k">time</span> galois.irreducible_poly(2, 1001)
@@ -8074,7 +8074,7 @@ lexicographically first and have the minimum number of non-zero terms. The datab
 </li>
 <li><p>Memoized expensive polynomial tests <code class="docutils literal notranslate"><span class="pre">Poly.is_irreducible()</span></code> and <code class="docutils literal notranslate"><span class="pre">Poly.is_primitive()</span></code>. Now, the expense of those
 calculations for a given polynomial is only incurred once. (<a class="reference external" href="https://github.com/mhostetter/galois/pull/470">#470</a>)</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="kn">import</span> <span class="nn">galois</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="kn">import</span><span class="w"> </span><span class="nn">galois</span>
 
 <span class="gp">In [2]: </span><span class="n">f</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">Poly</span><span class="o">.</span><span class="n">Str</span><span class="p">(</span><span class="s2">&quot;x^1001 + x^17 + 1&quot;</span><span class="p">);</span> <span class="n">f</span>
 <span class="gh">Out[2]: </span><span class="go">Poly(x^1001 + x^17 + 1, GF(2))</span>

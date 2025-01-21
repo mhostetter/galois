@@ -32,7 +32,7 @@
         <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
-        <link rel="stylesheet" type="text/css" href="../../_static/sphinx_immaterial_theme.3fb2ae7f940abc704.min.css" />
+        <link rel="stylesheet" type="text/css" href="../../_static/sphinx_immaterial_theme.902975e1179e135ad.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/extra.css" />
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
@@ -7789,7 +7789,7 @@ You're not viewing the latest version.
 <ul class="simple">
 <li><p><code class="code highlight python docutils literal highlight-python"><span class="s2">&quot;auto&quot;</span></code>: Selects <code class="code highlight python docutils literal highlight-python"><span class="s2">&quot;jit-lookup&quot;</span></code> for fields with order less than <span class="math notranslate nohighlight">\(2^{20}\)</span>, <code class="code highlight python docutils literal highlight-python"><span class="s2">&quot;jit-calculate&quot;</span></code>
 for larger fields, and <code class="code highlight python docutils literal highlight-python"><span class="s2">&quot;python-calculate&quot;</span></code> for fields whose elements cannot be represented with
-<a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.int64" title="(in NumPy v2.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.int64</span></code></a>.</p></li>
+<a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.int64" title="(in NumPy v2.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.int64</span></code></a>.</p></li>
 <li><p><code class="code highlight python docutils literal highlight-python"><span class="s2">&quot;jit-lookup&quot;</span></code>: JIT compiles arithmetic ufuncs to use Zech log, log, and anti-log lookup tables for
 efficient computation. In the few cases where explicit calculation is faster than table lookup,
 explicit calculation is used.</p></li>
@@ -7797,7 +7797,7 @@ explicit calculation is used.</p></li>
 mode is designed for large fields that cannot or should not store lookup tables in RAM. Generally,
 the <code class="code highlight python docutils literal highlight-python"><span class="s2">&quot;jit-calculate&quot;</span></code> mode is slower than <code class="code highlight python docutils literal highlight-python"><span class="s2">&quot;jit-lookup&quot;</span></code>.</p></li>
 <li><p><code class="code highlight python docutils literal highlight-python"><span class="s2">&quot;python-calculate&quot;</span></code>: Uses pure-Python ufuncs with explicit calculation. This is intended for fields
-whose elements cannot be represented with <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.int64" title="(in NumPy v2.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.int64</span></code></a> and instead use <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.object_" title="(in NumPy v2.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.object_</span></code></a>
+whose elements cannot be represented with <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.int64" title="(in NumPy v2.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.int64</span></code></a> and instead use <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.object_" title="(in NumPy v2.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.object_</span></code></a>
 with Python <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a> (which has arbitrary precision). However, this mode can be used for any
 field, enabling the code to run without Numba JIT compilation.</p></li>
 </ul>

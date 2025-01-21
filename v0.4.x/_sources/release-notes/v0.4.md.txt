@@ -62,3 +62,17 @@ tocdepth: 2
 - TDQuering ([@TDQuering](https://github.com/TDQuering))
 - maple ([@maple3142](https://github.com/maple3142))
 - Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
+
+## v0.4.4
+
+*Released January 21, 2025*
+
+### Changes
+
+- Added support for Python 3.13. ([#587](https://github.com/mhostetter/galois/pull/587))
+- Added support for NumPy 2.1. ([#587](https://github.com/mhostetter/galois/pull/587))
+- Added support for Numba 0.61. ([#587](https://github.com/mhostetter/galois/pull/587))
+
+### Contributors
+
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))

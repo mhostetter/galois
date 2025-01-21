@@ -32,7 +32,7 @@
         <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
-        <link rel="stylesheet" type="text/css" href="../../_static/sphinx_immaterial_theme.3fb2ae7f940abc704.min.css" />
+        <link rel="stylesheet" type="text/css" href="../../_static/sphinx_immaterial_theme.902975e1179e135ad.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/extra.css" />
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
@@ -7941,7 +7941,7 @@ is 4 and not 8.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [16]: </span><span class="n">galois</span><span class="o">.</span><span class="n">primitive_root</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
 <span class="gt">---------------------------------------------------------------------------</span>
 <span class="ne">StopIteration</span><span class="g g-Whitespace">                             </span>Traceback (most recent call last)
-<span class="nn">File /opt/hostedtoolcache/Python/3.11.10/x64/lib/python3.11/site-packages/galois/_modular.py:560,</span> in <span class="ni">primitive_root</span><span class="nt">(n, start, stop, method)</span>
+<span class="nn">File /opt/hostedtoolcache/Python/3.11.11/x64/lib/python3.11/site-packages/galois/_modular.py:560,</span> in <span class="ni">primitive_root</span><span class="nt">(n, start, stop, method)</span>
 <span class="g g-Whitespace">    </span><span class="mi">559</span> <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;min&quot;</span><span class="p">:</span>
 <span class="ne">--&gt; </span><span class="mi">560</span>     <span class="n">root</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">primitive_roots</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="n">stop</span><span class="p">))</span>
 <span class="g g-Whitespace">    </span><span class="mi">561</span> <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;max&quot;</span><span class="p">:</span>
@@ -7954,10 +7954,10 @@ is 4 and not 8.</p>
 <span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">16</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
 <span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">galois</span><span class="o">.</span><span class="n">primitive_root</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
 
-<span class="nn">File /opt/hostedtoolcache/Python/3.11.10/x64/lib/python3.11/site-packages/galois/_modular.py:567,</span> in <span class="ni">primitive_root</span><span class="nt">(n, start, stop, method)</span>
+<span class="nn">File /opt/hostedtoolcache/Python/3.11.11/x64/lib/python3.11/site-packages/galois/_modular.py:567,</span> in <span class="ni">primitive_root</span><span class="nt">(n, start, stop, method)</span>
 <span class="g g-Whitespace">    </span><span class="mi">565</span>     <span class="k">return</span> <span class="n">root</span>
 <span class="g g-Whitespace">    </span><span class="mi">566</span> <span class="k">except</span> <span class="ne">StopIteration</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-<span class="ne">--&gt; </span><span class="mi">567</span>     <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No primitive roots modulo </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2"> exist in the range [</span><span class="si">{</span><span class="n">start</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">stop</span><span class="si">}</span><span class="s2">).&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
+<span class="ne">--&gt; </span><span class="mi">567</span>     <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No primitive roots modulo </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2"> exist in the range [</span><span class="si">{</span><span class="n">start</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">stop</span><span class="si">}</span><span class="s2">).&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
 
 <span class="ne">RuntimeError</span>: No primitive roots modulo 15 exist in the range [1, 15).
 </code></pre></div>

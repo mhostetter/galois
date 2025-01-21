@@ -32,7 +32,7 @@
         <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
-        <link rel="stylesheet" type="text/css" href="../../_static/sphinx_immaterial_theme.3fb2ae7f940abc704.min.css" />
+        <link rel="stylesheet" type="text/css" href="../../_static/sphinx_immaterial_theme.902975e1179e135ad.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/extra.css" />
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
@@ -7789,7 +7789,7 @@ provide a performance reference point with native NumPy.</p>
 <p>This section tests <a class="reference internal" href="../../api/#module-galois" title="galois (Python module)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">galois</span></code></a> when using the <code class="code highlight python docutils literal highlight-python"><span class="s2">&quot;jit-lookup&quot;</span></code> compilation mode. For finite fields with order less
 than or equal to <span class="math notranslate nohighlight">\(2^{20}\)</span>, <a class="reference internal" href="../../api/#module-galois" title="galois (Python module)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">galois</span></code></a> uses lookup tables by default for efficient arithmetic.</p>
 <p>Below are examples computing 10 million multiplications in the binary extension field <span class="math notranslate nohighlight">\(\mathrm{GF}(2^8)\)</span>.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="kn">import</span> <span class="nn">galois</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="kn">import</span><span class="w"> </span><span class="nn">galois</span>
 
 <span class="gp">In [2]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">8</span><span class="p">)</span>
 
@@ -7810,7 +7810,7 @@ than or equal to <span class="math notranslate nohighlight">\(2^{20}\)</span>, <
 </div>
 <p>NumPy, even when computing the incorrect result, is ~1.9x slower than <a class="reference internal" href="../../api/#module-galois" title="galois (Python module)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">galois</span></code></a>. This is because <a class="reference internal" href="../../api/#module-galois" title="galois (Python module)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">galois</span></code></a> is using lookup
 tables instead of explicitly performing the polynomial multiplication and division.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [8]: </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [8]: </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="gp">In [9]: </span><span class="n">aa</span><span class="p">,</span> <span class="n">bb</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">),</span> <span class="n">b</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
 
@@ -7825,7 +7825,7 @@ tables instead of explicitly performing the polynomial multiplication and divisi
 <p>This section tests <a class="reference internal" href="../../api/#module-galois" title="galois (Python module)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">galois</span></code></a> when using the <code class="code highlight python docutils literal highlight-python"><span class="s2">&quot;jit-calculate&quot;</span></code> compilation mode. For finite fields with order greater
 than <span class="math notranslate nohighlight">\(2^{20}\)</span>, <a class="reference internal" href="../../api/#module-galois" title="galois (Python module)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">galois</span></code></a> will use explicit arithmetic calculation by default rather than lookup tables.</p>
 <p>Below are examples computing 10 million multiplications in the binary extension field <span class="math notranslate nohighlight">\(\mathrm{GF}(2^{32})\)</span>.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="kn">import</span> <span class="nn">galois</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="kn">import</span><span class="w"> </span><span class="nn">galois</span>
 
 <span class="gp">In [2]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">32</span><span class="p">)</span>
 
@@ -7848,7 +7848,7 @@ than <span class="math notranslate nohighlight">\(2^{20}\)</span>, <a class="ref
 </div>
 <p>The <a class="reference internal" href="../../api/#module-galois" title="galois (Python module)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">galois</span></code></a> library when using explicit calculation is only ~3.9x slower than native NumPy, which isn’t even computing
 the correct product.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [8]: </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [8]: </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="gp">In [9]: </span><span class="n">aa</span><span class="p">,</span> <span class="n">bb</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">),</span> <span class="n">b</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
 
@@ -7865,7 +7865,7 @@ with prime fields, it is not possible to use the BLAS/LAPACK implementations. In
 ufuncs are generated, which are not as optimized for parallelism or hardware acceleration as BLAS/LAPACK.</p>
 <p>Below are examples computing the matrix multiplication of two <span class="math notranslate nohighlight">\(100 \times 100\)</span> matrices in the binary extension
 field <span class="math notranslate nohighlight">\(\mathrm{GF}(2^{32})\)</span>.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="kn">import</span> <span class="nn">galois</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="kn">import</span><span class="w"> </span><span class="nn">galois</span>
 
 <span class="gp">In [2]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">32</span><span class="p">)</span>
 
@@ -7898,7 +7898,7 @@ field <span class="math notranslate nohighlight">\(\mathrm{GF}(2^{32})\)</span>.
 </code></pre></div>
 </div>
 <p>The <a class="reference internal" href="../../api/#module-galois" title="galois (Python module)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">galois</span></code></a> library is about ~5.5x slower than native NumPy (which isn’t computing the correct product).</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [8]: </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [8]: </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="gp">In [9]: </span><span class="n">AA</span><span class="p">,</span> <span class="n">BB</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">),</span> <span class="n">B</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
 
