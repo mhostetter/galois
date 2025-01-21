@@ -1,0 +1,67 @@
+---
+tocdepth: 2
+---
+
+# v0.2
+
+## v0.2.0
+
+*Released November 17, 2022*
+
+### Breaking changes
+
+- Refactored FEC classes and usage. ([#413](https://github.com/mhostetter/galois/pull/413), [#435](https://github.com/mhostetter/galois/pull/435))
+  - Modified [`BCH`](https://mhostetter.github.io/galois/v0.2.0/api/galois.BCH/) codes to support q-ary, non-primitive, and non narrow-sense codes.
+
+  - Modified [`ReedSolomon`](https://mhostetter.github.io/galois/v0.2.0/api/galois.ReedSolomon/) codes to support non-primitive codes.
+
+  - Enabled instantiation of a BCH or ReedSolomon code by specifying `(n, k)` or `(n, d)`.
+
+  - Removed `parity_only=False` keyword argument from FEC `encode()` methods and replaced with `output="codeword"`.
+
+  - Removed `bch_valid_codes()` from the API. Instead, use `galois.BCH(n, d=d)` to find and create a BCH code with codeword size `n` and design distance `d`. For example, here is how to find various code sizes of primitive BCH codes over `GF(5)`.
+
+    ```python
+    >>> import galois
+    >>> GF = galois.GF(5)
+    >>> for d in range(3, 10):
+    ...     bch = galois.BCH(5**2 - 1, d=d, field=GF)
+    ...     print(repr(bch))
+    ...
+    <BCH Code: [24, 20, 3] over GF(5)>
+    <BCH Code: [24, 18, 4] over GF(5)>
+    <BCH Code: [24, 16, 5] over GF(5)>
+    <BCH Code: [24, 16, 6] over GF(5)>
+    <BCH Code: [24, 15, 7] over GF(5)>
+    <BCH Code: [24, 13, 8] over GF(5)>
+    <BCH Code: [24, 11, 9] over GF(5)>
+    ```
+  - Removed `generator_to_parity_check_matrix()`, `parity_check_to_generator_matrix()`, `poly_to_generator_matrix()`, and `roots_to_parity_check_matrix()` from the API.
+
+- Renamed properties and methods for changing the finite field element representation. ([#436](https://github.com/mhostetter/galois/pull/436))
+  - Renamed `display` keyword argument in [`GF()`](https://mhostetter.github.io/galois/v0.2.0/api/galois.GF/) to `repr`.
+
+  - Renamed `FieldArray.display()` classmethod to [`FieldArray.repr()`](https://mhostetter.github.io/galois/v0.2.0/api/galois.FieldArray.repr/).
+
+  - Renamed `FieldArray.display_mode` property to [`FieldArray.element_repr`](https://mhostetter.github.io/galois/v0.2.0/api/galois.FieldArray.element_repr/).
+    ```python
+    >>> import galois
+    >>> GF = galois.GF(3**4, repr="poly")
+    >>> x = GF.Random(2, seed=1); x
+    GF([2α^3 + 2α^2 + 2α + 2,          2α^3 + 2α^2], order=3^4)
+    >>> GF.repr("power"); x
+    GF([α^46, α^70], order=3^4)
+    >>> GF.element_repr
+    'power'
+    ```
+
+### Changes
+
+- Added `output="codeword"` keyword argument to FEC `encode()` methods. ([#435](https://github.com/mhostetter/galois/pull/435))
+- Added `output="message"` keyword argument to FEC `decode()` methods. ([#435](https://github.com/mhostetter/galois/pull/435))
+- Standardized NumPy scalar return types (`np.bool_` and `np.int64`) to Python types (`bool` and `int`). For example, in [`FieldArray.multiplicative_order()`](https://mhostetter.github.io/galois/v0.2.0/api/galois.FieldArray.multiplicative_order/). ([#437](https://github.com/mhostetter/galois/pull/437))
+- Improved documentation and published docs for pre-release versions (e.g., `v0.3.x`).
+
+### Contributors
+
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
