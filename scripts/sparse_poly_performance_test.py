@@ -48,7 +48,7 @@ print("DensePoly vs SparsePoly Multiplication".center(80, "-"))
 N = 3  # Number of non-zero coefficients
 degree = 100
 while degree <= 1000:
-    print(f"Nonzero: {N} / {degree}, {N/degree*100} %")
+    print(f"Nonzero: {N} / {degree}, {N / degree * 100} %")
     p1 = galois.Poly.Degrees(*get_coeffs(degree, N, GF))
     p2 = galois.Poly.Degrees(*get_coeffs(degree, N, GF))
 
