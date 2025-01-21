@@ -72,17 +72,17 @@ def _deterministic_search_fixed_terms(
                 yield poly
         elif terms == 1:
             # The last term must be the x^0 term, so we don't need to loop over possible degrees.
-            for coeff in direction(range(1, field.order)):
+            for c in direction(range(1, field.order)):
                 next_degrees = (*degrees, 0)
-                next_coeffs = (*coeffs, coeff)
+                next_coeffs = (*coeffs, c)
                 yield from recursive(next_degrees, next_coeffs, terms - 1)
         else:
             # Find the next term's degree. It must be at least terms - 1 so that the polynomial can have the specified
             # number of terms of lesser degree. It must also be less than the degree of the previous term.
-            for degree in direction(range(terms - 1, degrees[-1])):
-                for coeff in direction(range(1, field.order)):
-                    next_degrees = (*degrees, degree)
-                    next_coeffs = (*coeffs, coeff)
+            for d in direction(range(terms - 1, degrees[-1])):
+                for c in direction(range(1, field.order)):
+                    next_degrees = (*degrees, d)
+                    next_coeffs = (*coeffs, c)
                     yield from recursive(next_degrees, next_coeffs, terms - 1)
 
     # Initialize the search by setting the first term to x^m with coefficient 1. This function will
