@@ -1018,7 +1018,7 @@ def make_luts(field, sub_folder, seed, sparse=False):
     Z = [0] * 3  # The lagrange polynomial
     for i in range(3):
         N = min(10, order)
-        if dtype == object:
+        if dtype is object:
             x = randint_matrix(0, order, (N,))
         else:
             x = np.array(random.sample(range(0, order), N), dtype=dtype)
