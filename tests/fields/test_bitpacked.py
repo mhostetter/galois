@@ -12,6 +12,13 @@ def test_shape():
     a_ = np.packbits(a, axis=0)
     assert a_.shape == (100, 100)
 
+def test_repr():
+    a = GF2(0)
+    a_ = np.packbits(a)
+
+    assert repr(a_) == "GF([0], order=2, bitpacked)"
+
+
 def test_galois_array_indexing():
     # Define a Galois field array
     GF = galois.GF(2)
