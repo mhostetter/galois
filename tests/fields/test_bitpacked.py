@@ -4,6 +4,14 @@ from galois import GF2
 import operator as ops
 
 
+def test_shape():
+    a = GF2.Random((100, 100))
+    a_ = np.packbits(a, axis=1)
+    assert a_.shape == (100, 100)
+
+    a_ = np.packbits(a, axis=0)
+    assert a_.shape == (100, 100)
+
 def test_galois_array_indexing():
     # Define a Galois field array
     GF = galois.GF(2)

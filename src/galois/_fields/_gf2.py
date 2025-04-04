@@ -99,9 +99,9 @@ def packbits(a, axis=None, bitorder='big'):
     if not isinstance(a, GF2):
         raise TypeError("Bit-packing is only supported on instances of GF2.")
 
-    axis = -1 if axis is None else axis
+    axis = GF2BP.DEFAULT_AXIS if axis is None else axis
     axis_element_count = 1 if a.ndim == 0 else a.shape[axis]
-    packed = GF2BP(np.packbits(a.view(np.ndarray), axis=axis, bitorder=bitorder), axis_element_count)
+    packed = GF2BP(np.packbits(a.view(np.ndarray), axis=axis, bitorder=bitorder), axis, axis_element_count)
     return packed
 
 
@@ -113,7 +113,10 @@ def unpackbits(a, axis=None, count=None, bitorder='big'):
         raise TypeError("Bit-unpacking is only supported on instances of GF2BP.")
 
     if axis is None:
-        axis = -1
+        axis = a._axis
+
+    if axis != a._axis:
+        raise ValueError(f"You are requesting to unpack along a different axis ({axis} vs {a._axis})!")
 
     return GF2(np.unpackbits(a.view(np.ndarray), axis=axis, count=a._axis_count if count is None else count, bitorder=bitorder))
 
@@ -152,7 +155,8 @@ class add_ufunc_bitpacked(add_ufunc):
             output = np.packbits(output)
         else:
             output = super().__call__(ufunc, method, inputs, kwargs, meta)
-        output._axis_count = result_shape[-1]
+            output._axis = inputs[0]._axis
+        output._axis_count = result_shape[output._axis]
         return output
 
 
@@ -170,7 +174,8 @@ class subtract_ufunc_bitpacked(subtract_ufunc):
             output = np.packbits(output)
         else:
             output = super().__call__(ufunc, method, inputs, kwargs, meta)
-        output._axis_count = result_shape[-1]
+            output._axis = inputs[0]._axis
+        output._axis_count = result_shape[GF2BP.DEFAULT_AXIS]
         return output
 
 
@@ -186,9 +191,11 @@ class multiply_ufunc_bitpacked(multiply_ufunc):
         else:
             result_shape = np.broadcast_shapes(*(i.shape for i in inputs))
 
+        output_axis = GF2BP.DEFAULT_AXIS
         if is_outer_product:
             assert len(inputs) == 2
             # Unpack the first argument and propagate the bitpacked second argument
+            output_axis = inputs[-1]._axis
             inputs = [np.unpackbits(x).view(np.ndarray) if i == 0 else x.view(np.ndarray) for i, x in enumerate(inputs)]
             output = np.multiply.outer(*inputs)
         else:
@@ -199,9 +206,11 @@ class multiply_ufunc_bitpacked(multiply_ufunc):
                 output = np.packbits(output)
             else:
                 output = super().__call__(ufunc, method, inputs, kwargs, meta)
+                output_axis = inputs[0]._axis
 
         output = self.field._view(output)
-        output._axis_count = result_shape[-1]
+        output._axis = output_axis
+        output._axis_count = result_shape[output_axis]
         return output
 
 
@@ -219,7 +228,8 @@ class divide_ufunc_bitpacked(divide):
             output = np.packbits(output)
         else:
             output = super().__call__(ufunc, method, inputs, kwargs, meta)
-        output._axis_count = result_shape[-1]
+            output._axis = inputs[0]._axis
+        output._axis_count = result_shape[GF2BP.DEFAULT_AXIS]
         return output
 
 
@@ -238,10 +248,11 @@ class matmul_ufunc_bitpacked(matmul_ufunc):
         row_axis_count = b.shape[0]
         b = field._view(
             np.packbits(
-                np.unpackbits(b.view(np.ndarray), axis=-1, count=b._axis_count),
+                np.unpackbits(b.view(np.ndarray), axis=b._axis, count=b._axis_count),
                 axis=0,
             )
         )
+        b._axis = 0
         b._axis_count = row_axis_count
 
         # Make sure the inner dimensions match (e.g. (M, N) x (N, P) -> (M, P))
@@ -264,8 +275,9 @@ class matmul_ufunc_bitpacked(matmul_ufunc):
                 # output[:, i] = np.bitwise_xor.reduce(np.unpackbits((a & b[:, i]).view(np.ndarray), axis=-1), axis=-1)
                 output[:, i] = np.bitwise_xor.reduce(
                     np.bitwise_count((a & b.view(np.ndarray)[:, i]).view(np.ndarray)), axis=-1) % 2
-        output = field._view(np.packbits(output.view(np.ndarray), axis=-1))
-        output._axis_count = final_shape[-1]
+        output = field._view(np.packbits(output.view(np.ndarray), axis=a._axis))
+        output._axis = a._axis
+        output._axis_count = final_shape[a._axis]
 
         return output
 
@@ -442,11 +454,13 @@ class GF2BP(
     Group:
         galois-fields
     """
+    DEFAULT_AXIS = -1  # The last axis
     BIT_WIDTH = 8
 
     def __new__(
         cls,
         x: ElementLike | ArrayLike,
+        axis: int = DEFAULT_AXIS,
         axis_element_count: Optional[int] = None,
         dtype: DTypeLike | None = None,
         copy: bool = True,
@@ -461,6 +475,7 @@ class GF2BP(
             # x = cls._verify_array_like_types_and_values(x)
 
             array = cls._view(np.array(x, dtype=dtype, copy=copy, order=order, ndmin=ndmin))
+            array._axis = axis
             array._axis_count = axis_element_count
 
             return array
@@ -474,6 +489,7 @@ class GF2BP(
     def __init__(
         self,
         x: ElementLike | ArrayLike,
+        axis: int = DEFAULT_AXIS,
         axis_element_count: Optional[int] = None,
         dtype: DTypeLike | None = None,
         copy: bool = True,
@@ -489,8 +505,9 @@ class GF2BP(
         """
         super().__array_finalize__(obj)
 
-        # Pass along _axis_count if it has been set already
+        # Pass along attribute if they have been set already
         try:
+            self._axis = obj._axis
             self._axis_count = obj._axis_count
         except AttributeError:
             pass
@@ -682,7 +699,10 @@ class GF2BP(
     @property
     def shape(self):
         # A cast to np.ndarray is needed to get the packed shape
-        return self.view(np.ndarray).shape[:-1] + (self._axis_count,)
+        packed_shape = list(self.view(np.ndarray).shape)
+        packed_shape[self._axis] = self._axis_count
+        unpacked_shape = tuple(packed_shape)
+        return unpacked_shape
 
     def get_unpacked_value(self, index):
         # Numpy indexing is handled primarily in https://github.com/numpy/numpy/blob/maintenance/1.26.x/numpy/core/src/multiarray/mapping.c#L1435
@@ -691,12 +711,12 @@ class GF2BP(
         packed = self.view(np.ndarray)[packed_index]
 
         if np.isscalar(packed):
-            packed = GF2BP([packed], self._axis_count).view(np.ndarray)
+            packed = GF2BP([packed], self._axis, self._axis_count).view(np.ndarray)
 
         if len(shape) > 0:
             packed = packed.reshape(shape)
 
-        unpacked = np.unpackbits(packed, axis=-1, count=self._axis_count)
+        unpacked = np.unpackbits(packed, axis=self._axis, count=self._axis_count)
         value = unpacked[unpacked_index]
         if np.isscalar(value):
             return GF2(value, dtype=self.dtype)
@@ -715,14 +735,14 @@ class GF2BP(
         original_packed_shape = packed.shape
 
         if np.isscalar(packed):
-            packed = GF2BP([packed], self._axis_count).view(np.ndarray)
+            packed = GF2BP([packed], self._axis, self._axis_count).view(np.ndarray)
 
         if len(shape) > 0:
             packed = packed.reshape(shape)
 
-        unpacked = np.unpackbits(packed, axis=-1, count=self._axis_count)
+        unpacked = np.unpackbits(packed, axis=self._axis, count=self._axis_count)
         unpacked[unpacked_index] = value
-        repacked = np.packbits(unpacked.view(np.ndarray), axis=-1)
+        repacked = np.packbits(unpacked.view(np.ndarray), axis=self._axis)
         repacked = repacked.reshape(original_packed_shape)
 
         self.view(np.ndarray)[packed_index] = repacked
