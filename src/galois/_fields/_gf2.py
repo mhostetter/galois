@@ -7,11 +7,13 @@ from __future__ import annotations
 import operator
 from functools import reduce
 from math import ceil, floor
-from typing import Sequence, Final
+from typing import Final, Optional, Sequence
 
 import numpy as np
-from typing_extensions import Literal, Self, Optional
+from typing_extensions import Literal, Self
 
+from .._domains._array import Array
+from .._domains._function import Function
 from .._domains._linalg import row_reduce_jit
 from .._domains._lookup import (
     add_ufunc,
@@ -25,8 +27,6 @@ from .._domains._lookup import (
     subtract_ufunc,
 )
 from .._domains._ufunc import UFuncMixin, matmul_ufunc
-from .._domains._function import Function
-from .._domains._array import Array
 from .._helper import export, verify_isinstance
 from ..typing import ArrayLike, DTypeLike, ElementLike
 from ._array import FieldArray
@@ -92,7 +92,8 @@ class sqrt(sqrt_ufunc):
     def implementation(self, a: FieldArray) -> FieldArray:
         return a.copy()
 
-def packbits(a, axis=None, bitorder='big'):
+
+def packbits(a, axis=None, bitorder="big"):
     if isinstance(a, GF2BP):
         return a
 
@@ -105,7 +106,7 @@ def packbits(a, axis=None, bitorder='big'):
     return packed
 
 
-def unpackbits(a, axis=None, count=None, bitorder='big'):
+def unpackbits(a, axis=None, count=None, bitorder="big"):
     if isinstance(a, GF2):
         return a
 
@@ -118,7 +119,9 @@ def unpackbits(a, axis=None, count=None, bitorder='big'):
     if axis != a._axis:
         raise ValueError(f"You are requesting to unpack along a different axis ({axis} vs {a._axis})!")
 
-    return GF2(np.unpackbits(a.view(np.ndarray), axis=axis, count=a._axis_count if count is None else count, bitorder=bitorder))
+    return GF2(
+        np.unpackbits(a.view(np.ndarray), axis=axis, count=a._axis_count if count is None else count, bitorder=bitorder)
+    )
 
 
 class UFuncMixin_2_1(UFuncMixin):
@@ -151,7 +154,7 @@ class add_ufunc_bitpacked(add_ufunc):
         if any(i.shape != inputs[0].shape for i in inputs):
             # We can't do simple bitwise addition when the shapes aren't the same due to broadcasting
             inputs = [np.unpackbits(i) for i in inputs]
-            output = reduce(operator.add, inputs)  # We need this to use GF2's addition
+            output = reduce(operator.add, inputs)  # We need this to use GF2's default addition
             output = np.packbits(output)
         else:
             output = super().__call__(ufunc, method, inputs, kwargs, meta)
@@ -170,7 +173,7 @@ class subtract_ufunc_bitpacked(subtract_ufunc):
         if any(i.shape != inputs[0].shape for i in inputs):
             # We can't do simple bitwise subtraction when the shapes aren't the same due to broadcasting
             inputs = [np.unpackbits(i) for i in inputs]
-            output = reduce(operator.sub, inputs)  # We need this to use GF2's subtraction
+            output = reduce(operator.sub, inputs)  # We need this to use GF2's default subtraction
             output = np.packbits(output)
         else:
             output = super().__call__(ufunc, method, inputs, kwargs, meta)
@@ -202,7 +205,7 @@ class multiply_ufunc_bitpacked(multiply_ufunc):
             if any(i.shape != inputs[0].shape for i in inputs):
                 # We can't do simple bitwise multiplication when the shapes aren't the same due to broadcasting
                 inputs = [np.unpackbits(i) for i in inputs]
-                output = reduce(operator.mul, inputs)  # We need this to use GF2's multiply
+                output = reduce(operator.mul, inputs)  # We need this to use GF2's default multiply
                 output = np.packbits(output)
             else:
                 output = super().__call__(ufunc, method, inputs, kwargs, meta)
@@ -224,7 +227,7 @@ class divide_ufunc_bitpacked(divide):
         if any(i.shape != inputs[0].shape for i in inputs):
             # We can't do simple bitwise division when the shapes aren't the same due to broadcasting
             inputs = [np.unpackbits(i) for i in inputs]
-            output = reduce(operator.truediv, inputs)  # We need this to use GF2's division
+            output = reduce(operator.truediv, inputs)  # We need this to use GF2's default division
             output = np.packbits(output)
         else:
             output = super().__call__(ufunc, method, inputs, kwargs, meta)
@@ -258,28 +261,41 @@ class matmul_ufunc_bitpacked(matmul_ufunc):
         # Make sure the inner dimensions match (e.g. (M, N) x (N, P) -> (M, P))
         a_packed_shape = a.view(np.ndarray).shape
         b_packed_shape = b.view(np.ndarray).shape
-        assert a_packed_shape[-1] == b_packed_shape[0]
-        if len(b_packed_shape) == 1:
-            final_shape = (a_packed_shape[0],)
+        if a_packed_shape[-1] != b_packed_shape[0]:
+            # We can't do utilize packed m-v or m-m multiplication when the shapes aren't the same
+            inputs = [np.unpackbits(i) for i in inputs]
+            output = reduce(operator.matmul, inputs)  # We need this to use GF2's default matmul
+            output = np.packbits(output, axis=a._axis)
         else:
-            final_shape = (a_packed_shape[0], b_packed_shape[-1])
+            if len(b_packed_shape) == 1:
+                final_shape = (a_packed_shape[0],)
+            else:
+                final_shape = (a_packed_shape[0], b_packed_shape[-1])
 
-        if len(b.shape) == 1:
-            # matrix-vector multiplication
-            output = np.bitwise_xor.reduce(np.unpackbits((a & b).view(np.ndarray), axis=-1), axis=-1)
-        else:
-            # matrix-matrix multiplication
-            output = GF2.Zeros(final_shape)
-            for i in range(b_packed_shape[-1]):
-                # TODO: Include alternate path for numpy < v2
-                # output[:, i] = np.bitwise_xor.reduce(np.unpackbits((a & b[:, i]).view(np.ndarray), axis=-1), axis=-1)
-                output[:, i] = np.bitwise_xor.reduce(
-                    np.bitwise_count((a & b.view(np.ndarray)[:, i]).view(np.ndarray)), axis=-1) % 2
-        output = field._view(np.packbits(output.view(np.ndarray), axis=a._axis))
-        output._axis = a._axis
-        output._axis_count = final_shape[a._axis]
+            if len(b.shape) == 1:
+                # matrix-vector multiplication
+                output = np.bitwise_xor.reduce(np.unpackbits((a & b).view(np.ndarray), axis=-1), axis=-1)
+                output_axis = b._axis  # Output is a vector, so we use that axis (i.e. 0)
+            else:
+                # matrix-matrix multiplication
+                output = GF2.Zeros(final_shape)
+                for i in range(b_packed_shape[-1]):
+                    # TODO: Include alternate path for numpy < v2
+                    # output[:, i] = np.bitwise_xor.reduce(np.unpackbits((a & b[:, i]).view(np.ndarray), axis=-1), axis=-1)
+                    output[:, i] = (
+                        np.bitwise_xor.reduce(
+                            np.bitwise_count((a & b.view(np.ndarray)[:, i]).view(np.ndarray)), axis=-1
+                        )
+                        % 2
+                    )
+                output_axis = a._axis
+
+            output = field._view(np.packbits(output.view(np.ndarray), axis=output_axis))
+            output._axis = output_axis
+            output._axis_count = final_shape[output_axis]
 
         return output
+
 
 class concatenate_bitpacked(Function):
     """Concatenates matrices together"""
@@ -331,6 +347,7 @@ def not_implemented(*args, **kwargs):
     # TODO: Add a better error message about limited support
     return NotImplemented
 
+
 class UFuncMixin_2_1_BitPacked(UFuncMixin):
     """
     A mixin class that provides explicit calculation arithmetic for GF(2).
@@ -342,10 +359,10 @@ class UFuncMixin_2_1_BitPacked(UFuncMixin):
         cls._negative = negative_ufunc(cls, override=np.positive)
         cls._subtract = subtract_ufunc_bitpacked(cls, override=np.bitwise_xor)
         cls._multiply = multiply_ufunc_bitpacked(cls, override=np.bitwise_and)
-        cls._reciprocal = not_implemented # reciprocal(cls)
+        cls._reciprocal = not_implemented  # reciprocal(cls)
         cls._divide = divide_ufunc_bitpacked(cls)
-        cls._power = not_implemented # power(cls)
-        cls._log = not_implemented # log(cls)
+        cls._power = not_implemented  # power(cls)
+        cls._log = not_implemented  # log(cls)
         cls._sqrt = sqrt(cls)
         cls._packbits = packbits
         cls._unpackbits = unpackbits
@@ -454,6 +471,7 @@ class GF2BP(
     Group:
         galois-fields
     """
+
     DEFAULT_AXIS = -1  # The last axis
     BIT_WIDTH = 8
 
@@ -512,7 +530,6 @@ class GF2BP(
         except AttributeError:
             pass
 
-
     @classmethod
     def Identity(cls, size: int, dtype: DTypeLike | None = None) -> Self:
         r"""
@@ -531,7 +548,7 @@ class GF2BP(
         return np.packbits(array)
 
     @staticmethod
-    def _normalize_indexing_to_tuple(index, shape, axis = 0):
+    def _normalize_indexing_to_tuple(index, shape, axis=0):
         """
         Normalize indexing into a tuple of positive-only slices, integers, and/or new axes.
         NOTE: Ellipsis indexing is converted to slice indexing.
@@ -635,16 +652,21 @@ class GF2BP(
                     unpacked_index += (slice(None),)
                 else:
                     if i.step > 0:
-                        packed_index += (slice(i.start // bit_width,
-                                            max(int(ceil(i.stop / bit_width)), 1),
-                                            max(i.step // bit_width, 1)),)
+                        packed_index += (
+                            slice(
+                                i.start // bit_width, max(int(ceil(i.stop / bit_width)), 1), max(i.step // bit_width, 1)
+                            ),
+                        )
                         unpacked_index += (slice(i.start % bit_width, i.start % bit_width + i.stop - i.start, i.step),)
                     else:
-                        packed_index += (slice(i.start // bit_width,
-                                            max(int(floor(i.stop / bit_width)), -packed_shape[axis] -1),
-                                            min(i.step // bit_width, -1)),)
+                        packed_index += (
+                            slice(
+                                i.start // bit_width,
+                                max(int(floor(i.stop / bit_width)), -packed_shape[axis] - 1),
+                                min(i.step // bit_width, -1),
+                            ),
+                        )
                         unpacked_index += (slice(i.start % bit_width, i.start % bit_width + i.stop - i.start, i.step),)
-
 
                 packed_slice = packed_index[-1]
                 abs_step = abs(packed_slice.step)
@@ -658,7 +680,7 @@ class GF2BP(
                 else:
                     if isinstance(index, np.ndarray) and index.dtype == np.bool:
                         mask_packed = [False] * packed_shape[axis]
-                        for j, value in enumerate(i):
+                        for j, _ in enumerate(i):
                             mask_packed[j // bit_width] |= True
                         packed_index = mask_packed
                         unpacked_index = i
@@ -669,7 +691,7 @@ class GF2BP(
                         # remove duplicate entries, including nested arrays
                         if data.ndim > 1:
                             rows = []
-                            for j, row_data in enumerate(data):
+                            for _, row_data in enumerate(data):
                                 _, unique_indices = np.unique(row_data, return_index=True)
                                 # maintain the original order
                                 rows.append(row_data[np.sort(unique_indices)])
@@ -687,12 +709,13 @@ class GF2BP(
                 packed_index += (i,)
                 unpacked_index += (i,)
             else:
-                raise NotImplementedError(f"The following indexing scheme is not supported:\n{index}\n"
-                                          "If you believe this scheme should be supported, "
-                                          "please submit a GitHub issue at https://github.com/mhostetter/galois/issues.\n\n"
-                                          "If you'd like to perform this operation on the data, you should first call "
-                                          "`array = array.view(np.ndarray)` and then call the function."
-                                          )
+                raise NotImplementedError(
+                    f"The following indexing scheme is not supported:\n{index}\n"
+                    "If you believe this scheme should be supported, "
+                    "please submit a GitHub issue at https://github.com/mhostetter/galois/issues.\n\n"
+                    "If you'd like to perform this operation on the data, you should first call "
+                    "`array = array.view(np.ndarray)` and then call the function."
+                )
 
         return packed_index, unpacked_index, shape
 

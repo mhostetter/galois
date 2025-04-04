@@ -1,7 +1,9 @@
+import operator as ops
+
 import numpy as np
+
 import galois
 from galois import GF2
-import operator as ops
 
 
 def test_shape():
@@ -11,6 +13,7 @@ def test_shape():
 
     a_ = np.packbits(a, axis=0)
     assert a_.shape == (100, 100)
+
 
 def test_repr():
     a = GF2(0)
@@ -78,6 +81,7 @@ def test_galois_array_indexing():
     # taken = np.take(arr, [0, 2])
     # assert np.array_equal(taken, GF([1, 1]))
 
+
 def test_galois_array_setting():
     # Define a Galois field array
     GF = galois.GF(2)
@@ -135,7 +139,9 @@ def test_galois_array_setting():
     # 9. Using np.newaxis (reshaped array assignment)
     arr = GF([1, 0, 1, 1])
     arr = np.packbits(arr)
-    reshaped = arr[:, np.newaxis]  # should this be using arr's data (as would be the case without packbits) or a new array?
+    reshaped = arr[
+        :, np.newaxis
+    ]  # should this be using arr's data (as would be the case without packbits) or a new array?
     reshaped = np.packbits(reshaped)
     reshaped[:, 0] = GF([0, 0, 0, 0])
     # assert np.array_equal(arr, np.packbits(GF([0, 0, 0, 0])))
@@ -148,6 +154,7 @@ def test_galois_array_setting():
     col_indices = np.array([0, 1])
     arr_2d[np.ix_(row_indices, col_indices)] = GF([[0, 0], [0, 0]])
     assert np.array_equal(arr_2d, np.packbits(GF([[0, 0], [0, 0]])))
+
 
 def test_inv():
     N = 10
@@ -163,6 +170,7 @@ def test_inv():
     print(np.unpackbits(np.linalg.inv(p)))
     assert np.array_equal(np.linalg.inv(u), np.unpackbits(np.linalg.inv(p)))
 
+
 def test_arithmetic():
     size = (20, 10)
     cm = np.random.randint(2, size=size, dtype=np.uint8)
@@ -174,22 +182,24 @@ def test_arithmetic():
     cm3_GF2 = GF2(cm2.T)
     vec_GF2 = GF2(vec)
 
-    cm_gf2bp = np.packbits(cm_GF2)
-    cm2_gf2bp = np.packbits(cm2_GF2)
-    cm3_gf2bp = np.packbits(cm2_GF2.T)
-    vec_gf2bp = np.packbits(vec_GF2)
+    for axis in (0, 1):
+        cm_gf2bp = np.packbits(cm_GF2, axis=axis)
+        cm2_gf2bp = np.packbits(cm2_GF2, axis=axis)
+        cm3_gf2bp = np.packbits(cm2_GF2.T, axis=axis)
+        vec_gf2bp = np.packbits(vec_GF2, axis=0)  # Only one axis for a vector
 
-    # Addition
-    assert np.array_equal(np.unpackbits(cm_gf2bp + cm2_gf2bp), cm_GF2 + cm2_GF2)
+        # Addition
+        assert np.array_equal(np.unpackbits(cm_gf2bp + cm2_gf2bp), cm_GF2 + cm2_GF2)
 
-    # Multiplication
-    assert np.array_equal(np.unpackbits(cm_gf2bp * cm2_gf2bp), cm_GF2 * cm2_GF2)
+        # Multiplication
+        assert np.array_equal(np.unpackbits(cm_gf2bp * cm2_gf2bp), cm_GF2 * cm2_GF2)
 
-    # Matrix-vector product
-    assert np.array_equal(np.unpackbits(cm_gf2bp @ vec_gf2bp), cm_GF2 @ vec_GF2)
+        # Matrix-vector product
+        assert np.array_equal(np.unpackbits(cm_gf2bp @ vec_gf2bp), cm_GF2 @ vec_GF2)
 
-    # Matrix-matrix product
-    assert np.array_equal(np.unpackbits(cm_gf2bp @ cm3_gf2bp), cm_GF2 @ cm3_GF2)
+        # Matrix-matrix product
+        assert np.array_equal(np.unpackbits(cm_gf2bp @ cm3_gf2bp), cm_GF2 @ cm3_GF2)
+
 
 def test_broadcasting():
     a = GF2(np.random.randint(0, 2, 10))
@@ -206,6 +216,7 @@ def test_broadcasting():
     z = np.multiply.outer(x, y)
     assert np.array_equal(np.unpackbits(z), c)
     assert c.shape == z.shape == np.unpackbits(z).shape  # (10, 10)
+
 
 def test_advanced_broadcasting():
     a = GF2(np.random.randint(0, 2, (1, 2, 3)))
