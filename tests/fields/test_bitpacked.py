@@ -1,3 +1,4 @@
+import itertools
 import operator as ops
 
 import numpy as np
@@ -20,6 +21,14 @@ def test_repr():
     a_ = np.packbits(a)
 
     assert repr(a_) == "GF([0], order=2, bitpacked)"
+
+
+def test_new_axis():
+    a = GF2.Random((10, 20))
+    a_ = np.packbits(a)
+    a__ = a_[:, None]
+    assert a__.shape == a[:, None].shape
+    assert np.array_equal(a__, a[:, None])
 
 
 def test_galois_array_indexing():
@@ -139,9 +148,8 @@ def test_galois_array_setting():
     # 9. Using np.newaxis (reshaped array assignment)
     arr = GF([1, 0, 1, 1])
     arr = np.packbits(arr)
-    reshaped = arr[
-        :, np.newaxis
-    ]  # should this be using arr's data (as would be the case without packbits) or a new array?
+    # should this be using arr's data (as would be the case without packbits) or a new array?
+    reshaped = arr[:, np.newaxis]
     reshaped = np.packbits(reshaped)
     reshaped[:, 0] = GF([0, 0, 0, 0])
     # assert np.array_equal(arr, np.packbits(GF([0, 0, 0, 0])))
@@ -182,10 +190,10 @@ def test_arithmetic():
     cm3_GF2 = GF2(cm2.T)
     vec_GF2 = GF2(vec)
 
-    for axis in (0, 1):
-        cm_gf2bp = np.packbits(cm_GF2, axis=axis)
-        cm2_gf2bp = np.packbits(cm2_GF2, axis=axis)
-        cm3_gf2bp = np.packbits(cm2_GF2.T, axis=axis)
+    for axis_a, axis_b in itertools.product((0, 1), repeat=2):
+        cm_gf2bp = np.packbits(cm_GF2, axis=axis_a)
+        cm2_gf2bp = np.packbits(cm2_GF2, axis=axis_b)
+        cm3_gf2bp = np.packbits(cm2_GF2.T, axis=axis_b)
         vec_gf2bp = np.packbits(vec_GF2, axis=0)  # Only one axis for a vector
 
         # Addition

@@ -151,7 +151,7 @@ class add_ufunc_bitpacked(add_ufunc):
 
     def __call__(self, ufunc, method, inputs, kwargs, meta):
         result_shape = np.broadcast_shapes(*(i.shape for i in inputs))
-        if any(i.shape != inputs[0].shape for i in inputs):
+        if any(i.view(np.ndarray).shape != inputs[0].view(np.ndarray).shape for i in inputs):
             # We can't do simple bitwise addition when the shapes aren't the same due to broadcasting
             inputs = [np.unpackbits(i) for i in inputs]
             output = reduce(operator.add, inputs)  # We need this to use GF2's default addition
@@ -170,7 +170,7 @@ class subtract_ufunc_bitpacked(subtract_ufunc):
 
     def __call__(self, ufunc, method, inputs, kwargs, meta):
         result_shape = np.broadcast_shapes(*(i.shape for i in inputs))
-        if any(i.shape != inputs[0].shape for i in inputs):
+        if any(i.view(np.ndarray).shape != inputs[0].view(np.ndarray).shape for i in inputs):
             # We can't do simple bitwise subtraction when the shapes aren't the same due to broadcasting
             inputs = [np.unpackbits(i) for i in inputs]
             output = reduce(operator.sub, inputs)  # We need this to use GF2's default subtraction
@@ -202,7 +202,7 @@ class multiply_ufunc_bitpacked(multiply_ufunc):
             inputs = [np.unpackbits(x).view(np.ndarray) if i == 0 else x.view(np.ndarray) for i, x in enumerate(inputs)]
             output = np.multiply.outer(*inputs)
         else:
-            if any(i.shape != inputs[0].shape for i in inputs):
+            if any(i.view(np.ndarray).shape != inputs[0].view(np.ndarray).shape for i in inputs):
                 # We can't do simple bitwise multiplication when the shapes aren't the same due to broadcasting
                 inputs = [np.unpackbits(i) for i in inputs]
                 output = reduce(operator.mul, inputs)  # We need this to use GF2's default multiply
@@ -224,7 +224,7 @@ class divide_ufunc_bitpacked(divide):
 
     def __call__(self, ufunc, method, inputs, kwargs, meta):
         result_shape = np.broadcast_shapes(*(i.shape for i in inputs))
-        if any(i.shape != inputs[0].shape for i in inputs):
+        if any(i.view(np.ndarray).shape != inputs[0].view(np.ndarray).shape for i in inputs):
             # We can't do simple bitwise division when the shapes aren't the same due to broadcasting
             inputs = [np.unpackbits(i) for i in inputs]
             output = reduce(operator.truediv, inputs)  # We need this to use GF2's default division
@@ -607,8 +607,10 @@ class GF2BP(
                         axis += 1
                     normalized.extend(expanded_dims)
                 else:
-                    normalized.extend(GF2BP._normalize_indexing_to_tuple(i, shape, axis))
-                    axis += 1
+                    i_normalized = GF2BP._normalize_indexing_to_tuple(i, shape, axis)
+                    normalized.extend(i_normalized)
+                    if i_normalized is not (np.newaxis,):
+                        axis += 1
 
             return tuple(normalized)
         elif isinstance(index, (Sequence, np.ndarray)):
@@ -624,12 +626,14 @@ class GF2BP(
 
         bit_width: Final[int] = self.BIT_WIDTH
         packed_shape = self.view(np.ndarray).shape
+        packed_axis = len(packed_shape) - 1 if self._axis == -1 else self._axis
         packed_index = tuple()
         unpacked_index = tuple()
         shape = tuple()
         axes_in_index = len(normalized_index)
-        for axis, i in enumerate(normalized_index):
-            is_unpacked_axis = axis != self.ndim - 1  # only the last axis is packed
+        axis = 0
+        for i in normalized_index:
+            is_unpacked_axis = axis != packed_axis
             if isinstance(i, int):
                 if is_unpacked_axis and self.ndim > 1:
                     packed_index += (i,)
@@ -706,8 +710,8 @@ class GF2BP(
                         if axes_in_index == 1:
                             unpacked_index += ([s % bit_width for s in i],)
             elif i is np.newaxis:
-                packed_index += (i,)
                 unpacked_index += (i,)
+                axis -= 1  # Don't count new axes
             else:
                 raise NotImplementedError(
                     f"The following indexing scheme is not supported:\n{index}\n"
@@ -716,6 +720,12 @@ class GF2BP(
                     "If you'd like to perform this operation on the data, you should first call "
                     "`array = array.view(np.ndarray)` and then call the function."
                 )
+
+            axis += 1
+
+        # Catch any remaining indexing for the rest of the shape if not all axes were specified.
+        if axis < len(packed_shape):
+            shape += (-1,)
 
         return packed_index, unpacked_index, shape
 
