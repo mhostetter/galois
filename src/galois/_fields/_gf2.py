@@ -10,7 +10,6 @@ from math import ceil, floor
 from typing import Final, Optional, Sequence, Type
 
 import numpy as np
-import numpy.typing as npt
 from packaging.version import Version
 from typing_extensions import Literal, Self
 
@@ -249,23 +248,7 @@ class matmul_ufunc_bitpacked(matmul_ufunc):
         if Version(np.version.version) >= Version("2.0.0"):
             self._dot_product_reduce = lambda x: np.bitwise_xor.reduce(np.bitwise_count(x), axis=-1) % 2
         else:
-            # self._dot_product_reduce = lambda x: np.bitwise_xor.reduce(np.unpackbits(x, axis=-1), axis=-1)
-            self._dot_product_reduce = lambda x: np.bitwise_xor.reduce(self._bitwise_parity_numpy_v1(x), axis=-1)
-
-    @staticmethod
-    def _bitwise_parity_numpy_v1(arr: npt.NDArray[np.uint8]) -> npt.NDArray[np.uint8]:
-        """Return the parity of the number of bits set to 1 in the input array per item."""
-        output = arr.copy()
-        nbits = np.iinfo(arr.dtype).bits
-        for log_shift in range(0, int(np.round(np.log2(nbits)))):
-            shift = 2**log_shift
-            output = np.bitwise_and(
-                np.bitwise_xor(output, np.right_shift(output, shift)),
-                np.asarray(int((b"0" * (2 * shift - 1) + b"1") * (nbits // (2 * shift)), 2)).astype(
-                    arr.dtype
-                ),
-            )
-        return output.astype(np.uint8)
+            self._dot_product_reduce = lambda x: np.bitwise_xor.reduce(np.unpackbits(x, axis=-1), axis=-1)
 
     def __call__(self, ufunc, method, inputs, kwargs, meta):
         a, b = inputs
