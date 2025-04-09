@@ -13,7 +13,6 @@ from numba import int64
 
 from .._helper import verify_isinstance
 from ._function import Function, FunctionMixin
-from ._meta import DTYPES
 
 if TYPE_CHECKING:
     from ._array import Array
@@ -35,12 +34,21 @@ def _lapack_linalg(field: Type[Array], a: Array, b: Array, function, out=None, n
     a = a.view(np.ndarray)
     b = b.view(np.ndarray)
 
-    # Determine the minimum dtype to hold the entire product and summation without overflowing
+    # Determine the maximum possible integer summation. Find the smallest floating-point data type that can hold that
+    # integer value. This enables the linear algebra to be computed using BLAS, which is faster than integer arithmetic.
+    # The maximum integer that can be represented in a float64 is 2**(np.finfo(np.float64).nmant + 1). If
+    # floating-point arithmetic is not possible, then np.int64 or np.object_ is used.
     if n_sum is None:
         n_sum = 1 if len(a.shape) == 0 else max(a.shape)
     max_value = n_sum * (field.characteristic - 1) ** 2
-    dtypes = [dtype for dtype in DTYPES if np.iinfo(dtype).max >= max_value]
-    dtype = np.object_ if len(dtypes) == 0 else dtypes[0]
+    if max_value <= 2 ** (np.finfo(np.float32).nmant + 1):
+        dtype = np.float32
+    elif max_value <= 2 ** (np.finfo(np.float64).nmant + 1):
+        dtype = np.float64
+    elif max_value <= np.iinfo(np.int64).max:
+        dtype = np.int64
+    else:
+        dtype = np.object_
     a = a.astype(dtype)
     b = b.astype(dtype)
 
