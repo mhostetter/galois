@@ -7804,16 +7804,16 @@ rows of <span class="math notranslate nohighlight">\(\mathbf{A}\)</span>, i.e. <
 
 <span class="gp">In [3]: </span><span class="n">A</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">((</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">));</span> <span class="n">A</span>
 <span class="gh">Out[3]: </span>
-<span class="go">GF([[ 5,  6, 16],</span>
-<span class="go">    [18,  6, 20],</span>
-<span class="go">    [15, 25, 25],</span>
-<span class="go">    [ 5, 14,  2],</span>
-<span class="go">    [ 5, 24,  1]], order=31)</span>
+<span class="go">GF([[ 8, 27, 15],</span>
+<span class="go">    [25, 12, 10],</span>
+<span class="go">    [ 4, 24, 30],</span>
+<span class="go">    [27, 19, 14],</span>
+<span class="go">    [30, 11,  3]], order=31)</span>
 
 <span class="gp">In [4]: </span><span class="n">LN</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">left_null_space</span><span class="p">();</span> <span class="n">LN</span>
 <span class="gh">Out[4]: </span>
-<span class="go">GF([[ 1,  0,  3, 12,  9],</span>
-<span class="go">    [ 0,  1,  5, 10, 21]], order=31)</span>
+<span class="go">GF([[ 1,  0, 16,  1,  6],</span>
+<span class="go">    [ 0,  1, 23, 17, 18]], order=31)</span>
 </code></pre></div>
 </div>
 <p>The left null space is the set of vectors that sum the rows to 0.</p>
@@ -7906,7 +7906,7 @@ rows of <span class="math notranslate nohighlight">\(\mathbf{A}\)</span>, i.e. <
       <div class="md-copyright">
   
     <div class="md-footer-copyright__highlight">
-        &#169; Copyright 2020-2024, Matt Hostetter.
+        &#169; Copyright 2020-2025, Matt Hostetter.
         
     </div>
   

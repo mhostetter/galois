@@ -7868,10 +7868,10 @@ element. For example, <span class="math notranslate nohighlight">\(3 \cdot a = a
 <p class="example rubric" id="examples">Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></p>
 <p>Compute the derivatives of a polynomial over <span class="math notranslate nohighlight">\(\mathrm{GF}(2)\)</span>.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">f</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">Poly</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">7</span><span class="p">);</span> <span class="n">f</span>
-<span class="gh">Out[1]: </span><span class="go">Poly(x^7 + x^6 + x^5 + x^4 + x^3 + x^2 + x, GF(2))</span>
+<span class="gh">Out[1]: </span><span class="go">Poly(x^7 + x^6 + x^2, GF(2))</span>
 
 <span class="gp">In [2]: </span><span class="n">f</span><span class="o">.</span><span class="n">derivative</span><span class="p">()</span>
-<span class="gh">Out[2]: </span><span class="go">Poly(x^6 + x^4 + x^2 + 1, GF(2))</span>
+<span class="gh">Out[2]: </span><span class="go">Poly(x^6, GF(2))</span>
 
 <span class="go"># p derivatives of a polynomial, where p is the field&#39;s characteristic, will always result in 0</span>
 <span class="gp">In [3]: </span><span class="n">f</span><span class="o">.</span><span class="n">derivative</span><span class="p">(</span><span class="n">GF</span><span class="o">.</span><span class="n">characteristic</span><span class="p">)</span>
@@ -7882,16 +7882,16 @@ element. For example, <span class="math notranslate nohighlight">\(3 \cdot a = a
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [4]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
 
 <span class="gp">In [5]: </span><span class="n">f</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">Poly</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">GF</span><span class="p">);</span> <span class="n">f</span>
-<span class="gh">Out[5]: </span><span class="go">Poly(2x^11 + 5x^10 + 4x^9 + 3x^8 + x^7 + 3x^5 + 5x^4 + 4x^3 + 5x^2 + 6x + 5, GF(7))</span>
+<span class="gh">Out[5]: </span><span class="go">Poly(5x^11 + 3x^9 + 5x^8 + 4x^7 + 4x^6 + 5x^5 + 4x^4 + 3x^3 + 4x^2 + 4x + 1, GF(7))</span>
 
 <span class="gp">In [6]: </span><span class="n">f</span><span class="o">.</span><span class="n">derivative</span><span class="p">()</span>
-<span class="gh">Out[6]: </span><span class="go">Poly(x^10 + x^9 + x^8 + 3x^7 + x^4 + 6x^3 + 5x^2 + 3x + 6, GF(7))</span>
+<span class="gh">Out[6]: </span><span class="go">Poly(6x^10 + 6x^8 + 5x^7 + 3x^5 + 4x^4 + 2x^3 + 2x^2 + x + 4, GF(7))</span>
 
 <span class="gp">In [7]: </span><span class="n">f</span><span class="o">.</span><span class="n">derivative</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-<span class="gh">Out[7]: </span><span class="go">Poly(3x^9 + 2x^8 + x^7 + 4x^3 + 4x^2 + 3x + 3, GF(7))</span>
+<span class="gh">Out[7]: </span><span class="go">Poly(4x^9 + 6x^7 + x^4 + 2x^3 + 6x^2 + 4x + 1, GF(7))</span>
 
 <span class="gp">In [8]: </span><span class="n">f</span><span class="o">.</span><span class="n">derivative</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-<span class="gh">Out[8]: </span><span class="go">Poly(6x^8 + 2x^7 + 5x^2 + x + 3, GF(7))</span>
+<span class="gh">Out[8]: </span><span class="go">Poly(x^8 + 4x^3 + 6x^2 + 5x + 4, GF(7))</span>
 
 <span class="go"># p derivatives of a polynomial, where p is the field&#39;s characteristic, will always result in 0</span>
 <span class="gp">In [9]: </span><span class="n">f</span><span class="o">.</span><span class="n">derivative</span><span class="p">(</span><span class="n">GF</span><span class="o">.</span><span class="n">characteristic</span><span class="p">)</span>
@@ -7902,13 +7902,13 @@ element. For example, <span class="math notranslate nohighlight">\(3 \cdot a = a
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [10]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="mi">5</span><span class="p">)</span>
 
 <span class="gp">In [11]: </span><span class="n">f</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">Poly</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">GF</span><span class="p">);</span> <span class="n">f</span>
-<span class="gh">Out[11]: </span><span class="go">Poly(142x^7 + 25x^6 + 185x^5 + 56x^4 + 66x^3 + 111x^2 + 52x + 31, GF(3^5))</span>
+<span class="gh">Out[11]: </span><span class="go">Poly(38x^7 + 82x^6 + 208x^5 + 61x^4 + 83x^3 + 64x^2 + 122x + 107, GF(3^5))</span>
 
 <span class="gp">In [12]: </span><span class="n">f</span><span class="o">.</span><span class="n">derivative</span><span class="p">()</span>
-<span class="gh">Out[12]: </span><span class="go">Poly(142x^6 + 97x^4 + 56x^3 + 222x + 52, GF(3^5))</span>
+<span class="gh">Out[12]: </span><span class="go">Poly(38x^6 + 146x^4 + 61x^3 + 47x + 122, GF(3^5))</span>
 
 <span class="gp">In [13]: </span><span class="n">f</span><span class="o">.</span><span class="n">derivative</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-<span class="gh">Out[13]: </span><span class="go">Poly(97x^3 + 222, GF(3^5))</span>
+<span class="gh">Out[13]: </span><span class="go">Poly(146x^3 + 47, GF(3^5))</span>
 
 <span class="go"># p derivatives of a polynomial, where p is the field&#39;s characteristic, will always result in 0</span>
 <span class="gp">In [14]: </span><span class="n">f</span><span class="o">.</span><span class="n">derivative</span><span class="p">(</span><span class="n">GF</span><span class="o">.</span><span class="n">characteristic</span><span class="p">)</span>
@@ -7987,7 +7987,7 @@ element. For example, <span class="math notranslate nohighlight">\(3 \cdot a = a
       <div class="md-copyright">
   
     <div class="md-footer-copyright__highlight">
-        &#169; Copyright 2020-2024, Matt Hostetter.
+        &#169; Copyright 2020-2025, Matt Hostetter.
         
     </div>
   
