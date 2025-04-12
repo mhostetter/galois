@@ -7805,11 +7805,11 @@ combinations of the rows of <span class="math notranslate nohighlight">\(\mathbf
 
 <span class="gp">In [3]: </span><span class="n">A</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">((</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">));</span> <span class="n">A</span>
 <span class="gh">Out[3]: </span>
-<span class="go">GF([[20,  6,  6],</span>
-<span class="go">    [19, 13, 30],</span>
-<span class="go">    [30, 22,  4],</span>
-<span class="go">    [24, 12,  9],</span>
-<span class="go">    [ 3,  5, 16]], order=31)</span>
+<span class="go">GF([[12, 28, 29],</span>
+<span class="go">    [ 5, 28, 25],</span>
+<span class="go">    [27, 13,  1],</span>
+<span class="go">    [27,  0, 30],</span>
+<span class="go">    [ 0, 19, 20]], order=31)</span>
 
 <span class="gp">In [4]: </span><span class="n">R</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">row_space</span><span class="p">();</span> <span class="n">R</span>
 <span class="gh">Out[4]: </span>
@@ -7821,8 +7821,8 @@ combinations of the rows of <span class="math notranslate nohighlight">\(\mathbf
 <p>The dimension of the row space and left null space sum to <span class="math notranslate nohighlight">\(m\)</span>.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [5]: </span><span class="n">LN</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">left_null_space</span><span class="p">();</span> <span class="n">LN</span>
 <span class="gh">Out[5]: </span>
-<span class="go">GF([[ 1,  0,  0, 16, 10],</span>
-<span class="go">    [ 0,  1, 22, 29, 17]], order=31)</span>
+<span class="go">GF([[ 1,  0, 24, 10, 18],</span>
+<span class="go">    [ 0,  1, 17, 23, 13]], order=31)</span>
 
 <span class="gp">In [6]: </span><span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">LN</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">m</span>
 <span class="gh">Out[6]: </span><span class="go">True</span>

@@ -7900,15 +7900,15 @@ Matrix (shortened)</label></div>
 <span class="gp">In [2]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">field</span>
 
 <span class="gp">In [3]: </span><span class="n">m</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="n">rs</span><span class="o">.</span><span class="n">k</span><span class="p">);</span> <span class="n">m</span>
-<span class="gh">Out[3]: </span><span class="go">GF([13,  8,  4, 15, 15,  1,  9,  7,  1], order=2^4)</span>
+<span class="gh">Out[3]: </span><span class="go">GF([ 6, 11,  3, 11,  9,  3,  9,  3,  7], order=2^4)</span>
 
 <span class="gp">In [4]: </span><span class="n">c</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">m</span><span class="p">);</span> <span class="n">c</span>
-<span class="gh">Out[4]: </span><span class="go">GF([13,  8,  4, 15, 15,  1,  9,  7,  1,  8,  3, 14,  4,  7,  7], order=2^4)</span>
+<span class="gh">Out[4]: </span><span class="go">GF([ 6, 11,  3, 11,  9,  3,  9,  3,  7,  8, 15,  4,  1, 10, 13], order=2^4)</span>
 </code></pre></div>
 </div>
 <p>Compute the parity symbols only.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [5]: </span><span class="n">p</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="s2">&quot;parity&quot;</span><span class="p">);</span> <span class="n">p</span>
-<span class="gh">Out[5]: </span><span class="go">GF([ 8,  3, 14,  4,  7,  7], order=2^4)</span>
+<span class="gh">Out[5]: </span><span class="go">GF([ 8, 15,  4,  1, 10, 13], order=2^4)</span>
 </code></pre></div>
 </div>
 </div>
@@ -7919,15 +7919,15 @@ Matrix (shortened)</label></div>
 <span class="gp">In [7]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">field</span>
 
 <span class="gp">In [8]: </span><span class="n">m</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="n">rs</span><span class="o">.</span><span class="n">k</span> <span class="o">-</span> <span class="mi">4</span><span class="p">);</span> <span class="n">m</span>
-<span class="gh">Out[8]: </span><span class="go">GF([ 4,  0, 11,  4, 14], order=2^4)</span>
+<span class="gh">Out[8]: </span><span class="go">GF([ 4, 12,  3, 13,  0], order=2^4)</span>
 
 <span class="gp">In [9]: </span><span class="n">c</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">m</span><span class="p">);</span> <span class="n">c</span>
-<span class="gh">Out[9]: </span><span class="go">GF([ 4,  0, 11,  4, 14, 12,  2, 10, 13, 14,  9], order=2^4)</span>
+<span class="gh">Out[9]: </span><span class="go">GF([ 4, 12,  3, 13,  0,  4,  2,  3,  9,  7, 13], order=2^4)</span>
 </code></pre></div>
 </div>
 <p>Compute the parity symbols only.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [10]: </span><span class="n">p</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="s2">&quot;parity&quot;</span><span class="p">);</span> <span class="n">p</span>
-<span class="gh">Out[10]: </span><span class="go">GF([12,  2, 10, 13, 14,  9], order=2^4)</span>
+<span class="gh">Out[10]: </span><span class="go">GF([ 4,  2,  3,  9,  7, 13], order=2^4)</span>
 </code></pre></div>
 </div>
 </div>
@@ -7939,24 +7939,24 @@ Matrix (shortened)</label></div>
 
 <span class="gp">In [13]: </span><span class="n">m</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="n">rs</span><span class="o">.</span><span class="n">k</span><span class="p">));</span> <span class="n">m</span>
 <span class="gh">Out[13]: </span>
-<span class="go">GF([[ 5,  8, 10, 12, 10,  7,  6,  5,  7],</span>
-<span class="go">    [15,  8,  5,  5,  0, 12,  6,  6,  6],</span>
-<span class="go">    [ 0, 10,  4, 11, 11,  1,  9, 12,  2]], order=2^4)</span>
+<span class="go">GF([[ 3,  9,  8,  6,  5, 11, 10,  9, 13],</span>
+<span class="go">    [ 8, 13,  8, 10, 13, 13, 12,  0,  7],</span>
+<span class="go">    [ 9,  9, 12, 11, 12, 10,  7,  0, 11]], order=2^4)</span>
 
 <span class="gp">In [14]: </span><span class="n">c</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">m</span><span class="p">);</span> <span class="n">c</span>
 <span class="gh">Out[14]: </span>
-<span class="go">GF([[ 5,  8, 10, 12, 10,  7,  6,  5,  7,  9, 12,  1, 10,  6,  1],</span>
-<span class="go">    [15,  8,  5,  5,  0, 12,  6,  6,  6,  3,  3,  5,  8,  5,  9],</span>
-<span class="go">    [ 0, 10,  4, 11, 11,  1,  9, 12,  2,  4,  7, 13,  9,  4,  3]],</span>
+<span class="go">GF([[ 3,  9,  8,  6,  5, 11, 10,  9, 13, 12, 10,  0,  8, 10,  7],</span>
+<span class="go">    [ 8, 13,  8, 10, 13, 13, 12,  0,  7,  7, 12,  1,  7,  2, 13],</span>
+<span class="go">    [ 9,  9, 12, 11, 12, 10,  7,  0, 11,  1,  2, 15,  4,  3,  9]],</span>
 <span class="go">   order=2^4)</span>
 </code></pre></div>
 </div>
 <p>Compute the parity symbols only.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [15]: </span><span class="n">p</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="s2">&quot;parity&quot;</span><span class="p">);</span> <span class="n">p</span>
 <span class="gh">Out[15]: </span>
-<span class="go">GF([[ 9, 12,  1, 10,  6,  1],</span>
-<span class="go">    [ 3,  3,  5,  8,  5,  9],</span>
-<span class="go">    [ 4,  7, 13,  9,  4,  3]], order=2^4)</span>
+<span class="go">GF([[12, 10,  0,  8, 10,  7],</span>
+<span class="go">    [ 7, 12,  1,  7,  2, 13],</span>
+<span class="go">    [ 1,  2, 15,  4,  3,  9]], order=2^4)</span>
 </code></pre></div>
 </div>
 </div>
@@ -7968,23 +7968,23 @@ Matrix (shortened)</label></div>
 
 <span class="gp">In [18]: </span><span class="n">m</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="n">rs</span><span class="o">.</span><span class="n">k</span> <span class="o">-</span> <span class="mi">4</span><span class="p">));</span> <span class="n">m</span>
 <span class="gh">Out[18]: </span>
-<span class="go">GF([[13, 10, 10, 12, 14],</span>
-<span class="go">    [ 6, 13,  3,  7, 15],</span>
-<span class="go">    [ 2,  1,  0,  3, 13]], order=2^4)</span>
+<span class="go">GF([[15,  8, 14,  7,  2],</span>
+<span class="go">    [ 0, 11,  4,  4, 13],</span>
+<span class="go">    [ 7, 14,  9,  9,  4]], order=2^4)</span>
 
 <span class="gp">In [19]: </span><span class="n">c</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">m</span><span class="p">);</span> <span class="n">c</span>
 <span class="gh">Out[19]: </span>
-<span class="go">GF([[13, 10, 10, 12, 14,  3, 10,  1,  1,  3, 13],</span>
-<span class="go">    [ 6, 13,  3,  7, 15,  0,  5,  3,  7,  5,  8],</span>
-<span class="go">    [ 2,  1,  0,  3, 13,  4, 11, 13,  1, 11, 15]], order=2^4)</span>
+<span class="go">GF([[15,  8, 14,  7,  2,  6,  8, 12,  0, 12,  5],</span>
+<span class="go">    [ 0, 11,  4,  4, 13,  5, 14,  6, 11, 12,  4],</span>
+<span class="go">    [ 7, 14,  9,  9,  4, 10,  8, 15,  9,  9,  2]], order=2^4)</span>
 </code></pre></div>
 </div>
 <p>Compute the parity symbols only.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [20]: </span><span class="n">p</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="s2">&quot;parity&quot;</span><span class="p">);</span> <span class="n">p</span>
 <span class="gh">Out[20]: </span>
-<span class="go">GF([[ 3, 10,  1,  1,  3, 13],</span>
-<span class="go">    [ 0,  5,  3,  7,  5,  8],</span>
-<span class="go">    [ 4, 11, 13,  1, 11, 15]], order=2^4)</span>
+<span class="go">GF([[ 6,  8, 12,  0, 12,  5],</span>
+<span class="go">    [ 5, 14,  6, 11, 12,  4],</span>
+<span class="go">    [10,  8, 15,  9,  9,  2]], order=2^4)</span>
 </code></pre></div>
 </div>
 </div>
