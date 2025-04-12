@@ -1,10 +1,9 @@
-sphinx < 7.3
-sphinx-immaterial == 0.11.11
-# For some reason, if the below versions aren't specified, the dependency resolution takes 18 minutes in CI.
-myst-parser == 0.18.1
-sphinx-design  == 0.5.0
-sphinx-last-updated-by-git == 0.3.6
-sphinx-math-dollar == 1.2.1
-ipykernel == 6.26.0
-myst-nb == 0.17.2
-pickleshare == 0.7.5  # Needed by ipykernel
+sphinx < 6.1  # Sphinx 6.1 breaks on the classproperty monkey patching
+sphinx-immaterial == 0.13.5
+myst-parser
+sphinx-design
+sphinx-last-updated-by-git
+sphinx-math-dollar
+ipykernel
+myst-nb
+pickleshare
