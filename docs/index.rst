@@ -3,6 +3,7 @@
 
 .. raw:: html
 
+   <br>
    <div align=center>
       <a href="https://pypi.org/project/galois"><img src="https://img.shields.io/pypi/v/galois"></a>
       <a href="https://pypi.org/project/galois"><img src="https://img.shields.io/pypi/pyversions/galois"></a>
