@@ -1,0 +1,94 @@
+---
+tocdepth: 2
+---
+
+# v0.4
+
+## v0.4.0
+
+*Released July 2, 2024*
+
+### Changes
+
+- Added support for NumPy 2.0. ([#550](https://github.com/mhostetter/galois/pull/550))
+- Added support for Numba 0.60. ([#550](https://github.com/mhostetter/galois/pull/550))
+
+### Contributors
+
+- Iyán Méndez Veiga ([@iyanmv](https://github.com/iyanmv))
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
+
+## v0.4.1
+
+*Released July 6, 2024*
+
+### Changes
+
+- Fixed multithreading incompatibility. Previously only one thread could read from the SQLite databases. ([#558](https://github.com/mhostetter/galois/pull/558))
+- Clarified `Poly` string representation when underlying field is non-primitive and uses the `"poly"` element representation. ([#329](https://github.com/mhostetter/galois/issues/329))
+- Fixed typo in error message. ([#557](https://github.com/mhostetter/galois/pull/557))
+- Made minor documentation improvements.
+
+### Contributors
+
+- Semjon Kravtšenko ([@semjon00](https://github.com/semjon00))
+- [@MrVeka](https://github.com/MrVeka)
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
+
+## v0.4.2
+
+*Released September 5, 2024*
+
+### Changes
+
+- Added support for NumPy 2.1. ([#567](https://github.com/mhostetter/galois/issues/567))
+  - *Correction:* NumPy 2.1 is still unsupported because Numba 0.60 doesn't include support.
+
+### Contributors
+
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
+
+## v0.4.3
+
+*Released December 9, 2024*
+
+### Changes
+
+- Fixed occasional bug in polynomial modular exponentiation. ([#575](https://github.com/mhostetter/galois/issues/575))
+- Fixed occasional bug in square root calculation in extension fields with even degree. ([#573](https://github.com/mhostetter/galois/issues/573))
+
+### Contributors
+
+- TDQuering ([@TDQuering](https://github.com/TDQuering))
+- maple ([@maple3142](https://github.com/maple3142))
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
+
+## v0.4.4
+
+*Released January 21, 2025*
+
+### Changes
+
+- Added support for Python 3.13. ([#587](https://github.com/mhostetter/galois/pull/587))
+- Added support for NumPy 2.1. ([#587](https://github.com/mhostetter/galois/pull/587))
+- Added support for Numba 0.61. ([#587](https://github.com/mhostetter/galois/pull/587))
+
+### Contributors
+
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
+
+## v0.4.5
+
+*Released April 13, 2025*
+
+### Changes
+
+- Improved performance of linear algebra over finite fields with prime order. This is achieved by using floating-point
+  BLAS implementations, where possible. A 10-100x performance improvement is seen. ([#596](https://github.com/mhostetter/galois/pull/596))
+- Upgrade documentation styling.
+
+### Contributors
+
+- Bogdan Reznychenko ([@theodotk](https://github.com/theodotk))
+- [@rafaelha](https://github.com/rafaelha)
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
