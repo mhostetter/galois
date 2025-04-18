@@ -145,6 +145,23 @@ class UFuncMixin_2_1(UFuncMixin):
         cls._unpackbits = unpackbits
 
 
+def apply_bitpacked_operation(bitpacked_ufunc, op, result_shape, ufunc, method, inputs, kwargs, meta):
+    output_axis = inputs[0]._axis
+
+    if any(i.view(np.ndarray).shape != inputs[0].view(np.ndarray).shape for i in inputs):
+        # We can't do the simple bitwise operation when the shapes aren't the same due to broadcasting
+        inputs = [unpackbits(i) for i in inputs]
+        output = reduce(op, inputs)  # We need this to use GF2's default operation
+        output = packbits(output, axis=output_axis)
+    else:
+        output = super(type(bitpacked_ufunc), bitpacked_ufunc).__call__(ufunc, method, inputs, kwargs, meta)
+        output = bitpacked_ufunc.field._view(output)
+
+    output._axis = output_axis
+    output._axis_count = result_shape[output_axis]
+    return output
+
+
 class add_ufunc_bitpacked(add_ufunc):
     """
     Addition ufunc dispatcher w/ support for bit-packed fields.
@@ -152,16 +169,7 @@ class add_ufunc_bitpacked(add_ufunc):
 
     def __call__(self, ufunc, method, inputs, kwargs, meta):
         result_shape = np.broadcast_shapes(*(i.shape for i in inputs))
-        if any(i.view(np.ndarray).shape != inputs[0].view(np.ndarray).shape for i in inputs):
-            # We can't do simple bitwise addition when the shapes aren't the same due to broadcasting
-            inputs = [np.unpackbits(i) for i in inputs]
-            output = reduce(operator.add, inputs)  # We need this to use GF2's default addition
-            output = np.packbits(output)
-        else:
-            output = super().__call__(ufunc, method, inputs, kwargs, meta)
-            output._axis = inputs[0]._axis
-        output._axis_count = result_shape[output._axis]
-        return output
+        return apply_bitpacked_operation(self, operator.add, result_shape, ufunc, method, inputs, kwargs, meta)
 
 
 class subtract_ufunc_bitpacked(subtract_ufunc):
@@ -171,16 +179,7 @@ class subtract_ufunc_bitpacked(subtract_ufunc):
 
     def __call__(self, ufunc, method, inputs, kwargs, meta):
         result_shape = np.broadcast_shapes(*(i.shape for i in inputs))
-        if any(i.view(np.ndarray).shape != inputs[0].view(np.ndarray).shape for i in inputs):
-            # We can't do simple bitwise subtraction when the shapes aren't the same due to broadcasting
-            inputs = [np.unpackbits(i) for i in inputs]
-            output = reduce(operator.sub, inputs)  # We need this to use GF2's default subtraction
-            output = np.packbits(output)
-        else:
-            output = super().__call__(ufunc, method, inputs, kwargs, meta)
-            output._axis = inputs[0]._axis
-        output._axis_count = result_shape[GF2BP.DEFAULT_AXIS]
-        return output
+        return apply_bitpacked_operation(self, operator.sub, result_shape, ufunc, method, inputs, kwargs, meta)
 
 
 class multiply_ufunc_bitpacked(multiply_ufunc):
@@ -195,27 +194,18 @@ class multiply_ufunc_bitpacked(multiply_ufunc):
         else:
             result_shape = np.broadcast_shapes(*(i.shape for i in inputs))
 
-        output_axis = GF2BP.DEFAULT_AXIS
         if is_outer_product:
             assert len(inputs) == 2
             # Unpack the first argument and propagate the bitpacked second argument
             output_axis = inputs[-1]._axis
-            inputs = [np.unpackbits(x).view(np.ndarray) if i == 0 else x.view(np.ndarray) for i, x in enumerate(inputs)]
+            inputs = [unpackbits(x).view(np.ndarray) if i == 0 else x.view(np.ndarray) for i, x in enumerate(inputs)]
             output = np.multiply.outer(*inputs)
-        else:
-            if any(i.view(np.ndarray).shape != inputs[0].view(np.ndarray).shape for i in inputs):
-                # We can't do simple bitwise multiplication when the shapes aren't the same due to broadcasting
-                inputs = [np.unpackbits(i) for i in inputs]
-                output = reduce(operator.mul, inputs)  # We need this to use GF2's default multiply
-                output = np.packbits(output)
-            else:
-                output = super().__call__(ufunc, method, inputs, kwargs, meta)
-                output_axis = inputs[0]._axis
+            output = self.field._view(output)
+            output._axis = output_axis
+            output._axis_count = result_shape[output_axis]
+            return output
 
-        output = self.field._view(output)
-        output._axis = output_axis
-        output._axis_count = result_shape[output_axis]
-        return output
+        return apply_bitpacked_operation(self, operator.mul, result_shape, ufunc, method, inputs, kwargs, meta)
 
 
 class divide_ufunc_bitpacked(divide):
@@ -225,16 +215,7 @@ class divide_ufunc_bitpacked(divide):
 
     def __call__(self, ufunc, method, inputs, kwargs, meta):
         result_shape = np.broadcast_shapes(*(i.shape for i in inputs))
-        if any(i.view(np.ndarray).shape != inputs[0].view(np.ndarray).shape for i in inputs):
-            # We can't do simple bitwise division when the shapes aren't the same due to broadcasting
-            inputs = [np.unpackbits(i) for i in inputs]
-            output = reduce(operator.truediv, inputs)  # We need this to use GF2's default division
-            output = np.packbits(output)
-        else:
-            output = super().__call__(ufunc, method, inputs, kwargs, meta)
-            output._axis = inputs[0]._axis
-        output._axis_count = result_shape[GF2BP.DEFAULT_AXIS]
-        return output
+        return apply_bitpacked_operation(self, operator.truediv, result_shape, ufunc, method, inputs, kwargs, meta)
 
 
 class matmul_ufunc_bitpacked(matmul_ufunc):
@@ -257,15 +238,8 @@ class matmul_ufunc_bitpacked(matmul_ufunc):
 
         # bit-packed matrices have columns packed by default, so unpack the second operand and repack to rows
         field = self.field
-        row_axis_count = b.shape[0]
-        b = field._view(
-            np.packbits(
-                np.unpackbits(b.view(np.ndarray), axis=b._axis, count=b._axis_count),
-                axis=0,
-            )
-        )
-        b._axis = 0
-        b._axis_count = row_axis_count
+        if b._axis != 0:
+            b = packbits(unpackbits(b), axis=0)
 
         # Make sure the inner dimensions match (e.g. (M, N) x (N, P) -> (M, P))
         a_packed_shape = a.view(np.ndarray).shape
@@ -629,7 +603,7 @@ class GF2BP(
 
         bit_width: Final[int] = self.BIT_WIDTH
         packed_shape = self.view(np.ndarray).shape
-        packed_axis = len(packed_shape) - 1 if self._axis == -1 else self._axis
+        packed_axis = len(packed_shape) + self._axis if self._axis < 0 else self._axis
         packed_index = tuple()
         unpacked_index = tuple()
         shape = tuple()
@@ -659,21 +633,14 @@ class GF2BP(
                     unpacked_index += (slice(None),)
                 else:
                     if i.step > 0:
-                        packed_index += (
-                            slice(
-                                i.start // bit_width, max(int(ceil(i.stop / bit_width)), 1), max(i.step // bit_width, 1)
-                            ),
-                        )
-                        unpacked_index += (slice(i.start % bit_width, i.start % bit_width + i.stop - i.start, i.step),)
+                        packed_end = max(int(ceil(i.stop / bit_width)), 1)
+                        packed_step = max(i.step // bit_width, 1)
                     else:
-                        packed_index += (
-                            slice(
-                                i.start // bit_width,
-                                max(int(floor(i.stop / bit_width)), -packed_shape[axis] - 1),
-                                min(i.step // bit_width, -1),
-                            ),
-                        )
-                        unpacked_index += (slice(i.start % bit_width, i.start % bit_width + i.stop - i.start, i.step),)
+                        packed_end = max(int(floor(i.stop / bit_width)), -packed_shape[axis] - 1)
+                        packed_step = min(i.step // bit_width, -1)
+
+                    packed_index += (slice(i.start // bit_width, packed_end, packed_step),)
+                    unpacked_index += (slice(i.start % bit_width, i.start % bit_width + i.stop - i.start, i.step),)
 
                 packed_slice = packed_index[-1]
                 abs_step = abs(packed_slice.step)
