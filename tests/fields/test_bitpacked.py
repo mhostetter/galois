@@ -2,9 +2,10 @@ import itertools
 import operator as ops
 
 import numpy as np
+import pytest
 
 import galois
-from galois import GF2
+from galois import GF2, GF2BP
 
 
 def test_shape():
@@ -22,6 +23,33 @@ def test_repr():
 
     assert repr(a_) == "GF([0], order=2, bitpacked)"
 
+
+def test_packbits_on_existing():
+    a = GF2(0)
+    a_ = np.packbits(a)
+    assert a is not a_
+
+    a__ = np.packbits(a_)
+    assert a_ is a__
+
+
+def test_unpackbits_on_different_axis():
+    a = np.packbits(GF2([[1, 0], [0, 1]]))
+
+    with pytest.raises(ValueError, match="along a different axis"):
+        np.unpackbits(a, axis=1)
+
+
+def test_unpackbits_with_different_axis_count():
+    a = np.packbits(GF2([[1, 0], [0, 1]]))
+
+    with pytest.raises(ValueError, match="different axis element count"):
+        np.unpackbits(a, count=10)
+
+
+def test_new_raises_not_implemented():
+    with pytest.raises(NotImplementedError, match="GF2BP is a custom bit-packed GF2 class with limited functionality."):
+        GF2BP.Random((100, 100))
 
 def test_new_axis():
     a = GF2.Random((10, 20))
@@ -50,6 +78,7 @@ def test_galois_array_indexing():
     assert np.array_equal(arr[:3], GF([1, 0, 1]))
     assert np.array_equal(arr[::2], GF([1, 1]))
     assert np.array_equal(arr[::-1], GF([1, 1, 0, 1]))
+    assert np.array_equal(arr[-3:-1], GF([0, 1]))
 
     # 4. Multidimensional Indexing
     arr_2d = GF([[1, 0], [0, 1]])
@@ -62,8 +91,9 @@ def test_galois_array_indexing():
     assert np.array_equal(arr[mask], GF([1, 1]))
 
     # 6. Fancy Indexing
-    indices = [0, 2, 3]
-    assert np.array_equal(arr[indices], GF([1, 1, 1]))
+    assert np.array_equal(arr[[0, 2, -1]], GF([1, 1, 1]))
+    # first array is row indexing, second is column indexing
+    assert np.array_equal(arr_2d[[0, 0], [1, 1]], GF([0, 0]))
 
     # 7. Ellipsis
     arr_3d = GF(np.random.randint(0, 2, (2, 3, 4)))
@@ -168,45 +198,38 @@ def test_inv():
     N = 10
     u = GF2.Random((N, N), seed=2)
     p = np.packbits(u)
-    # print(x.get_unpacked_slice(1))
-    # index = np.index_exp[:,1:4:2]
-    # index = np.index_exp[[0,1], [0, 1]]
-    # print(a)
-    # print(a[index])
-    # print(x.get_unpacked_slice(index))
-    print(np.linalg.inv(u))
-    print(np.unpackbits(np.linalg.inv(p)))
     assert np.array_equal(np.linalg.inv(u), np.unpackbits(np.linalg.inv(p)))
 
 
 def test_arithmetic():
     size = (20, 10)
-    cm = np.random.randint(2, size=size, dtype=np.uint8)
-    cm2 = np.random.randint(2, size=size, dtype=np.uint8)
+    a = np.random.randint(2, size=size, dtype=np.uint8)
+    b = np.random.randint(2, size=size, dtype=np.uint8)
     vec = np.random.randint(2, size=size[1], dtype=np.uint8)
 
-    cm_GF2 = GF2(cm)
-    cm2_GF2 = GF2(cm2)
-    cm3_GF2 = GF2(cm2.T)
-    vec_GF2 = GF2(vec)
+    a_gf2 = GF2(a)
+    b_gf2 = GF2(b)
+    c_gf2 = GF2(b.T)
+    vec_gf2 = GF2(vec)
 
     for axis_a, axis_b in itertools.product((0, 1), repeat=2):
-        cm_gf2bp = np.packbits(cm_GF2, axis=axis_a)
-        cm2_gf2bp = np.packbits(cm2_GF2, axis=axis_b)
-        cm3_gf2bp = np.packbits(cm2_GF2.T, axis=axis_b)
-        vec_gf2bp = np.packbits(vec_GF2, axis=0)  # Only one axis for a vector
+        a_gf2bp = np.packbits(a_gf2, axis=axis_a)
+        b_gf2bp = np.packbits(b_gf2, axis=axis_b)
+        c_gf2bp = np.packbits(b_gf2.T, axis=axis_b)
+        vec_gf2bp = np.packbits(vec_gf2, axis=0)  # Only one axis for a vector
 
         # Addition
-        assert np.array_equal(np.unpackbits(cm_gf2bp + cm2_gf2bp), cm_GF2 + cm2_GF2)
+        assert np.array_equal(np.unpackbits(a_gf2bp + b_gf2bp), a_gf2 + b_gf2)
 
         # Multiplication
-        assert np.array_equal(np.unpackbits(cm_gf2bp * cm2_gf2bp), cm_GF2 * cm2_GF2)
+        assert np.array_equal(np.unpackbits(a_gf2bp * b_gf2bp), a_gf2 * b_gf2)
 
         # Matrix-vector product
-        assert np.array_equal(np.unpackbits(cm_gf2bp @ vec_gf2bp), cm_GF2 @ vec_GF2)
+        assert np.array_equal(np.unpackbits(a_gf2bp @ vec_gf2bp), a_gf2 @ vec_gf2)
 
         # Matrix-matrix product
-        assert np.array_equal(np.unpackbits(cm_gf2bp @ cm3_gf2bp), cm_GF2 @ cm3_GF2)
+        assert np.array_equal(np.unpackbits(a_gf2bp @ c_gf2bp), a_gf2 @ c_gf2)
+
 
 
 def test_broadcasting():
@@ -240,7 +263,5 @@ def test_advanced_broadcasting():
 
     c = np.multiply.outer(a, b)
     z = np.multiply.outer(x, y)
-    print(c.shape)
-    print(z.shape)
     assert np.array_equal(np.unpackbits(z), c)
     assert c.shape == z.shape == np.unpackbits(z).shape  # (1, 2, 3, 2, 2, 1)
