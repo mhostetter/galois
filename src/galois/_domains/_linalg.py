@@ -58,6 +58,12 @@ def _lapack_linalg(field: Type[Array], a: Array, b: Array, function, out=None, n
         c = function(a, b)
     else:
         c = function(a, b, out=out)
+
+    if dtype in [np.float32, np.float64]:
+        # Performing the modulo operation on an int is faster than a float. Convert back to int64 for the time
+        # savings, if possible.
+        c = c.astype(np.int64)
+
     c = c % field.characteristic  # Reduce the result mod p
 
     if np.isscalar(c):
