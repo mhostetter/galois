@@ -206,7 +206,7 @@ def test_log(field_log):
     assert np.array_equal(z, Z)
     z = x.log()
     assert np.array_equal(z, Z)
-    #Bug 599.  Make sure log() works for scalar inputs.
+    # Bug 599.  Make sure log() works for scalar inputs.
     assert x[0].log() == Z[0]
 
 
@@ -219,7 +219,7 @@ def test_log_different_base(field_log):
     beta = GF.primitive_elements[-1]
     z = x.log(beta)
     assert np.array_equal(beta**z, x)
-    #Bug 599.  Make sure log() works for scalar inputs.
+    # Bug 599.  Make sure log() works for scalar inputs.
     assert beta ** (x[0].log(beta)) == x[0]
 
 
