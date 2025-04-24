@@ -1731,7 +1731,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
         if np.isscalar(output):
             output = int(output)
-        if output.dtype == np.object_:
+        elif output.dtype == np.object_:
             output = output.astype(int)
 
         return output
