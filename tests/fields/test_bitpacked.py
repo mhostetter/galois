@@ -51,6 +51,7 @@ def test_new_raises_not_implemented():
     with pytest.raises(NotImplementedError, match="GF2BP is a custom bit-packed GF2 class with limited functionality."):
         GF2BP.Random((100, 100))
 
+
 def test_new_axis():
     a = GF2.Random((10, 20))
     a_ = np.packbits(a)
@@ -229,7 +230,6 @@ def test_arithmetic():
 
         # Matrix-matrix product
         assert np.array_equal(np.unpackbits(a_gf2bp @ c_gf2bp), a_gf2 @ c_gf2)
-
 
 
 def test_broadcasting():

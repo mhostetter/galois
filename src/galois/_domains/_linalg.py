@@ -446,10 +446,10 @@ class inv_jit(Function):
     """
     Computes the inverse of the square matrix.
     """
+
     def __init__(self, field: Type[Array], validate_matrix_shape: bool = True):
         super().__init__(field)
         self._validate_matrix_shape = validate_matrix_shape
-
 
     def __call__(self, A: Array) -> Array:
         verify_isinstance(A, self.field)
