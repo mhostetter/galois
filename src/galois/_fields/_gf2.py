@@ -16,10 +16,13 @@ from typing_extensions import Literal, Self
 from .._domains._array import Array
 from .._domains._function import Function
 from .._domains._linalg import inv_jit
-from .._domains._lookup import (
+from .._domains._ufunc import (
+    UFunc,
+    UFuncMixin,
     add_ufunc,
     divide_ufunc,
     log_ufunc,
+    matmul_ufunc,
     multiply_ufunc,
     negative_ufunc,
     power_ufunc,
@@ -27,7 +30,6 @@ from .._domains._lookup import (
     sqrt_ufunc,
     subtract_ufunc,
 )
-from .._domains._ufunc import UFunc, UFuncMixin, matmul_ufunc
 from .._helper import export, verify_isinstance
 from ..typing import ArrayLike, DTypeLike, ElementLike
 from ._array import FieldArray
