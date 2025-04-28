@@ -7,11 +7,11 @@ from __future__ import annotations
 import operator
 from functools import reduce
 from math import ceil, floor
-from typing import Any, Callable, Final, Sequence, Type
+from typing import Any, Callable, Sequence, Type
 
 import numpy as np
 from packaging.version import Version
-from typing_extensions import Literal, Self
+from typing_extensions import Final, Literal, Self
 
 from .._domains._array import Array
 from .._domains._function import Function
