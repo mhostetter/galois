@@ -12323,9 +12323,59 @@ Power</label></div>
 </div>
 </div>
 </div></li>
+<li><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ndarray</span></code></a>: A NumPy array of integers, representing finite field elements in their <a class="reference internal" href="../../basic-usage/element-representation/#int-repr"><span class="std std-ref">integer
+representation</span></a>.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="3:3">
+<input checked type="radio" id="__tabbed_3_1" name="__tabbed_3"><input type="radio" id="__tabbed_3_2" name="__tabbed_3"><input type="radio" id="__tabbed_3_3" name="__tabbed_3"><div class="tabbed-labels docutils">
+<label class="tabbed-label" for="__tabbed_3_1">
+Integer</label><label class="tabbed-label" for="__tabbed_3_2">
+Polynomial</label><label class="tabbed-label" for="__tabbed_3_3">
+Power</label></div>
+<div class="tabbed-content docutils">
+<div class="tabbed-block docutils">
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [19]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">17</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">148</span><span class="p">,</span> <span class="mi">205</span><span class="p">]]);</span> <span class="n">x</span>
+<span class="gh">Out[19]: </span>
+<span class="go">array([[ 17,   4],</span>
+<span class="go">       [148, 205]])</span>
+
+<span class="gp">In [20]: </span><span class="n">GF</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="gh">Out[20]: </span>
+<span class="go">GF([[ 17,   4],</span>
+<span class="go">    [148, 205]], order=3^5)</span>
+</code></pre></div>
+</div>
+</div>
+<div class="tabbed-block docutils">
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [21]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">17</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">148</span><span class="p">,</span> <span class="mi">205</span><span class="p">]]);</span> <span class="n">x</span>
+<span class="gh">Out[21]: </span>
+<span class="go">array([[ 17,   4],</span>
+<span class="go">       [148, 205]])</span>
+
+<span class="gp">In [22]: </span><span class="n">GF</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="gh">Out[22]: </span>
+<span class="go">GF([[             α^2 + 2α + 2,                     α + 1],</span>
+<span class="go">    [ α^4 + 2α^3 + α^2 + α + 1, 2α^4 + α^3 + α^2 + 2α + 1]], order=3^5)</span>
+</code></pre></div>
+</div>
+</div>
+<div class="tabbed-block docutils">
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [23]: </span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">17</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">148</span><span class="p">,</span> <span class="mi">205</span><span class="p">]]);</span> <span class="n">x</span>
+<span class="gh">Out[23]: </span>
+<span class="go">array([[ 17,   4],</span>
+<span class="go">       [148, 205]])</span>
+
+<span class="gp">In [24]: </span><span class="n">GF</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="gh">Out[24]: </span>
+<span class="go">GF([[α^222,  α^69],</span>
+<span class="go">    [ α^54,  α^24]], order=3^5)</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+</div></li>
 </ul>
 <p class="rubric" id="alias">Alias</p>
-<p>alias of <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.13)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.13)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]], <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference internal" href="#" title="galois.typing.IterableLike (Python data) — A Union representing iterable objects that can be coerced into a Galois field array."><code class="xref py py-class docutils literal notranslate"><span class="pre">IterableLike</span></code></a>]]</p>
+<p>alias of <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.13)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.13)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]], <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference internal" href="#" title="galois.typing.IterableLike (Python data) — A Union representing iterable objects that can be coerced into a Galois field array."><code class="xref py py-class docutils literal notranslate"><span class="pre">IterableLike</span></code></a>], <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>]</p>
 </dd></dl>
 
 

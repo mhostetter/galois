@@ -12225,16 +12225,16 @@ You're not viewing the latest version.
 <p>For the prime field <span class="math notranslate nohighlight">\(\mathrm{GF}(p)\)</span>, the prime subfield is itself.</p>
 <p class="example rubric" id="examples">Examples</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">prime_subfield</span>
-<span class="gh">Out[1]: </span><span class="go">&lt;class &#39;galois.GF(2)&#39;&gt;</span>
+<span class="gh">Out[1]: </span><span class="go">&lt;class &#39;galois.GF(2, primitive_element=&#39;1&#39;, irreducible_poly=&#39;x + 1&#39;)&#39;&gt;</span>
 
 <span class="gp">In [2]: </span><span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">8</span><span class="p">)</span><span class="o">.</span><span class="n">prime_subfield</span>
-<span class="gh">Out[2]: </span><span class="go">&lt;class &#39;galois.GF(2)&#39;&gt;</span>
+<span class="gh">Out[2]: </span><span class="go">&lt;class &#39;galois.GF(2, primitive_element=&#39;1&#39;, irreducible_poly=&#39;x + 1&#39;)&#39;&gt;</span>
 
 <span class="gp">In [3]: </span><span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">31</span><span class="p">)</span><span class="o">.</span><span class="n">prime_subfield</span>
-<span class="gh">Out[3]: </span><span class="go">&lt;class &#39;galois.GF(31)&#39;&gt;</span>
+<span class="gh">Out[3]: </span><span class="go">&lt;class &#39;galois.GF(31, primitive_element=&#39;3&#39;, irreducible_poly=&#39;x + 28&#39;)&#39;&gt;</span>
 
 <span class="gp">In [4]: </span><span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">7</span><span class="o">**</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">prime_subfield</span>
-<span class="gh">Out[4]: </span><span class="go">&lt;class &#39;galois.GF(7)&#39;&gt;</span>
+<span class="gh">Out[4]: </span><span class="go">&lt;class &#39;galois.GF(7, primitive_element=&#39;3&#39;, irreducible_poly=&#39;x + 4&#39;)&#39;&gt;</span>
 </code></pre></div>
 </div>
 </dd></dl>
