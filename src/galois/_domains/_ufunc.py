@@ -188,7 +188,7 @@ class UFunc:
         if method in ["reduce", "accumulate", "reduceat"]:
             raise ValueError(
                 f"Ufunc method {method!r} is not supported on {ufunc.__name__!r} because it takes inputs "
-                f"with type {self.field.name} array and integer array. Different types do not support reduction."
+                f"with type {self.field!r} array and integer array. Different types do not support reduction."
             )
 
     def _verify_method_only_call(self, ufunc, method):
@@ -200,8 +200,8 @@ class UFunc:
     def _verify_operands_in_same_field(self, ufunc, inputs, meta):
         if len(meta["non_field_operands"]) > 0:
             raise TypeError(
-                f"Operation {ufunc.__name__!r} requires both operands to be {self.field.name} arrays, "
-                f"not {[inputs[i] for i in meta['operands']]}."
+                f"Operation {ufunc.__name__!r} requires both operands to be instances of {self.field!r}, "
+                f"not {[type(inputs[i]) for i in meta['operands']]}."
             )
 
     def _verify_operands_in_field_or_int(self, ufunc, inputs, meta):
@@ -223,7 +223,7 @@ class UFunc:
                         )
             else:
                 raise TypeError(
-                    f"Operation {ufunc.__name__!r} requires operands that are not {self.field.name} arrays to be "
+                    f"Operation {ufunc.__name__!r} requires operands that are not {self.field!r} arrays to be "
                     f"integers or an integer np.ndarray, not {type(inputs[i])}."
                 )
 
@@ -233,7 +233,7 @@ class UFunc:
 
         if not meta["operands"][0] == meta["field_operands"][0]:
             raise TypeError(
-                f"Operation {ufunc.__name__!r} requires the first operand to be a {self.field.name} array, "
+                f"Operation {ufunc.__name__!r} requires the first operand to be a {self.field!r} array, "
                 f"not {meta['types'][meta['operands'][0]]}."
             )
         if len(meta["field_operands"]) > 1 and meta["operands"][1] == meta["field_operands"][1]:
