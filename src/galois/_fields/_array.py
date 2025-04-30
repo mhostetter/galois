@@ -1779,7 +1779,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         field = type(self)
 
         prefix = "GF(" if mode == "repr" else ""
-        order = field._order_str if mode == "repr" else ""
+        order = f"order={field._order_str}" if mode == "repr" else ""
         suffix = ")" if mode == "repr" else ""
         formatter = field._formatter(self)
 

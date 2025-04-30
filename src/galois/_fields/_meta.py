@@ -34,16 +34,31 @@ class FieldArrayMeta(ArrayMeta):
         if cls._degree == 1:
             cls._is_prime_field = True
             cls._prime_subfield = cls
-            cls._name = f"GF({cls._characteristic})"
-            cls._order_str = f"order={cls._order}"
+            cls._order_str = f"{cls._characteristic}"
         else:
             cls._is_prime_field = False
             cls._prime_subfield = kwargs["prime_subfield"]  # Must be provided
-            cls._name = f"GF({cls._characteristic}^{cls._degree})"
-            cls._order_str = f"order={cls._characteristic}^{cls._degree}"
+            cls._order_str = f"{cls._characteristic}^{cls._degree}"
 
         # Construct the irreducible polynomial from its integer representation
         cls._irreducible_poly = Poly.Int(cls._irreducible_poly_int, field=cls._prime_subfield)
+
+        # Save string representations that will be used for display
+        cls._primitive_element_str = poly_to_str(integer_to_poly(int(cls._primitive_element), cls._characteristic))
+        cls._irreducible_poly_str = poly_to_str(integer_to_poly(cls._irreducible_poly_int, cls._characteristic))
+        cls._name = f"GF({cls._order_str})"
+        cls._long_name = f"GF({cls._order_str}, primitive_element={cls._primitive_element_str!r}, irreducible_poly={cls._irreducible_poly_str!r})"
+
+    def __repr__(cls) -> str:
+        if cls.order == 0:
+            # This is not a runtime-created subclass, so return the base class name.
+            return f"<class 'galois.{cls.__name__}'>"
+
+        # When FieldArray instances are created they are added to the `galois._fields._factory` module with a name
+        # like `FieldArray_<p>_<primitive_element>` or `FieldArray_<p>_<m>_<primitive_element>_<irreducible_poly>`.
+        # This is visually unappealing. So here we override the repr() to be more succinct and indicate how the class
+        # was created. So galois._fields._factory.FieldArray_31_3 is converted to galois.GF(31).
+        return f"<class 'galois.{cls._long_name}'>"
 
     ###############################################################################
     # Class properties
@@ -66,18 +81,14 @@ class FieldArrayMeta(ArrayMeta):
         Order:
             30
         """
-        with cls.prime_subfield.repr("int"):
-            irreducible_poly_str = str(cls._irreducible_poly)
-        primitive_element_str = poly_to_str(integer_to_poly(int(cls.primitive_element), cls.characteristic))
-
         string = "Galois Field:"
         string += f"\n  name: {cls.name}"
         string += f"\n  characteristic: {cls.characteristic}"
         string += f"\n  degree: {cls.degree}"
         string += f"\n  order: {cls.order}"
-        string += f"\n  irreducible_poly: {irreducible_poly_str}"
+        string += f"\n  irreducible_poly: {cls._irreducible_poly_str}"
         string += f"\n  is_primitive_poly: {cls.is_primitive_poly}"
-        string += f"\n  primitive_element: {primitive_element_str}"
+        string += f"\n  primitive_element: {cls._primitive_element_str}"
 
         return string
 

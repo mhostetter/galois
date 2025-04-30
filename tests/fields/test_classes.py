@@ -12,12 +12,12 @@ import galois
 
 def test_repr_str():
     GF = galois.GF(7)
-    assert repr(GF) == "<class 'galois.GF(7)'>"
-    assert str(GF) == "<class 'galois.GF(7)'>"
+    assert repr(GF) == "<class 'galois.GF(7, primitive_element='3', irreducible_poly='x + 4')'>"
+    assert str(GF) == "<class 'galois.GF(7, primitive_element='3', irreducible_poly='x + 4')'>"
 
     GF = galois.GF(2**8)
-    assert repr(GF) == "<class 'galois.GF(2^8)'>"
-    assert str(GF) == "<class 'galois.GF(2^8)'>"
+    assert repr(GF) == "<class 'galois.GF(2^8, primitive_element='x', irreducible_poly='x^8 + x^4 + x^3 + x^2 + 1')'>"
+    assert str(GF) == "<class 'galois.GF(2^8, primitive_element='x', irreducible_poly='x^8 + x^4 + x^3 + x^2 + 1')'>"
 
 
 def test_properties():
