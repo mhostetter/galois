@@ -37,7 +37,7 @@ import galois
 # -- Project information -----------------------------------------------------
 
 project = "galois"
-copyright = "2020-2024, Matt Hostetter"
+copyright = "2020-2025, Matt Hostetter"
 author = "Matt Hostetter"
 version = galois.__version__
 

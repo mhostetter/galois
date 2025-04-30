@@ -1731,7 +1731,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
         if np.isscalar(output):
             output = int(output)
-        if output.dtype == np.object_:
+        elif output.dtype == np.object_:
             output = output.astype(int)
 
         return output
@@ -1779,7 +1779,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         field = type(self)
 
         prefix = "GF(" if mode == "repr" else ""
-        order = field._order_str if mode == "repr" else ""
+        order = f"order={field._order_str}" if mode == "repr" else ""
         bitpacked = ", bitpacked" if mode == "repr" and hasattr(self, "_axis") else ""
         suffix = ")" if mode == "repr" else ""
         formatter = field._formatter(self)
