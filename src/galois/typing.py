@@ -14,7 +14,11 @@ if TYPE_CHECKING:
     from ._domains._array import Array
     from ._polys._poly import Poly
 
-ElementLike = Union[int, str, "Array"]
+ElementLike = Union[
+    int,
+    str,
+    "Array",
+]
 """
 A :obj:`~typing.Union` representing objects that can be coerced into a Galois field element.
 
@@ -60,7 +64,11 @@ Scalars are 0-D :obj:`~galois.Array` objects.
 """
 
 
-IterableLike = Union[Sequence[ElementLike], Sequence["IterableLike"]]
+IterableLike = Union[
+    Sequence[ElementLike],
+    Sequence["IterableLike"],
+    np.ndarray,
+]
 """
 A :obj:`~typing.Union` representing iterable objects that can be coerced into a Galois field array.
 
@@ -86,11 +94,23 @@ A :obj:`~typing.Union` representing iterable objects that can be coerced into a 
       # Mix and match integers and strings
       GF([["x^2 + 2x + 2", 4], ["x^4 + 2x^3 + x^2 + x + 1", 205]])
 
+- :obj:`~numpy.ndarray`: A NumPy array of integers, representing finite field elements in their :ref:`integer
+  representation <int-repr>`.
+
+  .. ipython-with-reprs:: int,poly,power
+
+      x = np.array([[17, 4], [148, 205]]); x
+      GF(x)
+
 .. rubric:: Alias
 """
 
 
-ArrayLike = Union[IterableLike, np.ndarray, "Array"]
+ArrayLike = Union[
+    IterableLike,
+    np.ndarray,
+    "Array",
+]
 """
 A :obj:`~typing.Union` representing objects that can be coerced into a Galois field array.
 
@@ -121,7 +141,10 @@ A :obj:`~typing.Union` representing objects that can be coerced into a Galois fi
 """
 
 
-ShapeLike = Union[int, Sequence[int]]
+ShapeLike = Union[
+    int,
+    Sequence[int],
+]
 """
 A :obj:`~typing.Union` representing objects that can be coerced into a NumPy :obj:`~numpy.ndarray.shape` tuple.
 
@@ -153,7 +176,12 @@ A :obj:`~typing.Union` representing objects that can be coerced into a NumPy :ob
 """
 
 
-DTypeLike = Union[np.integer, int, str, object]
+DTypeLike = Union[
+    np.integer,
+    int,
+    str,
+    object,
+]
 """
 A :obj:`~typing.Union` representing objects that can be coerced into a NumPy data type.
 
@@ -193,7 +221,12 @@ A :obj:`~typing.Union` representing objects that can be coerced into a NumPy dat
 """
 
 
-PolyLike = Union[int, str, ArrayLike, "Poly"]
+PolyLike = Union[
+    int,
+    str,
+    ArrayLike,
+    "Poly",
+]
 """
 A :obj:`~typing.Union` representing objects that can be coerced into a polynomial.
 
