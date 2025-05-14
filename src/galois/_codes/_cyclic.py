@@ -139,7 +139,7 @@ class _CyclicCode(_LinearCode):
             # Needed for degenerate BCH encodings with no parity.
             parity = codeword[..., 0:0]
         elif self.is_systematic:
-            parity = codeword[..., -(self.n - self.k):]
+            parity = codeword[..., -(self.n - self.k) :]
         else:
             _, parity = divmod_jit(self.field)(codeword, self.generator_poly.coeffs)
 

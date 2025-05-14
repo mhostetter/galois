@@ -134,6 +134,7 @@ def test_encode_shortened_matrix(reed_solomon_codes):
 
     verify_encode_shortened(rs, MESSAGES, CODEWORDS, is_systematic, False)
 
+
 @pytest.mark.parametrize("is_systematic", (True, False))
 def test_decode_exceptions(is_systematic):
     n, k = 15, 7
