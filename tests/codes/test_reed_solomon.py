@@ -84,20 +84,13 @@ def test_properties(reed_solomon_codes):
     assert np.array_equal(rs.H, reed_solomon_codes["H"])
 
 
-def test_encode_exceptions():
-    # Systematic
+@pytest.mark.parametrize("is_systematic", (True, False))
+def test_encode_exceptions(is_systematic):
     n, k = 15, 7
-    rs = galois.ReedSolomon(n, k)
+    rs = galois.ReedSolomon(n, k, systematic=is_systematic)
     GF = rs.field
     with pytest.raises(ValueError):
         rs.encode(GF.Random(k + 1))
-
-    # Non-systematic
-    n, k = 15, 7
-    rs = galois.ReedSolomon(n, k, systematic=False)
-    GF = rs.field
-    with pytest.raises(ValueError):
-        rs.encode(GF.Random(k - 1))
 
 
 def test_encode_vector(reed_solomon_codes):
@@ -141,21 +134,13 @@ def test_encode_shortened_matrix(reed_solomon_codes):
 
     verify_encode_shortened(rs, MESSAGES, CODEWORDS, is_systematic, False)
 
-
-def test_decode_exceptions():
-    # Systematic
+@pytest.mark.parametrize("is_systematic", (True, False))
+def test_decode_exceptions(is_systematic):
     n, k = 15, 7
-    rs = galois.ReedSolomon(n, k)
+    rs = galois.ReedSolomon(n, k, systematic=is_systematic)
     GF = rs.field
     with pytest.raises(ValueError):
         rs.decode(GF.Random(n + 1))
-
-    # Non-systematic
-    n, k = 15, 7
-    rs = galois.ReedSolomon(n, k, systematic=False)
-    GF = rs.field
-    with pytest.raises(ValueError):
-        rs.decode(GF.Random(n - 1))
 
 
 def test_decode_vector(reed_solomon_codes):
