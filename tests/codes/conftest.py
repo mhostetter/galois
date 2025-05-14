@@ -164,10 +164,11 @@ def verify_encode_shortened(
     if is_systematic:
         parity = code.encode(random_type(full_messages[..., s:]), output="parity")
         assert isinstance(parity, code.field)
-        assert np.array_equal(parity, full_codewords[..., code.k:])
+        assert np.array_equal(parity, full_codewords[..., code.k :])
     else:
         with pytest.raises(ValueError):
             code.encode(random_type(full_messages[..., s:]), output="parity")
+
 
 def verify_decode(code: galois._codes._linear.LinearCode, N: int):
     GF = code.field
