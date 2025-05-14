@@ -135,8 +135,11 @@ class _CyclicCode(_LinearCode):
         return message
 
     def _convert_codeword_to_parity(self, codeword: FieldArray) -> FieldArray:
-        if self.is_systematic:
-            parity = codeword[..., -(self.n - self.k) :]
+        if self.n == self.k:
+            # Needed for degenerate BCH encodings with no parity.
+            parity = codeword[..., 0:0]
+        elif self.is_systematic:
+            parity = codeword[..., -(self.n - self.k):]
         else:
             _, parity = divmod_jit(self.field)(codeword, self.generator_poly.coeffs)
 

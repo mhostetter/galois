@@ -102,8 +102,7 @@ class _LinearCode:
                 .. info::
                     :title: Shortened codes
 
-                    For the shortened $[n-s,\ k-s,\ d]$ code (only applicable for systematic codes),
-                    pass $n-s$ symbols into :func:`detect`.
+                    For the shortened $[n-s,\ k-s,\ d]$ code, pass $n-s$ symbols into :func:`detect`.
 
         Returns:
             A boolean scalar or $N$-length array indicating if errors were detected in the corresponding codeword.
@@ -143,8 +142,8 @@ class _LinearCode:
                 .. info::
                     :title: Shortened codes
 
-                    For the shortened $[n-s,\ k-s,\ d]$ code (only applicable for systematic codes),
-                    pass $n-s$ symbols into :func:`decode` to return the $k-s$-symbol message.
+                    For the shortened $[n-s,\ k-s,\ d]$ code, pass $n-s$ symbols into :func:`decode`
+                    to return the $k-s$-symbol message.
 
             output: Specify whether to return the error-corrected message or entire codeword. The default is
                 `"message"`.
@@ -199,18 +198,11 @@ class _LinearCode:
 
         if message.ndim > 2:
             raise ValueError(f"Argument `message` can be either 1-D or 2-D, not {message.ndim}-D.")
-        if self.is_systematic:
-            if not message.shape[-1] <= self.k:
-                raise ValueError(
-                    f"For a systematic code, argument `message` must be a 1-D or 2-D array "
-                    f"with last dimension less than or equal to {self.k}, not shape {message.shape}."
-                )
-        else:
-            if not message.shape[-1] == self.k:
-                raise ValueError(
-                    f"For a non-systematic code, argument `message` must be a 1-D or 2-D array "
-                    f"with last dimension equal to {self.k}, not shape {message.shape}."
-                )
+        if not message.shape[-1] <= self.k:
+            raise ValueError(
+                f"The `message` must be a 1-D or 2-D array "
+                f"with last dimension less than or equal to {self.k}, not shape {message.shape}."
+            )
 
         # Record if the original message was 1-D and then convert to 2-D
         is_message_1d = message.ndim == 1
@@ -225,18 +217,12 @@ class _LinearCode:
         # Convert the array-like codeword into a FieldArray
         codeword = self.field(codeword)
 
-        if self.is_systematic:
-            if not codeword.shape[-1] <= self.n:
-                raise ValueError(
-                    f"For a systematic code, argument `codeword` must be a 1-D or 2-D array "
-                    f"with last dimension less than or equal to {self.n}, not shape {codeword.shape}."
-                )
-        else:
-            if not codeword.shape[-1] == self.n:
-                raise ValueError(
-                    f"For a non-systematic code, argument `codeword` must be a 1-D or 2-D array "
-                    f"with last dimension equal to {self.n}, not shape {codeword.shape}."
-                )
+        if not self.d <= codeword.shape[-1] <= self.n:
+            raise ValueError(
+                f"The argument `codeword` must be a 1-D or 2-D array "
+                f"with last dimension between {self.k} and {self.n} inclusive, "
+                f"not shape {codeword.shape}."
+            )
 
         # Record if the original codeword was 1-D and then convert to 2-D
         is_codeword_1d = codeword.ndim == 1
@@ -268,10 +254,12 @@ class _LinearCode:
         ks = message.shape[-1]  # The number of input message symbols (could be less than self.k for shortened codes)
 
         if self.is_systematic:
-            parity = message @ self.G[-ks:, self.k :]
+            # ks can be zero, so we use self.k - ks instead of just -ks
+            parity = message @ self.G[self.k - ks:, self.k:]
             codeword = np.hstack((message, parity))
         else:
-            codeword = message @ self.G
+            pad = self.k - ks
+            codeword = message @ self.G[pad:, pad:]
 
         return codeword
 

@@ -142,33 +142,32 @@ def verify_encode(
 def verify_encode_shortened(
     code: galois._codes._linear.LinearCode,
     MESSAGES: np.ndarray,
-    CODEWORDS: np.ndarray,
+    _CODEWORDS: np.ndarray,
     is_systematic: bool,
     vector: bool,
 ):
+    s = random.randint(1, MESSAGES.shape[1])  # The number of symbols to elide
+    full_messages = MESSAGES.copy()
+    full_messages[:, :s] = 0
+    if vector:
+        idx = np.random.randint(0, full_messages.shape[0])
+        full_messages = full_messages[idx, :]
+    shortened = random_type(full_messages[..., s:])  # The actual message to encode
+
+    # Verify that encoding just the suffix of MESSAGES gives us a suffix of the codewords
+    full_codewords = code.encode(full_messages)
+    expected_shortened_codewords = full_codewords[..., s:]
+    actual_shorted_codewords = code.encode(shortened)
+    assert isinstance(actual_shorted_codewords, code.field)
+    assert np.array_equal(expected_shortened_codewords, actual_shorted_codewords)
+
     if is_systematic:
-        if vector:
-            idx = np.random.randint(0, MESSAGES.shape[0])
-            MESSAGES = MESSAGES[idx, :]
-            CODEWORDS = CODEWORDS[idx, :]
-
-        MESSAGES = random_type(MESSAGES)
-
-        codewords = code.encode(MESSAGES)
-        assert isinstance(codewords, code.field)
-        assert np.array_equal(codewords, CODEWORDS)
-
-        parities = code.encode(MESSAGES, output="parity")
-        assert isinstance(parities, code.field)
-        assert np.array_equal(parities, CODEWORDS[..., -(code.n - code.k) :])
+        parity = code.encode(random_type(full_messages[..., s:]), output="parity")
+        assert isinstance(parity, code.field)
+        assert np.array_equal(parity, full_codewords[..., code.k:])
     else:
-        MESSAGES = [] if vector else [[]]
-
         with pytest.raises(ValueError):
-            code.encode(MESSAGES)
-        with pytest.raises(ValueError):
-            code.encode(MESSAGES, output="parity")
-
+            code.encode(random_type(full_messages[..., s:]), output="parity")
 
 def verify_decode(code: galois._codes._linear.LinearCode, N: int):
     GF = code.field
@@ -198,34 +197,26 @@ def verify_decode(code: galois._codes._linear.LinearCode, N: int):
 
 
 def verify_decode_shortened(code: galois._codes._linear.LinearCode, N: int, is_systematic: bool):
-    if is_systematic:
-        GF = code.field
-        s = random.randint(0, code.k - 1)  # The number of shortened symbols
-        MESSAGES = GF.Random((N, code.k - s))
-        ERRORS, N_errors = random_errors(GF, N, code.n - s, code.t)
-        if N == 1:
-            MESSAGES = MESSAGES[0, :]
-            ERRORS = ERRORS[0, :]
-            N_errors = N_errors[0]
+    GF = code.field
+    s = random.randint(0, code.k - 1)  # The number of shortened symbols
+    MESSAGES = GF.Random((N, code.k - s))
+    ERRORS, N_errors = random_errors(GF, N, code.n - s, code.t)
+    if N == 1:
+        MESSAGES = MESSAGES[0, :]
+        ERRORS = ERRORS[0, :]
+        N_errors = N_errors[0]
 
-        CODEWORDS = code.encode(MESSAGES)
-        RECEIVED_CODEWORDS = random_type(CODEWORDS + ERRORS)
+    CODEWORDS = code.encode(MESSAGES)
+    RECEIVED_CODEWORDS = random_type(CODEWORDS + ERRORS)
 
-        decoded_messages = code.decode(RECEIVED_CODEWORDS)
-        assert type(decoded_messages) is GF
-        assert np.array_equal(decoded_messages, MESSAGES)
+    decoded_messages = code.decode(RECEIVED_CODEWORDS)
+    assert type(decoded_messages) is GF
+    assert np.array_equal(decoded_messages, MESSAGES)
 
-        decoded_messages, N_corrected = code.decode(RECEIVED_CODEWORDS, errors=True)
-        assert type(decoded_messages) is GF
-        assert np.array_equal(decoded_messages, MESSAGES)
-        assert np.array_equal(N_corrected, N_errors)
-    else:
-        RECEIVED_CODEWORDS = [] if N == 1 else [[]]
-
-        with pytest.raises(ValueError):
-            code.decode(RECEIVED_CODEWORDS)
-        with pytest.raises(ValueError):
-            code.decode(RECEIVED_CODEWORDS, errors=True)
+    decoded_messages, N_corrected = code.decode(RECEIVED_CODEWORDS, errors=True)
+    assert type(decoded_messages) is GF
+    assert np.array_equal(decoded_messages, MESSAGES)
+    assert np.array_equal(N_corrected, N_errors)
 
 
 # @pytest.mark.parametrize("size", CODES)
