@@ -255,7 +255,7 @@ class _LinearCode:
 
         if self.is_systematic:
             # ks can be zero, so we use self.k - ks instead of just -ks
-            parity = message @ self.G[self.k - ks:, self.k:]
+            parity = message @ self.G[self.k - ks :, self.k :]
             codeword = np.hstack((message, parity))
         else:
             pad = self.k - ks

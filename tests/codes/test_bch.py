@@ -101,6 +101,7 @@ def test_encode_exceptions(is_systematic):
     with pytest.raises(ValueError):
         bch.encode(GF.Random(k + 1))
 
+
 def test_encode_vector(bch_codes):
     if bch_codes["d"] == 1:
         return
