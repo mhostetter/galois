@@ -158,7 +158,7 @@ class ReedSolomon(_CyclicCode):
         else:
             alpha = field(alpha)
             if field.multiplicative_order(alpha) != n:
-                raise ValueError(f"Argument alpha must be an nth root of unity")
+                raise ValueError("Argument alpha must be an nth root of unity")
 
         # Determine the code size from the (n, k), (n, d), or (n, k, d). Reed-Solomon codes achieve the
         # Singleton bound, so the relationship between n, k, and d is precise.
