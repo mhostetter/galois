@@ -160,7 +160,7 @@ def verify_encode_shortened(
 
         parities = code.encode(MESSAGES, output="parity")
         assert isinstance(parities, code.field)
-        assert np.array_equal(parities, CODEWORDS[..., -(code.n - code.k) :])
+        assert np.array_equal(parities, CODEWORDS[..., code.k :])
     else:
         MESSAGES = [] if vector else [[]]
 

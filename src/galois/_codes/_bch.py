@@ -215,7 +215,7 @@ class BCH(_CyclicCode):
 
         super().__init__(n, k, d, generator_poly, roots, systematic)
 
-    def __repr__(self) -> str:
+    def __str__(self) -> str:
         r"""
         A terse representation of the BCH code.
 
@@ -243,7 +243,7 @@ class BCH(_CyclicCode):
         """
         return f"<BCH Code: [{self.n}, {self.k}, {self.d}] over {self.field.name}>"
 
-    def __str__(self) -> str:
+    def __repr__(self) -> str:
         r"""
         A formatted string with relevant properties of the BCH code.
 
@@ -1106,6 +1106,20 @@ class BCH(_CyclicCode):
     @property
     def is_systematic(self) -> bool:
         return super().is_systematic
+
+    def _create_parity_check_matrix(self, n, parity_check_poly, _roots):
+        """Creates the parity check matrix for a BCH code"""
+        generator_poly = parity_check_poly.reverse()
+        GF = generator_poly.field
+        k = n - generator_poly.degree
+
+        # Assign the generator polynomial coefficients with highest degree starting along
+        # the diagonals
+        G = GF.Zeros((k, n))
+        for i in range(k):
+            G[i, i : i + generator_poly.degree + 1] = generator_poly.coeffs
+
+        return G
 
 
 def _generator_poly_from_d(

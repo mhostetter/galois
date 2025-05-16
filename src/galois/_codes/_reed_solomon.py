@@ -143,6 +143,8 @@ class ReedSolomon(_CyclicCode):
             raise ValueError(f"Argument 'd' must be at least 1, not {d}.")
         if not c >= 0:
             raise ValueError(f"Argument 'c' must be at least 0, not {c}.")
+        if not 1 <= n:
+            raise ValueError(f"Argument 'n' must be at least 1, not {n}.")
 
         if field is None:
             q = 2
@@ -155,6 +157,8 @@ class ReedSolomon(_CyclicCode):
             alpha = field.primitive_root_of_unity(n)
         else:
             alpha = field(alpha)
+            if field.multiplicative_order(alpha) != n:
+                raise ValueError(f"Argument alpha must be an nth root of unity")
 
         # Determine the code size from the (n, k), (n, d), or (n, k, d). Reed-Solomon codes achieve the
         # Singleton bound, so the relationship between n, k, and d is precise.
@@ -181,10 +185,7 @@ class ReedSolomon(_CyclicCode):
 
         super().__init__(n, k, d, generator_poly, roots, systematic)
 
-        # TODO: Do this?? How to standardize G and H?
-        self._H = np.power.outer(roots, np.arange(n - 1, -1, -1, dtype=field.dtypes[-1]))
-
-    def __repr__(self) -> str:
+    def __str__(self) -> str:
         r"""
         A terse representation of the Reed-Solomon code.
 
@@ -205,7 +206,7 @@ class ReedSolomon(_CyclicCode):
         """
         return f"<Reed-Solomon Code: [{self.n}, {self.k}, {self.d}] over {self.field.name}>"
 
-    def __str__(self) -> str:
+    def __repr__(self) -> str:
         r"""
         A formatted string with relevant properties of the Reed-Solomon code.
 
@@ -607,6 +608,8 @@ class ReedSolomon(_CyclicCode):
 
     def _decode_codeword(self, codeword: FieldArray) -> tuple[FieldArray, np.ndarray]:
         func = reed_solomon_decode_jit(self.field, self.field)
+        # The second argument, design_n, is the multiplicative order of self.alpha.
+        # For cyclic codes, it is always self.n
         dec_codeword, N_errors = func(codeword, self.n, int(self.alpha), self.c, self.roots)
         dec_codeword = dec_codeword.view(self.field)
         return dec_codeword, N_errors
@@ -1026,6 +1029,11 @@ class ReedSolomon(_CyclicCode):
     @property
     def is_systematic(self) -> bool:
         return super().is_systematic
+
+    def _create_parity_check_matrix(self, n, parity_check_poly, roots):
+        """Create the parity check matrix for a Reed-Solomon code"""
+        GF = parity_check_poly.field
+        return np.power.outer(roots, np.arange(n - 1, -1, -1, dtype=GF.dtypes[-1]))
 
 
 class reed_solomon_decode_jit(bch_decode_jit):
