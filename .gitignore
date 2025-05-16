@@ -1,6 +1,7 @@
 __pycache__/
 .benchmarks/
 .coverage
+.idea/
 .ipynb_checkpoints/
 .pytest_cache/
 .venv/
