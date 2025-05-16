@@ -47,8 +47,8 @@ class _CyclicCode(_LinearCode):
         assert remainder_poly == 0
         self._parity_check_poly = parity_check_poly
 
-        G = _poly_to_generator_matrix(n, generator_poly, systematic)
-        H = _poly_to_parity_check_matrix(n, parity_check_poly, False)
+        G = _create_generator_matrix(n, k, generator_poly, systematic)
+        H = self._create_parity_check_matrix(n, parity_check_poly, roots)
 
         super().__init__(n, k, d, G, H, systematic)
 
@@ -135,7 +135,10 @@ class _CyclicCode(_LinearCode):
         return message
 
     def _convert_codeword_to_parity(self, codeword: FieldArray) -> FieldArray:
-        if self.is_systematic:
+        if self.n == self.k:
+            # This is a degenerate code with no  parity bits
+            parity = codeword[..., 0:0]
+        elif self.is_systematic:
             parity = codeword[..., -(self.n - self.k) :]
         else:
             _, parity = divmod_jit(self.field)(codeword, self.generator_poly.coeffs)
@@ -189,39 +192,28 @@ class _CyclicCode(_LinearCode):
         return self._roots
 
 
-def _poly_to_generator_matrix(n: int, generator_poly: Poly, systematic: bool) -> FieldArray:
+def _create_generator_matrix(n: int, k: int, generator_poly: Poly, systematic: bool) -> FieldArray:
     """
     Converts the generator polynomial g(x) into the generator matrix G over GF(q).
     """
-    GF = generator_poly.field
-    k = n - generator_poly.degree
-
-    if systematic:
-        # This is a more efficient Gaussian elimination of the generator matrix G that is produced
-        # in non-systematic form
-        I = GF.Identity(k)
-        P = GF.Zeros((k, n - k))
-        if n - k > 0:
-            # Skip this section is n = k, which is the identity code (contains no parity)
-            P[0, :] = generator_poly.coeffs[0:-1] / generator_poly.coeffs[-1]
-            for i in range(1, k):
-                P[i, 0] = 0
-                P[i, 1:] = P[i - 1, 0:-1]
-                if P[i - 1, -1] > 0:
-                    P[i, :] -= P[i - 1, -1] * P[0, :]
-        G = np.hstack((I, P))
+    field = generator_poly.field
+    assert generator_poly.coeffs[0] == 1
+    generator_coeffs = generator_poly.coeffs[1:]
+    result = field(np.eye(k, M=n, dtype=field.dtypes[0]), copy=False)
+    if k == n:
+        # degenerate case with no parity bits
+        pass
+    elif systematic:
+        right = result[:, k:]  #  right side of the matrix.
+        right[k - 1] = generator_coeffs
+        for row in reversed(range(k - 1)):
+            right[row, :-1] = right[row + 1, 1:]
+            right[row] -= right[row + 1, 0] * generator_coeffs
     else:
-        # Assign the generator polynomial coefficients with highest degree starting along
-        # the diagonals
-        G = GF.Zeros((k, n))
-        for i in range(k):
-            G[i, i : i + generator_poly.degree + 1] = generator_poly.coeffs
-
-    return G
+        for row in range(0, k):
+            result[row, row + 1 : row + n - k + 1] = generator_coeffs
+    return result
 
 
-def _poly_to_parity_check_matrix(n: int, parity_check_poly: Poly, systematic: bool) -> FieldArray:
-    """
-    Converts the generator polynomial g(x) into the generator matrix G over GF(q).
-    """
-    return _poly_to_generator_matrix(n, parity_check_poly.reverse(), systematic)
+def _create_parity_check_matrix(self, n, parity_check_poly, _roots):
+    raise AssertionError("This method must be overridden by a subclass")

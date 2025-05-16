@@ -34,6 +34,14 @@ def test_properties():
     )
 
 
+def test_hashing(field):
+    # Field arrays can't be hashed, but single items can be (just as in numpy)
+    value = field.Random(2)
+    with pytest.raises(TypeError):
+        hash(value)
+    assert hash(value[0]) == hash(int(value[0]))
+
+
 def test_dtypes(field):
     if field.order == 2:
         assert field.dtypes == [np.uint8, np.uint16, np.uint32, np.int8, np.int16, np.int32, np.int64]
