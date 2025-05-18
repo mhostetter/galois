@@ -219,7 +219,7 @@ class _LinearCode:
 
         if not self.d <= codeword.shape[-1] <= self.n:
             raise ValueError(
-                f"The argument `codeword` must be a 1-D or 2-D array "
+                "The argument `codeword` must be a 1-D or 2-D array "
                 f"with last dimension between {self.k} and {self.n} inclusive, "
                 f"not shape {codeword.shape}."
             )
