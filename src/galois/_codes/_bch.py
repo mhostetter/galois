@@ -215,7 +215,7 @@ class BCH(_CyclicCode):
 
         super().__init__(n, k, d, generator_poly, roots, systematic)
 
-    def __repr__(self) -> str:
+    def __str__(self) -> str:
         r"""
         A terse representation of the BCH code.
 
@@ -243,7 +243,7 @@ class BCH(_CyclicCode):
         """
         return f"<BCH Code: [{self.n}, {self.k}, {self.d}] over {self.field.name}>"
 
-    def __str__(self) -> str:
+    def __repr__(self) -> str:
         r"""
         A formatted string with relevant properties of the BCH code.
 
@@ -1107,6 +1107,20 @@ class BCH(_CyclicCode):
     def is_systematic(self) -> bool:
         return super().is_systematic
 
+    def _create_parity_check_matrix(self, n, parity_check_poly, _roots):
+        """Creates the parity check matrix for a BCH code"""
+        generator_poly = parity_check_poly.reverse()
+        GF = generator_poly.field
+        k = n - generator_poly.degree
+
+        # Assign the generator polynomial coefficients with highest degree starting along
+        # the diagonals
+        G = GF.Zeros((k, n))
+        for i in range(k):
+            G[i, i : i + generator_poly.degree + 1] = generator_poly.coeffs
+
+        return G
+
 
 def _generator_poly_from_d(
     d: int,
@@ -1222,10 +1236,10 @@ class bch_decode_jit(Function):
         return dec_codeword, N_errors
 
     def set_globals(self):
-        global CHARACTERISTIC, SUBTRACT, MULTIPLY, RECIPROCAL, POWER
+        global CHARACTERISTIC, ADD, MULTIPLY, RECIPROCAL, POWER
         global CONVOLVE, POLY_ROOTS, POLY_EVALUATE, BERLEKAMP_MASSEY
 
-        SUBTRACT = self.field._subtract.ufunc_call_only
+        ADD = self.field._add.ufunc_call_only
 
         CHARACTERISTIC = self.extension_field.characteristic
         MULTIPLY = self.extension_field._multiply.ufunc_call_only
@@ -1311,8 +1325,9 @@ class bch_decode_jit(Function):
                 sigma_prime_i = POLY_EVALUATE(sigma_prime, np.array([beta_inv[j]], dtype=dtype))[0]
                 delta_i = MULTIPLY(beta_i, Z0_i)
                 delta_i = MULTIPLY(delta_i, RECIPROCAL(sigma_prime_i))
-                delta_i = SUBTRACT(0, delta_i)
-                dec_codewords[i, n - 1 - error_locations[j]] = SUBTRACT(
+                # The algorithm says to negate delta_i to get the error and then subtract
+                # that error from the codeword. In a field, x - (-y) = x + y
+                dec_codewords[i, n - 1 - error_locations[j]] = ADD(
                     dec_codewords[i, n - 1 - error_locations[j]], delta_i
                 )
 

@@ -1812,6 +1812,11 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
         return output
 
+    def __hash__(self) -> int:
+        if self.ndim == 0:
+            return hash(int(self))
+        raise TypeError("unhashable type")
+
     @classmethod
     def _formatter(cls, array):
         """
