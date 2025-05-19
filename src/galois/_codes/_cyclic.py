@@ -136,7 +136,7 @@ class _CyclicCode(_LinearCode):
 
     def _convert_codeword_to_parity(self, codeword: FieldArray) -> FieldArray:
         if self.n == self.k:
-            # This is a degenerate code with no  parity bits
+            # Needed for degenerate BCH encodings with no parity.
             parity = codeword[..., 0:0]
         elif self.is_systematic:
             parity = codeword[..., -(self.n - self.k) :]
