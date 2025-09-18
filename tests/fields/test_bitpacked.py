@@ -179,11 +179,15 @@ def test_galois_array_setting():
     # 9. Using np.newaxis (reshaped array assignment)
     arr = GF([1, 0, 1, 1])
     arr = np.packbits(arr)
-    # should this be using arr's data (as would be the case without packbits) or a new array?
+
     reshaped = arr[:, np.newaxis]
+    # Traditionally, this would be a view on arr's data, but for bitpacked arrays it will be a copy in which we make it
+    # read-only. Let's verify that.
+    assert not reshaped.flags.writeable
+
     reshaped = np.packbits(reshaped)
     reshaped[:, 0] = GF([0, 0, 0, 0])
-    # assert np.array_equal(arr, np.packbits(GF([0, 0, 0, 0])))
+    assert not np.array_equal(arr, reshaped)  # Verify that these are not aliasing the same data.
     assert np.array_equal(reshaped, np.packbits(GF([[0], [0], [0], [0]])))
 
     # 10. Indexing with np.ix_

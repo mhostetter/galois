@@ -677,7 +677,8 @@ class GF2BP(
         return unpacked_shape
 
     def get_unpacked_value(self, index):
-        # Numpy indexing is handled primarily in https://github.com/numpy/numpy/blob/maintenance/1.26.x/numpy/core/src/multiarray/mapping.c#L1435
+        # Numpy indexing is handled primarily in
+        # https://github.com/numpy/numpy/blob/maintenance/1.26.x/numpy/core/src/multiarray/mapping.c#L1435
         packed_index, unpacked_index, shape = self.get_index_parameters(index)
 
         packed = self.view(np.ndarray)[packed_index]
@@ -691,9 +692,16 @@ class GF2BP(
         unpacked = np.unpackbits(packed, axis=self._axis, count=self._axis_element_count)
         value = unpacked[unpacked_index]
         if np.isscalar(value):
-            return GF2(value, dtype=self.dtype)
+            value_gf2 = GF2(value, dtype=self.dtype)
+        else:
+            value_gf2 = GF2._view(value)
 
-        return GF2._view(value)
+        if any([i for i, x in enumerate(unpacked_index) if x is np.newaxis]):
+            # If we are adding dimensions to the array, then it will be a copy, so prevent writes to the array in case
+            # the user is expecting to have a view on the same data.
+            value_gf2.flags.writeable = False
+
+        return value_gf2
 
     def __getitem__(self, item):
         return self.get_unpacked_value(item)
