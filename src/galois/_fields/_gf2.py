@@ -149,15 +149,29 @@ class UFuncMixin_2_1(UFuncMixin):
 
 
 def apply_bitpacked_operation(
-    bitpacked_ufunc: UFunc, op: Callable, result_shape: tuple, ufunc, method: str, inputs: list, kwargs: Any, meta: Any
+    bitpacked_ufunc: UFunc,
+    op: Callable,
+    result_shape: tuple,
+    ufunc,
+    method: str,
+    inputs: list,
+    kwargs: Any,
+    meta: Any,
+    *,
+    force_unpack=False,
 ):
     """Helper function to apply a bitwise operation if possible or otherwise unpack and repack."""
     output_axis = inputs[0]._axis
 
-    if any(i.view(np.ndarray).shape != inputs[0].view(np.ndarray).shape for i in inputs):
+    if force_unpack or any(
+        not isinstance(i, GF2BP) or i.view(np.ndarray).shape != inputs[0].view(np.ndarray).shape for i in inputs
+    ):
         # We can't do the simple bitwise operation when the shapes aren't the same due to broadcasting
-        inputs = [unpackbits(i) for i in inputs]
-        output = reduce(op, inputs)  # We need this to use GF2's default operation
+        inputs = [unpackbits(i) if isinstance(i, GF2BP) else i for i in inputs]
+        if len(inputs) == 1:
+            output = op(*inputs)
+        else:
+            output = reduce(op, inputs)  # We need this to use GF2's default operation
         output = packbits(output, axis=output_axis)
     else:
         output = super(type(bitpacked_ufunc), bitpacked_ufunc).__call__(ufunc, method, inputs, kwargs, meta)
@@ -165,7 +179,7 @@ def apply_bitpacked_operation(
 
     output._axis = output_axis
     output._axis_element_count = result_shape[output_axis]
-    return output
+    return output.astype(bitpacked_ufunc.field._get_dtype(None))
 
 
 class add_ufunc_bitpacked(add_ufunc):
@@ -176,6 +190,16 @@ class add_ufunc_bitpacked(add_ufunc):
     def __call__(self, ufunc, method: str, inputs: list, kwargs: Any, meta: Any):
         result_shape = np.broadcast_shapes(*(i.shape for i in inputs))
         return apply_bitpacked_operation(self, operator.add, result_shape, ufunc, method, inputs, kwargs, meta)
+
+
+class negative_ufunc_bitpacked(negative_ufunc):
+    """
+    Negative ufunc dispatcher w/ support for bit-packed fields.
+    """
+
+    def __call__(self, ufunc, method: str, inputs: list, kwargs: Any, meta: Any):
+        result_shape = np.broadcast_shapes(*(i.shape for i in inputs))
+        return apply_bitpacked_operation(self, operator.neg, result_shape, ufunc, method, inputs, kwargs, meta)
 
 
 class subtract_ufunc_bitpacked(subtract_ufunc):
@@ -272,12 +296,33 @@ class matmul_ufunc_bitpacked(matmul_ufunc):
         return output
 
 
+class power_bitpacked(power):
+    """
+    Exponentiation ufunc dispatcher w/ support for bit-packed fields.
+    """
+
+    def __call__(self, ufunc, method: str, inputs: list, kwargs: Any, meta: Any):
+        result_shape = np.broadcast_shapes(*(i.shape for i in inputs))
+        return apply_bitpacked_operation(self, operator.pow, result_shape, ufunc, method, inputs, kwargs, meta)
+
+
+class log_bitpacked(log):
+    """
+    Logarithm ufunc dispatcher w/ support for bit-packed fields.
+    """
+
+    def __call__(self, ufunc, method: str, inputs: list, kwargs: Any, meta: Any):
+        result_shape = np.broadcast_shapes(*(i.shape for i in inputs))
+        return apply_bitpacked_operation(
+            self, np.log, result_shape, ufunc, method, inputs, kwargs, meta, force_unpack=True
+        )
+
+
 class concatenate_bitpacked(Function):
     """Concatenates matrices together"""
 
     def __call__(self, arrays: list[Array], **kwargs):
         """Handle concatenation of bitpacked arrays"""
-        # TODO: Should we only unpack arrays that have column counts %8 != 0 and concatenate those first?
         unpacked_arrays = []
         for array in arrays:
             verify_isinstance(array, self.field)
@@ -285,11 +330,6 @@ class concatenate_bitpacked(Function):
 
         unpacked = np.concatenate(unpacked_arrays, **kwargs)
         return np.packbits(unpacked)
-
-
-def not_implemented(*args, **kwargs):
-    # TODO: Add a better error message about limited support
-    return NotImplemented  # pragma: no cover
 
 
 class UFuncMixin_2_1_BitPacked(UFuncMixin):
@@ -300,13 +340,13 @@ class UFuncMixin_2_1_BitPacked(UFuncMixin):
     def __init_subclass__(cls) -> None:
         super().__init_subclass__()
         cls._add = add_ufunc_bitpacked(cls, override=np.bitwise_xor)
-        cls._negative = negative_ufunc(cls, override=np.positive)
+        cls._negative = negative_ufunc_bitpacked(cls, override=np.positive)
         cls._subtract = subtract_ufunc_bitpacked(cls, override=np.bitwise_xor)
         cls._multiply = multiply_ufunc_bitpacked(cls, override=np.bitwise_and)
         cls._reciprocal = reciprocal(cls)
-        cls._divide = divide_ufunc(cls)
-        cls._power = not_implemented  # power(cls)
-        cls._log = not_implemented  # log(cls)
+        cls._divide = divide(cls)
+        cls._power = power_bitpacked(cls)
+        cls._log = log_bitpacked(cls)
         cls._sqrt = sqrt(cls)
         cls._packbits = packbits
         cls._unpackbits = unpackbits
@@ -429,13 +469,11 @@ class GF2BP(
         order: Literal["K", "A", "C", "F"] = "K",
         ndmin: int = 0,
     ) -> Self:
-        # axis_element_count is required, but by making it optional it allows us to catch uses of the class that are not
-        # supported (e.g. Random)
-        if isinstance(x, (tuple, list, np.ndarray, FieldArray)) and axis_element_count is not None:
-            # NOTE: I'm not sure that we want to change the dtype specifically for the bit-packed version or how we verify
-            # dtype = cls._get_dtype(dtype)
-            # x = cls._verify_array_like_types_and_values(x)
+        dtype = cls._get_dtype(dtype)
 
+        # The axis_element_count argument is required, but by making it optional it allows us to catch uses of the class
+        # that are not supported (e.g. Random) since the argument will not be supplied.
+        if isinstance(x, (tuple, list, np.ndarray, FieldArray)) and axis_element_count is not None:
             array = cls._view(np.array(x, dtype=dtype, copy=copy, order=order, ndmin=ndmin))
             array._axis = axis
             array._axis_element_count = axis_element_count

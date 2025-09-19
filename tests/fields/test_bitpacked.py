@@ -199,6 +199,32 @@ def test_galois_array_setting():
     assert np.array_equal(arr_2d, np.packbits(GF([[0, 0], [0, 0]])))
 
 
+def test_negative():
+    N = 10
+    u = GF2.Random((N, N), seed=2)
+    p = np.packbits(u)
+
+    assert np.array_equal(np.negative(u), np.unpackbits(np.negative(p)))
+
+
+def test_power():
+    N = 10
+    u = GF2.Random((N, N), seed=2)
+    p = np.packbits(u)
+
+    powers = np.random.randint(0, 2 * GF2.order, N)
+
+    assert np.array_equal(np.power(u, powers), np.unpackbits(np.power(p, powers)))
+
+
+def test_log():
+    N = 10
+    u = GF2.Ones((N, N))
+    p = np.packbits(u)
+
+    assert np.array_equal(np.log(u), np.unpackbits(np.log(p)))
+
+
 def test_inv():
     N = 10
     u = GF2.Random((N, N), seed=2)
