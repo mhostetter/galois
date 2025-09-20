@@ -4,9 +4,10 @@ A module that defines the GF(2) array class.
 
 from __future__ import annotations
 
+import numbers
 import operator
 from functools import reduce
-from math import ceil, floor
+from math import ceil, copysign, floor
 from typing import Any, Callable, Sequence, Type
 
 import numpy as np
@@ -544,7 +545,7 @@ class GF2BP(
         """
         ndim = len(shape)
 
-        if isinstance(index, int):
+        if isinstance(index, numbers.Integral):
             if index < 0:
                 index += shape[axis]
             return (index,)
@@ -556,13 +557,15 @@ class GF2BP(
                 start = start if start is not None else 0
                 stop = stop if stop is not None else shape[axis]
 
-                # Adjust negative start/stop values
+                # Ensure positive start and stop values if we are ascending
                 if start < 0:
                     start += shape[axis]
                 if stop < 0:
                     stop += shape[axis]
             else:
-                start = start if start is not None else shape[axis] - 1
+                # Negative steps don't work as simply as positive steps:
+                # (e.g. np.arange(10)[slice(-1, -11, -1)] != np.arange(10)[slice(9, -1, -1)])
+                start = start if start is not None else -1
                 stop = stop if stop is not None else -shape[axis] - 1
 
             return (slice(start, stop, step),)
@@ -614,7 +617,7 @@ class GF2BP(
         axis = 0
         for i in normalized_index:
             is_unpacked_axis = axis != packed_axis
-            if isinstance(i, int):
+            if isinstance(i, numbers.Integral):
                 if is_unpacked_axis and self.ndim > 1:
                     packed_index += (i,)
 
@@ -635,19 +638,31 @@ class GF2BP(
                     # the packed index will already filter, so we just select everything after
                     unpacked_index += (slice(None),)
                 else:
-                    if i.step > 0:
-                        packed_end = max(int(ceil(i.stop / bit_width)), 1)
-                        packed_step = max(i.step // bit_width, 1)
-                    else:
-                        packed_end = max(int(floor(i.stop / bit_width)), -packed_shape[axis] - 1)
-                        packed_step = min(i.step // bit_width, -1)
+                    packed_start = int(floor(i.start / bit_width))
 
-                    packed_index += (slice(i.start // bit_width, packed_end, packed_step),)
-                    unpacked_index += (slice(i.start % bit_width, i.start % bit_width + i.stop - i.start, i.step),)
+                    if i.stop >= 0:
+                        packed_stop = int(ceil(i.stop / bit_width))
+                        packed_stop = max(packed_stop, packed_start + 1)
+                    else:
+                        packed_stop = int(floor(i.stop / bit_width)) - 1
+
+                    if i.step >= 0:
+                        packed_step = int(ceil(i.step / bit_width))
+                    else:
+                        packed_step = int(floor(i.step / bit_width))
+
+                    packed_index += (slice(packed_start, packed_stop, packed_step),)
+                    unpacked_index += (
+                        slice(
+                            int(copysign(abs(i.start) % bit_width, i.start)),
+                            int(copysign(abs(i.start) % bit_width + abs(i.stop - i.start), i.stop)),
+                            i.step,
+                        ),
+                    )
 
                 packed_slice = packed_index[-1]
                 abs_step = abs(packed_slice.step)
-                slice_size = max(0, (packed_slice.stop - packed_slice.start + abs_step - 1) // abs_step)
+                slice_size = max(0, abs(packed_slice.stop - packed_slice.start) // abs_step)
                 shape += (slice_size,)
             elif isinstance(i, (Sequence, np.ndarray)):
                 if is_unpacked_axis:
@@ -724,20 +739,23 @@ class GF2BP(
         if np.isscalar(packed):
             packed = GF2BP([packed], self._axis, self._axis_element_count).view(np.ndarray)
 
-        if len(shape) > 0:
-            packed = packed.reshape(shape)
+        if len(packed) > 0:
+            if len(shape) > 0:
+                packed = packed.reshape(shape)
 
-        unpacked = np.unpackbits(packed, axis=self._axis, count=self._axis_element_count)
-        value = unpacked[unpacked_index]
-        if np.isscalar(value):
-            value_gf2 = GF2(value, dtype=self.dtype)
+            unpacked = np.unpackbits(packed, axis=self._axis, count=self._axis_element_count)
+            value = unpacked[unpacked_index]
+            if np.isscalar(value):
+                value_gf2 = GF2(value, dtype=self.dtype)
+            else:
+                value_gf2 = GF2._view(value)
+
+            if any([i for i, x in enumerate(unpacked_index) if x is np.newaxis]):
+                # If we are adding dimensions to the array, then it will be a copy, so prevent writes to the array in case
+                # the user is expecting to have a view on the same data.
+                value_gf2.flags.writeable = False
         else:
-            value_gf2 = GF2._view(value)
-
-        if any([i for i, x in enumerate(unpacked_index) if x is np.newaxis]):
-            # If we are adding dimensions to the array, then it will be a copy, so prevent writes to the array in case
-            # the user is expecting to have a view on the same data.
-            value_gf2.flags.writeable = False
+            value_gf2 = GF2([], dtype=self.dtype)
 
         return value_gf2
 
@@ -755,15 +773,16 @@ class GF2BP(
         if np.isscalar(packed):
             packed = GF2BP([packed], self._axis, self._axis_element_count).view(np.ndarray)
 
-        if len(shape) > 0:
-            packed = packed.reshape(shape)
+        if len(packed) > 0:
+            if len(shape) > 0:
+                packed = packed.reshape(shape)
 
-        unpacked = np.unpackbits(packed, axis=self._axis, count=self._axis_element_count)
-        unpacked[unpacked_index] = value
-        repacked = np.packbits(unpacked.view(np.ndarray), axis=self._axis)
-        repacked = repacked.reshape(original_packed_shape)
+            unpacked = np.unpackbits(packed, axis=self._axis, count=self._axis_element_count)
+            unpacked[unpacked_index] = value
+            repacked = np.packbits(unpacked.view(np.ndarray), axis=self._axis)
+            repacked = repacked.reshape(original_packed_shape)
 
-        self.view(np.ndarray)[packed_index] = repacked
+            self.view(np.ndarray)[packed_index] = repacked
 
     def __setitem__(self, item, value):
         self.set_unpacked_value(item, value)

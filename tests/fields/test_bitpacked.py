@@ -80,6 +80,7 @@ def test_galois_array_indexing():
     assert np.array_equal(arr[::2], GF([1, 1]))
     assert np.array_equal(arr[::-1], GF([1, 1, 0, 1]))
     assert np.array_equal(arr[-3:-1], GF([0, 1]))
+    assert np.array_equal(arr[-1:-3:-1], GF([1, 1]))
 
     # 4. Multidimensional Indexing
     arr_2d = GF([[1, 0], [0, 1]])
@@ -115,6 +116,11 @@ def test_galois_array_indexing():
     col_indices = np.array([0, 1])
     sub_matrix = arr_2d[np.ix_(row_indices, col_indices)]
     assert np.array_equal(sub_matrix, GF([[1, 0], [0, 1]]))
+
+    # 11. Empty indexing
+    arr = GF([1, 0, 1, 1])
+    arr = np.packbits(arr)
+    assert np.array_equal(arr[[]], GF([]))
 
     # TODO: Do we want to support this function?
     # 11. Indexing with np.take
@@ -197,6 +203,12 @@ def test_galois_array_setting():
     col_indices = np.array([0, 1])
     arr_2d[np.ix_(row_indices, col_indices)] = GF([[0, 0], [0, 0]])
     assert np.array_equal(arr_2d, np.packbits(GF([[0, 0], [0, 0]])))
+
+    # 11. Empty indexing
+    arr = GF([1, 0, 1, 1])
+    arr = np.packbits(arr)
+    arr[[]] = 0
+    assert np.array_equal(arr, np.packbits(GF([1, 0, 1, 1])))
 
 
 def test_negative():
