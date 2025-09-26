@@ -16,7 +16,7 @@ from typing_extensions import Final, Literal, Self
 
 from .._domains._array import Array
 from .._domains._function import Function
-from .._domains._linalg import inv_jit
+from .._domains._linalg import LinalgFunctionMixin, inv_jit
 from .._domains._ufunc import (
     UFunc,
     UFuncMixin,
@@ -103,7 +103,11 @@ def packbits(a: GF2, axis: int = None, bitorder: str = "big"):
 
     axis = GF2BP.DEFAULT_AXIS if axis is None else axis
     axis_element_count = 1 if a.ndim == 0 else a.shape[axis]
-    packed = GF2BP(np.packbits(a.view(np.ndarray), axis=axis, bitorder=bitorder), axis, axis_element_count)
+    packed = GF2BP(
+        np.packbits(a.view(np.ndarray), axis=axis, bitorder=bitorder),
+        axis,
+        axis_element_count,
+    )
     return packed
 
 
@@ -315,7 +319,15 @@ class log_bitpacked(log):
     def __call__(self, ufunc, method: str, inputs: list, kwargs: Any, meta: Any):
         result_shape = np.broadcast_shapes(*(i.shape for i in inputs))
         return apply_bitpacked_operation(
-            self, np.log, result_shape, ufunc, method, inputs, kwargs, meta, force_unpack=True
+            self,
+            np.log,
+            result_shape,
+            ufunc,
+            method,
+            inputs,
+            kwargs,
+            meta,
+            force_unpack=True,
         )
 
 
@@ -460,6 +472,15 @@ class GF2BP(
     DEFAULT_AXIS = -1  # The last axis
     BIT_WIDTH = 8
 
+    _UNSUPPORTED_FUNCTIONS = LinalgFunctionMixin._UNSUPPORTED_FUNCTIONS + [
+        np.take_along_axis,
+        np.put_along_axis,
+    ]
+
+    _OVERRIDDEN_FUNCTIONS = LinalgFunctionMixin._OVERRIDDEN_FUNCTIONS | {
+        np.concatenate: "_concatenate",
+    }
+
     def __new__(
         cls,
         x: ElementLike | ArrayLike,
@@ -512,6 +533,24 @@ class GF2BP(
             self._axis_element_count = obj._axis_element_count
         except AttributeError:
             pass
+
+    def take(self, indices: ArrayLike, **kwargs: Any) -> Array:
+        raise NotImplementedError(  # pragma: no cover
+            "The NumPy function take is not supported on GF2BP. "
+            "If you believe this scheme should be supported, "
+            "please submit a GitHub issue at https://github.com/mhostetter/galois/issues.\n\n"
+            "If you'd like to perform this operation on the data, you should first call "
+            "`array = array.view(np.ndarray)` and then call the function."
+        )
+
+    def put(self, indices: ArrayLike, **kwargs: Any) -> Array:
+        raise NotImplementedError(  # pragma: no cover
+            "The NumPy function put is not supported on GF2BP. "
+            "If you believe this scheme should be supported, "
+            "please submit a GitHub issue at https://github.com/mhostetter/galois/issues.\n\n"
+            "If you'd like to perform this operation on the data, you should first call "
+            "`array = array.view(np.ndarray)` and then call the function."
+        )
 
     @classmethod
     def Identity(cls, size: int, dtype: DTypeLike | None = None) -> Self:
@@ -628,42 +667,58 @@ class GF2BP(
                 else:
                     packed_index += (i // bit_width,)
                     unpacked_index += (i % bit_width,)
+
                     if axes_in_index > 1:
                         shape += (1,)
-                    else:
-                        shape += (packed_shape[axis],)
             elif isinstance(i, slice):
+                calculate_shape = True
+
                 if is_unpacked_axis:
                     packed_index += (i,)
                     # the packed index will already filter, so we just select everything after
                     unpacked_index += (slice(None),)
                 else:
-                    packed_start = int(floor(i.start / bit_width))
-
-                    if i.stop >= 0:
-                        packed_stop = int(ceil(i.stop / bit_width))
-                        packed_stop = max(packed_stop, packed_start + 1)
+                    if i.step < 0:
+                        # If we have negative stepping, then it's necessary to unpack fully and use the unpacked
+                        # indexing. Otherwise, we can end up with an odd situation where we reverse the packed version
+                        # and the last element unpacks to a different width than what was originally packed.
+                        unpacked_index += (i,)
+                        packed_index += (slice(None),)
+                        shape += (packed_shape[axis],)
+                        calculate_shape = False
                     else:
-                        packed_stop = int(floor(i.stop / bit_width)) - 1
+                        packed_start = int(floor(i.start / bit_width))
 
-                    if i.step >= 0:
-                        packed_step = int(ceil(i.step / bit_width))
-                    else:
-                        packed_step = int(floor(i.step / bit_width))
+                        if i.stop >= 0:
+                            packed_stop = int(ceil(i.stop / bit_width))
+                            packed_stop = max(packed_stop, packed_start + 1)
+                        else:
+                            packed_stop = int(floor(i.stop / bit_width)) - 1
 
-                    packed_index += (slice(packed_start, packed_stop, packed_step),)
-                    unpacked_index += (
-                        slice(
-                            int(copysign(abs(i.start) % bit_width, i.start)),
-                            int(copysign(abs(i.start) % bit_width + abs(i.stop - i.start), i.stop)),
-                            i.step,
-                        ),
-                    )
+                        if i.step >= 0:
+                            packed_step = int(ceil(i.step / bit_width))
+                        else:
+                            packed_step = int(floor(i.step / bit_width))
 
-                packed_slice = packed_index[-1]
-                abs_step = abs(packed_slice.step)
-                slice_size = max(0, abs(packed_slice.stop - packed_slice.start) // abs_step)
-                shape += (slice_size,)
+                        packed_index += (slice(packed_start, packed_stop, packed_step),)
+                        unpacked_index += (
+                            slice(
+                                int(copysign(abs(i.start) % bit_width, i.start)),
+                                int(
+                                    copysign(
+                                        abs(i.start) % bit_width + abs(i.stop - i.start),
+                                        i.stop,
+                                    )
+                                ),
+                                i.step,
+                            ),
+                        )
+
+                if calculate_shape:
+                    packed_slice = packed_index[-1]
+                    abs_step = abs(packed_slice.step)
+                    slice_size = max(0, abs(packed_slice.stop - packed_slice.start) // abs_step)
+                    shape += (slice_size,)
             elif isinstance(i, (Sequence, np.ndarray)):
                 if is_unpacked_axis:
                     shape += (len(i),)
@@ -680,7 +735,7 @@ class GF2BP(
                             mask_packed[j // bit_width] |= True
                         packed_index = mask_packed
                         unpacked_index = i
-                        shape += (max(sum(i) // bit_width, 1),)
+                        shape += (max(len(mask_packed), 1),)
                     else:
                         # Adjust indexing for this packed axis.
                         data = np.array([s // bit_width for s in i], dtype=self.dtype)
@@ -768,7 +823,6 @@ class GF2BP(
         packed_index, unpacked_index, shape = self.get_index_parameters(index)
 
         packed = self.view(np.ndarray)[packed_index]
-        original_packed_shape = packed.shape
 
         if np.isscalar(packed):
             packed = GF2BP([packed], self._axis, self._axis_element_count).view(np.ndarray)
@@ -779,10 +833,12 @@ class GF2BP(
 
             unpacked = np.unpackbits(packed, axis=self._axis, count=self._axis_element_count)
             unpacked[unpacked_index] = value
-            repacked = np.packbits(unpacked.view(np.ndarray), axis=self._axis)
-            repacked = repacked.reshape(original_packed_shape)
 
-            self.view(np.ndarray)[packed_index] = repacked
+            repacked = np.packbits(unpacked.view(np.ndarray), axis=self._axis)
+            # Map the unpacked index back to a packed index, but for the subportion of packed (i.e. repacked)
+            repacked_index, _, _ = self.get_index_parameters(unpacked_index)
+
+            self.view(np.ndarray)[packed_index] = repacked[repacked_index]
 
     def __setitem__(self, item, value):
         self.set_unpacked_value(item, value)

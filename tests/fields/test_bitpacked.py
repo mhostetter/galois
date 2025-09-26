@@ -63,7 +63,8 @@ def test_new_axis():
 def test_galois_array_indexing():
     # Define a Galois field array
     GF = galois.GF(2)
-    arr = GF([1, 0, 1, 1])
+    # Use an array length > GF2BP.BIT_WIDTH as a stronger test for indexing
+    arr = GF([1, 0, 1, 1, 0, 0, 1, 1, 1])
     arr = np.packbits(arr)
 
     # 1. Basic Indexing
@@ -77,9 +78,9 @@ def test_galois_array_indexing():
     # 3. Slicing
     assert np.array_equal(arr[1:3], GF([0, 1]))
     assert np.array_equal(arr[:3], GF([1, 0, 1]))
-    assert np.array_equal(arr[::2], GF([1, 1]))
-    assert np.array_equal(arr[::-1], GF([1, 1, 0, 1]))
-    assert np.array_equal(arr[-3:-1], GF([0, 1]))
+    assert np.array_equal(arr[::2], GF([1, 1, 0, 1, 1]))
+    assert np.array_equal(arr[::-1], GF([1, 1, 1, 0, 0, 1, 1, 0, 1]))
+    assert np.array_equal(arr[-3:-1], GF([1, 1]))
     assert np.array_equal(arr[-1:-3:-1], GF([1, 1]))
 
     # 4. Multidimensional Indexing
@@ -89,8 +90,8 @@ def test_galois_array_indexing():
     assert np.array_equal(arr_2d[:, 1], GF([0, 1]))
 
     # 5. Boolean Indexing
-    mask = np.array([True, False, True, False])
-    assert np.array_equal(arr[mask], GF([1, 1]))
+    mask = np.array([True, False, True, False, False, False, True, True, True])
+    assert np.array_equal(arr[mask], GF([1, 1, 1, 1, 1]))
 
     # 6. Fancy Indexing
     assert np.array_equal(arr[[0, 2, -1]], GF([1, 1, 1]))
@@ -109,7 +110,7 @@ def test_galois_array_indexing():
 
     # 9. Using np.newaxis
     reshaped = arr[:, np.newaxis]
-    assert reshaped.shape == (4, 1)
+    assert reshaped.shape == (9, 1)
 
     # 10. Indexing with np.ix_
     row_indices = np.array([0, 1])
@@ -122,21 +123,19 @@ def test_galois_array_indexing():
     arr = np.packbits(arr)
     assert np.array_equal(arr[[]], GF([]))
 
-    # TODO: Do we want to support this function?
-    # 11. Indexing with np.take
-    # taken = np.take(arr, [0, 2])
-    # assert np.array_equal(taken, GF([1, 1]))
-
 
 def test_galois_array_setting():
     # Define a Galois field array
     GF = galois.GF(2)
-    arr = GF([1, 0, 1, 1])
+    # Use an array length > GF2BP.BIT_WIDTH as a stronger test for indexing
+    arr = GF([1, 0, 1, 1, 0, 0, 0, 0, 0])
     arr = np.packbits(arr)
 
     # 1. Basic Indexing
     arr[0] = GF(0)
     assert arr[0] == GF(0)
+    arr[8] = GF(1)
+    assert arr[8] == GF(1)
 
     # 2. Negative Indexing
     arr[-1] = GF(0)
@@ -144,7 +143,7 @@ def test_galois_array_setting():
 
     # 3. Slicing
     arr[1:3] = GF([1, 0])
-    assert np.array_equal(arr, np.packbits(GF([0, 1, 0, 0])))
+    assert np.array_equal(arr, np.packbits(GF([0, 1, 0, 1, 0, 0, 0, 0, 0])))
 
     # 4. Multidimensional Indexing
     arr_2d = GF([[1, 0], [0, 1]])
