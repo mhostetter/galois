@@ -42,7 +42,7 @@
         <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
-        <link rel="stylesheet" type="text/css" href="../../_static/sphinx_immaterial_theme.729749bd6ddd443af.min.css" />
+        <link rel="stylesheet" type="text/css" href="../../_static/sphinx_immaterial_theme.32b30b8dd4e3b1ff7.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.4cbf315f70debaebd550c87a6162cf0f.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/extra.css" />
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
@@ -12233,7 +12233,7 @@ You're not viewing the latest version.
 </code></pre></div>
 </div>
 <p>Fields with order greater than <span class="math notranslate nohighlight">\(2^{20}\)</span> are compiled, by default, using explicit calculation for
-memory savings. The field elements and arithmetic must still fit within <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.int64" title="(in NumPy v2.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.int64</span></code></a>.</p>
+memory savings. The field elements and arithmetic must still fit within <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.int64" title="(in NumPy v2.3)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.int64</span></code></a>.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [3]: </span><span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">2147483647</span><span class="p">)</span><span class="o">.</span><span class="n">ufunc_mode</span>
 <span class="gh">Out[3]: </span><span class="go">&#39;jit-calculate&#39;</span>
 
@@ -12241,7 +12241,7 @@ memory savings. The field elements and arithmetic must still fit within <a class
 <span class="gh">Out[4]: </span><span class="go">&#39;jit-calculate&#39;</span>
 </code></pre></div>
 </div>
-<p>Fields whose elements and arithmetic cannot fit within <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.int64" title="(in NumPy v2.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.int64</span></code></a> use pure-Python explicit
+<p>Fields whose elements and arithmetic cannot fit within <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.int64" title="(in NumPy v2.3)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.int64</span></code></a> use pure-Python explicit
 calculation.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [5]: </span><span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">36893488147419103183</span><span class="p">)</span><span class="o">.</span><span class="n">ufunc_mode</span>
 <span class="gh">Out[5]: </span><span class="go">&#39;python-calculate&#39;</span>

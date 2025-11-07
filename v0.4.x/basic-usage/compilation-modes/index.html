@@ -42,7 +42,7 @@
         <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
-        <link rel="stylesheet" type="text/css" href="../../_static/sphinx_immaterial_theme.729749bd6ddd443af.min.css" />
+        <link rel="stylesheet" type="text/css" href="../../_static/sphinx_immaterial_theme.32b30b8dd4e3b1ff7.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.4cbf315f70debaebd550c87a6162cf0f.min.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/extra.css" />
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
@@ -12262,7 +12262,7 @@ field are listed in <a class="reference internal" href="../../api/galois.FieldAr
 <span class="gh">Out[2]: </span><span class="go">[&#39;jit-lookup&#39;, &#39;jit-calculate&#39;, &#39;python-calculate&#39;]</span>
 </code></pre></div>
 </div>
-<p>Large finite fields, which have <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.object_" title="(in NumPy v2.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.object_</span></code></a> data types, use <code class="code highlight python docutils literal highlight-python"><span class="s2">&quot;python-calculate&quot;</span></code> which utilizes non-compiled, pure-Python ufuncs.</p>
+<p>Large finite fields, which have <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.object_" title="(in NumPy v2.3)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.object_</span></code></a> data types, use <code class="code highlight python docutils literal highlight-python"><span class="s2">&quot;python-calculate&quot;</span></code> which utilizes non-compiled, pure-Python ufuncs.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [3]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">100</span><span class="p">)</span>
 
 <span class="gp">In [4]: </span><span class="n">GF</span><span class="o">.</span><span class="n">ufunc_modes</span>
@@ -12336,9 +12336,9 @@ may take some time, however.</p>
 </div>
 <h2 id="python-explicit-calculation">Python explicit calculation<a class="headerlink" href="#python-explicit-calculation" title="Permalink to this heading">¶</a></h2>
 <p>Large finite fields cannot use JIT compiled ufuncs. This is because they cannot use NumPy integer data types. This is either
-because the order of the field or an intermediate arithmetic result is larger than the max value of <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.int64" title="(in NumPy v2.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.int64</span></code></a>.</p>
-<p>These finite fields use the <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.object_" title="(in NumPy v2.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.object_</span></code></a> data type and have ufunc compilation mode <code class="code highlight python docutils literal highlight-python"><span class="s2">&quot;python-calculate&quot;</span></code>. This mode does <em>not</em> compile
-the Python functions, but rather converts them into Python ufuncs using <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.frompyfunc.html#numpy.frompyfunc" title="(in NumPy v2.2)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.frompyfunc()</span></code></a>. The lack of JIT compilation allows
+because the order of the field or an intermediate arithmetic result is larger than the max value of <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.int64" title="(in NumPy v2.3)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.int64</span></code></a>.</p>
+<p>These finite fields use the <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.object_" title="(in NumPy v2.3)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.object_</span></code></a> data type and have ufunc compilation mode <code class="code highlight python docutils literal highlight-python"><span class="s2">&quot;python-calculate&quot;</span></code>. This mode does <em>not</em> compile
+the Python functions, but rather converts them into Python ufuncs using <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.frompyfunc.html#numpy.frompyfunc" title="(in NumPy v2.3)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.frompyfunc()</span></code></a>. The lack of JIT compilation allows
 the ufuncs to operate on Python integers, which have unlimited size. This does come with a performance penalty, however.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [11]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">100</span><span class="p">)</span>
 
