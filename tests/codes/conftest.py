@@ -102,7 +102,7 @@ def random_type(array):
     """
     Randomly vary the input type to encode()/decode() across various ArrayLike inputs.
     """
-    x = random.randint(0, 2)
+    x = np.random.randint(0, 3)
     if x == 0:
         # A FieldArray instance
         return array
@@ -116,7 +116,6 @@ def verify_encode(
     code: galois._codes._linear.LinearCode,
     MESSAGES: np.ndarray,
     CODEWORDS: np.ndarray,
-    is_systematic: bool,
     vector: bool,
 ):
     if vector:
@@ -130,7 +129,7 @@ def verify_encode(
     assert isinstance(codewords, code.field)
     assert np.array_equal(codewords, CODEWORDS)
 
-    if is_systematic:
+    if code.is_systematic:
         parities = code.encode(MESSAGES, output="parity")
         assert isinstance(parities, code.field)
         assert np.array_equal(parities, CODEWORDS[..., code.k :])
@@ -142,11 +141,13 @@ def verify_encode(
 def verify_encode_shortened(
     code: galois._codes._linear.LinearCode,
     MESSAGES: np.ndarray,
-    _CODEWORDS: np.ndarray,
-    is_systematic: bool,
+    _CODEWORDS: np.ndarray,  # TODO: Generate 3rd party shortened codewords for verification
     vector: bool,
 ):
-    s = random.randint(1, MESSAGES.shape[1])  # The number of symbols to elide
+    if code.k == 1:
+        return  # Cannot shorten a code with k=1
+
+    s = np.random.randint(1, MESSAGES.shape[1])  # The number of symbols to elide
     full_messages = MESSAGES.copy()
     full_messages[:, :s] = 0
     if vector:
@@ -161,7 +162,7 @@ def verify_encode_shortened(
     assert isinstance(actual_shorted_codewords, code.field)
     assert np.array_equal(expected_shortened_codewords, actual_shorted_codewords)
 
-    if is_systematic:
+    if code.is_systematic:
         parity = code.encode(random_type(full_messages[..., s:]), output="parity")
         assert isinstance(parity, code.field)
         assert np.array_equal(parity, full_codewords[..., code.k :])
@@ -197,9 +198,12 @@ def verify_decode(code: galois._codes._linear.LinearCode, N: int):
     assert np.array_equal(decoded_codewords, CODEWORDS)
 
 
-def verify_decode_shortened(code: galois._codes._linear.LinearCode, N: int, is_systematic: bool):
+def verify_decode_shortened(code: galois._codes._linear.LinearCode, N: int):
+    if code.k == 1:
+        return  # Cannot shorten a code with k=1
+
     GF = code.field
-    s = random.randint(0, code.k - 1)  # The number of shortened symbols
+    s = np.random.randint(1, code.k)  # The number of shortened symbols
     MESSAGES = GF.Random((N, code.k - s))
     ERRORS, N_errors = random_errors(GF, N, code.n - s, code.t)
     if N == 1:
