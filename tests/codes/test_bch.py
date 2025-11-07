@@ -108,9 +108,8 @@ def test_encode_vector(bch_codes):
     bch = bch_codes["code"]
     MESSAGES = bch_codes["encode"]["messages"]
     CODEWORDS = bch_codes["encode"]["codewords"]
-    is_systematic = bch_codes["is_systematic"]
 
-    verify_encode(bch, MESSAGES, CODEWORDS, is_systematic, True)
+    verify_encode(bch, MESSAGES, CODEWORDS, True)
 
 
 def test_encode_matrix(bch_codes):
@@ -119,9 +118,8 @@ def test_encode_matrix(bch_codes):
     bch = bch_codes["code"]
     MESSAGES = bch_codes["encode"]["messages"]
     CODEWORDS = bch_codes["encode"]["codewords"]
-    is_systematic = bch_codes["is_systematic"]
 
-    verify_encode(bch, MESSAGES, CODEWORDS, is_systematic, False)
+    verify_encode(bch, MESSAGES, CODEWORDS, False)
 
 
 def test_encode_shortened_vector(bch_codes):
@@ -130,18 +128,16 @@ def test_encode_shortened_vector(bch_codes):
     bch = bch_codes["code"]
     MESSAGES = bch_codes["encode"]["messages"]
     CODEWORDS = bch_codes["encode"]["codewords"]
-    is_systematic = bch_codes["is_systematic"]
 
-    verify_encode_shortened(bch, MESSAGES, CODEWORDS, is_systematic, True)
+    verify_encode_shortened(bch, MESSAGES, CODEWORDS, True)
 
 
 def test_encode_shortened_matrix(bch_codes):
     bch = bch_codes["code"]
     MESSAGES = bch_codes["encode"]["messages"]
     CODEWORDS = bch_codes["encode"]["codewords"]
-    is_systematic = bch_codes["is_systematic"]
 
-    verify_encode_shortened(bch, MESSAGES, CODEWORDS, is_systematic, False)
+    verify_encode_shortened(bch, MESSAGES, CODEWORDS, False)
 
 
 @pytest.mark.parametrize("is_systematic", (True, False))
@@ -165,14 +161,12 @@ def test_decode_matrix(bch_codes):
 
 def test_decode_shortened_vector(bch_codes):
     bch = bch_codes["code"]
-    is_systematic = bch_codes["is_systematic"]
-    verify_decode_shortened(bch, 1, is_systematic)
+    verify_decode_shortened(bch, 1)
 
 
 def test_decode_shortened_matrix(bch_codes):
     bch = bch_codes["code"]
-    is_systematic = bch_codes["is_systematic"]
-    verify_decode_shortened(bch, 5, is_systematic)
+    verify_decode_shortened(bch, 5)
 
 
 def test_bch_valid_codes_7():

@@ -99,9 +99,8 @@ def test_encode_vector(reed_solomon_codes):
     rs = reed_solomon_codes["code"]
     MESSAGES = reed_solomon_codes["encode"]["messages"]
     CODEWORDS = reed_solomon_codes["encode"]["codewords"]
-    is_systematic = reed_solomon_codes["is_systematic"]
 
-    verify_encode(rs, MESSAGES, CODEWORDS, is_systematic, True)
+    verify_encode(rs, MESSAGES, CODEWORDS, True)
 
 
 def test_encode_matrix(reed_solomon_codes):
@@ -110,9 +109,8 @@ def test_encode_matrix(reed_solomon_codes):
     rs = reed_solomon_codes["code"]
     MESSAGES = reed_solomon_codes["encode"]["messages"]
     CODEWORDS = reed_solomon_codes["encode"]["codewords"]
-    is_systematic = reed_solomon_codes["is_systematic"]
 
-    verify_encode(rs, MESSAGES, CODEWORDS, is_systematic, False)
+    verify_encode(rs, MESSAGES, CODEWORDS, False)
 
 
 def test_encode_shortened_vector(reed_solomon_codes):
@@ -121,18 +119,16 @@ def test_encode_shortened_vector(reed_solomon_codes):
     rs = reed_solomon_codes["code"]
     MESSAGES = reed_solomon_codes["encode"]["messages"]
     CODEWORDS = reed_solomon_codes["encode"]["codewords"]
-    is_systematic = reed_solomon_codes["is_systematic"]
 
-    verify_encode_shortened(rs, MESSAGES, CODEWORDS, is_systematic, True)
+    verify_encode_shortened(rs, MESSAGES, CODEWORDS, True)
 
 
 def test_encode_shortened_matrix(reed_solomon_codes):
     rs = reed_solomon_codes["code"]
     MESSAGES = reed_solomon_codes["encode"]["messages"]
     CODEWORDS = reed_solomon_codes["encode"]["codewords"]
-    is_systematic = reed_solomon_codes["is_systematic"]
 
-    verify_encode_shortened(rs, MESSAGES, CODEWORDS, is_systematic, False)
+    verify_encode_shortened(rs, MESSAGES, CODEWORDS, False)
 
 
 @pytest.mark.parametrize("is_systematic", (True, False))
@@ -156,11 +152,9 @@ def test_decode_matrix(reed_solomon_codes):
 
 def test_decode_shortened_vector(reed_solomon_codes):
     rs = reed_solomon_codes["code"]
-    is_systematic = reed_solomon_codes["is_systematic"]
-    verify_decode_shortened(rs, 1, is_systematic)
+    verify_decode_shortened(rs, 1)
 
 
 def test_decode_shortened_matrix(reed_solomon_codes):
     rs = reed_solomon_codes["code"]
-    is_systematic = reed_solomon_codes["is_systematic"]
-    verify_decode_shortened(rs, 5, is_systematic)
+    verify_decode_shortened(rs, 5)
