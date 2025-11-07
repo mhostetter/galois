@@ -198,10 +198,10 @@ class _LinearCode:
 
         if message.ndim > 2:
             raise ValueError(f"Argument `message` can be either 1-D or 2-D, not {message.ndim}-D.")
-        if not message.shape[-1] <= self.k:
+        if not 1 <= message.shape[-1] <= self.k:
             raise ValueError(
-                f"The `message` must be a 1-D or 2-D array "
-                f"with last dimension less than or equal to {self.k}, not shape {message.shape}."
+                f"The `message` must be a 1-D or 2-D array with last dimension between 1 and {self.k}, "
+                f"not shape {message.shape}."
             )
 
         # Record if the original message was 1-D and then convert to 2-D
@@ -217,11 +217,10 @@ class _LinearCode:
         # Convert the array-like codeword into a FieldArray
         codeword = self.field(codeword)
 
-        if not self.d <= codeword.shape[-1] <= self.n:
+        if not self.n - self.k + 1 <= codeword.shape[-1] <= self.n:
             raise ValueError(
-                "The argument `codeword` must be a 1-D or 2-D array "
-                f"with last dimension between {self.k} and {self.n} inclusive, "
-                f"not shape {codeword.shape}."
+                f"The argument `codeword` must be a 1-D or 2-D array with last dimension between {self.n - self.k + 1} "
+                f"and {self.n}, not shape {codeword.shape}."
             )
 
         # Record if the original codeword was 1-D and then convert to 2-D
@@ -252,13 +251,13 @@ class _LinearCode:
         Encodes the message with shape (N, ks) into the codeword with shape (N, ns).
         """
         ks = message.shape[-1]  # The number of input message symbols (could be less than self.k for shortened codes)
+        pad = self.k - ks  # The number of leading zero message symbols to pad for shortened codes
 
         if self.is_systematic:
             # ks can be zero, so we use self.k - ks instead of just -ks
-            parity = message @ self.G[self.k - ks :, self.k :]
+            parity = message @ self.G[pad:, self.k :]
             codeword = np.hstack((message, parity))
         else:
-            pad = self.k - ks
             codeword = message @ self.G[pad:, pad:]
 
         return codeword
