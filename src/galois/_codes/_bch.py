@@ -6,9 +6,9 @@ from __future__ import annotations
 
 from typing import Type, overload
 
-import numba
 import numpy as np
 from numba import int64
+from numba import types as nb_types
 from typing_extensions import Literal
 
 from .._domains._function import Function
@@ -1211,11 +1211,10 @@ class bch_decode_jit(Function):
 
     def __call__(self, codeword, design_n, alpha, c, roots):
         if self.extension_field.ufunc_mode != "python-calculate":
-            output = self.jit(codeword.astype(np.int64), design_n, alpha, c, roots.astype(np.int64))
+            dec_codeword, N_errors = self.jit(codeword.astype(np.int64), design_n, alpha, c, roots.astype(np.int64))
         else:
-            output = self.python(codeword.view(np.ndarray), design_n, alpha, c, roots.view(np.ndarray))
+            dec_codeword, N_errors = self.python(codeword.view(np.ndarray), design_n, alpha, c, roots.view(np.ndarray))
 
-        dec_codeword, N_errors = output[:, 0:-1], output[:, -1]
         dec_codeword = dec_codeword.astype(codeword.dtype)
         dec_codeword = dec_codeword.view(self.field)
 
@@ -1236,7 +1235,16 @@ class bch_decode_jit(Function):
         POLY_EVALUATE = evaluate_elementwise_jit(self.extension_field).function
         BERLEKAMP_MASSEY = berlekamp_massey_jit(self.extension_field).function
 
-    _SIGNATURE = numba.types.FunctionType(int64[:, :](int64[:, :], int64, int64, int64, int64[:]))
+    # Return: (int64[:, :], int64[:])
+    _SIGNATURE = nb_types.FunctionType(
+        nb_types.Tuple((int64[:, :], int64[:]))(
+            int64[:, :],  # codewords
+            int64,  # design_n
+            int64,  # alpha
+            int64,  # c
+            int64[:],  # roots
+        )
+    )
 
     @staticmethod
     def implementation(codewords, design_n, alpha, c, roots):  # pragma: no cover
@@ -1247,8 +1255,9 @@ class bch_decode_jit(Function):
         t = (d - 1) // 2
 
         # The last column of the returned decoded codeword is the number of corrected errors
-        dec_codewords = np.zeros((N, n + 1), dtype=dtype)
+        dec_codewords = np.zeros((N, n), dtype=dtype)
         dec_codewords[:, 0:n] = codewords[:, :]
+        N_errors = np.zeros(N, dtype=np.int64)
 
         for i in range(N):
             # Compute the syndrome by evaluating each codeword at the roots of the generator polynomial.
@@ -1272,7 +1281,7 @@ class bch_decode_jit(Function):
             v = sigma.size - 1  # The number of errors, which is the degree of the error-locator polynomial
 
             if v > t:
-                dec_codewords[i, -1] = -1
+                N_errors[i] = -1
                 continue
 
             # Compute βi^-1, the roots of σ(x)
@@ -1285,11 +1294,11 @@ class bch_decode_jit(Function):
             if np.any(error_locations > n - 1):
                 # Indicates there are "errors" in the zero-ed portion of a shortened code, which indicates there are
                 # actually more errors than alleged. Return failure to decode.
-                dec_codewords[i, -1] = -1
+                N_errors[i] = -1
                 continue
 
             if beta_inv.size != v:
-                dec_codewords[i, -1] = -1
+                N_errors[i] = -1
                 continue
 
             # Compute σ'(x)
@@ -1316,6 +1325,6 @@ class bch_decode_jit(Function):
                     dec_codewords[i, n - 1 - error_locations[j]], delta_i
                 )
 
-            dec_codewords[i, -1] = v  # The number of corrected errors
+            N_errors[i] = v  # The number of corrected errors
 
-        return dec_codewords
+        return dec_codewords, N_errors
