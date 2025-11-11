@@ -625,7 +625,7 @@ class Poly:
                 f = galois.Poly([3, 0, 5, 2], field=GF); f
                 f.coeffs
                 f.coefficients()
-
+F
             Return the coefficients in ascending order.
 
             .. ipython:: python
