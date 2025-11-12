@@ -8,6 +8,7 @@ import numpy as np
 import pytest
 
 import galois
+from tests.conftest import read_pickle
 
 
 def test_repr_str():
@@ -151,3 +152,16 @@ def test_pickle_array(tmp_path):
     with open(tmp_path / "array.pkl", "rb") as f:
         x_loaded = pickle.load(f)
     assert np.array_equal(x, x_loaded)
+
+
+def test_pickle_galois_field():
+    for item in read_pickle("field_pickle.pkl"):
+        field = item["field"]
+        assert field.order == item["order"]
+        assert field.primitive_element == item["primitive_element"]
+        poly = item.get("irreducible_poly", None)
+        if poly is not None:
+            assert field.degree > 1
+            assert str(field.irreducible_poly) == poly
+        else:
+            assert field.degree == 1
