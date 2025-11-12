@@ -680,7 +680,7 @@ def _pickle_field_array_meta(field: FieldArrayMeta):
 
 def _unpickle_field_array_meta(fixed_args, kwargs):
     """Call GF() with the arguments we are given to create a Galois Field."""
-    from galois import GF
+    from galois import GF  # noqa: PLC0415
 
     return GF(*fixed_args, **kwargs)
 
