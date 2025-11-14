@@ -2,6 +2,8 @@
 A pytest module to test the DFT over arbitrary finite fields.
 """
 
+import itertools
+
 import numpy as np
 import pytest
 
@@ -76,3 +78,19 @@ def test_fft_ifft(order):
     X = np.fft.fft(x)
     xx = np.fft.ifft(X)
     assert np.array_equal(x, xx)
+
+
+@pytest.mark.parametrize("compile_mode", ["python-calculate", "jit-calculate"])
+@pytest.mark.parametrize("size", [1, 31, 80, 500, 1024, 5 * 1024, 8192, 10 * 2**10, 3 * 2**15], ids=lambda x: f"{x:>5}")
+def test_larger_fft(compile_mode, size):
+    for order in itertools.count(size + 1, step=size):
+        p, e = galois.factors(order)
+        if len(p) == len(e) == 1:
+            # we have a prime or a prime extension field
+            break
+
+    GF = galois.GF(order, compile=compile_mode)
+    x = GF.Random(size)
+    x1 = np.fft.fft(x)
+    x2 = np.fft.ifft(x1)
+    assert np.array_equal(x, x2)
