@@ -204,7 +204,7 @@ class fft_jit(Function):
         return y
 
     @staticmethod
-    @functools.cache
+    @functools.lru_cache(None)
     def _get_prime_factors(N) -> np.ndarray:
         "returns the prime factors of N as an int64 numpy array."
         import galois  # noqa
