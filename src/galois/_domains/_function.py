@@ -5,11 +5,12 @@ dispatcher classes have snake_case naming because they are act like functions.
 
 from __future__ import annotations
 
+import functools
 from typing import TYPE_CHECKING, Callable, Type
 
 import numba
 import numpy as np
-from numba import int64
+from numba import int64, types
 
 from .._helper import verify_isinstance
 from ._meta import ArrayMeta
@@ -187,12 +188,13 @@ class fft_jit(Function):
         omega = self.field.primitive_root_of_unity(x.size)
         if self._direction == "backward":
             omega = omega**-1
+        factors = self._get_prime_factors(n)
 
         if self.field.ufunc_mode != "python-calculate":
-            y = self.jit(x.astype(np.int64), np.int64(omega))
+            y = self.jit(x.astype(np.int64), np.int64(omega), factors)
             y = y.astype(dtype)
         else:
-            y = self.python(x.view(np.ndarray), int(omega))
+            y = self.python(x.view(np.ndarray), int(omega), factors)
         y = self.field._view(y)
 
         # Scale the transform such that x = IDFT(DFT(x))
@@ -201,87 +203,73 @@ class fft_jit(Function):
 
         return y
 
+    @staticmethod
+    @functools.cache
+    def _get_prime_factors(N) -> np.ndarray:
+        "returns the prime factors of N as an int64 numpy array."
+        import galois  # noqa
+
+        if N == 1:
+            return np.int64([])
+        primes, counts = galois.factors(N)
+        array = np.int64([prime for prime, count in zip(primes, counts) for _ in range(count)])
+        array.flags.writeable = False  # Make it read-only for safety, since we will reuse it.
+        return array
+
     def set_globals(self):
-        global ADD, SUBTRACT, MULTIPLY
+        global ADD, SUBTRACT, MULTIPLY, POWER
         ADD = self.field._add.ufunc_call_only
         SUBTRACT = self.field._subtract.ufunc_call_only
         MULTIPLY = self.field._multiply.ufunc_call_only
+        POWER = self.field._power.ufunc_call_only
 
-    _SIGNATURE = numba.types.FunctionType(int64[:](int64[:], int64))
-
-    @staticmethod
-    def implementation(x, omega):  # pragma: no cover
-        N = x.size
-        X = np.zeros(N, dtype=x.dtype)
-
-        if N == 1:
-            X[0] = x[0]
-        elif N % 2 == 0:
-            # Radix-2 Cooley-Tukey FFT
-            omega2 = MULTIPLY(omega, omega)
-            EVEN = implementation(x[0::2], omega2)  # noqa: F821
-            ODD = implementation(x[1::2], omega2)  # noqa: F821
-
-            twiddle = 1
-            for k in range(0, N // 2):
-                ODD[k] = MULTIPLY(ODD[k], twiddle)
-                twiddle = MULTIPLY(twiddle, omega)  # Twiddle is omega^k
-
-            for k in range(0, N // 2):
-                X[k] = ADD(EVEN[k], ODD[k])
-                X[k + N // 2] = SUBTRACT(EVEN[k], ODD[k])
-        else:
-            # DFT with O(N^2) complexity
-            twiddle = 1
-            for k in range(0, N):
-                factor = 1
-                for j in range(0, N):
-                    X[k] = ADD(X[k], MULTIPLY(x[j], factor))
-                    factor = MULTIPLY(factor, twiddle)  # Factor is omega^(j*k)
-                twiddle = MULTIPLY(twiddle, omega)  # Twiddle is omega^k
-
-        return X
-
-    # Need a separate implementation for pure-Python to call the static method. It would be nice to avoid the
-    # need for this.
+    # Make sure that numba knows that the third argument is read-only
+    _SIGNATURE = numba.types.FunctionType(
+        int64[:](
+            int64[:],
+            int64,
+            # Tell numba that the third argument is a read-only array
+            types.Array(types.int64, 1, "C", readonly=True),
+        )
+    )
 
     @staticmethod
-    def implementation_2(x, omega):
-        N = x.size
-        X = np.zeros(N, dtype=x.dtype)
-
-        if N == 1:
-            X[0] = x[0]
-        elif N % 2 == 0:
-            # Radix-2 Cooley-Tukey FFT
-            omega2 = MULTIPLY(omega, omega)
-            EVEN = fft_jit.implementation_2(x[0::2], omega2)
-            ODD = fft_jit.implementation_2(x[1::2], omega2)
-
-            twiddle = 1
-            for k in range(0, N // 2):
-                ODD[k] = MULTIPLY(ODD[k], twiddle)
-                twiddle = MULTIPLY(twiddle, omega)  # Twiddle is omega^k
-
-            for k in range(0, N // 2):
-                X[k] = ADD(EVEN[k], ODD[k])
-                X[k + N // 2] = SUBTRACT(EVEN[k], ODD[k])
-        else:
-            # DFT with O(N^2) complexity
-            twiddle = 1
-            for k in range(0, N):
-                factor = 1
-                for j in range(0, N):
-                    X[k] = ADD(X[k], MULTIPLY(x[j], factor))
-                    factor = MULTIPLY(factor, twiddle)  # Factor is omega^(j*k)
-                twiddle = MULTIPLY(twiddle, omega)  # Twiddle is omega^k
-
-        return X
-
-    @property
-    def python(self):
-        self.set_globals()
-        return self.implementation_2
+    def implementation(array, omega, factors):
+        """Adapted from https://dsp-book.narod.ru/FFTBB/0270_PDF_C15.pdf"""
+        B = 1
+        in_array = np.ascontiguousarray(array)
+        out_array = np.empty_like(in_array)
+        for index in range(len(factors)):
+            if out_array is array:
+                # don't overwrite the initial input array.
+                out_array = np.empty_like(in_array)
+            F = factors[~index]
+            Q = array.size // (B * F)
+            omega_bf = POWER(omega, Q)  # omega ** (B * F)
+            z = 1
+            # View the flat arrays as a 3-day array.
+            in_array_3d = in_array.reshape((F, Q, B))
+            out_array_3d = out_array.reshape((Q, F, B))
+            if F == 2:
+                for b in range(B):
+                    for q in range(Q):
+                        left = in_array_3d[0, q, b]
+                        right = MULTIPLY(in_array_3d[1, q, b], z)
+                        out_array_3d[q, 0, b] = ADD(left, right)
+                        out_array_3d[q, 1, b] = SUBTRACT(left, right)
+                    z = MULTIPLY(z, omega_bf)
+            else:
+                out_array_3d[:, :, :] = in_array_3d[F - 1, :, None, :]
+                for f in range(F):
+                    for b in range(B):
+                        for q in range(Q):
+                            for fx in range(1, F):
+                                # We use Horner's rule to evaluate the polynomial.
+                                out_array_3d[q, f, b] = ADD(MULTIPLY(out_array_3d[q, f, b], z), in_array_3d[~fx, q, b])
+                        z = MULTIPLY(z, omega_bf)
+            B = B * F
+            in_array, out_array = out_array, in_array
+        return in_array.ravel()
 
 
 class ifft_jit(fft_jit):
