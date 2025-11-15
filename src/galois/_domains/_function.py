@@ -262,9 +262,9 @@ class fft_jit(Function):
                 for f in range(F):
                     for b in range(B):
                         for q in range(Q):
+                            # We use Horner's rule to evaluate the polynomial.
                             out_array_3d[q, f, b] = in_array_3d[F - 1, q, b]
                             for fx in range(1, F):
-                                # We use Horner's rule to evaluate the polynomial.
                                 out_array_3d[q, f, b] = ADD(MULTIPLY(out_array_3d[q, f, b], z), in_array_3d[~fx, q, b])
                         z = MULTIPLY(z, omega_bf)
             B = B * F
