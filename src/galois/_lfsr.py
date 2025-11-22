@@ -200,8 +200,8 @@ class FLFSR(_LFSR):
         The characteristic polynomial of the sequence is the reciprocal of the feedback polynomial
 
         $$
-        c(x) = x^{n} f(x^{-1})
-             = x^{n} + a_1 x^{n-1} + a_2 x^{n-2} + \dots + a_{n}.
+        c(x) &= x^{n} + a_1 x^{n-1} + a_2 x^{n-2} + \dots + a_{n} \\
+        &= x^{n} f(x^{-1}).
         $$
 
         In the Fibonacci configuration, the shift register is arranged so that its taps implement the recurrence
@@ -489,46 +489,42 @@ class FLFSR(_LFSR):
         return super().step(steps)
 
     def to_galois_lfsr(self) -> GLFSR:
-        """
+        r"""
         Converts the Fibonacci LFSR to a Galois LFSR that produces the same output sequence.
 
         Returns:
             An equivalent Galois LFSR.
 
         Notes:
-            Let:
+            Let $Y(x)$ be the polynomial formed from the next $n$ outputs of the Fibonacci LFSR,
+            where $n$ is the order.
 
-            * Y(x) be the polynomial formed from the next n outputs of the Fibonacci LFSR,
-            where n = order:
+            $$Y(x) = y[0] + y[1] x + ... + y[n-1] x^{n-1}$$
 
-                Y(x) = y[0] + y[1] x + ... + y[n-1] x^{n-1}.
+            Here we take $y[0], ..., y[n-1]$ to be the next $n$ outputs, which in this implementation are exactly the
+            current state reversed.
 
-            Here we take y[0], ..., y[n-1] to be the next n outputs, which in this
-            implementation are exactly the current state reversed.
+            Let $P(x)$ be the characteristic polynomial of the LFSR. In the Galois model, the state polynomial
+            $G(x)$ represents the element
 
-            * P(x) be the characteristic polynomial of the LFSR.
+            $$G(x) = g_0 + g_1 x + ... + g_{n-1} x^{n-1} \in GF(q)[x] / (P(x)),$$
 
-            In the Galois model, the state polynomial G(x) represents the element
+            and one clock of the LFSR corresponds to multiplication by $x \mod P(x)$.
 
-                G(x) = g_0 + g_1 x + ... + g_{n-1} x^{n-1}  in GF(q)[x] / (P(x)),
+            $$G_{t+1}(x) = x G_t(x) \mod P(x)$$
+            $$y[t] = \left\lfloor \frac{x G_t(x)}{P(x)} \right\rfloor$$
 
-            and one clock of the LFSR corresponds to multiplication by x modulo P(x):
+            If we start from an initial Galois state $G_0(x)$ and clock $n$ times, we have
 
-                G_{t+1}(x) = x G_t(x) mod P(x),
-                y[t]       = floor( x G_t(x) / P(x) ).
+            $$x^n G_0(x) = Y(x) P(x) + G_n(x),$$
 
-            If we start from an initial Galois state G_0(x) and clock n times, we have
+            where $\deg(G_n) < n$. Taking the polynomial quotient by $x^n$ and using
+            $\left\lfloor G_n(x) / x^n \right\rfloor = 0$, we obtain
 
-                x^n G_0(x) = Y(x) P(x) + G_n(x),
+            $$G_0(x) = \left\lfloor \frac{Y(x) P(x)}{x^n} \right\rfloor.$$
 
-            where deg(G_n) < n. Taking the polynomial quotient by x^n and using
-            floor( G_n(x) / x^n ) = 0, we obtain
-
-                G_0(x) = floor( Y(x) P(x) / x^n ).
-
-            This method constructs Y(x) from the Fibonacci state, computes G_0(x) from
-            the formula above, and then uses the coefficients of G_0(x) as the initial
-            state of an equivalent Galois LFSR.
+            This method constructs $Y(x)$ from the Fibonacci state, computes $G_0(x)$ from the formula above,
+            and then uses the coefficients of $G_0(x)$ as the initial state of an equivalent Galois LFSR.
 
         Examples:
             Create a Fibonacci LFSR with a given initial state.
@@ -874,8 +870,8 @@ class GLFSR(_LFSR):
         The characteristic polynomial of the sequence is the reciprocal of the feedback polynomial
 
         $$
-        c(x) = x^{n} f(x^{-1})
-             = x^{n} + a_1 x^{n-1} + a_2 x^{n-2} + \dots + a_{n}.
+        c(x) &= x^{n} + a_1 x^{n-1} + a_2 x^{n-2} + \dots + a_{n} \\
+        &= x^{n} f(x^{-1}).
         $$
 
         In the Galois configuration, the shift register is arranged so that its taps implement the recurrence
@@ -1169,17 +1165,17 @@ class GLFSR(_LFSR):
 
         Notes:
             To construct an equivalent Fibonacci LFSR, we use the fact that a Fibonacci LFSR with
-            feedback polynomial f(x) and initial state
+            feedback polynomial $f(x)$ and initial state
 
-                $$S_{FLFSR} = [y[n-1], \dots, y[1], y[0]]$$
+            $$S = [y[n-1], \dots, y[1], y[0]]$$
 
             will produce the sequence $y[0], y[1], \dots, y[n-1], \dots$.
 
             This method therefore:
 
             1. Takes the next $n$ outputs $y[0], \dots, y[n-1]$ of the Galois LFSR.
-            2. Forms the Fibonacci initial state $S_{FLFSR} = [y[n-1], \dots, y[0]]$.
-            3. Constructs a Fibonacci LFSR with the same feedback polynomial $f(x)$ and state $S_{FLFSR}$.
+            2. Forms the Fibonacci initial state $S = [y[n-1], \dots, y[0]]$.
+            3. Constructs a Fibonacci LFSR with the same feedback polynomial $f(x)$ and state $S$.
 
             The Galois LFSR is stepped forward $n$ times to obtain these outputs and then stepped
             backward $n$ times, so its state is unchanged.
@@ -1513,30 +1509,30 @@ def berlekamp_massey(sequence, output="characteristic"):
         output: The output object type.
 
             - `"characteristic"` (default): Returns the characteristic polynomial $c(x)$ that generates the linear
-                recurrent sequence. This is equivalent to the minimal polynomial. The characteristic polynomial is the
-                reciprocal of the connection polynomial, $c(x) = x^{n} C(x^{-1})$.
+              recurrent sequence. This is equivalent to the minimal polynomial. The characteristic polynomial is the
+              reciprocal of the connection polynomial, $c(x) = x^{n} C(x^{-1})$.
             - `"connection"`: Returns the connection polynomial $C(x)$ that generates the linear recurrent
-                sequence. The connection polynomial is equivalent to the feedback polynomial $f(x)$ of an LFSR.
-            - `"fibonacci"`: Returns a Fibonacci LFSR that produces $y$.
-            - `"galois"`: Returns a Galois LFSR that produces $y$.
+              sequence. The connection polynomial is equivalent to the feedback polynomial $f(x)$ of an LFSR.
+            - `"fibonacci"`: Returns a Fibonacci LFSR whose next $n$ outputs produce $y$.
+            - `"galois"`: Returns a Galois LFSR whose next $n$ outputs produce $y$.
 
     Returns:
-        The minimal polynomial $c(x)$, the connection polynomial $C(x)$, a Fibonacci LFSR, or a Galois LFSR,
-        depending on the value of `output`.
+        The characteristic (minimal) polynomial $c(x)$, the connection polynomial $C(x)$, a Fibonacci LFSR,
+        or a Galois LFSR, depending on the value of `output`.
 
     Notes:
         The characteristic polynomial of a linear recurrent sequence is defined as
 
         $$
-        c(x) = x^{n} + a_1 x^{n-1} + a_2 x^{n-2} + \dots + a_{n}
-             = x^{n} f(x^{-1}).
+        c(x) &= x^{n} + a_1 x^{n-1} + a_2 x^{n-2} + \dots + a_{n} \\
+        &= x^{n} f(x^{-1}).
         $$
 
         The connection polynomial $C(x)$ is defined as
 
         $$
-        C(x) = f(x) = 1 + a_1 x + a_2 x^2 + \dots + a_{n} x^{n}
-             = x^{n} c(x^{-1}),
+        C(x) &= 1 + a_1 x + a_2 x^2 + \dots + a_{n} x^{n} \\
+        &= f(x) = x^{n} c(x^{-1}),
         $$
 
         where $C(0) = f(0) = 1$ and the degree $n$ equals the length of the shift register. The associated output
@@ -1568,6 +1564,12 @@ def berlekamp_massey(sequence, output="characteristic"):
         .. ipython:: python
 
             galois.berlekamp_massey(y)
+
+        The connection (feedback) polynomial is $C(x) = 5x^4 + 3x^3 + x^2 + 1$ over $\mathrm{GF}(7)$.
+
+        .. ipython:: python
+
+            galois.berlekamp_massey(y, output="connection")
 
         Use the Berlekamp-Massey algorithm to return equivalent Fibonacci LFSR that reproduces the sequence.
 
