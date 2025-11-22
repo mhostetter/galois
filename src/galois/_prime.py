@@ -1235,7 +1235,7 @@ def pollard_rho(n: int, c: int = 1) -> int:
         factorization-specific
     """
     verify_isinstance(n, int)
-    verify_isinstance(c, int, optional=True)
+    verify_isinstance(c, int)
 
     if not n > 1:
         raise ValueError(f"Argument 'n' must be greater than 1, not {n}.")
@@ -1250,7 +1250,7 @@ def pollard_rho(n: int, c: int = 1) -> int:
     while d == 1:
         a = f(a)
         b = f(f(b))
-        d = math.gcd(a - b, n)
+        d = math.gcd(abs(a - b), n)
 
     if d == n:
         raise RuntimeError(
