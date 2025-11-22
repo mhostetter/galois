@@ -1262,6 +1262,7 @@ class bch_decode_jit(Function):
         for i in range(N):
             # Compute the syndrome by evaluating each codeword at the roots of the generator polynomial.
             # The syndrome vector is S = [S0, S1, ..., S2t-1]
+            # S0 = r(α^c), S1 = r(α^(c+1)), ..., S_(2t-1) = r(α^(c+2t-1))
             syndrome = POLY_EVALUATE(codewords[i, :], roots)
 
             if np.all(syndrome == 0):
@@ -1281,11 +1282,11 @@ class bch_decode_jit(Function):
             v = sigma.size - 1  # The number of errors, which is the degree of the error-locator polynomial
 
             if v > t:
-                N_errors[i] = -1
+                N_errors[i] = -1  # Too many errors to correct
                 continue
 
-            # Compute βi^-1, the roots of σ(x)
-            degrees = np.arange(sigma.size - 1, -1, -1)
+            # Compute βi^-1, the roots of σ(x) = (1 - β1*x)(1 - β2*x)...(1 - βv*x)
+            degrees = np.arange(sigma.size - 1, -1, -1)  # [v, v-1, ..., 0]
             results = POLY_ROOTS(degrees, sigma, alpha)
             beta_inv = results[0, :]  # The roots βi^-1 of σ(x)
             error_locations_inv = results[1, :]  # The roots βi^-1 as powers of the primitive element α
