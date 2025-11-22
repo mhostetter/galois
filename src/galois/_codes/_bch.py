@@ -1276,8 +1276,6 @@ class bch_decode_jit(Function):
             # roots of σ(x).
 
             # Compute the error-locator polynomial σ(x)
-            # TODO: Re-evaluate these equations since changing BMA to return the characteristic polynomial,
-            #       not the feedback polynomial
             sigma = BERLEKAMP_MASSEY(syndrome)
             v = sigma.size - 1  # The number of errors, which is the degree of the error-locator polynomial
 
@@ -1289,8 +1287,8 @@ class bch_decode_jit(Function):
             degrees = np.arange(sigma.size - 1, -1, -1)  # [v, v-1, ..., 0]
             results = POLY_ROOTS(degrees, sigma, alpha)
             beta_inv = results[0, :]  # The roots βi^-1 of σ(x)
-            error_locations_inv = results[1, :]  # The roots βi^-1 as powers of the primitive element α
-            error_locations = -error_locations_inv % design_n  # The error locations as degrees of c(x)
+            error_exponents_inv = results[1, :]  # The roots βi^-1 as powers of the primitive element α
+            error_locations = -error_exponents_inv % design_n  # The error locations as degrees of c(x)
 
             if np.any(error_locations > n - 1):
                 # Indicates there are "errors" in the zero-ed portion of a shortened code, which indicates there are
@@ -1314,12 +1312,12 @@ class bch_decode_jit(Function):
 
             # The error value δi = -1 * βi^(1-c) * Z0(βi^-1) / σ'(βi^-1)
             for j in range(v):
-                beta_i = POWER(beta_inv[j], c - 1)
+                beta_to_1_minus_c = POWER(beta_inv[j], c - 1)
                 # NOTE: poly_eval() expects a 1-D array of values
                 Z0_i = POLY_EVALUATE(Z0, np.array([beta_inv[j]], dtype=dtype))[0]
                 # NOTE: poly_eval() expects a 1-D array of values
                 sigma_prime_i = POLY_EVALUATE(sigma_prime, np.array([beta_inv[j]], dtype=dtype))[0]
-                delta_i = MULTIPLY(beta_i, Z0_i)
+                delta_i = MULTIPLY(beta_to_1_minus_c, Z0_i)
                 delta_i = MULTIPLY(delta_i, RECIPROCAL(sigma_prime_i))
                 delta_i = SUBTRACT(0, delta_i)
                 dec_codewords[i, n - 1 - error_locations[j]] = SUBTRACT(
