@@ -31,7 +31,7 @@ def test_gf2_primitive():
     """
     Python:
         c = galois.primitive_poly(2, 4)
-        lfsr = galois.FLFSR(c)
+        lfsr = galois.FLFSR(c.reverse())
         y = lfsr.step(50)
 
     Sage:
@@ -50,7 +50,7 @@ def test_gf3_primitive():
     """
     Python:
         c = galois.primitive_poly(3, 4)
-        lfsr = galois.FLFSR(c)
+        lfsr = galois.FLFSR(c.reverse())
         y = lfsr.step(50)
 
     Sage:
@@ -69,7 +69,7 @@ def test_gf2_3_primitive():
     """
     Python:
         c = galois.primitive_poly(2**3, 4)
-        lfsr = galois.FLFSR(c)
+        lfsr = galois.FLFSR(c.reverse())
         y = lfsr.step(50)
 
     Sage:
@@ -88,7 +88,7 @@ def test_gf3_3_primitive():
     """
     Python:
         c = galois.primitive_poly(3**3, 4)
-        lfsr = galois.FLFSR(c)
+        lfsr = galois.FLFSR(c.reverse())
         y = lfsr.step(50)
 
     Sage:
