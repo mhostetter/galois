@@ -109,3 +109,17 @@ tocdepth: 2
 - [@fyellin](https://github.com/fyellin)
 - [@rafaelha](https://github.com/rafaelha)
 - Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
+
+## v0.4.7
+
+*Released November 7, 2025*
+
+### Changes
+
+- Added support for Numba 0.62. ([#618](https://github.com/mhostetter/galois/pull/618))
+- Added support for shortened non-systematic `BCH` and `ReedSolomon` codes. ([#607](https://github.com/mhostetter/galois/pull/607))
+
+### Contributors
+
+- [@fyellin](https://github.com/fyellin)
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
