@@ -1410,7 +1410,11 @@ class galois_lfsr_step_backward_jit(Function):
 
 
 @overload
-def berlekamp_massey(sequence: FieldArray, output: Literal["minimal"] = "minimal") -> Poly: ...
+def berlekamp_massey(sequence: FieldArray, output: Literal["characteristic"] = "characteristic") -> Poly: ...
+
+
+@overload
+def berlekamp_massey(sequence: FieldArray, output: Literal["connection"]) -> Poly: ...
 
 
 @overload
@@ -1422,33 +1426,50 @@ def berlekamp_massey(sequence: FieldArray, output: Literal["galois"]) -> GLFSR: 
 
 
 @export
-def berlekamp_massey(sequence, output="minimal"):
+def berlekamp_massey(sequence, output="characteristic"):
     r"""
-    Finds the minimal polynomial $c(x)$ that produces the linear recurrent sequence $y$.
-
-    This function implements the Berlekamp-Massey algorithm.
+    Finds the characteristic polynomial $c(x)$ of the input linear recurrent sequence using the
+    Berlekamp-Massey algorithm.
 
     Arguments:
         sequence: A linear recurrent sequence $y$ in $\mathrm{GF}(p^m)$.
         output: The output object type.
 
-            - `"minimal"` (default): Returns the minimal polynomial that generates the linear recurrent sequence.
-              The minimal polynomial is a characteristic polynomial $c(x)$ of minimal degree.
+            - `"characteristic"` (default): Returns the characteristic polynomial $c(x)$ that generates the linear
+                recurrent sequence. This is equivalent to the minimal polynomial. The characteristic polynomial is the
+                reciprocal of the connection polynomial, $c(x) = x^{n} C(x^{-1})$.
+            - `"connection"`: Returns the connection polynomial $C(x)$ that generates the linear recurrent
+                sequence. The connection polynomial is equivalent to the feedback polynomial $f(x)$ of an LFSR.
             - `"fibonacci"`: Returns a Fibonacci LFSR that produces $y$.
             - `"galois"`: Returns a Galois LFSR that produces $y$.
 
     Returns:
-        The minimal polynomial $c(x)$, a Fibonacci LFSR, or a Galois LFSR, depending on the value of `output`.
+        The minimal polynomial $c(x)$, the connection polynomial $C(x)$, a Fibonacci LFSR, or a Galois LFSR,
+        depending on the value of `output`.
 
     Notes:
-        The minimal polynomial is the characteristic polynomial $c(x)$ of minimal degree that produces the
-        linear recurrent sequence $y$.
+        The characteristic polynomial of a linear recurrent sequence is defined as
 
-        $$c(x) = x^{n} - c_{n-1}x^{n-1} - c_{n-2}x^{n-2} - \dots - c_{1}x - c_{0}$$
+        $$
+        c(x) = x^{n} + a_1 x^{n-1} + a_2 x^{n-2} + \dots + a_{n}
+             = x^{n} f(x^{-1}).
+        $$
 
-        $$y_t = c_{n-1}y_{t-1} + c_{n-2}y_{t-2} + \dots + c_{1}y_{t-n+2} + c_{0}y_{t-n+1}$$
+        The connection polynomial $C(x)$ is defined as
 
-        For a linear sequence with order $n$, at least $2n$ output symbols are required to determine the
+        $$
+        C(x) = f(x) = 1 + a_1 x + a_2 x^2 + \dots + a_{n} x^{n}
+             = x^{n} c(x^{-1}),
+        $$
+
+        where $C(0) = f(0) = 1$ and the degree $n$ equals the length of the shift register. The associated output
+        sequence $y[t]$ satisfies the linear recurrence
+
+        $$
+        y[t] + a_1 y[t-1] + a_2 y[t-2] + \dots + a_{n} y[t-n] = 0.
+        $$
+
+        For a linear recurrent sequence with order $n$, at least $2n$ output symbols are required to determine the
         minimal polynomial.
 
     References:
@@ -1496,25 +1517,27 @@ def berlekamp_massey(sequence, output="minimal"):
     verify_isinstance(output, str)
     if not sequence.ndim == 1:
         raise ValueError(f"Argument 'sequence' must be 1-D, not {sequence.ndim}-D.")
-    if not output in ["minimal", "fibonacci", "galois"]:
-        raise ValueError(f"Argument 'output' must be in ['minimal', 'fibonacci', 'galois'], not {output!r}.")
+    if not output in ["characteristic", "connection", "fibonacci", "galois"]:
+        raise ValueError(
+            f"Argument 'output' must be in ['characteristic', 'connection', 'fibonacci', 'galois'], not {output!r}."
+        )
 
     field = type(sequence)
-    coeffs = berlekamp_massey_jit(field)(sequence)
-    characteristic_poly = Poly(coeffs, field=field)
+    coeffs = berlekamp_massey_jit(field)(sequence)  # Connection polynomial coefficients, degree-descending
+    connection_poly = Poly(coeffs, field=field)
 
-    if output == "minimal":
-        return characteristic_poly
+    if output == "characteristic":
+        return connection_poly.reverse()
+    if output == "connection":
+        return connection_poly
 
     # The first n outputs are the Fibonacci state reversed
-    feedback_poly = characteristic_poly.reverse()
-    state_ = sequence[0 : feedback_poly.degree][::-1]
-    fibonacci_lfsr = FLFSR(feedback_poly, state=state_)
-
+    state = sequence[0 : connection_poly.degree][::-1]
+    fibonacci_lfsr = FLFSR(connection_poly, state=state)
     if output == "fibonacci":
         return fibonacci_lfsr
-
-    return fibonacci_lfsr.to_galois_lfsr()
+    else:
+        return fibonacci_lfsr.to_galois_lfsr()
 
 
 class berlekamp_massey_jit(Function):
@@ -1543,36 +1566,49 @@ class berlekamp_massey_jit(Function):
 
     @staticmethod
     def implementation(sequence):  # pragma: no cover
-        N = sequence.size
-        s = sequence
-        c = np.zeros(N, dtype=sequence.dtype)
-        b = np.zeros(N, dtype=sequence.dtype)
-        c[0] = 1  # The polynomial c(x) = 1
-        b[0] = 1  # The polynomial b(x) = 1
-        L = 0
-        m = 1
-        bb = 1
+        S = sequence  # The input sequence, S = S0 + S1*x + S2*x^2 + ...
+        C = np.zeros_like(S)
+        C[0] = 1  # The current connection polynomial C(x) = 1
+        B = np.zeros_like(S)
+        B[0] = 1  # The best connection polynomial B(x) = 1
+        L = 0  # The current linear complexity
+        m = 1  # The number of steps since last update
+        b = 1  # The last discrepancy
 
-        for n in range(0, N):
-            d = 0
+        for n in range(0, S.size):
+            d = 0  # The discrepancy at step n, d = Sn*1 + C1*Sn-1 + ... + CL*Sn-L
             for i in range(0, L + 1):
-                d = ADD(d, MULTIPLY(s[n - i], c[i]))
+                d = ADD(d, MULTIPLY(S[n - i], C[i]))
 
             if d == 0:
+                # The current C(x) is still valid, no update needed
                 m += 1
-            elif 2 * L <= n:
-                t = c.copy()
-                d_bb = MULTIPLY(d, RECIPROCAL(bb))
-                for i in range(m, N):
-                    c[i] = SUBTRACT(c[i], MULTIPLY(d_bb, b[i - m]))
-                L = n + 1 - L
-                b = t.copy()
-                bb = d
-                m = 1
             else:
-                d_bb = MULTIPLY(d, RECIPROCAL(bb))
-                for i in range(m, N):
-                    c[i] = SUBTRACT(c[i], MULTIPLY(d_bb, b[i - m]))
-                m += 1
+                # The current recurrence fails, need to update C(x)
+                if 2 * L > n:
+                    # There is room to adjust C(x) without increasing its degree
+                    # Update C(x) := C(x) - d/b * x^m * B(x)
+                    d_over_b = MULTIPLY(d, RECIPROCAL(b))
+                    for i in range(m, S.size):
+                        C[i] = SUBTRACT(C[i], MULTIPLY(d_over_b, B[i - m]))
 
-        return c[0 : L + 1]
+                    # fixed_d = 0
+                    # for i in range(0, L + 1):
+                    #     fixed_d = ADD(fixed_d, MULTIPLY(S[n - i], C[i]))
+                    # assert fixed_d == 0, "Berlekamp-Massey algorithm failure: discrepancy should be zero after update."
+
+                    m += 1
+                else:
+                    # The current recurrence is too short. A longer recurrence is needed. Update L and B(x) = C(x).
+                    T = C.copy()
+                    d_over_b = MULTIPLY(d, RECIPROCAL(b))
+                    for i in range(m, S.size):
+                        C[i] = SUBTRACT(C[i], MULTIPLY(d_over_b, B[i - m]))
+                    L = n + 1 - L  # New new linear complexity
+                    B = T.copy()
+                    b = d  # Last discrepancy
+                    m = 1  # Reset steps since last update
+
+        # The connection polynomial C(x) = 1 + C1*x + C2*x^2 + ... + CL*x^L
+        # C = [1, C1, C2, ..., CL, 0, 0, ..., 0]
+        return C[: L + 1][::-1]  # Return C(x) coefficients in degree-descending order
