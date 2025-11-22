@@ -37,14 +37,14 @@ def test_from_taps():
     GF = galois.GF(7)
     T = GF([1, 2, 3, 4])
     lfsr = galois.GLFSR.Taps(T)
-    assert lfsr.characteristic_poly == galois.Poly([1, -4, -3, -2, -1], field=GF)
-    assert lfsr.feedback_poly == galois.Poly([-1, -2, -3, -4, 1], field=GF)
+    assert lfsr.characteristic_poly == galois.Poly([1, -1, -2, -3, -4], field=GF)
+    assert lfsr.feedback_poly == galois.Poly([-4, -3, -2, -1, 1], field=GF)
 
 
 def test_repr():
     c = galois.primitive_poly(7, 4)
     lfsr = galois.GLFSR(c.reverse())
-    assert repr(lfsr) == "<Galois LFSR: f(x) = 5x^4 + 3x^3 + x^2 + 1 over GF(7)>"
+    assert repr(lfsr) == "<Galois LFSR: f(x) = 1 + x^2 + 3x^3 + 5x^4 over GF(7)>"
 
 
 def test_str():
@@ -52,7 +52,7 @@ def test_str():
     lfsr = galois.GLFSR(c.reverse())
     assert (
         str(lfsr)
-        == "Galois LFSR:\n  field: GF(7)\n  feedback_poly: 5x^4 + 3x^3 + x^2 + 1\n  characteristic_poly: x^4 + x^2 + 3x + 5\n  taps: [2 4 6 0]\n  order: 4\n  state: [1 1 1 1]\n  initial_state: [1 1 1 1]"
+        == "Galois LFSR:\n  field: GF(7)\n  feedback_poly: 1 + x^2 + 3x^3 + 5x^4\n  characteristic_poly: x^4 + x^2 + 3x + 5\n  taps: [2 4 6 0]\n  order: 4\n  state: [1 1 1 1]\n  initial_state: [1 1 1 1]"
     )
 
 
