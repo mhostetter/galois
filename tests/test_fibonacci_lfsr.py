@@ -44,7 +44,7 @@ def test_from_taps():
 def test_repr():
     c = galois.primitive_poly(7, 4)
     lfsr = galois.FLFSR(c.reverse())
-    assert repr(lfsr) == "<Fibonacci LFSR: f(x) = 5x^4 + 3x^3 + x^2 + 1 over GF(7)>"
+    assert repr(lfsr) == "<Fibonacci LFSR: f(x) = 1 + x^2 + 3x^3 + 5x^4 over GF(7)>"
 
 
 def test_str():
@@ -52,7 +52,7 @@ def test_str():
     lfsr = galois.FLFSR(c.reverse())
     assert (
         str(lfsr)
-        == "Fibonacci LFSR:\n  field: GF(7)\n  feedback_poly: 5x^4 + 3x^3 + x^2 + 1\n  characteristic_poly: x^4 + x^2 + 3x + 5\n  taps: [0 6 4 2]\n  order: 4\n  state: [1 1 1 1]\n  initial_state: [1 1 1 1]"
+        == "Fibonacci LFSR:\n  field: GF(7)\n  feedback_poly: 1 + x^2 + 3x^3 + 5x^4\n  characteristic_poly: x^4 + x^2 + 3x + 5\n  taps: [0 6 4 2]\n  order: 4\n  state: [1 1 1 1]\n  initial_state: [1 1 1 1]"
     )
 
 
