@@ -1278,7 +1278,7 @@ class bch_decode_jit(Function):
             # Compute the error-locator polynomial σ(x)
             # TODO: Re-evaluate these equations since changing BMA to return the characteristic polynomial,
             #       not the feedback polynomial
-            sigma = BERLEKAMP_MASSEY(syndrome)[::-1]
+            sigma = BERLEKAMP_MASSEY(syndrome)
             v = sigma.size - 1  # The number of errors, which is the degree of the error-locator polynomial
 
             if v > t:
