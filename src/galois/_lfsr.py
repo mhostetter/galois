@@ -1690,5 +1690,5 @@ class berlekamp_massey_jit(Function):
                     m = 1  # Reset steps since last update
 
         # The connection polynomial C(x) = 1 + C1*x + C2*x^2 + ... + CL*x^L
-        # C = [1, C1, C2, ..., CL, 0, 0, ..., 0]
-        return C[: L + 1][::-1]  # Return C(x) coefficients in degree-descending order
+        C = np.trim_zeros(C[: L + 1], "b")  # Remove trailing, high-degree zeros
+        return C[::-1]  # Return C(x) coefficients in degree-descending order
