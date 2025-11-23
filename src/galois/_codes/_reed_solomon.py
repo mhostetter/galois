@@ -7,6 +7,7 @@ from __future__ import annotations
 from typing import Type, overload
 
 import numpy as np
+import numpy.typing as npt
 from typing_extensions import Literal
 
 from .._fields import Field, FieldArray
@@ -436,6 +437,7 @@ class ReedSolomon(_CyclicCode):
     def decode(
         self,
         codeword: ArrayLike,
+        erasures: npt.NDArray | None = None,
         output: Literal["message", "codeword"] = "message",
         errors: Literal[False] = False,
     ) -> FieldArray: ...
@@ -444,6 +446,7 @@ class ReedSolomon(_CyclicCode):
     def decode(
         self,
         codeword: ArrayLike,
+        erasures: npt.NDArray | None = None,
         output: Literal["message", "codeword"] = "message",
         errors: Literal[True] = True,
     ) -> tuple[FieldArray, int | np.ndarray]: ...
@@ -602,12 +605,12 @@ class ReedSolomon(_CyclicCode):
                         np.array_equal(d, m)
         """,
     )
-    def decode(self, codeword, output="message", errors=False):
-        return super().decode(codeword, output=output, errors=errors)
+    def decode(self, codeword, erasures=None, output="message", errors=False):
+        return super().decode(codeword, erasures=erasures, output=output, errors=errors)
 
-    def _decode_codeword(self, codeword: FieldArray) -> tuple[FieldArray, np.ndarray]:
+    def _decode_codeword(self, codeword: FieldArray, erasures: npt.NDArray | None) -> tuple[FieldArray, np.ndarray]:
         func = reed_solomon_decode_jit(self.field, self.field)
-        dec_codeword, N_errors = func(codeword, self.n, int(self.alpha), self.c, self.roots)
+        dec_codeword, N_errors = func(codeword, erasures, self.n, int(self.alpha), self.c, self.roots)
         dec_codeword = dec_codeword.view(self.field)
         return dec_codeword, N_errors
 

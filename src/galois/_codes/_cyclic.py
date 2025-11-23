@@ -7,6 +7,7 @@ from __future__ import annotations
 from typing import overload
 
 import numpy as np
+import numpy.typing as npt
 from typing_extensions import Literal
 
 from .._fields import FieldArray
@@ -87,6 +88,7 @@ class _CyclicCode(_LinearCode):
     def decode(
         self,
         codeword: ArrayLike,
+        erasures: npt.NDArray | None = None,
         output: Literal["message", "codeword"] = "message",
         errors: Literal[False] = False,
     ) -> FieldArray: ...
@@ -95,6 +97,7 @@ class _CyclicCode(_LinearCode):
     def decode(
         self,
         codeword: ArrayLike,
+        erasures: npt.NDArray | None = None,
         output: Literal["message", "codeword"] = "message",
         errors: Literal[True] = True,
     ) -> tuple[FieldArray, int | np.ndarray]: ...
@@ -120,12 +123,12 @@ class _CyclicCode(_LinearCode):
             $$c(x) = c_{n-1} x^{n-1} + \dots + c_1 x + c_0 \in \mathrm{GF}(q)[x]$$
         """,
     )
-    def decode(self, codeword, output="message", errors=False):
-        return super().decode(codeword, output=output, errors=errors)
+    def decode(self, codeword, erasures=None, output="message", errors=False):
+        return super().decode(codeword, erasures=erasures, output=output, errors=errors)
 
     def _convert_codeword_to_message(self, codeword: FieldArray) -> FieldArray:
-        ns = codeword.shape[-1]  # The number of codeword symbols (could be less than self.n for shortened codes)
-        ks = self.k - (self.n - ns)  # The number of message symbols (could be less than self.k for shortened codes)
+        ns = codeword.shape[-1]  # The number of codeword symbols (could be less than self.n)
+        ks = self.k - (self.n - ns)  # The number of message symbols (could be less than self.k)
 
         if self.is_systematic:
             message = codeword[..., 0:ks]
