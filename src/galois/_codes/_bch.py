@@ -7,7 +7,8 @@ from __future__ import annotations
 from typing import Type, overload
 
 import numpy as np
-from numba import int64
+import numpy.typing as npt
+from numba import bool_, int64
 from numba import types as nb_types
 from typing_extensions import Literal
 
@@ -480,6 +481,7 @@ class BCH(_CyclicCode):
     def decode(
         self,
         codeword: ArrayLike,
+        erasures: npt.NDArray | None = None,
         output: Literal["message", "codeword"] = "message",
         errors: Literal[False] = False,
     ) -> FieldArray: ...
@@ -488,6 +490,7 @@ class BCH(_CyclicCode):
     def decode(
         self,
         codeword: ArrayLike,
+        erasures: npt.NDArray | None = None,
         output: Literal["message", "codeword"] = "message",
         errors: Literal[True] = True,
     ) -> tuple[FieldArray, int | np.ndarray]: ...
@@ -650,14 +653,16 @@ class BCH(_CyclicCode):
                         np.array_equal(d, m)
         """,
     )
-    def decode(self, codeword, output="message", errors=False):
-        return super().decode(codeword, output=output, errors=errors)
+    def decode(self, codeword, erasures=None, output="message", errors=False):
+        return super().decode(codeword, erasures=erasures, output=output, errors=errors)
 
-    def _decode_codeword(self, codeword: FieldArray) -> tuple[FieldArray, np.ndarray]:
+    def _decode_codeword(
+        self, codeword: FieldArray, erasures: npt.NDArray | None = None
+    ) -> tuple[FieldArray, np.ndarray]:
         func = bch_decode_jit(self.field, self.extension_field)
-        dec_codeword, N_errors = func(codeword, self.n, int(self.alpha), self.c, self.roots)
+        dec_codeword, n_errors = func(codeword, erasures, self.n, int(self.alpha), self.c, self.roots)
         dec_codeword = dec_codeword.view(self.field)
-        return dec_codeword, N_errors
+        return dec_codeword, n_errors
 
     @property
     @extend_docstring(
@@ -1209,24 +1214,43 @@ class bch_decode_jit(Function):
             int(self.extension_field.irreducible_poly),
         )
 
-    def __call__(self, codeword, design_n, alpha, c, roots):
+    def __call__(self, codeword, erasures, design_n, alpha, c, roots):
         if self.extension_field.ufunc_mode != "python-calculate":
-            dec_codeword, N_errors = self.jit(codeword.astype(np.int64), design_n, alpha, c, roots.astype(np.int64))
+            dec_codeword, n_errors = self.jit(
+                codeword.astype(np.int64),
+                erasures.astype(np.bool_),
+                design_n,
+                alpha,
+                c,
+                roots.astype(np.int64),
+            )
         else:
-            dec_codeword, N_errors = self.python(codeword.view(np.ndarray), design_n, alpha, c, roots.view(np.ndarray))
+            dec_codeword, n_errors = self.python(
+                codeword.view(np.ndarray),
+                erasures.view(np.ndarray),
+                design_n,
+                alpha,
+                c,
+                roots.view(np.ndarray),
+            )
 
         dec_codeword = dec_codeword.astype(codeword.dtype)
         dec_codeword = dec_codeword.view(self.field)
 
-        return dec_codeword, N_errors
+        return dec_codeword, n_errors
 
     def set_globals(self):
-        global CHARACTERISTIC, SUBTRACT, MULTIPLY, RECIPROCAL, POWER
+        global SUBTRACT_BASE
+        global CHARACTERISTIC, ADD, SUBTRACT, MULTIPLY, RECIPROCAL, POWER
         global CONVOLVE, POLY_ROOTS, POLY_EVALUATE, BERLEKAMP_MASSEY
 
-        SUBTRACT = self.field._subtract.ufunc_call_only
+        # Base field operations
+        SUBTRACT_BASE = self.field._subtract.ufunc_call_only
 
+        # Extension field operations
         CHARACTERISTIC = self.extension_field.characteristic
+        ADD = self.extension_field._add.ufunc_call_only
+        SUBTRACT = self.extension_field._subtract.ufunc_call_only
         MULTIPLY = self.extension_field._multiply.ufunc_call_only
         RECIPROCAL = self.extension_field._reciprocal.ufunc_call_only
         POWER = self.extension_field._power.ufunc_call_only
@@ -1239,6 +1263,7 @@ class bch_decode_jit(Function):
     _SIGNATURE = nb_types.FunctionType(
         nb_types.Tuple((int64[:, :], int64[:]))(
             int64[:, :],  # codewords
+            bool_[:, :],  # erasures
             int64,  # design_n
             int64,  # alpha
             int64,  # c
@@ -1247,83 +1272,245 @@ class bch_decode_jit(Function):
     )
 
     @staticmethod
-    def implementation(codewords, design_n, alpha, c, roots):  # pragma: no cover
+    def implementation(codewords, erasures, design_n, alpha, c, roots):  # pragma: no cover
+        assert codewords.shape == erasures.shape
         dtype = codewords.dtype
-        N = codewords.shape[0]  # The number of codewords
+        n_codewords = codewords.shape[0]  # The number of codewords
         n = codewords.shape[1]  # The codeword size (could be less than the design n for shortened codes)
-        d = roots.size + 1
-        t = (d - 1) // 2
+        d = roots.size + 1  # The design distance
 
-        # The last column of the returned decoded codeword is the number of corrected errors
-        dec_codewords = np.zeros((N, n), dtype=dtype)
-        dec_codewords[:, 0:n] = codewords[:, :]
-        N_errors = np.zeros(N, dtype=np.int64)
+        dec_codewords = codewords.copy()
+        n_errors = np.zeros(n_codewords, dtype=np.int64)
 
-        for i in range(N):
-            # Compute the syndrome by evaluating each codeword at the roots of the generator polynomial.
-            # The syndrome vector is S = [S0, S1, ..., S2t-1]
-            # S0 = r(α^c), S1 = r(α^(c+1)), ..., S_(2t-1) = r(α^(c+2t-1))
-            syndrome = POLY_EVALUATE(codewords[i, :], roots)
+        for ni in range(n_codewords):
+            # r is the received codeword over GF(q), but syndrome arithmetic is in GF(q^m).
+            # If q^m == q, then the same field object works. Otherwise, you embed r's
+            # symbols into GF(q^m).
+            received = codewords[ni, :][::-1]  # NOTE: Make ascending degrees
+            erasure_positions = np.where(erasures[ni, :][::-1])[0]  # NOTE: Make ascending degrees
+            u = erasure_positions.size  # The number of erasures
 
-            if np.all(syndrome == 0):
+            received[erasure_positions] = 0  # Erasures are treated as zeros in the received polynomial
+
+            if u > d - 1:
+                # Too many erasures to correct at all
+                n_errors[ni] = -1
                 continue
 
-            # The error pattern is defined as the polynomial e(x) = e_j1*x^j1 + e_j2*x^j2 + ... for j1 to jv,
-            # implying there are v errors. And δi = e_ji is the i-th error value and βi = α^ji is the i-th
-            # error-locator value and ji is the error location.
+            ###########################################################################
+            # 1. Compute syndromes S_ℓ = r(α^{c + ℓ}), ℓ = 0..d-2
+            ###########################################################################
+            # The syndrome polynomial is:
+            #    S(x) = S_0 + S_1 x + ... + S_{d-2} x^{d-2}
+            #
+            # Evaluate r(x) at α^{c + ℓ}:
+            #   S_ℓ = r(α^{c+ℓ})
+            syndrome = POLY_EVALUATE(received[::-1], roots)
+            # NOTE: POLY_EVALUATE() expects the polynomial coefficients in descending order
 
-            # The error-locator polynomial σ(x) = (1 - β1*x)(1 - β2*x)...(1 - βv*x) where βi are the inverse of the
-            # roots of σ(x).
-
-            # Compute the error-locator polynomial σ(x)
-            sigma = BERLEKAMP_MASSEY(syndrome)
-            v = sigma.size - 1  # The number of errors, which is the degree of the error-locator polynomial
-
-            if v > t:
-                N_errors[i] = -1  # Too many errors to correct
+            if np.all(syndrome == 0) and u == 0:
+                # If the syndrome is all zeros and there are no erasures, then there are no errors
+                # print("Syndrome is zero and no erasures; no errors to correct.")
                 continue
 
-            # Compute βi^-1, the roots of σ(x) = (1 - β1*x)(1 - β2*x)...(1 - βv*x)
-            degrees = np.arange(sigma.size - 1, -1, -1)  # [v, v-1, ..., 0]
-            results = POLY_ROOTS(degrees, sigma, alpha)
-            beta_inv = results[0, :]  # The roots βi^-1 of σ(x)
-            error_exponents_inv = results[1, :]  # The roots βi^-1 as powers of the primitive element α
-            error_locations = -error_exponents_inv % design_n  # The error locations as degrees of c(x)
+            ###########################################################################
+            # 2. Construct erasure locator polynomial Γ(x)
+            ###########################################################################
+            # Erasure positions are known: e_k ∈ {0, 1, ..., n-1}, k = 1..u.
+            # Define erasure locators:
+            #   Y_k = α^{e_k}
+            #
+            # The erasure locator polynomial is:
+            #   Γ(x) = ∏_{k=1}^u (1 - Y_k x)
+            #
+            # This is analogous to the error locator polynomial, but known a priori.
+            gamma = np.array([1], dtype=dtype)  # Start with Γ(x) = 1
+            for e_pos in erasure_positions:
+                Y_k = POWER(alpha, e_pos)  # The erasure locator Y_k = α^{e_k}
+                one_minus_Y_k_x = np.array([1, SUBTRACT(0, Y_k)], dtype=dtype)
+                gamma = CONVOLVE(gamma, one_minus_Y_k_x)
 
-            if np.any(error_locations > n - 1):
-                # Indicates there are "errors" in the zero-ed portion of a shortened code, which indicates there are
-                # actually more errors than alleged. Return failure to decode.
-                N_errors[i] = -1
+            ###########################################################################
+            # 3. Form modified syndromes: S'(x) = Γ(x) * S(x) mod x^{d-1}
+            ###########################################################################
+            # The syndrome polynomial is:
+            #   S(x) = S_0 + S_1 x + ... + S_{d-2} x^{d-2}.
+            #
+            # Multiplying by Γ(x) gives:
+            #   S'(x) = Γ(x) S(x) (mod x^{d-1}).
+            #
+            # Coefficient-wise (convolution):
+            #   S'_ℓ = sum_{i=0}^ℓ Γ_i S_{ℓ - i},   for ℓ = 0..d-2
+            #
+            # This S' sequence incorporates the erasure information into the syndromes.
+            syndrome_prime = CONVOLVE(gamma, syndrome)  # Compute Γ(x) * S(x)
+            syndrome_prime = syndrome_prime[: d - 1]  # Reduce mod x^{d-1}
+
+            ###########################################################################
+            # 4. Run Berlekamp–Massey on {S'_u, ..., S'_{d-2}} to find Λ(x)
+            ###########################################################################
+            # We treat S'_ℓ as a linear recurrent sequence:
+            #   S'_ℓ + Λ_1 S'_{ℓ-1} + ... + Λ_v S'_{ℓ-v} = 0, for ℓ ≥ u.
+            #
+            # The shortest such recurrence defines the error-locator polynomial:
+            #   Λ(x) = 1 + Λ_1 x + ... + Λ_v x^v.
+            #
+            # This Λ(x) locates *errors only* (not erasures).
+            if u < d - 1:
+                # If u < d - 1, there are modified syndromes to run BM on
+                lambda_ = BERLEKAMP_MASSEY(syndrome_prime[u:])[::-1]
+                # NOTE: BERLEKAMP_MASSEY() returns the connection polynomial C(x) in degree-descending order
+            else:
+                # If u == d - 1, then there are no modified syndromes to run BM on
+                lambda_ = np.array([1], dtype=dtype)  # Λ(x) = 1
+            v = lambda_.size - 1  # The number of errors, which is the degree of the error-locator polynomial
+
+            # Check the error/erasure decoding bound: 2v + u <= d - 1
+            if 2 * v + u > d - 1:
+                n_errors[ni] = -1  # Too many errors + erasures to correct
                 continue
 
-            if beta_inv.size != v:
-                N_errors[i] = -1
+            # If v == 0 and u > 0, we still have only erasures, which will be handled
+            # by Λ_total(x) = Γ(x) * 1 = Γ(x).
+
+            ###########################################################################
+            # 5. Form total locator polynomial Λ_total(x) = Γ(x) * Λ(x)
+            ###########################################################################
+            # Γ(x) locates erasures.
+            # Λ(x) locates errors.
+            #
+            # The combined locator polynomial is:
+            #   Λ_total(x) = Γ(x) Λ(x).
+            #   Λ_total(x) = Λ_total_0 + Λ_total_1 x + ... + Λ_total_L x^L.
+            #
+            # Its roots (in x) correspond to both erasures and errors.
+            lambda_total = CONVOLVE(gamma, lambda_)
+            L_total = lambda_total.size - 1  # Degree of Λ_total
+
+            ###########################################################################
+            # 6. Chien search: find all positions i where Λ_total(α^{-i}) = 0
+            ###########################################################################
+            # For each position i = 0..n-1, define:
+            #   X_i = α^i.
+            #
+            # The root test is:
+            #   Λ_total(X_i^{-1}) = 0.
+            #
+            # If this holds, then there is an error/erasure at position i.
+            error_positions = []  # Includes both true errors and erasures
+            error_locators_inv = []  # Store X_i^{-1} = α^{-i}
+            for i in range(design_n):
+                X_i_inv = POWER(alpha, -i)  # X_i^{-1} = α^{-i}
+                val = POLY_EVALUATE(lambda_total[::-1], np.array([X_i_inv], dtype=dtype))[0]
+                # NOTE: POLY_EVALUATE() expects the polynomial coefficients in descending order
+                if val == 0:
+                    if i >= n:
+                        # Root in shortened (zeroed) part. Treat as failure (too many errors)
+                        n_errors[ni] = -1
+                        continue
+                    error_positions.append(i)
+                    error_locators_inv.append(X_i_inv)
+            v_total = len(error_positions)  # Let v_total = number of roots = v + u (errors + erasures)
+
+            # Optional sanity check: v_total should be v + u
+            # (sometimes constraints, shortened codes, etc. require care here).
+            if v_total != v + u:
+                n_errors[ni] = -1
                 continue
 
-            # Compute σ'(x)
-            sigma_prime = np.zeros(v, dtype=dtype)
-            for j in range(v):
-                degree = v - j
-                sigma_prime[j] = MULTIPLY(degree % CHARACTERISTIC, sigma[j])  # Scalar multiplication
+            ###########################################################################
+            # 7. Form modified evaluator polynomial Ω'(x)
+            ###########################################################################
+            # The *error-only* key equation with erasures is:
+            #   Λ(x) S'(x) ≡ Ω'(x)  (mod x^{d-1}),
+            #
+            # where:
+            #   Λ(x) = error-only locator polynomial,
+            #   S'(x) = modified syndrome polynomial,
+            #   Ω'(x) = modified evaluator polynomial.
+            #
+            # So we can compute:
+            #   Ω'(x) = (Λ(x) * S'(x)) mod x^{d-1}.
+            #
+            # In coefficient form, we multiply polynomials and truncate.
+            omega_prime = CONVOLVE(lambda_, syndrome_prime)  # Λ(x) * S'(x)
+            omega_prime = omega_prime[: d - 1]  # Take mod x^{d-1}
 
-            # The error-value evaluator polynomial Z0(x) = S0*σ0 + (S1*σ0 + S0*σ1)*x + (S2*σ0 + S1*σ1 + S0*σ2)*x^2 + ...
-            # with degree v-1
-            Z0 = CONVOLVE(sigma[-v:], syndrome[0:v][::-1])[-v:]
+            ###########################################################################
+            # 8. Compute derivative Λ_total'(x) for Forney's formula
+            ###########################################################################
+            # The formal derivative of
+            #   Λ_total(x) = sum_{j=0}^{L_total} Λ_total_j x^j
+            #   Λ_total(x) = Λ_total_0 + Λ_total_1 x + Λ_total_2 x^2 + ...
+            # is
+            #   Λ_total'(x) = sum_{j=1}^{L_total} j * Λ_total_j x^{j-1}
+            #   Λ_total'(x) = Λ_total_1 + 2*Λ_total_2 x + 3*Λ_total_3 x^2 + ...
+            #
+            # Over GF(q^m), the scalar j is taken modulo the field characteristic p.
+            lambda_total_prime = np.zeros(L_total, dtype=dtype)
+            for j in range(1, L_total + 1):
+                degree = j - 1  # The degree of x in the derivative
+                lambda_total_prime[degree] = MULTIPLY(j % CHARACTERISTIC, lambda_total[j])  # Scalar multiplication
 
-            # The error value δi = -1 * βi^(1-c) * Z0(βi^-1) / σ'(βi^-1)
-            for j in range(v):
-                beta_to_1_minus_c = POWER(beta_inv[j], c - 1)
-                # NOTE: poly_eval() expects a 1-D array of values
-                Z0_i = POLY_EVALUATE(Z0, np.array([beta_inv[j]], dtype=dtype))[0]
-                # NOTE: poly_eval() expects a 1-D array of values
-                sigma_prime_i = POLY_EVALUATE(sigma_prime, np.array([beta_inv[j]], dtype=dtype))[0]
-                delta_i = MULTIPLY(beta_to_1_minus_c, Z0_i)
-                delta_i = MULTIPLY(delta_i, RECIPROCAL(sigma_prime_i))
-                delta_i = SUBTRACT(0, delta_i)
-                dec_codewords[i, n - 1 - error_locations[j]] = SUBTRACT(
-                    dec_codewords[i, n - 1 - error_locations[j]], delta_i
-                )
+            ###########################################################################
+            # 9. Use generalized Forney formula to compute error values E_j
+            ###########################################################################
+            # For each locator X_j = α^{i_j}, with root at X_j^{-1}, the error magnitude
+            # in the error+erasure setting is:
+            #
+            #   E_j = - [ Ω'(X_j^{-1}) / Λ_total'(X_j^{-1}) ] * X_j^{1-c}
+            #
+            # where:
+            #   X_j = α^{i_j}  (the locator),
+            #   X_j^{-1} is the argument to the polynomials,
+            #   c is the BCH starting exponent (narrow-sense: c = 1).
+            #
+            # So, for each error/erasure location i = error_positions[j]:
+            #   X_j = α^{i},
+            #   x_inv = X_j^{-1},
+            #   numerator     = Ω'(x_inv),
+            #   denominator   = Λ_total'(x_inv),
+            #   E_j = - numerator * (denominator)^{-1} * X_j^{1-c}.
+            error_values = []
+            for X_j_inv in error_locators_inv:
+                # numerator = Ω'(X_j^{-1})
+                numerator = POLY_EVALUATE(omega_prime[::-1], np.array([X_j_inv], dtype=dtype))[0]
+                # NOTE: POLY_EVALUATE() expects the polynomial coefficients in descending order
 
-            N_errors[i] = v  # The number of corrected errors
+                # denominator = Λ_total'(X_j^{-1})
+                denominator = POLY_EVALUATE(lambda_total_prime[::-1], np.array([X_j_inv], dtype=dtype))[0]
+                # NOTE: POLY_EVALUATE() expects the polynomial coefficients in descending order
 
-        return dec_codewords, N_errors
+                if denominator == 0:
+                    # This can indicate a decoding failure or multiple root issues
+                    n_errors[ni] = -1
+                    continue
+                    # raise ZeroDivisionError("Denominator zero in Forney's formula.")
+
+                # Compute E_j = - Ω'(X_j^{-1}) * (Λ_total'(X_j^{-1}))^{-1} * X_j^{-c}
+                E_j = MULTIPLY(numerator, RECIPROCAL(denominator))
+                E_j = MULTIPLY(E_j, POWER(X_j_inv, c - 1))  # X_j^{1-c} = (X_j^{-1})^{c-1}
+                E_j = SUBTRACT(0, E_j)  # Negate
+                error_values.append(E_j)
+
+            ###########################################################################
+            # 10. Correct the received word at all error/erasure positions
+            ###########################################################################
+            # Let r_i be the received symbol at position i. Then:
+            #
+            #   c_hat_i = r_i - E_j   at error/erasure locations i = i_j.
+            #
+            # Note: for erasures, r_i is "unknown", but you can treat it as a variable
+            # that is replaced entirely by -E_j if r_i was temporarily set to zero.
+            codeword = received.copy()  # Make a copy so we don't overwrite the input r
+            for i in range(len(error_positions)):
+                pos = error_positions[i]
+                E_j = error_values[i]
+                # In GF(q), subtraction is the same as addition with the negative.
+                # c_hat[pos] = r[pos] - E_j
+                codeword[pos] = SUBTRACT_BASE(codeword[pos], E_j)
+
+            dec_codewords[ni, :] = codeword[::-1]  # NOTE: Convert back to descending degrees
+            n_errors[ni] = v  # The number of corrected errors
+
+        return dec_codewords, n_errors

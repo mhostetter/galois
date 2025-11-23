@@ -7,10 +7,11 @@ from __future__ import annotations
 from typing import Type, overload
 
 import numpy as np
+import numpy.typing as npt
 from typing_extensions import Literal
 
 from .._fields import FieldArray
-from .._helper import verify_isinstance, verify_literal
+from .._helper import verify_arraylike, verify_isinstance, verify_literal
 from ..typing import ArrayLike
 
 
@@ -119,6 +120,7 @@ class _LinearCode:
     def decode(
         self,
         codeword: ArrayLike,
+        erasures: npt.NDArray | None = None,
         output: Literal["message", "codeword"] = "message",
         errors: Literal[False] = False,
     ) -> FieldArray: ...
@@ -127,11 +129,12 @@ class _LinearCode:
     def decode(
         self,
         codeword: ArrayLike,
+        erasures: npt.NDArray | None = None,
         output: Literal["message", "codeword"] = "message",
         errors: Literal[True] = True,
     ) -> tuple[FieldArray, int | np.ndarray]: ...
 
-    def decode(self, codeword, output="message", errors=False):
+    def decode(self, codeword, erasures=None, output="message", errors=False):
         r"""
         Decodes the codeword $\mathbf{c}$ into the message $\mathbf{m}$.
 
@@ -145,6 +148,8 @@ class _LinearCode:
                     For the shortened $[n-s,\ k-s,\ d]$ code, pass $n-s$ codeword symbols into :func:`decode`
                     to return the $k-s$ message symbols.
 
+            erasures: Optionally specify the erasure locations as a boolean array with shape equal to the codeword,
+                where `True` indicates an erasure at that location. The default is `None`, which indicates no erasures.
             output: Specify whether to return the error-corrected message or entire codeword. The default is
                 `"message"`.
             errors: Optionally specify whether to return the number of corrected errors. The default is `False`.
@@ -157,10 +162,13 @@ class _LinearCode:
               array. Valid number of corrections are in $[0, t]$. If a codeword has too many errors and cannot
               be corrected, -1 will be returned.
         """
+        codeword = verify_arraylike(codeword)
+        erasures = verify_arraylike(erasures, optional=True, dtype=bool, shape=codeword.shape)
         verify_literal(output, ["message", "codeword"])
 
         codeword, is_codeword_1d = self._check_and_convert_codeword(codeword)
-        dec_codeword, N_errors = self._decode_codeword(codeword)
+        erasures = self._check_and_convert_erasures(erasures, codeword.shape)
+        dec_codeword, N_errors = self._decode_codeword(codeword, erasures=erasures)
 
         if output == "message":
             decoded = self._convert_codeword_to_message(dec_codeword)
@@ -229,6 +237,17 @@ class _LinearCode:
 
         return codeword, is_codeword_1d
 
+    def _check_and_convert_erasures(self, erasures: npt.NDArray | None, shape: tuple[int, ...]) -> npt.NDArray:
+        """
+        Converts the erasures into a boolean array with the same shape as the codeword.
+        """
+        if erasures is None:
+            erasures = np.zeros(shape, dtype=bool)
+        else:
+            erasures = verify_arraylike(erasures, dtype=bool, atleast_2d=True, shape=shape)
+
+        return erasures
+
     def _convert_codeword_to_message(self, codeword: FieldArray) -> FieldArray:
         """
         Returns the message portion (N, k) of the codeword (N, ns).
@@ -276,7 +295,9 @@ class _LinearCode:
 
         return detected
 
-    def _decode_codeword(self, codeword: FieldArray) -> tuple[FieldArray, np.ndarray]:
+    def _decode_codeword(
+        self, codeword: FieldArray, erasures: npt.NDArray | None = None
+    ) -> tuple[FieldArray, np.ndarray]:
         """
         Decodes errors in the received codeword. Returns the corrected codeword (N, ns) and array of number of
         corrected errors (N,).
