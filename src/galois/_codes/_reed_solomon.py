@@ -31,8 +31,8 @@ class ReedSolomon(_CyclicCode):
         :title: Shortened codes
 
         To create the shortened $\textrm{RS}(n-s, k-s)$ code, construct the full-sized
-        $\textrm{RS}(n, k)$ code and then pass $k-s$ symbols into :func:`encode` and $n-s$ symbols
-        into :func:`decode()`. Shortened codes are only applicable for systematic codes.
+        $\textrm{RS}(n, k)$ code and then pass $k-s$ message symbols into :func:`encode` and $n-s$ codeword symbols
+        into :func:`decode()`.
 
     A Reed-Solomon code is a cyclic code over $\mathrm{GF}(q)$ with generator polynomial $g(x)$. The
     generator polynomial has $d-1$ roots $\alpha^c, \dots, \alpha^{c+d-2}$. The element $\alpha$ is

@@ -34,8 +34,8 @@ class BCH(_CyclicCode):
         :title: Shortened codes
 
         To create the shortened $\textrm{BCH}(n-s, k-s)$ code, construct the full-sized
-        $\textrm{BCH}(n, k)$ code and then pass $k-s$ symbols into :func:`encode` and $n-s$ symbols
-        into :func:`decode()`. Shortened codes are only applicable for systematic codes.
+        $\textrm{BCH}(n, k)$ code and then pass $k-s$ message symbols into :func:`encode` and $n-s$ codeword symbols
+        into :func:`decode()`.
 
     A BCH code is a cyclic code over $\mathrm{GF}(q)$ with generator polynomial $g(x)$. The generator
     polynomial is over $\mathrm{GF}(q)$ and has $d-1$ roots $\alpha^c, \dots, \alpha^{c+d-2}$ when
