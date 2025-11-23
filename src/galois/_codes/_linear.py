@@ -65,8 +65,8 @@ class _LinearCode:
                 .. info::
                     :title: Shortened codes
 
-                    For the shortened $[n-s,\ k-s,\ d]$ code (only applicable for systematic codes),
-                    pass $k-s$ symbols into :func:`encode` to return the $n-s$-symbol message.
+                    For the shortened $[n-s,\ k-s,\ d]$ code, pass $k-s$ message symbols into :func:`encode` to return
+                    the $n-s$ codeword symbols.
 
             output: Specify whether to return the codeword or parity symbols only. The default is `"codeword"`.
 
@@ -102,7 +102,7 @@ class _LinearCode:
                 .. info::
                     :title: Shortened codes
 
-                    For the shortened $[n-s,\ k-s,\ d]$ code, pass $n-s$ symbols into :func:`detect`.
+                    For the shortened $[n-s,\ k-s,\ d]$ code, pass $n-s$ codeword symbols into :func:`detect`.
 
         Returns:
             A boolean scalar or $N$-length array indicating if errors were detected in the corresponding codeword.
@@ -142,8 +142,8 @@ class _LinearCode:
                 .. info::
                     :title: Shortened codes
 
-                    For the shortened $[n-s,\ k-s,\ d]$ code, pass $n-s$ symbols into :func:`decode`
-                    to return the $k-s$-symbol message.
+                    For the shortened $[n-s,\ k-s,\ d]$ code, pass $n-s$ codeword symbols into :func:`decode`
+                    to return the $k-s$ message symbols.
 
             output: Specify whether to return the error-corrected message or entire codeword. The default is
                 `"message"`.
