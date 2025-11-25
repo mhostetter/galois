@@ -2,6 +2,8 @@
 A pytest module to test general Reed-Solomon codes.
 """
 
+import random
+
 import numpy as np
 import pytest
 
@@ -158,3 +160,73 @@ def test_decode_shortened_vector(reed_solomon_codes):
 def test_decode_shortened_matrix(reed_solomon_codes):
     rs = reed_solomon_codes["code"]
     verify_decode_shortened(rs, 5)
+
+
+def test_odd_characteristic():
+    rs = galois.ReedSolomon(3**2 - 1, d=3, field=galois.GF(3**2))
+    message = rs.field.Range(0, rs.k)
+    codeword = rs.encode(message)
+    err_codeword = codeword.copy()
+    err_codeword[0] += rs.field(1)
+    decoded_message, num_errors = rs.decode(err_codeword, errors=True)
+    assert num_errors == 1
+    assert np.array_equal(decoded_message, message)
+
+
+@pytest.mark.parametrize("q", [2**4, 3**3])
+def test_errors_and_erasures(q):
+    rs = galois.ReedSolomon(q - 1, d=7, field=galois.GF(q))
+    message = rs.field.Random(rs.k)
+    codeword = rs.encode(message)
+
+    for n_erasures in range(1, rs.d):
+        c = codeword.copy()
+
+        # Add erasures
+        erasure_idxs = np.arange(n_erasures)
+        erasure_idxs = random.sample(erasure_idxs.tolist(), k=n_erasures)
+        erasures = np.zeros(codeword.shape, dtype=bool)  # Erasure mask
+        erasures[erasure_idxs] = True
+        c[erasures] = 0  # Erasures are represented by zeros
+
+        # Add a correctable number of errors
+        n_errors = (rs.d - 1 - n_erasures) // 2
+        error_idxs = np.where(~erasures)[0]  # Possible error indices
+        error_idxs = random.sample(error_idxs.tolist(), k=n_errors)
+        errors = np.zeros(codeword.shape, dtype=bool)  # Error mask
+        errors[error_idxs] = True
+        c[errors] += rs.field.Random(1, low=1)  # Introduce errors
+
+        decoded_message, n_corrected = rs.decode(c, erasures=erasures, errors=True)
+        assert np.array_equal(decoded_message, message)
+        assert n_corrected == n_errors
+
+
+@pytest.mark.parametrize("q", [2**4, 3**3])
+def test_errors_and_erasures_shortened(q):
+    rs = galois.ReedSolomon(q - 1, d=7, field=galois.GF(q))
+    s = 3  # Shortening length
+    message = rs.field.Random(rs.k - s)
+    codeword = rs.encode(message)
+
+    for n_erasures in range(1, rs.d):
+        c = codeword.copy()
+
+        # Add erasures
+        erasure_idxs = np.arange(n_erasures)
+        erasure_idxs = random.sample(erasure_idxs.tolist(), k=n_erasures)
+        erasures = np.zeros(codeword.shape, dtype=bool)  # Erasure mask
+        erasures[erasure_idxs] = True
+        c[erasures] = 0  # Erasures are represented by zeros
+
+        # Add a correctable number of errors
+        n_errors = (rs.d - 1 - n_erasures) // 2
+        error_idxs = np.where(~erasures)[0]  # Possible error indices
+        error_idxs = random.sample(error_idxs.tolist(), k=n_errors)
+        errors = np.zeros(codeword.shape, dtype=bool)  # Error mask
+        errors[error_idxs] = True
+        c[errors] += rs.field.Random(1, low=1)  # Introduce errors
+
+        decoded_message, n_corrected = rs.decode(c, erasures=erasures, errors=True)
+        assert np.array_equal(decoded_message, message)
+        assert n_corrected == n_errors
