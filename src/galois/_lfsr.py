@@ -1689,6 +1689,14 @@ class berlekamp_massey_jit(Function):
                     b = d  # Last discrepancy
                     m = 1  # Reset steps since last update
 
-        # The connection polynomial C(x) = 1 + C1*x + C2*x^2 + ... + CL*x^L
-        C = np.trim_zeros(C[: L + 1], "b")  # Remove trailing, high-degree zeros
+        # C is the connection polynomial C(x) = 1 + C1*x + C2*x^2 + ... + CL*x^L
+        C = C[: L + 1]
+
+        # Trim trailing, high-degree zeros
+        idxs = np.where(C != 0)[0]
+        if idxs.size > 0:
+            C = C[: idxs[-1] + 1]
+        else:
+            C = C[:1]  # C(x) = 0 polynomial
+
         return C[::-1]  # Return C(x) coefficients in degree-descending order
