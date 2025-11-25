@@ -26,24 +26,47 @@ from ._cyclic import _CyclicCode
 @export
 class BCH(_CyclicCode):
     r"""
-    A general $\textrm{BCH}(n, k)$ code over $\mathrm{GF}(q)$.
+    A general $\mathrm{BCH}(n, k)$ code over $\mathrm{GF}(q)$.
 
-    A $\textrm{BCH}(n, k)$ code is a $[n, k, d]_q$ linear block code with codeword size $n$, message
-    size $k$, minimum distance $d$, and symbols taken from an alphabet of size $q$.
+    A $\mathrm{BCH}(n, k)$ code is a cyclic $[n, k, d]_q$ linear block code of length $n$, dimension $k$, and
+    minimum distance $d$, whose symbols lie in the finite field $\mathrm{GF}(q)$. BCH codes form a broad,
+    algebraically structured family of codes constructed by prescribing a consecutive run of powers of a
+    primitive $n$-th root of unity as roots of the generator polynomial.
 
     .. info::
         :title: Shortened codes
 
-        To create the shortened $\textrm{BCH}(n-s, k-s)$ code, construct the full-sized
-        $\textrm{BCH}(n, k)$ code and then pass $k-s$ message symbols into :func:`encode` and $n-s$ codeword symbols
-        into :func:`decode()`.
+        To create the shortened $\mathrm{BCH}(n-s, k-s)$ code, construct the full-length $\mathrm{BCH}(n, k)$
+        parent code, then pass only the first $(k - s)$ message symbols to :func:`encode` and provide only the
+        first $(n - s)$ received symbols to :func:`decode`. This produces the standard shortened BCH construction.
 
-    A BCH code is a cyclic code over $\mathrm{GF}(q)$ with generator polynomial $g(x)$. The generator
-    polynomial is over $\mathrm{GF}(q)$ and has $d-1$ roots $\alpha^c, \dots, \alpha^{c+d-2}$ when
-    evaluated in $\mathrm{GF}(q^m)$. The element $\alpha$ is a primitive $n$-th root of unity in
-    $\mathrm{GF}(q^m)$.
+    The classical narrow-sense BCH construction begins with the following setup. Let $n \mid (q^m - 1)$ for some
+    positive integer $m$, so that the multiplicative group of $\mathrm{GF}(q^m)$ contains a primitive $n$-th root
+    of unity. Let $\alpha \in \mathrm{GF}(q^m)$ be such a primitive $n$-th root of unity.
 
-    $$g(x) = \textrm{LCM}(m_{\alpha^c}(x), \dots, m_{\alpha^{c+d-2}}(x))$$
+    A BCH code of designed distance $\delta$ and starting exponent $c$ is defined by specifying that its generator
+    polynomial $g(x)$ has, as zeros in the extension field $\mathrm{GF}(q^m)$, the consecutive powers
+
+    $$
+    \alpha^c,\ \alpha^{c+1},\ \ldots,\ \alpha^{c+\delta-2}.
+    $$
+
+    Since the code is cyclic over $\mathrm{GF}(q)$, its generator polynomial must itself lie in $\mathrm{GF}(q)[x]$.
+    Therefore, for each prescribed root $\alpha^i$, we include its minimal polynomial over the base field. The
+    generator polynomial is the least common multiple of these minimal polynomials:
+
+    $$
+    g(x) = \mathrm{LCM}\!\left( m_{\alpha^c}(x),\, m_{\alpha^{c+1}}(x),\, \ldots,\, m_{\alpha^{c+\delta-2}}(x) \right),
+    $$
+
+    where $m_{\beta}(x)$ denotes the minimal polynomial of $\beta \in \mathrm{GF}(q^m)$ over $\mathrm{GF}(q)$.
+
+    The resulting cyclic code has length $n$, generator degree $\deg g(x)$, and therefore dimension
+    $k = n - \deg g(x)$. The actual minimum distance $d$ satisfies $d \ge \delta$ by the BCH bound. Narrow-sense
+    BCH codes correspond to the choice $c = 1$, i.e., roots $\alpha, \alpha^2, \ldots, \alpha^{\delta-1}$.
+
+    This implementation supports general (not necessarily narrow-sense) BCH codes over any prime-power field
+    $\mathrm{GF}(q)$, provided that $n \mid (q^m - 1)$ for the chosen extension degree $m$.
 
     Examples:
         Construct a binary $\textrm{BCH}(15, 7)$ code.
@@ -1347,7 +1370,7 @@ class bch_decode_jit(Function):
             syndrome_prime = syndrome_prime[: d - 1]  # Reduce mod x^{d-1}
 
             ###########################################################################
-            # 4. Run Berlekamp–Massey on {S'_u, ..., S'_{d-2}} to find Λ(x)
+            # 4. Run Berlekamp-Massey on {S'_u, ..., S'_{d-2}} to find Λ(x)
             ###########################################################################
             # We treat S'_ℓ as a linear recurrent sequence:
             #   S'_ℓ + Λ_1 S'_{ℓ-1} + ... + Λ_v S'_{ℓ-v} = 0, for ℓ ≥ u.

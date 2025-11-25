@@ -22,24 +22,56 @@ from ._cyclic import _CyclicCode
 @export
 class ReedSolomon(_CyclicCode):
     r"""
-    A general $\textrm{RS}(n, k)$ code over $\mathrm{GF}(q)$.
+    A general $\mathrm{RS}(n, k)$ code over $\mathrm{GF}(q)$.
 
-    A $\textrm{RS}(n, k)$ code is a $[n, k, n - k + 1]_q$ linear block code with codeword size $n$,
-    message size $k$, minimum distance $d = n - k + 1$, and symbols taken from an alphabet of size
-    $q$.
+    A $\mathrm{RS}(n, k)$ code is a maximum-distance separable (MDS) $[n, k, n - k + 1]_q$ linear block code of
+    length $n$, dimension $k$, and minimum distance $d = n - k + 1$, with symbols drawn from $\mathrm{GF}(q)$.
+    Reed-Solomon codes achieve the largest possible minimum distance for any $q$-ary linear block code with the
+    same length and dimension.
 
     .. info::
         :title: Shortened codes
 
-        To create the shortened $\textrm{RS}(n-s, k-s)$ code, construct the full-sized
-        $\textrm{RS}(n, k)$ code and then pass $k-s$ message symbols into :func:`encode` and $n-s$ codeword symbols
-        into :func:`decode()`.
+        To create the shortened $\mathrm{RS}(n - s, k - s)$ code, construct the full-length $\mathrm{RS}(n, k)$ code,
+        pass only the first $(k - s)$ message symbols to :func:`encode`, and provide only the first $(n - s)$
+        received symbols to :func:`decode`. This produces the standard shortened RS construction.
 
-    A Reed-Solomon code is a cyclic code over $\mathrm{GF}(q)$ with generator polynomial $g(x)$. The
-    generator polynomial has $d-1$ roots $\alpha^c, \dots, \alpha^{c+d-2}$. The element $\alpha$ is
-    a primitive $n$-th root of unity in $\mathrm{GF}(q)$.
+    Reed-Solomon codes admit two mathematically equivalent interpretations: the BCH (cyclic, root-based)
+    formulation and the polynomial evaluation formulation. This implementation follows the BCH construction,
+    which realizes RS codes as cyclic codes whose generator polynomials are specified by a consecutive set of
+    roots in an extension field.
 
-    $$g(x) = (x - \alpha^c) \dots (x - \alpha^{c+d-2})$$
+    **BCH (cyclic) construction.**
+    Assume $n \mid (q - 1)$, so that $\mathrm{GF}(q)$ contains a primitive $n$-th root of unity. Let
+    $\alpha \in \mathrm{GF}(q)$ be such an element. A Reed-Solomon code of designed distance $d = n - k + 1$
+    and starting exponent $c$ is the cyclic code whose generator polynomial has the consecutive roots
+
+    $$
+    \alpha^c,\ \alpha^{c+1},\ \ldots,\ \alpha^{c + (d - 2)}.
+    $$
+
+    Because all these roots lie in $\mathrm{GF}(q)$ itself (in contrast to BCH codes in general, which require
+    $\mathrm{GF}(q^m)$), the generator polynomial is simply the product of linear factors:
+
+    $$
+    g(x) = (x - \alpha^c)\, (x - \alpha^{c+1}) \cdots (x - \alpha^{c + d - 2}).
+    $$
+
+    The resulting cyclic code has length $n$, generator degree $\deg g(x) = n - k$, and therefore dimension
+    $k = n - \deg g(x)$. Its minimum distance satisfies $d = n - k + 1$, i.e., the code is MDS.
+
+    **Evaluation-code interpretation (equivalent).**
+    For completeness: RS codes may also be defined by evaluating a message polynomial
+    $m(x) = m_0 + m_1 x + \cdots + m_{k-1} x^{k-1}$ at a set of $n$ distinct points in $\mathrm{GF}(q)$, typically
+    $\{\alpha^0, \alpha^1, \ldots, \alpha^{n-1}\}$. In this viewpoint,
+
+    $$
+    (\, m(\alpha^0), m(\alpha^1), \ldots, m(\alpha^{n-1}) \,) \in \mathrm{GF}(q)^n
+    $$
+
+    is the codeword corresponding to $m(x)$. Choosing the evaluation points as consecutive powers of a primitive
+    element yields a cyclic RS code whose generator matches the BCH construction above. Thus the BCH formulation
+    used here is fully consistent with the general algebraic interpretation of Reed-Solomon codes.
 
     Examples:
         Construct a $\textrm{RS}(15, 9)$ code.
