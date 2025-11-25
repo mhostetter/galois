@@ -371,3 +371,66 @@ def test_bug_483():
 
     bch_3 = galois.BCH(31, 26)
     verify_decode(bch_3, 1)
+
+
+@pytest.mark.parametrize("q_m", [(2, 4), (3, 3)])
+def test_errors_and_erasures(q_m):
+    q = q_m[0]
+    m = q_m[1]
+    bch = galois.BCH(q**m - 1, d=7, field=galois.GF(q), extension_field=galois.GF(q**m))
+    message = bch.field.Random(bch.k)
+    codeword = bch.encode(message)
+
+    for n_erasures in range(1, bch.d):
+        c = codeword.copy()
+
+        # Add erasures
+        erasure_idxs = np.arange(n_erasures)
+        erasure_idxs = random.sample(erasure_idxs.tolist(), k=n_erasures)
+        erasures = np.zeros(codeword.shape, dtype=bool)  # Erasure mask
+        erasures[erasure_idxs] = True
+        c[erasures] = 0  # Erasures are represented by zeros
+
+        # Add a correctable number of errors
+        n_errors = (bch.d - 1 - n_erasures) // 2
+        error_idxs = np.where(~erasures)[0]  # Possible error indices
+        error_idxs = random.sample(error_idxs.tolist(), k=n_errors)
+        errors = np.zeros(codeword.shape, dtype=bool)  # Error mask
+        errors[error_idxs] = True
+        c[errors] += bch.field.Random(1, low=1)  # Introduce errors
+
+        decoded_message, n_corrected = bch.decode(c, erasures=erasures, errors=True)
+        assert np.array_equal(decoded_message, message)
+        assert n_corrected == n_errors
+
+
+@pytest.mark.parametrize("q_m", [(2, 4), (3, 3)])
+def test_errors_and_erasures_shortened(q_m):
+    q = q_m[0]
+    m = q_m[1]
+    bch = galois.BCH(q**m - 1, d=7, field=galois.GF(q), extension_field=galois.GF(q**m))
+    s = 3  # Shortening length
+    message = bch.field.Random(bch.k - s)
+    codeword = bch.encode(message)
+
+    for n_erasures in range(1, bch.d):
+        c = codeword.copy()
+
+        # Add erasures
+        erasure_idxs = np.arange(n_erasures)
+        erasure_idxs = random.sample(erasure_idxs.tolist(), k=n_erasures)
+        erasures = np.zeros(codeword.shape, dtype=bool)  # Erasure mask
+        erasures[erasure_idxs] = True
+        c[erasures] = 0  # Erasures are represented by zeros
+
+        # Add a correctable number of errors
+        n_errors = (bch.d - 1 - n_erasures) // 2
+        error_idxs = np.where(~erasures)[0]  # Possible error indices
+        error_idxs = random.sample(error_idxs.tolist(), k=n_errors)
+        errors = np.zeros(codeword.shape, dtype=bool)  # Error mask
+        errors[error_idxs] = True
+        c[errors] += bch.field.Random(1, low=1)  # Introduce errors
+
+        decoded_message, n_corrected = bch.decode(c, erasures=erasures, errors=True)
+        assert np.array_equal(decoded_message, message)
+        assert n_corrected == n_errors
