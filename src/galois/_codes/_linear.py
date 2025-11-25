@@ -153,6 +153,8 @@ class _LinearCode:
             output: Specify whether to return the error-corrected message or entire codeword. The default is
                 `"message"`.
             errors: Optionally specify whether to return the number of corrected errors. The default is `False`.
+                If erasures are provided, the number of corrected errors does not include the number of erasures
+                corrected, only the number of unknown symbol errors corrected.
 
         Returns:
             - If `output="message"`, the error-corrected message as either a $k$-length vector or
