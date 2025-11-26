@@ -737,6 +737,7 @@ class BCH(_CyclicCode):
         """
         return self._extension_field
 
+    @property
     @extend_docstring(
         _CyclicCode.n,
         {},
@@ -757,10 +758,10 @@ class BCH(_CyclicCode):
                 bch.n
         """,
     )
-    @property
     def n(self) -> int:
         return super().n
 
+    @property
     @extend_docstring(
         _CyclicCode.k,
         {},
@@ -781,10 +782,10 @@ class BCH(_CyclicCode):
                 bch.k
         """,
     )
-    @property
     def k(self) -> int:
         return super().k
 
+    @property
     @extend_docstring(
         _CyclicCode.d,
         {},
@@ -808,10 +809,10 @@ class BCH(_CyclicCode):
                 bch.d
         """,
     )
-    @property
     def d(self) -> int:
         return super().d
 
+    @property
     @extend_docstring(
         _CyclicCode.t,
         {},
@@ -832,10 +833,10 @@ class BCH(_CyclicCode):
                 bch.t
         """,
     )
-    @property
     def t(self) -> int:
         return super().t
 
+    @property
     @extend_docstring(
         _CyclicCode.generator_poly,
         {},
@@ -865,10 +866,10 @@ class BCH(_CyclicCode):
                 bch.generator_poly(bch.roots, field=bch.extension_field)
         """,
     )
-    @property
     def generator_poly(self) -> Poly:
         return super().generator_poly
 
+    @property
     @extend_docstring(
         _CyclicCode.parity_check_poly,
         {},
@@ -891,10 +892,10 @@ class BCH(_CyclicCode):
                 bch.H
         """,
     )
-    @property
     def parity_check_poly(self) -> Poly:
         return super().parity_check_poly
 
+    @property
     @extend_docstring(
         _CyclicCode.roots,
         {},
@@ -926,7 +927,6 @@ class BCH(_CyclicCode):
                 bch.generator_poly(bch.roots, field=bch.extension_field)
         """,
     )
-    @property
     def roots(self) -> FieldArray:
         return super().roots
 
@@ -997,6 +997,7 @@ class BCH(_CyclicCode):
         """
         return self._c
 
+    @property
     @extend_docstring(
         _CyclicCode.G,
         {},
@@ -1023,10 +1024,10 @@ class BCH(_CyclicCode):
                 bch.generator_poly
         """,
     )
-    @property
     def G(self) -> FieldArray:
         return super().G
 
+    @property
     @extend_docstring(
         _CyclicCode.H,
         {},
@@ -1049,7 +1050,6 @@ class BCH(_CyclicCode):
                 bch.parity_check_poly
         """,
     )
-    @property
     def H(self) -> FieldArray:
         return super().H
 
@@ -1108,6 +1108,7 @@ class BCH(_CyclicCode):
         """
         return self._is_narrow_sense
 
+    @property
     @extend_docstring(
         _CyclicCode.is_systematic,
         {},
@@ -1131,7 +1132,6 @@ class BCH(_CyclicCode):
                 bch.generator_poly
         """,
     )
-    @property
     def is_systematic(self) -> bool:
         return super().is_systematic
 

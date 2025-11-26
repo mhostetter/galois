@@ -7,6 +7,8 @@ from __future__ import annotations
 import builtins
 import inspect
 import sys
+import textwrap
+from typing import Any, Callable
 
 import numpy as np
 import numpy.typing as npt
@@ -224,21 +226,33 @@ def method_of(class_):
     return decorator
 
 
-def extend_docstring(method, replace=None, docstring=""):
+def extend_docstring(method: Any, replace: dict[str, str] | None = None, extra: str = "") -> Callable:
     """
-    A decorator to extend the docstring of `method` with the provided docstring. The decorator also finds
-    and replaces and key-value pair in `replace`.
+    Decorator to extend the docstring of `method` with `extra`.
+
+    - Reads the parent docstring (cleaned/dedented).
+    - Applies string replacements.
+    - Appends a dedented version of `extra`.
     """
     replace = {} if replace is None else replace
 
-    def decorator(obj):
-        parent_docstring = getattr(method, "__doc__", "")
-        if parent_docstring is None:
-            return obj
-        for from_str, to_str in replace.items():
-            parent_docstring = parent_docstring.replace(from_str, to_str)
-        obj.__doc__ = parent_docstring + "\n" + docstring
+    # Get a nicely-cleaned parent docstring (works fine for functions *and* properties)
+    parent_doc = inspect.getdoc(method) or ""
+    for from_str, to_str in replace.items():
+        parent_doc = parent_doc.replace(from_str, to_str)
 
+    # Clean up the extra text so section headers are at column 0
+    extra_doc = textwrap.dedent(extra).strip("\n")
+
+    if parent_doc and extra_doc:
+        combined = parent_doc.rstrip() + "\n\n" + extra_doc + "\n"
+    elif extra_doc:
+        combined = extra_doc + "\n"
+    else:
+        combined = parent_doc
+
+    def decorator(obj: Any) -> Any:
+        obj.__doc__ = combined
         return obj
 
     return decorator
