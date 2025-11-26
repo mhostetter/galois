@@ -246,10 +246,16 @@ class fft_jit(Function):
             F = factors[~index]
             Q = array.size // (B * F)
             omega_bf = POWER(omega, Q)  # omega ** (B * F)
-            z = 1
-            # View the flat arrays as a 3-day array.
+            # At this point, in_array contains Q * F subarrays of size B, where
+            # each subarray is the FFT of the corresponding elements in the original
+            # array. We join these subarrays in groups of F, so that out_array contains
+            # Q subarrays of size F * B, each subarray the FFT of the corresponding
+            # elements in the original array.
+            #
+            # This process is simplified by viewing in_array and out_array as 3-d.
             in_array_3d = in_array.reshape((F, Q, B))
             out_array_3d = out_array.reshape((Q, F, B))
+            z = 1
             if F == 2:
                 for b in range(B):
                     for q in range(Q):
@@ -263,9 +269,10 @@ class fft_jit(Function):
                     for b in range(B):
                         for q in range(Q):
                             # We use Horner's rule to evaluate the polynomial.
-                            out_array_3d[q, f, b] = in_array_3d[F - 1, q, b]
-                            for fx in range(1, F):
-                                out_array_3d[q, f, b] = ADD(MULTIPLY(out_array_3d[q, f, b], z), in_array_3d[~fx, q, b])
+                            temp = in_array_3d[F - 1, q, b]
+                            for fx in range(F - 2, -1, -1):  # from F-2 down to 0 inclusive
+                                temp = ADD(MULTIPLY(temp, z), in_array_3d[fx, q, b])
+                            out_array_3d[q, f, b] = temp
                         z = MULTIPLY(z, omega_bf)
             B = B * F
             in_array, out_array = out_array, in_array
