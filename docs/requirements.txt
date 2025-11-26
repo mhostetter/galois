@@ -1,5 +1,5 @@
-sphinx < 6.1  # Sphinx 6.1 breaks on the classproperty monkey patching
-sphinx-immaterial == 0.13.5
+sphinx < 6.1
+sphinx-immaterial == 0.13.8
 myst-parser
 sphinx-design
 sphinx-last-updated-by-git
@@ -7,3 +7,4 @@ sphinx-math-dollar
 ipykernel
 myst-nb
 pickleshare
+packaging  # For version parsing in docs build
