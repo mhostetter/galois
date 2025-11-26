@@ -20,4 +20,5 @@ def test_fft(size_K, benchmark):
             break
     GF = galois.GF(p[0], e[0])
     x = GF.Random(size)
+    np.fft.fft(x)  # Don't benchmark the numba compilation
     benchmark(np.fft.fft, x)
