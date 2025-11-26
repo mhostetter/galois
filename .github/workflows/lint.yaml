@@ -10,29 +10,33 @@ on:
       - main
       - 'release/*'
 
+# Cancel any in-progress runs on new pushes to the same branch/PR
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
 jobs:
   run-linter:
     name: Ruff Lint
-    runs-on: ubuntu-22.04
-    strategy:
-      matrix:
-        python-version: [3.7, 3.8, 3.9, '3.10', 3.11, 3.12, 3.13]
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: '3.13'
+          cache: 'pip'
+          cache-dependency-path: requirements-lint.txt
 
       - name: Upgrade pip
         run: python3 -m pip install --upgrade pip
 
       - name: Install the dev requirements
-        run: python3 -m pip install -r requirements-dev.txt
-
-      - name: Install the `galois` package
-        run: python3 -m pip install .
+        run: python3 -m pip install -r requirements-lint.txt
 
       - name: Lint with ruff
         run: python3 -m ruff check --output-format=github .
@@ -41,21 +45,20 @@ jobs:
     name: Ruff Format
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Set up Python 3.13
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
-          python-version: 3.13
+          python-version: '3.13'
+          cache: 'pip'
+          cache-dependency-path: requirements-lint.txt
 
       - name: Upgrade pip
         run: python3 -m pip install --upgrade pip
 
-      - name: Install the dev requirements
-        run: python3 -m pip install -r requirements-dev.txt
-
-      - name: Install the `galois` package
-        run: python3 -m pip install .
+      - name: Install lint requirements
+        run: python3 -m pip install -r requirements-lint.txt
 
       - name: Format with ruff
         run: python3 -m ruff format --check .

@@ -1,0 +1,6 @@
+pip
+setuptools
+setuptools_scm
+wheel
+build
+twine
