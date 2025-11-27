@@ -7,11 +7,11 @@ tests using the `pytest-benchmark <https://pytest-benchmark.readthedocs.io/en/la
 Install dependencies
 --------------------
 
-First, `pytest` and `pytest-benchmark` must be installed on your system. Easily install them by installing the development dependencies.
+First, `pytest` and `pytest-benchmark` must be installed on your system. Easily install them by installing the testing dependencies.
 
 .. code-block:: console
 
-   $ python3 -m pip install -r requirements-dev.txt
+   $ python3 -m pip install -r requirements-test.txt
 
 Create a benchmark
 ------------------

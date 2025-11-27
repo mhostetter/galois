@@ -7,11 +7,11 @@ formatting.
 Install
 -------
 
-First, `ruff` needs to be installed on your system. Easily install it by installing the development dependencies.
+First, `ruff` needs to be installed on your system. Easily install it by installing the linting dependencies.
 
 .. code-block:: console
 
-   $ python3 -m pip install -r requirements-dev.txt
+   $ python3 -m pip install -r requirements-lint.txt
 
 Configuration
 -------------
