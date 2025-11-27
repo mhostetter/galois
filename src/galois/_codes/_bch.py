@@ -694,7 +694,7 @@ class BCH(_CyclicCode):
                         erasures = np.zeros(c.shape, dtype=bool)
                         erasures[0,0:1] = True
                         erasures[1,0:2] = True
-                        erasures[2,0:rs.d - 1] = True
+                        erasures[2,0:bch.d - 1] = True
 
                         c[erasures] += GF.Random(np.sum(erasures), low=1)
                         c
