@@ -1683,24 +1683,29 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
     def minimal_poly(self) -> Poly:
         r"""
-        Computes the standard minimal polynomial of a finite field element over its prime subfield.
+        Computes the minimal polynomial of a finite field element $a$ or a square matrix
+        $\mathbf{A}$.
 
         .. important::
 
-            This function computes the **standard** minimal polynomial (in the usual polynomial ring
-            $\mathrm{GF}(p)[x]$). The **linearized** minimal polynomial, which detects Frobenius-linear relations
-            and is used to test for normal elements, is implemented in the :meth:`linearized_minimal_poly`.
+            This function computes the **standard** minimal polynomial. The **linearized** minimal
+            polynomial, which detects Frobenius-linear relations and is used to test for normal
+            elements, is implemented in the :meth:`linearized_minimal_poly`.
 
         Returns:
             For scalar inputs, the minimal polynomial $m_a(x)$ of $a$ over $\mathrm{GF}(p)$.
+            For square matrix inputs, the minimal polynomial $m_A(x)$ of $\mathbf{A}$ over
+            $\mathrm{GF}(p^m)$.
 
         Raises:
-            NotImplementedError: If the array is a a square $n \times n$ matrix (2-D array).
-            ValueError: If the array is not a single finite field element (scalar 0-D array).
+            ValueError: If the array is not a single finite field element (scalar 0-D array) or a
+                square $n \times n$ matrix (2-D array).
 
         Notes:
-            For an element $a \in \mathrm{GF}(p^m)$, the minimal polynomial $m_a(x) \in \mathrm{GF}(p)[x]$ is the
-            *monic polynomial of least degree* whose evaluation at $a$ in $\mathrm{GF}(p^m)$ satisfies
+            **For a field element $a \in \mathrm{GF}(p^m)$:**
+
+            The minimal polynomial $m_a(x) \in \mathrm{GF}(p)[x]$ is the *monic polynomial of least
+            degree* whose evaluation at $a$ in $\mathrm{GF}(p^m)$ satisfies
 
             $$
             m_a(a) = 0.
@@ -1720,15 +1725,15 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             $$
 
             where $\{a, a^p, a^{p^2}, \dots\}$ are the distinct conjugates of $a$ under the Frobenius
-            map $x \mapsto x^p$. The degree $r$ equals the size of this conjugacy orbit.
-            All coefficients of $m_a(x)$ lie in the prime subfield $\mathrm{GF}(p)$.
+            map $x \mapsto x^p$. The degree $r$ equals the size of this conjugacy orbit. All
+            coefficients of $m_a(x)$ lie in the prime subfield $\mathrm{GF}(p)$.
 
             .. info::
-                :title: Relationship to the characteristic polynomial
+                :title: Relationship to the characteristic polynomial (scalar case)
 
-                Let $a \in \mathrm{GF}(p^m)$ and let $m_a(x)$ denote its standard minimal polynomial over
-                $\mathrm{GF}(p)$, and $c_a(x)$ the characteristic polynomial of the $\mathrm{GF}(p)$-linear
-                operator $x \mapsto a x$ on $\mathrm{GF}(p^m)$.
+                Let $a \in \mathrm{GF}(p^m)$ and let $m_a(x)$ denote its standard minimal polynomial
+                over $\mathrm{GF}(p)$, and $c_a(x)$ the characteristic polynomial of the
+                $\mathrm{GF}(p)$-linear operator $x \mapsto a x$ on $\mathrm{GF}(p^m)$.
 
                 The two polynomials satisfy
 
@@ -1744,6 +1749,42 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
                   $\deg m_a = d$ and the characteristic polynomial has multiplicity $m/d$.
 
                 In particular, $m_a(x)$ always divides $c_a(x)$ in $\mathrm{GF}(p)[x]$.
+
+            **For a square matrix $\mathbf{A} \in \mathrm{GF}(p^m)^{n \times n}$:**
+
+            The minimal polynomial $m_A(x) \in \mathrm{GF}(p^m)[x]$ is the *monic polynomial of least
+            degree* such that
+
+            $$
+            m_A(\mathbf{A}) = \mathbf{0}.
+            $$
+
+            It always divides the characteristic polynomial
+
+            $$
+            c_A(x) = \det(x \mathbf{I} - \mathbf{A})
+            $$
+
+            and can be written in factored form as
+
+            $$
+            m_A(x) = \prod_i f_i(x)^{e_i},
+            $$
+
+            where $\{f_i(x)\}$ are the distinct monic irreducible factors of $c_A(x)$, and each
+            exponent $e_i$ equals the size of the largest Jordan (or Frobenius) block of $\mathbf{A}$
+            associated with $f_i$.
+
+            Programmatically, this is determined by examining the sequence of null spaces
+
+            $$
+            \ker(f_i(\mathbf{A})),\;
+            \ker(f_i(\mathbf{A})^2),\;
+            \ker(f_i(\mathbf{A})^3),\;\dots
+            $$
+
+            and finding the smallest $k$ for which the nullity stabilizes. That $k$ is the exponent
+            $e_i$ in the minimal polynomial.
 
         References:
             - https://en.wikipedia.org/wiki/Minimal_polynomial_(field_theory)
@@ -1763,16 +1804,30 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
                 # The minimal polynomial always divides the characteristic polynomial
                 divmod(a.characteristic_poly(), poly)
+
+            The minimal polynomial of a square matrix $\mathbf{A}$.
+
+            .. ipython-with-reprs:: int,poly,power
+
+                GF = galois.GF(3**2)
+                A = GF.Random((3, 3)); A
+                poly = A.minimal_poly(); poly
+
+                # The minimal polynomial annihilates the matrix
+                poly(A, elementwise=False)
+
+                # The minimal polynomial always divides the characteristic polynomial
+                divmod(A.characteristic_poly(), poly)
         """
         if self.ndim == 0:
             return _minimal_poly_element(self)
-        if self.ndim == 2:
-            raise NotImplementedError("Computing the minimal polynomial of a matrix is not yet implemented.")
-            # return _minimal_poly_matrix(self)
-        raise ValueError(
-            f"The array must be either 0-D to return the minimal polynomial of a single element "
-            f"or 2-D to return the minimal polynomial of a square matrix, not have shape {self.shape}."
-        )
+        elif self.ndim == 2:
+            return _minimal_poly_matrix(self)
+        else:
+            raise ValueError(
+                f"The array must be either 0-D to return the minimal polynomial of a single element "
+                f"or 2-D to return the minimal polynomial of a square matrix, not have shape {self.shape}."
+            )
 
     def log(self, base: ElementLike | ArrayLike | None = None) -> int | np.ndarray:
         r"""
@@ -2075,16 +2130,16 @@ def _minimal_poly_element(a: FieldArray) -> Poly:
     r"""
     Compute the standard minimal polynomial of the finite field element `a` over its prime subfield $\mathrm{GF}(p)$.
     """
-    GF = type(a)
-    x = Poly.Identity(GF)
+    field = type(a)
+    x = Poly.Identity(field)
 
-    if GF.is_prime_field:
+    if field.is_prime_field:
         # Prime field: m_a(x) = x - a
         return x - a
     else:
         # Extension field GF(p^m)
-        p = GF.characteristic
-        m = GF.degree
+        p = field.characteristic
+        m = field.degree
 
         # Frobenius conjugates: {a, a^p, a^{p^2}, ..., a^{p^{m-1}}}
         exponents = p ** np.arange(0, m, dtype=int)
@@ -2094,9 +2149,73 @@ def _minimal_poly_element(a: FieldArray) -> Poly:
         conjugates = np.unique(conjugates)
 
         # Form the product ∏ (x - conjugate) in GF(p^m)[x]
-        poly_ext = Poly.Roots(conjugates, field=GF)
+        poly_ext = Poly.Roots(conjugates, field=field)
 
         # Minimal polynomial must live in GF(p)[x], so reinterpret coefficients in GF(p)
-        poly = Poly(poly_ext.coeffs, field=GF.prime_subfield)
+        poly = Poly(poly_ext.coeffs, field=field.prime_subfield)
 
         return poly
+
+
+def _minimal_poly_matrix(A: FieldArray) -> Poly:
+    r"""
+    Computes the standard minimal polynomial of the finite field matrix `A`.
+    """
+    if A.ndim != 2 or A.shape[0] != A.shape[1]:
+        raise ValueError(f"The 2-D array must be square to compute its minimal polynomial, not have shape {A.shape}.")
+
+    field = type(A)
+
+    # Characteristic polynomial over GF(p^m)[x]
+    cA = _characteristic_poly_matrix(A)
+
+    # Factor characteristic polynomial into irreducible factors over GF(p^m)
+    factors, multiplicities = cA.factors()
+
+    # Start with the monic polynomial 1
+    mA = Poly.One(field=field)
+
+    for f, d_max in zip(factors, multiplicities):
+        # Evaluate f(A) once
+        F = f(A, elementwise=False)  # Shape (n, n) FieldArray
+
+        if np.all(F == 0):
+            # Trivial case: f(A) is already the zero matrix; exponent is 1
+            e = 1
+        else:
+            # Track nullities of successive powers F^k
+            prev_nullity = _nullity(F)
+            e = 1
+            M_power = F.copy()
+
+            # Exponent is at most d_max (multiplicity in characteristic polynomial)
+            while e < d_max:
+                # Compute next power: F^{e+1}
+                M_power = M_power @ F
+                e += 1
+
+                nullity = _nullity(M_power)
+
+                if nullity == prev_nullity:
+                    # Nullity stabilizes => largest Jordan/Frobenius block size reached
+                    break
+                prev_nullity = nullity
+
+        # Multiply the minimal polynomial by f(x)^e
+        mA *= f**e
+
+    # Normalize to monic (should already be monic, but be safe)
+    if mA.coeffs[0] != 1:
+        mA = mA / mA.coeffs[0]
+
+    return mA
+
+
+def _nullity(A: FieldArray) -> int:
+    """
+    Computes the nullity of the matrix A, i.e. the dimension of its null space.
+    """
+    rank = np.linalg.matrix_rank(A)
+    n = A.shape[1]
+    nullity = n - rank
+    return nullity
