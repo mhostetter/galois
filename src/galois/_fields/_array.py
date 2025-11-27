@@ -1612,7 +1612,13 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
     def minimal_poly(self) -> Poly:
         r"""
-        Computes the minimal polynomial of a finite field element $a$.
+        Computes the standard minimal polynomial of a finite field element over its prime subfield.
+
+        .. important::
+
+            This function computes the **standard** minimal polynomial (in the usual polynomial ring
+            $\mathrm{GF}(p)[x]$). The **linearized** minimal polynomial, which detects Frobenius-linear relations
+            and is used to test for normal elements, is implemented in the :meth:`linearized_minimal_poly`.
 
         Returns:
             For scalar inputs, the minimal polynomial $m_a(x)$ of $a$ over $\mathrm{GF}(p)$.
@@ -1622,11 +1628,51 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             ValueError: If the array is not a single finite field element (scalar 0-D array).
 
         Notes:
-            An element $a$ of $\mathrm{GF}(p^m)$ has minimal polynomial $m_a(x)$ over
-            $\mathrm{GF}(p)$. The minimal polynomial when evaluated in $\mathrm{GF}(p^m)$ annihilates
-            $a$, that is $m_a(a) = 0$. The minimal polynomial always divides the characteristic polynomial.
-            In prime fields $\mathrm{GF}(p)$, the minimal polynomial of $a$ is simply
-            $m_a(x) = x - a$.
+            For an element $a \in \mathrm{GF}(p^m)$, the minimal polynomial $m_a(x) \in \mathrm{GF}(p)[x]$ is the
+            *monic polynomial of least degree* whose evaluation at $a$ in $\mathrm{GF}(p^m)$ satisfies
+
+            $$
+            m_a(a) = 0.
+            $$
+
+            In a prime field $\mathrm{GF}(p)$, the minimal polynomial is simply
+
+            $$
+            m_a(x) = x - a.
+            $$
+
+            For extension fields $\mathrm{GF}(p^m)$, the minimal polynomial is constructed from the
+            Frobenius conjugates of $a$:
+
+            $$
+            m_a(x) = \prod_{i=0}^{r-1} \left(x - a^{p^i}\right),
+            $$
+
+            where $\{a, a^p, a^{p^2}, \dots\}$ are the distinct conjugates of $a$ under the Frobenius
+            map $x \mapsto x^p$. The degree $r$ equals the size of this conjugacy orbit.
+            All coefficients of $m_a(x)$ lie in the prime subfield $\mathrm{GF}(p)$.
+
+            .. info::
+                :title: Relationship to the characteristic polynomial
+
+                Let $a \in \mathrm{GF}(p^m)$ and let $m_a(x)$ denote its standard minimal polynomial over
+                $\mathrm{GF}(p)$, and $c_a(x)$ the characteristic polynomial of the $\mathrm{GF}(p)$-linear
+                operator $x \mapsto a x$ on $\mathrm{GF}(p^m)$.
+
+                The two polynomials satisfy
+
+                $$
+                c_a(x) = m_a(x)^{\,m / \deg m_a}.
+                $$
+
+                Thus:
+
+                - If $a$ does *not* lie in any proper subfield, then $\deg m_a = m$ and
+                  $c_a(x) = m_a(x)$.
+                - If $a$ lies in a proper subfield $\mathrm{GF}(p^d)$ with $d \mid m$, then
+                  $\deg m_a = d$ and the characteristic polynomial has multiplicity $m/d$.
+
+                In particular, $m_a(x)$ always divides $c_a(x)$ in $\mathrm{GF}(p)[x]$.
 
         References:
             - https://en.wikipedia.org/wiki/Minimal_polynomial_(field_theory)
@@ -1640,8 +1686,10 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
                 GF = galois.GF(3**5)
                 a = GF.Random(); a
                 poly = a.minimal_poly(); poly
+
                 # The minimal polynomial annihilates a
                 poly(a, field=GF)
+
                 # The minimal polynomial always divides the characteristic polynomial
                 divmod(a.characteristic_poly(), poly)
         """
@@ -1944,17 +1992,31 @@ def _characteristic_poly_matrix(A: FieldArray) -> Poly:
 
 
 def _minimal_poly_element(a: FieldArray) -> Poly:
+    r"""
+    Compute the standard minimal polynomial of the finite field element `a` over its prime subfield $\mathrm{GF}(p)$.
     """
-    Computes the minimal polynomial of the Galois field element `a`.
-    """
-    field = type(a)
-    x = Poly.Identity(field)
+    GF = type(a)
+    x = Poly.Identity(GF)
 
-    if field.is_prime_field:
-        poly = x - a
+    if GF.is_prime_field:
+        # Prime field: m_a(x) = x - a
+        return x - a
     else:
-        conjugates = np.unique(a ** (field.characteristic ** np.arange(0, field.degree, dtype=field.dtypes[-1])))
-        poly = Poly.Roots(conjugates, field=field)
-        poly = Poly(poly.coeffs, field=field.prime_subfield)
+        # Extension field GF(p^m)
+        p = GF.characteristic
+        m = GF.degree
 
-    return poly
+        # Frobenius conjugates: {a, a^p, a^{p^2}, ..., a^{p^{m-1}}}
+        exponents = p ** np.arange(0, m, dtype=int)
+        conjugates = a**exponents
+
+        # Remove duplicates (subfield elements have smaller orbits)
+        conjugates = np.unique(conjugates)
+
+        # Form the product ∏ (x - conjugate) in GF(p^m)[x]
+        poly_ext = Poly.Roots(conjugates, field=GF)
+
+        # Minimal polynomial must live in GF(p)[x], so reinterpret coefficients in GF(p)
+        poly = Poly(poly_ext.coeffs, field=GF.prime_subfield)
+
+        return poly
