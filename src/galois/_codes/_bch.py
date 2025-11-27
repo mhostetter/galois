@@ -568,7 +568,7 @@ class BCH(_CyclicCode):
                         d = bch.decode(c); d
                         np.array_equal(d, m)
 
-                    Decode the codeword, specifying the number of corrected errors, and recover the message.
+                    Decode the codeword, outputting the number of corrected errors, and recover the message.
 
                     .. ipython:: python
 
@@ -600,7 +600,7 @@ class BCH(_CyclicCode):
                         d = bch.decode(c); d
                         np.array_equal(d, m)
 
-                    Decode the codeword, specifying the number of corrected errors, and recover the message.
+                    Decode the codeword, outputting the number of corrected errors, and recover the message.
 
                     .. ipython:: python
 
@@ -634,7 +634,7 @@ class BCH(_CyclicCode):
                         d = bch.decode(c); d
                         np.array_equal(d, m)
 
-                    Decode the codeword, specifying the number of corrected errors, and recover the message.
+                    Decode the codeword, outputting the number of corrected errors, and recover the message.
 
                     .. ipython:: python
 
@@ -668,11 +668,50 @@ class BCH(_CyclicCode):
                         d = bch.decode(c); d
                         np.array_equal(d, m)
 
-                    Decode the codeword, specifying the number of corrected errors, and recover the message.
+                    Decode the codeword, outputting the number of corrected errors, and recover the message.
 
                     .. ipython:: python
 
                         d, e = bch.decode(c, errors=True); d, e
+                        np.array_equal(d, m)
+
+                .. md-tab-item:: Matrix (erasures)
+
+                    Encode a matrix of three messages using the $\textrm{BCH}(15, 7)$ code.
+
+                    .. ipython:: python
+
+                        bch = galois.BCH(15, 7)
+                        GF = bch.field
+                        m = GF.Random((3, bch.k)); m
+                        c = bch.encode(m); c
+
+                    Corrupt the codeword. Add one error to the first codeword, two to the second, and $d - 1$ to the
+                    third.
+
+                    .. ipython:: python
+
+                        erasures = np.zeros(c.shape, dtype=bool)
+                        erasures[0,0:1] = True
+                        erasures[1,0:2] = True
+                        erasures[2,0:rs.d - 1] = True
+
+                        c[erasures] += GF.Random(np.sum(erasures), low=1)
+                        c
+
+                    Decode the codeword using known error locations (erasures) and recover the message.
+
+                    .. ipython:: python
+
+                        d = bch.decode(c, erasures=erasures); d
+                        np.array_equal(d, m)
+
+                    Decode the codeword, outputting the number of corrected errors, and recover the message. Notice
+                    that zero unknown errors were corrected, since all errors were provided as erasures.
+
+                    .. ipython:: python
+
+                        d, e = bch.decode(c, erasures=erasures, errors=True); d, e
                         np.array_equal(d, m)
         """,
     )
