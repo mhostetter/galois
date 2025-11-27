@@ -1558,20 +1558,86 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             polynomial $c_A(x)$ of $\mathbf{A}$ over $\mathrm{GF}(p^m)$.
 
         Raises:
-            ValueError: If the array is not a single finite field element (scalar 0-D array) or a square
-                $n \times n$ matrix (2-D array).
+            ValueError: If the array is not a single finite field element (scalar 0-D array) or a
+                square $n \times n$ matrix (2-D array).
 
         Notes:
-            An element $a$ of $\mathrm{GF}(p^m)$ has characteristic polynomial $c_a(x)$ over
-            $\mathrm{GF}(p)$. The characteristic polynomial when evaluated in $\mathrm{GF}(p^m)$
-            annihilates $a$, that is $c_a(a) = 0$. In prime fields $\mathrm{GF}(p)$, the
-            characteristic polynomial of $a$ is simply $c_a(x) = x - a$.
+            **For a scalar element $a \in \mathrm{GF}(p^m)$:**
 
-            An $n \times n$ matrix $\mathbf{A}$ has characteristic polynomial
-            $c_A(x) = \textrm{det}(x\mathbf{I} - \mathbf{A})$ over $\mathrm{GF}(p^m)$. The constant
-            coefficient of the characteristic polynomial is $\textrm{det}(-\mathbf{A})$. The $x^{n-1}$
-            coefficient of the characteristic polynomial is $-\textrm{Tr}(\mathbf{A})$. The characteristic
-            polynomial annihilates $\mathbf{A}$, that is $c_A(\mathbf{A}) = \mathbf{0}$.
+            This method returns the degree-$m$ characteristic polynomial $c_a(x) \in \mathrm{GF}(p)[x]$ of the
+            $\mathrm{GF}(p)$-linear operator $x \mapsto a x$ on $\mathrm{GF}(p^m)$. It has the form
+
+            $$
+            c_a(x) = \prod_{i=0}^{m-1} \left(x - a^{p^i}\right),
+            $$
+
+            where $p$ is the characteristic of the field and $a^{p^i}$ are the Frobenius conjugates
+            of $a$. In particular, $c_a(x)$ has coefficients in the prime subfield $\mathrm{GF}(p)$
+            and satisfies
+
+            $$
+            c_a(a) = 0 \quad \text{in } \mathrm{GF}(p^m).
+            $$
+
+            In a prime field $\mathrm{GF}(p)$ (i.e., when $m = 1$), the characteristic polynomial of
+            $a$ is simply
+
+            $$
+            c_a(x) = x - a.
+            $$
+
+            .. info::
+                :title: Relationship to the minimal polynomial (scalar case)
+
+                For $a \in \mathrm{GF}(p^m)$, let $m_a(x)$ denote its standard minimal polynomial
+                over $\mathrm{GF}(p)$.
+
+                The characteristic polynomial $c_a(x)$ of the multiplication map satisfies
+
+                $$
+                c_a(x) = m_a(x)^{\,m / \deg m_a}.
+                $$
+
+                Therefore:
+
+                - $m_a(x)$ divides $c_a(x)$.
+                - The two polynomials coincide if and only if $a$ does not lie in a proper subfield
+                  (i.e., its Frobenius orbit has length $m$).
+                - If $a \in \mathrm{GF}(p^d)$ with $d \mid m$, then $\deg m_a = d$ and
+                  $c_a(x) = m_a(x)^{m/d}$.
+
+                Thus the minimal polynomial measures the Frobenius-orbit size of $a$, while the
+                characteristic polynomial always has fixed degree $m$.
+
+            **For a square matrix $\mathbf{A} \in \mathrm{GF}(p^m)^{n \times n}$:**
+
+            The characteristic polynomial is
+
+            $$
+            c_A(x) = \det(x \mathbf{I} - \mathbf{A}),
+            $$
+
+            where $\mathbf{I}$ is the $n \times n$ identity matrix. The constant coefficient is
+
+            $$
+            c_A(0) = \det(-\mathbf{A}),
+            $$
+
+            and the $x^{n-1}$ coefficient is
+
+            $$
+            -\operatorname{Tr}(\mathbf{A}).
+            $$
+
+            The characteristic polynomial annihilates the matrix:
+
+            $$
+            c_A(\mathbf{A}) = \mathbf{0}.
+            $$
+
+            The characteristic polynomial always has degree $n$, and for matrices it plays the same
+            role here as in standard linear algebra: it is the determinant of $x \mathbf{I} - \mathbf{A}$
+            and contains information about eigenvalues, invariant factors, and the minimal polynomial.
 
         References:
             - https://en.wikipedia.org/wiki/Characteristic_polynomial
@@ -1584,6 +1650,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
                 GF = galois.GF(3**5)
                 a = GF.Random(); a
                 poly = a.characteristic_poly(); poly
+
                 # The characteristic polynomial annihilates a
                 poly(a, field=GF)
 
@@ -1594,21 +1661,25 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
                 GF = galois.GF(3**5)
                 A = GF.Random((3,3)); A
                 poly = A.characteristic_poly(); poly
+
                 # The x^0 coefficient is det(-A)
                 poly.coeffs[-1] == np.linalg.det(-A)
-                # The x^n-1 coefficient is -Tr(A)
+
+                # The x^(n-1) coefficient is -Tr(A)
                 poly.coeffs[1] == -np.trace(A)
+
                 # The characteristic polynomial annihilates the matrix A
                 poly(A, elementwise=False)
         """
         if self.ndim == 0:
             return _characteristic_poly_element(self)
-        if self.ndim == 2:
+        elif self.ndim == 2:
             return _characteristic_poly_matrix(self)
-        raise ValueError(
-            f"The array must be either 0-D to return the characteristic polynomial of a single element "
-            f"or 2-D to return the characteristic polynomial of a square matrix, not have shape {self.shape}."
-        )
+        else:
+            raise ValueError(
+                f"The array must be either 0-D to return the characteristic polynomial of a single element "
+                f"or 2-D to return the characteristic polynomial of a square matrix, not have shape {self.shape}."
+            )
 
     def minimal_poly(self) -> Poly:
         r"""
@@ -1942,52 +2013,61 @@ def _poly_det(A: np.ndarray) -> Poly:
     n = A.shape[0]  # Size of the n x n matrix
     det = Poly.Zero(field)
     for i in range(n):
-        idxs = np.delete(np.arange(0, n), i)
+        idxs = np.delete(np.arange(n), i)
+        cofactor = _poly_det(A[1:, idxs])
         if i % 2 == 0:
-            det += A[0, i] * _poly_det(A[1:, idxs])
+            det += A[0, i] * cofactor
         else:
-            det -= A[0, i] * _poly_det(A[1:, idxs])
+            det -= A[0, i] * cofactor
 
     return det
 
 
 def _characteristic_poly_element(a: FieldArray) -> Poly:
     """
-    Computes the characteristic polynomial of the Galois field element `a`.
+    Computes the characteristic polynomial of the finite field element `a` over its prime subfield.
     """
     field = type(a)
-    x = Poly.Identity(field)
 
     if field.is_prime_field:
-        poly = x - a
+        # Prime field GF(p): characteristic polynomial is just x - a
+        x = Poly.Identity(field)
+        return x - a
     else:
-        powers = a ** (field.characteristic ** np.arange(0, field.degree, dtype=field.dtypes[-1]))
-        poly = Poly.Roots(powers, field=field)
-        poly = Poly(poly.coeffs, field=field.prime_subfield)
+        # Extension field GF(p^m)
+        m = field.degree
+        # Standard minimal polynomial over GF(p)
+        m_a = _minimal_poly_element(a)  # or a.minimal_poly() if you prefer the public API
+        deg = m_a.degree
 
-    return poly
+        # In GF(p^m), the characteristic polynomial of the multiplication map T_a
+        # is m_a(x) raised to the power m / deg(m_a).
+        multiplicity = m // deg
+
+        return m_a**multiplicity
 
 
 def _characteristic_poly_matrix(A: FieldArray) -> Poly:
     """
     Computes the characteristic polynomial of the Galois field matrix `A`.
     """
-    if not A.shape[0] == A.shape[1]:
+    if A.ndim != 2 or A.shape[0] != A.shape[1]:
         raise ValueError(
-            f"The 2-D array must be square to compute its characteristic polynomial, not have shape {A.shape}."
+            "The 2-D array must be square to compute its characteristic polynomial, not have shape {A.shape}."
         )
-    field = type(A)
 
-    # Compute P = xI - A
-    P = np.zeros(A.shape, dtype=object)
-    for i in range(A.shape[0]):
-        for j in range(A.shape[0]):
+    field = type(A)
+    n = A.shape[0]
+
+    # Form P = x I - A as a matrix of Poly objects over GF(p^m)
+    P = np.empty((n, n), dtype=object)
+    for i in range(n):
+        for j in range(n):
             if i == j:
                 P[i, j] = Poly([1, -A[i, j]], field=field)
             else:
                 P[i, j] = Poly([-A[i, j]], field=field)
 
-    # Compute det(P)
     return _poly_det(P)
 
 
