@@ -93,23 +93,69 @@ def totatives(n: int) -> list[int]:
 @export
 def euler_phi(n: int) -> int:
     r"""
-    Counts the positive integers (totatives) in $[1, n)$ that are coprime to $n$.
+    Counts the positive integers in $[1, n]$ that are coprime to $n$.
 
     Arguments:
         n: A positive integer.
 
     Returns:
-        The number of totatives that are coprime to $n$.
+        The Euler totient $\varphi(n)$, the number of integers $k$ with $1 \le k \le n$ and
+        $\gcd(k, n) = 1$.
 
     See Also:
         carmichael_lambda, totatives, is_cyclic
 
     Notes:
-        This function implements the Euler totient function
+        The Euler totient function $\varphi(n)$ is defined by
 
-        $$\varphi(n) = n \prod_{p \mid n} \bigg(1 - \frac{1}{p}\bigg) = \prod_{i=1}^{k} p_i^{e_i-1} \big(p_i - 1\big)$$
+        $$
+        \varphi(n) = \left|\{ k \in \mathbb{Z} : 1 \le k \le n,\ \gcd(k, n) = 1 \}\right|.
+        $$
 
-        for prime $p$ and the prime factorization $n = p_1^{e_1} \dots p_k^{e_k}$.
+        Equivalently, for $n > 1$, it counts the totatives of $n$ in $[1, n)$, so for all
+        $n \ge 1$:
+
+        $$
+        \varphi(n) = \lvert \texttt{totatives}(n) \rvert.
+        $$
+
+        The function is multiplicative in the sense that if $\gcd(m, n) = 1$, then
+
+        $$
+        \varphi(mn) = \varphi(m)\,\varphi(n).
+        $$
+
+        Given the prime factorization
+
+        $$
+        n = p_1^{e_1} p_2^{e_2} \cdots p_k^{e_k},
+        $$
+
+        the totient can be computed as
+
+        $$
+        \varphi(n)
+        = n \prod_{p \mid n}\left(1 - \frac{1}{p}\right)
+        = \prod_{i=1}^{k} p_i^{e_i - 1}(p_i - 1),
+        $$
+
+        where the product over $p \mid n$ runs over the distinct primes dividing $n$.
+        This implementation uses the latter formula.
+
+        The special case $n = 1$ is defined by convention as
+
+        $$
+        \varphi(1) = 1,
+        $$
+
+        since the ring $\mathbb{Z}/1\mathbb{Z}$ has a single residue class, which is counted as
+        one "unit" in this context.
+
+        Group-theoretically, $\varphi(n)$ is the size of the multiplicative group of units
+
+        $$
+        \varphi(n) = \left|(\mathbb{Z}/n\mathbb{Z})^\times\right|.
+        $$
 
     References:
         - Section 2.4.1 from https://cacr.uwaterloo.ca/hac/about/chap2.pdf
@@ -144,7 +190,7 @@ def euler_phi(n: int) -> int:
     return _euler_phi(n)
 
 
-# NOTE: This is a separate function to hide the "lru_cache" from the public API
+# NOTE: This is a separate function to hide the "lru_cache" from the public API.
 @functools.lru_cache(maxsize=64)
 def _euler_phi(n: int) -> int:
     verify_isinstance(n, int)
@@ -152,6 +198,7 @@ def _euler_phi(n: int) -> int:
         raise ValueError(f"Argument 'n' must be a positive integer, not {n}.")
 
     if n == 1:
+        # By convention, φ(1) = 1.
         return 1
 
     p, e = factors(n)
