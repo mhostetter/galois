@@ -19,19 +19,43 @@ from ._prime import factors
 @export
 def totatives(n: int) -> list[int]:
     r"""
-    Returns the positive integers (totatives) in $[1, n)$ that are coprime to $n$.
+    Returns the integers (totatives) in $[1, n)$ that are coprime to $n$.
 
     Arguments:
         n: A positive integer.
 
     Returns:
-        The totatives of $n$.
+        A list of the totatives of $n$, sorted in increasing order. For $n > 1$, this is the set
+
+        $$
+        \{ t \in \mathbb{Z} : 1 \le t < n,\ \gcd(t, n) = 1 \}.
+        $$
+
+        For $n = 1$, the function returns `[0]`, representing the unique residue class modulo $1$
+        (and ensuring the length of the list equals $\varphi(1) = 1$).
 
     See Also:
         euler_phi, carmichael_lambda, is_cyclic
 
     Notes:
-        The totatives of $n$ form the multiplicative group $(\mathbb{Z}/n\mathbb{Z}){^\times}$.
+        For $n > 1$, the totatives of $n$ are precisely the integers in $[1, n)$ that are coprime
+        to $n$:
+
+        $$
+        \{ t \in \{1, 2, \dots, n - 1\} : \gcd(t, n) = 1 \}.
+        $$
+
+        Modulo $n$, these correspond to the units in the ring $\mathbb{Z}/n\mathbb{Z}$, and under
+        multiplication modulo $n$ they form the multiplicative group of units
+
+        $$
+        (\mathbb{Z}/n\mathbb{Z})^\times.
+        $$
+
+        The number of totatives of $n$ is Euler's totient function $\varphi(n)$, so
+        `len(totatives(n)) == euler_phi(n)` for all $n \ge 1$. For $n = 1$, the ring
+        $\mathbb{Z}/1\mathbb{Z}$ has a single residue class, and this implementation represents
+        that class by the integer `0`, hence the special case `[0]`.
 
     References:
         - Section 2.4.3 from https://cacr.uwaterloo.ca/hac/about/chap2.pdf
@@ -60,6 +84,7 @@ def totatives(n: int) -> list[int]:
         raise ValueError(f"Argument 'n' must be a positive integer, not {n}.")
 
     if n == 1:
+        # Represent the unique residue class modulo 1 by 0; ensures len(totatives(1)) == euler_phi(1) == 1.
         return [0]
 
     return [t for t in range(1, n) if math.gcd(n, t) == 1]
