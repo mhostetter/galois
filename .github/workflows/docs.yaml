@@ -37,10 +37,10 @@ jobs:
           # NOTE: Fake ternary operator, see https://github.com/actions/runner/issues/409
           fetch-depth: 0  # Fetch all commits and tags, needed for intermediate versions
 
-      - name: Set up Python 3.11
+      - name: Set up Python 3.13
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.13'
           cache: 'pip'
           cache-dependency-path: |
             docs/requirements.txt
