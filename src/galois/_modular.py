@@ -46,11 +46,7 @@ def totatives(n: int) -> list[int]:
         $$
 
         Modulo $n$, these correspond to the units in the ring $\mathbb{Z}/n\mathbb{Z}$, and under
-        multiplication modulo $n$ they form the multiplicative group of units
-
-        $$
-        (\mathbb{Z}/n\mathbb{Z})^\times.
-        $$
+        multiplication modulo $n$ they form the multiplicative group of units $(\mathbb{Z}/n\mathbb{Z})^\times.$
 
         The number of totatives of $n$ is Euler's totient function $\varphi(n)$, so
         `len(totatives(n)) == euler_phi(n)` for all $n \ge 1$. For $n = 1$, the ring
@@ -142,12 +138,7 @@ def euler_phi(n: int) -> int:
         where the product over $p \mid n$ runs over the distinct primes dividing $n$.
         This implementation uses the latter formula.
 
-        The special case $n = 1$ is defined by convention as
-
-        $$
-        \varphi(1) = 1,
-        $$
-
+        The special case $n = 1$ is defined by convention as $\varphi(1) = 1$,
         since the ring $\mathbb{Z}/1\mathbb{Z}$ has a single residue class, which is counted as
         one "unit" in this context.
 
