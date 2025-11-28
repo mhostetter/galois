@@ -83,8 +83,8 @@ def is_primitive_root(g: int, n: int) -> bool:
         .. ipython:: python
 
             list(galois.primitive_roots(7))
-            galois.is_primitive_root(2, 7)
-            galois.is_primitive_root(3, 7)
+            assert not galois.is_primitive_root(2, 7)
+            assert galois.is_primitive_root(3, 7)
 
     Group:
         number-theory-primitive-roots
@@ -207,7 +207,7 @@ def primitive_root(
 
                 .. ipython:: python
 
-                    galois.is_cyclic(n)
+                    assert galois.is_cyclic(n)
 
                 Find the smallest primitive root modulo 14. Observe that the powers of `g` uniquely represent
                 each element in $(\mathbb{Z}/14\mathbb{Z})^\times$.
@@ -241,7 +241,7 @@ def primitive_root(
 
                 .. ipython:: python
 
-                    galois.is_cyclic(n)
+                    assert not galois.is_cyclic(n)
 
                 Below, every element is tested to see if it spans the group.
 

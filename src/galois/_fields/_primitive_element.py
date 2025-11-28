@@ -101,7 +101,7 @@ def is_primitive_element(element: PolyLike, irreducible_poly: Poly) -> bool:
 
             GF = galois.GF(3**4)
             f = GF.irreducible_poly; f
-            galois.is_primitive_element("x + 2", f)
+            assert galois.is_primitive_element("x + 2", f)
             GF("x + 2").multiplicative_order()
 
         However, the polynomial $x + 1$ does not represent a primitive element, as its
@@ -109,7 +109,7 @@ def is_primitive_element(element: PolyLike, irreducible_poly: Poly) -> bool:
 
         .. ipython:: python
 
-            galois.is_primitive_element("x + 1", f)
+            assert not galois.is_primitive_element("x + 1", f)
             GF("x + 1").multiplicative_order()
 
     Group:
