@@ -43,6 +43,21 @@ def test_euler_phi(euler_phi):
         assert galois.euler_phi(x) == z
 
 
+def test_mobius_exceptions():
+    with pytest.raises(TypeError):
+        galois.mobius(20.0)
+    with pytest.raises(ValueError):
+        galois.mobius(-1)
+
+
+def test_mobius_oeis():
+    # https://oeis.org/A008683
+    N = list(range(1, 31))
+    MU = [1, -1, -1, 0, -1, 1, -1, 0, 0, 1, -1, 0, -1, 1, 1, 0, -1, 0, -1, 0, 1, 1, -1, 0, 0, 1, 0, 0, -1, -1, -1, 0, 1, 1, 1, 0, -1, 1, 1, 0, -1, -1, -1, 0, 0, 1, -1, 0, 0, 0, 1, 0, -1, 0, 1, 0, 1, 1, -1, 0, -1, 1, 0, 0, 1, -1, -1, 0, 1, -1, -1, 0, -1, 1, 0, 0, 1, -1]  # fmt: skip
+    for n, mu in zip(N, MU):
+        assert galois.mobius(n) == mu
+
+
 def test_carmichael_lambda_exceptions():
     with pytest.raises(TypeError):
         galois.carmichael_lambda(20.0)

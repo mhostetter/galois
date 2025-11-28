@@ -198,6 +198,137 @@ def _euler_phi(n: int) -> int:
 
 
 @export
+def mobius(n: int) -> int:
+    r"""
+    Evaluates the Möbius function $\mu(n)$.
+
+    Arguments:
+        n: A positive integer.
+
+    Returns:
+        The Möbius function $\mu(n)$, which takes values in $\{-1, 0, 1\}$ and is defined by
+
+        .. math::
+
+            \mu(n) = \begin{cases}
+                1,       & \text{if } n = 1, \\
+                0,       & \text{if } p^2 \mid n \text{ for some prime } p, \\
+                (-1)^k,  & \text{if } n = p_1 p_2 \cdots p_k \text{ is a product of } k \text{ distinct primes}.
+            \end{cases}
+
+    See Also:
+        euler_phi, carmichael_lambda, totatives, is_square_free
+
+    Notes:
+        The Möbius function $\mu(n)$ is a multiplicative arithmetic function that encodes the
+        square-free structure of $n$:
+
+        - $\mu(1) = 1$.
+        - $\mu(n) = 0$ if $n$ is divisible by the square of a prime (i.e., $n$ is not square-free).
+        - If $n$ is square-free with prime factorization $n = p_1 p_2 \cdots p_k$, then $\mu(n) = (-1)^k$,
+          so $\mu(n) = -1$ when $n$ has an odd number of distinct prime factors, and
+          $\mu(n) = 1$ when $n$ has an even number.
+
+        The Möbius function plays a central role in Dirichlet convolution and inversion. If
+        $f$ and $F$ are arithmetic functions related by
+
+        $$
+        F(n) = \sum_{d \mid n} f(d),
+        $$
+
+        then Möbius inversion recovers $f$ from $F$ via
+
+        $$
+        f(n) = \sum_{d \mid n} \mu(d)\, F\!\left(\frac{n}{d}\right).
+        $$
+
+        A classical identity characterizing $\mu$ is
+
+        .. math::
+
+            \sum_{d \mid n} \mu(d) =
+            \begin{cases}
+                1, & \text{if } n = 1, \\
+                0, & \text{if } n > 1,
+            \end{cases}
+
+        meaning that $\mu$ is the Dirichlet inverse of the constant function $1(n) \equiv 1$.
+
+        This implementation uses the prime factorization
+
+        $$
+        n = p_1^{e_1} p_2^{e_2} \cdots p_k^{e_k}.
+        $$
+
+        If any exponent $e_i > 1$, then $\mu(n) = 0$. Otherwise $n$ is square-free and
+        $\mu(n) = (-1)^k$ where $k$ is the number of distinct prime factors.
+
+    References:
+        - https://oeis.org/A008683
+
+    Examples:
+        Basic values of the Möbius function.
+
+        .. ipython:: python
+
+            [galois.mobius(n) for n in range(1, 21)]
+
+        Values for powers of primes and square-free products.
+
+        .. ipython:: python
+
+            # 1 by definition
+            assert galois.mobius(1) == 1
+
+            # 2, one prime factor
+            assert galois.mobius(2) == -1
+
+            # 2 * 3, two distinct primes
+            assert galois.mobius(6) ==  1
+
+            # 2^2 * 3, not square-free
+            assert galois.mobius(12) ==  0
+
+        Verify the identity $\sum_{d \mid n} \mu(d) = 0$ for $n > 1$.
+
+        .. ipython:: python
+
+            for n in range(1, 100):
+                s = sum(galois.mobius(d) for d in range(1, n + 1) if n % d == 0)
+                if n == 1:
+                    assert s == 1
+                else:
+                    assert s == 0
+
+    Group:
+        number-theory-divisibility
+    """
+    return _mobius(n)
+
+
+# NOTE: This is a separate function to hide the "lru_cache" from the public API.
+@functools.lru_cache(maxsize=64)
+def _mobius(n: int) -> int:
+    verify_isinstance(n, int)
+    if not n > 0:
+        raise ValueError(f"Argument 'n' must be a positive integer, not {n}.")
+
+    if n == 1:
+        # By definition, μ(1) = 1.
+        return 1
+
+    p, e = factors(n)
+
+    # If any exponent e_i > 1, then n is not square-free and μ(n) = 0.
+    if any(ei > 1 for ei in e):
+        return 0
+
+    # n is square-free with k distinct prime factors -> μ(n) = (-1)^k.
+    k = len(p)
+    return -1 if k % 2 == 1 else 1
+
+
+@export
 def carmichael_lambda(n: int) -> int:
     r"""
     Finds the smallest positive integer $m$ such that $a^m \equiv 1 \pmod{n}$ for every integer
