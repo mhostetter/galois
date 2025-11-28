@@ -1276,7 +1276,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             .. ipython:: python
 
                 LN = A.left_null_space(); LN
-                R.shape[0] + LN.shape[0] == m
+                assert R.shape[0] + LN.shape[0] == m
 
         Group:
             Linear algebra
@@ -1327,7 +1327,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             .. ipython:: python
 
                 N = A.null_space(); N
-                C.shape[0] + N.shape[0] == n
+                assert C.shape[0] + N.shape[0] == n
 
         Group:
             Linear algebra
@@ -1379,7 +1379,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             .. ipython:: python
 
                 R = A.row_space(); R
-                R.shape[0] + LN.shape[0] == m
+                assert R.shape[0] + LN.shape[0] == m
 
         Group:
             Linear algebra
@@ -1445,7 +1445,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             .. ipython:: python
 
                 C = A.column_space(); C
-                C.shape[0] + N.shape[0] == n
+                assert C.shape[0] + N.shape[0] == n
 
         Group:
             Linear algebra

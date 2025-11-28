@@ -50,7 +50,7 @@ def totatives(n: int) -> list[int]:
         .. ipython:: python
 
             phi = galois.euler_phi(n); phi
-            len(x) == phi
+            assert len(x) == phi
 
     Group:
         number-theory-divisibility
@@ -104,7 +104,7 @@ def euler_phi(n: int) -> int:
         .. ipython:: python
 
             x = galois.totatives(n); x
-            len(x) == phi
+            assert len(x) == phi
 
         For prime $n$, $\phi(n) = n - 1$.
 
@@ -269,7 +269,7 @@ def is_cyclic(n: int) -> bool:
                 .. ipython:: python
 
                     phi = galois.euler_phi(n); phi
-                    len(Znx) == phi
+                    assert len(Znx) == phi
 
                 Since 14 is of the form $2p^k$, the multiplicative group
                 $(\mathbb{Z}/14\mathbb{Z}){^\times}$ is cyclic, meaning there exists at least one element that
@@ -455,7 +455,7 @@ def primitive_root(
                 .. ipython:: python
 
                     phi = galois.euler_phi(n); phi
-                    len(Znx) == phi
+                    assert len(Znx) == phi
 
                 Since 14 is of the form $2p^k$, the multiplicative group
                 $(\mathbb{Z}/14\mathbb{Z}){^\times}$ is cyclic, meaning there exists at least one element that
