@@ -343,34 +343,70 @@ def carmichael_lambda(n: int) -> int:
 @export
 def is_cyclic(n: int) -> bool:
     r"""
-    Determines whether the multiplicative group $(\mathbb{Z}/n\mathbb{Z}){^\times}$ is cyclic.
+    Determines whether the multiplicative group $(\mathbb{Z}/n\mathbb{Z})^\times$ is cyclic.
 
     Arguments:
         n: A positive integer.
 
     Returns:
-        `True` if the multiplicative group $(\mathbb{Z}/n\mathbb{Z}){^\times}$ is cyclic.
+        `True` if the multiplicative group $(\mathbb{Z}/n\mathbb{Z})^\times$ is cyclic, otherwise `False`.
 
     See Also:
         euler_phi, carmichael_lambda, totatives
 
     Notes:
-        The multiplicative group $(\mathbb{Z}/n\mathbb{Z}){^\times}$ is the set of positive integers
-        $1 \le a < n$ that are coprime with $n$. $(\mathbb{Z}/n\mathbb{Z}){^\times}$ being cyclic
-        means that some primitive root of $n$, or generator, $g$ can generate the group
-        $\{1, g, g^2, \dots, g^{\varphi(n)-1}\}$, where $\varphi(n)$ is Euler's totient function and calculates
-        the order of the group. If $(\mathbb{Z}/n\mathbb{Z}){^\times}$ is cyclic, the number of primitive roots
-        is found by $\varphi(\varphi(n))$.
+        For a positive integer $n$, the multiplicative group of units modulo $n$ is
 
-        $(\mathbb{Z}/n\mathbb{Z}){^\times}$ is *cyclic* if and only if $n$ is 2, 4, $p^k$,
-        or $2p^k$, where $p$ is an odd prime and $k$ is a positive integer.
+        $$
+        (\mathbb{Z}/n\mathbb{Z})^\times
+        = \{ [a]_n : 1 \le a < n,\ \gcd(a, n) = 1 \},
+        $$
+
+        with multiplication induced by integer multiplication modulo $n$. Its order is Euler's
+        totient:
+
+        $$
+        \left|(\mathbb{Z}/n\mathbb{Z})^\times\right| = \varphi(n).
+        $$
+
+        The group $(\mathbb{Z}/n\mathbb{Z})^\times$ is **cyclic** if there exists an element
+        $g \in (\mathbb{Z}/n\mathbb{Z})^\times$ (a *primitive root modulo* $n$) such that
+
+        $$
+        (\mathbb{Z}/n\mathbb{Z})^\times = \{ g^0, g^1, \dots, g^{\varphi(n)-1} \}.
+        $$
+
+        In that case, the number of primitive roots modulo $n$ is
+        $\varphi(\varphi(n))$, and every element of $(\mathbb{Z}/n\mathbb{Z})^\times$ is some
+        power of $g$.
+
+        A classical theorem completely characterizes when $(\mathbb{Z}/n\mathbb{Z})^\times$ is cyclic:
+
+        - The group $(\mathbb{Z}/n\mathbb{Z})^\times$ is cyclic **if and only if**
+
+          $$
+          n \in \{1, 2, 4\} \quad \text{or} \quad
+          n = p^k \text{ or } n = 2p^k
+          $$
+
+          for some odd prime $p$ and integer $k \ge 1$.
+
+        In particular:
+
+        - For $n = p$ prime, $(\mathbb{Z}/p\mathbb{Z})^\times$ is always cyclic of order $p - 1$
+          and admits primitive roots modulo $p$.
+        - For $n = 2, 4, p^k$, or $2p^k$ (with $p$ odd), there are primitive roots modulo $n$.
+        - For any other composite $n$, $(\mathbb{Z}/n\mathbb{Z})^\times$ is not cyclic, so no
+          primitive roots modulo $n$ exist.
+        - The trivial group $(\mathbb{Z}/1\mathbb{Z})^\times$ is cyclic by convention, and this
+          function returns `True` for $n = 1$.
 
     Examples:
         .. md-tab-set::
 
             .. md-tab-item:: n = 14
 
-                The elements of $(\mathbb{Z}/14\mathbb{Z}){^\times} = \{1, 3, 5, 9, 11, 13\}$ are the totatives
+                The elements of $(\mathbb{Z}/14\mathbb{Z})^\times = \{1, 3, 5, 9, 11, 13\}$ are the totatives
                 of 14.
 
                 .. ipython:: python
@@ -379,7 +415,7 @@ def is_cyclic(n: int) -> bool:
                     Znx = galois.totatives(n); Znx
 
                 The Euler totient $\varphi(n)$ function counts the totatives of $n$, which is equivalent to
-                the order of $(\mathbb{Z}/n\mathbb{Z}){^\times}$.
+                the order of $(\mathbb{Z}/n\mathbb{Z})^\times$.
 
                 .. ipython:: python
 
@@ -387,23 +423,23 @@ def is_cyclic(n: int) -> bool:
                     assert len(Znx) == phi
 
                 Since 14 is of the form $2p^k$, the multiplicative group
-                $(\mathbb{Z}/14\mathbb{Z}){^\times}$ is cyclic, meaning there exists at least one element that
+                $(\mathbb{Z}/14\mathbb{Z})^\times$ is cyclic, meaning there exists at least one element that
                 generates the group by its powers.
 
                 .. ipython:: python
 
                     galois.is_cyclic(n)
 
-                Find the smallest primitive root modulo 14. Observe that the powers of $g$ uniquely represent
-                each element in $(\mathbb{Z}/14\mathbb{Z}){^\times}$.
+                Find the smallest primitive root modulo 14. Observe that the powers of `g` uniquely represent
+                each element in $(\mathbb{Z}/14\mathbb{Z})^\times$.
 
                 .. ipython:: python
 
                     g = galois.primitive_root(n); g
                     [pow(g, i, n) for i in range(0, phi)]
 
-                Find the largest primitive root modulo 14. Observe that the powers of $g$ also uniquely represent
-                each element in $(\mathbb{Z}/14\mathbb{Z}){^\times}$, although in a different order.
+                Find the largest primitive root modulo 14. Observe that the powers of `g` also uniquely represent
+                each element in $(\mathbb{Z}/14\mathbb{Z})^\times$, although in a different order.
 
                 .. ipython:: python
 
@@ -412,7 +448,7 @@ def is_cyclic(n: int) -> bool:
 
             .. md-tab-item:: n = 15
 
-                A non-cyclic group is $(\mathbb{Z}/15\mathbb{Z}){^\times} = \{1, 2, 4, 7, 8, 11, 13, 14\}$.
+                A non-cyclic group is $(\mathbb{Z}/15\mathbb{Z})^\times = \{1, 2, 4, 7, 8, 11, 13, 14\}$.
 
                 .. ipython:: python
 
@@ -420,8 +456,8 @@ def is_cyclic(n: int) -> bool:
                     Znx = galois.totatives(n); Znx
                     phi = galois.euler_phi(n); phi
 
-                Since 15 is not of the form 2, 4, $p^k$, or $2p^k$, the multiplicative group
-                $(\mathbb{Z}/15\mathbb{Z}){^\times}$ is not cyclic, meaning no elements exist whose powers
+                Since 15 is not of the form $2$, $4$, $p^k$, or $2p^k$, the multiplicative group
+                $(\mathbb{Z}/15\mathbb{Z})^\times$ is not cyclic, meaning no elements exist whose powers
                 generate the group.
 
                 .. ipython:: python
@@ -462,7 +498,7 @@ def is_cyclic(n: int) -> bool:
                     galois.is_cyclic(n)
 
                 A primitive element is a generator of the multiplicative group
-                $\mathrm{GF}(p)^{\times} = \{1, 2, \dots, p-1\} = \{1, g, g^2, \dots, g^{\varphi(n)-1}\}$.
+                $\mathrm{GF}(p)^\times = \{1, 2, \dots, p - 1\} = \{1, g, g^2, \dots, g^{\varphi(n)-1}\}$.
 
                 .. ipython:: python
 
@@ -486,6 +522,7 @@ def is_cyclic(n: int) -> bool:
         raise ValueError(f"Argument 'n' must be a positive integer, not {n}.")
 
     if n == 1:
+        # The trivial group (Z/1Z)^× is cyclic
         return True
 
     p, e = factors(n)
@@ -494,11 +531,11 @@ def is_cyclic(n: int) -> bool:
         return True
 
     if len(p) == 2 and 2 in p and e[p.index(2)] == 1:
-        # n = 2 * p^e
+        # n = 2 * p^k with p an odd prime (since 2 is one factor and has exponent 1)
         return True
 
     if len(p) == 1 and p[0] != 2:
-        # n = p^e
+        # n = p^k with p an odd prime
         return True
 
     # n does not represent a cyclic group
