@@ -71,23 +71,23 @@ def is_conway(f: Poly, search: bool = False) -> bool:
             GF = galois.GF(7)
             f = galois.Poly([1, 1, 2, 4], field=GF); f
             g = galois.Poly([1, 6, 0, 4], field=GF); g
-            f.is_primitive()
-            g.is_primitive()
+            assert f.is_primitive()
+            assert g.is_primitive()
 
         They are also consistent with all smaller Conway polynomials.
 
         .. ipython:: python
 
-            f.is_conway_consistent()
-            g.is_conway_consistent()
+            assert f.is_conway_consistent()
+            assert g.is_conway_consistent()
 
         Among the multiple candidate Conway polynomials, the lexicographically first (accordingly to a special
         lexicographical order) is the Conway polynomial.
 
         .. ipython:: python
 
-            f.is_conway()
-            g.is_conway()
+            assert not f.is_conway()
+            assert g.is_conway()
             galois.conway_poly(7, 3)
     """
     verify_isinstance(search, bool)
@@ -154,23 +154,23 @@ def is_conway_consistent(f: Poly, search: bool = False) -> bool:
             GF = galois.GF(7)
             f = galois.Poly([1, 1, 2, 4], field=GF); f
             g = galois.Poly([1, 6, 0, 4], field=GF); g
-            f.is_primitive()
-            g.is_primitive()
+            assert f.is_primitive()
+            assert g.is_primitive()
 
         They are also consistent with all smaller Conway polynomials.
 
         .. ipython:: python
 
-            f.is_conway_consistent()
-            g.is_conway_consistent()
+            assert f.is_conway_consistent()
+            assert g.is_conway_consistent()
 
         Among the multiple candidate Conway polynomials, the lexicographically first (accordingly to a special
         lexicographical order) is the Conway polynomial.
 
         .. ipython:: python
 
-            f.is_conway()
-            g.is_conway()
+            assert not f.is_conway()
+            assert g.is_conway()
             galois.conway_poly(7, 3)
     """
     verify_isinstance(search, bool)
@@ -258,23 +258,23 @@ def conway_poly(characteristic: int, degree: int, search: bool = False) -> Poly:
             GF = galois.GF(7)
             f = galois.Poly([1, 1, 2, 4], field=GF); f
             g = galois.Poly([1, 6, 0, 4], field=GF); g
-            f.is_primitive()
-            g.is_primitive()
+            assert f.is_primitive()
+            assert g.is_primitive()
 
         They are also consistent with all smaller Conway polynomials.
 
         .. ipython:: python
 
-            f.is_conway_consistent()
-            g.is_conway_consistent()
+            assert f.is_conway_consistent()
+            assert g.is_conway_consistent()
 
         Among the multiple candidate Conway polynomials, the lexicographically first (accordingly to a special
         lexicographical order) is the Conway polynomial.
 
         .. ipython:: python
 
-            f.is_conway()
-            g.is_conway()
+            assert not f.is_conway()
+            assert g.is_conway()
             galois.conway_poly(7, 3)
 
     Group:

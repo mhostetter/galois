@@ -43,8 +43,8 @@ def is_square_free(f) -> bool:
 
         .. ipython:: python
 
-            (f1 * f2).is_square_free()
-            (f1**2 * f2).is_square_free()
+            assert (f1 * f2).is_square_free()
+            assert not (f1**2 * f2).is_square_free()
     """
     if not f.is_monic:
         f //= f.coeffs[0]
@@ -91,9 +91,12 @@ def square_free_factors(f: Poly) -> tuple[list[Poly], list[int]]:
         .. ipython:: python
 
             GF = galois.GF(5)
-            a = galois.Poly([1,0], field=GF); a, a.is_irreducible()
-            b = galois.Poly([1,0,2,4], field=GF); b, b.is_irreducible()
-            c = galois.Poly([1,4,1], field=GF); c, c.is_irreducible()
+            a = galois.Poly([1,0], field=GF); a
+            assert a.is_irreducible()
+            b = galois.Poly([1,0,2,4], field=GF); b
+            assert b.is_irreducible()
+            c = galois.Poly([1,4,1], field=GF); c
+            assert c.is_irreducible()
             f = a * b * c**3; f
 
         The square-free factorization is $\{x(x^3 + 2x + 4), x^2 + 4x + 1\}$ with multiplicities
@@ -203,11 +206,16 @@ def distinct_degree_factors(f: Poly) -> tuple[list[Poly], list[int]]:
 
         .. ipython:: python
 
-            a = galois.Poly([1, 0]); a, a.is_irreducible()
-            b = galois.Poly([1, 1]); b, b.is_irreducible()
-            c = galois.Poly([1, 1, 1]); c, c.is_irreducible()
-            d = galois.Poly([1, 0, 1, 1]); d, d.is_irreducible()
-            e = galois.Poly([1, 1, 0, 1]); e, e.is_irreducible()
+            a = galois.Poly([1, 0]); a
+            assert a.is_irreducible()
+            b = galois.Poly([1, 1]); b
+            assert b.is_irreducible()
+            c = galois.Poly([1, 1, 1]); c
+            assert c.is_irreducible()
+            d = galois.Poly([1, 0, 1, 1]); d
+            assert d.is_irreducible()
+            e = galois.Poly([1, 1, 0, 1]); e
+            assert e.is_irreducible()
             f = a * b * c * d * e; f
 
         The distinct-degree factorization is $\{x(x + 1), x^2 + x + 1, (x^3 + x + 1)(x^3 + x^2 + 1)\}$
@@ -294,8 +302,10 @@ def equal_degree_factors(f: Poly, degree: int) -> list[Poly]:
 
         .. ipython:: python
 
-            a = galois.Poly([1, 0]); a, a.is_irreducible()
-            b = galois.Poly([1, 1]); b, b.is_irreducible()
+            a = galois.Poly([1, 0]); a
+            assert a.is_irreducible()
+            b = galois.Poly([1, 1]); b
+            assert b.is_irreducible()
             f = a * b; f
             f.equal_degree_factors(1)
 

@@ -1616,7 +1616,7 @@ class Poly:
 
                 GF = galois.GF(7)
                 p = galois.Poly([1, 0, 4, 5], field=GF); p
-                p.is_monic
+                assert p.is_monic
 
             A non-monic polynomial over $\mathrm{GF}(7)$.
 
@@ -1624,7 +1624,7 @@ class Poly:
 
                 GF = galois.GF(7)
                 p = galois.Poly([3, 0, 4, 5], field=GF); p
-                p.is_monic
+                assert not p.is_monic
         """
         return bool(self.nonzero_coeffs[0] == 1)
 

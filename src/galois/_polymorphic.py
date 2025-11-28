@@ -690,8 +690,8 @@ def is_square_free(value):
 
                 .. ipython:: python
 
-                    galois.is_square_free(10)
-                    galois.is_square_free(18)
+                    assert galois.is_square_free(10)
+                    assert not galois.is_square_free(18)
 
             .. md-tab-item:: Polynomials
 
@@ -707,8 +707,8 @@ def is_square_free(value):
 
                 .. ipython:: python
 
-                    galois.is_square_free(f1 * f2)
-                    galois.is_square_free(f1**2 * f2)
+                    assert galois.is_square_free(f1 * f2)
+                    assert not galois.is_square_free(f1**2 * f2)
 
     Group:
         primes-tests

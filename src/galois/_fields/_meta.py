@@ -194,7 +194,7 @@ class FieldArrayMeta(ArrayMeta):
 
                 GF = galois.GF(2**8)
                 print(GF.properties)
-                GF.is_primitive_poly
+                assert GF.is_primitive_poly
 
             The $\mathrm{GF}(2^8)$ field from AES uses a non-primitive polynomial.
 
@@ -202,7 +202,7 @@ class FieldArrayMeta(ArrayMeta):
 
                 GF = galois.GF(2**8, irreducible_poly="x^8 + x^4 + x^3 + x + 1")
                 print(GF.properties)
-                GF.is_primitive_poly
+                assert not GF.is_primitive_poly
         """
         return cls._is_primitive_poly
 
@@ -428,10 +428,10 @@ class FieldArrayMeta(ArrayMeta):
         Examples:
             .. ipython:: python
 
-                galois.GF(2).is_prime_field
-                galois.GF(2**8).is_prime_field
-                galois.GF(31).is_prime_field
-                galois.GF(7**5).is_prime_field
+                assert galois.GF(2).is_prime_field
+                assert not galois.GF(2**8).is_prime_field
+                assert galois.GF(31).is_prime_field
+                assert not galois.GF(7**5).is_prime_field
         """
         return cls._degree == 1
 
@@ -443,10 +443,10 @@ class FieldArrayMeta(ArrayMeta):
         Examples:
             .. ipython:: python
 
-                galois.GF(2).is_extension_field
-                galois.GF(2**8).is_extension_field
-                galois.GF(31).is_extension_field
-                galois.GF(7**5).is_extension_field
+                assert not galois.GF(2).is_extension_field
+                assert galois.GF(2**8).is_extension_field
+                assert not galois.GF(31).is_extension_field
+                assert galois.GF(7**5).is_extension_field
         """
         return cls._degree > 1
 

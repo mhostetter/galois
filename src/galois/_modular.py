@@ -295,7 +295,7 @@ def carmichael_lambda(n: int) -> int:
                 y = [pow(a, power, n) for a in totatives]
                 print("Power {}: {} (mod {})".format(power, y, n))
 
-            galois.is_cyclic(n)
+            assert galois.is_cyclic(n)
 
         When $\varphi(n) \ne \lambda(n)$, the multiplicative group $(\mathbb{Z}/n\mathbb{Z})^\times$
         is not cyclic. See :func:`~galois.is_cyclic`.
@@ -311,7 +311,7 @@ def carmichael_lambda(n: int) -> int:
                 y = [pow(a, power, n) for a in totatives]
                 print("Power {}: {} (mod {})".format(power, y, n))
 
-            galois.is_cyclic(n)
+            assert not galois.is_cyclic(n)
 
     Group:
         number-theory-congruences
@@ -428,7 +428,7 @@ def is_cyclic(n: int) -> bool:
 
                 .. ipython:: python
 
-                    galois.is_cyclic(n)
+                    assert galois.is_cyclic(n)
 
                 Find the smallest primitive root modulo 14. Observe that the powers of `g` uniquely represent
                 each element in $(\mathbb{Z}/14\mathbb{Z})^\times$.
@@ -462,7 +462,7 @@ def is_cyclic(n: int) -> bool:
 
                 .. ipython:: python
 
-                    galois.is_cyclic(n)
+                    assert not galois.is_cyclic(n)
 
                 Below, every element is tested to see if it spans the group.
 
@@ -495,7 +495,7 @@ def is_cyclic(n: int) -> bool:
                 .. ipython:: python
 
                     n = 31
-                    galois.is_cyclic(n)
+                    assert galois.is_cyclic(n)
 
                 A primitive element is a generator of the multiplicative group
                 $\mathrm{GF}(p)^\times = \{1, 2, \dots, p - 1\} = \{1, g, g^2, \dots, g^{\varphi(n)-1}\}$.
