@@ -15,6 +15,11 @@ Primitive elements
 
 .. python-apigen-group:: galois-fields-primitive-elements
 
+Normal elements
+---------------
+
+.. python-apigen-group:: galois-fields-normal-elements
+
 Polynomials
 ===========
 
