@@ -155,6 +155,13 @@ def test_factors_extremely_large():
     )
 
 
+def test_factors_bug_624():
+    """
+    https://github.com/mhostetter/galois/issues/624
+    """
+    assert galois.factors(80) == ([2, 5], [4, 1])
+
+
 def test_perfect_power():
     assert galois.perfect_power(5) == (5, 1)
     assert galois.perfect_power(6) == (6, 1)
