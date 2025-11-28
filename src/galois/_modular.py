@@ -349,7 +349,7 @@ def is_cyclic(n: int) -> bool:
         n: A positive integer.
 
     Returns:
-        `True` if the multiplicative group $(\mathbb{Z}/n\mathbb{Z})^\times$ is cyclic, otherwise `False`.
+        `True` if the multiplicative group $(\mathbb{Z}/n\mathbb{Z})^\times$ is cyclic.
 
     See Also:
         euler_phi, carmichael_lambda, totatives

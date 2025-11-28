@@ -24,7 +24,7 @@ def is_primitive_root(g: int, n: int) -> bool:
         n: A positive integer.
 
     Returns:
-        `True` if $g$ is a primitive root modulo $n$, otherwise `False`.
+        `True` if $g$ is a primitive root modulo $n$.
 
     See Also:
         primitive_root, primitive_roots, is_cyclic, euler_phi
