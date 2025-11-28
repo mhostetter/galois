@@ -45,7 +45,7 @@ def totatives(n: int) -> list[int]:
             n = 20
             x = galois.totatives(n); x
 
-        The number of totatives of $n$ is $\phi(n)$.
+        The number of totatives of $n$ is $\varphi(n)$.
 
         .. ipython:: python
 
@@ -82,7 +82,7 @@ def euler_phi(n: int) -> int:
     Notes:
         This function implements the Euler totient function
 
-        $$\phi(n) = n \prod_{p \mid n} \bigg(1 - \frac{1}{p}\bigg) = \prod_{i=1}^{k} p_i^{e_i-1} \big(p_i - 1\big)$$
+        $$\varphi(n) = n \prod_{p \mid n} \bigg(1 - \frac{1}{p}\bigg) = \prod_{i=1}^{k} p_i^{e_i-1} \big(p_i - 1\big)$$
 
         for prime $p$ and the prime factorization $n = p_1^{e_1} \dots p_k^{e_k}$.
 
@@ -91,7 +91,7 @@ def euler_phi(n: int) -> int:
         - https://oeis.org/A000010
 
     Examples:
-        Compute $\phi(20)$.
+        Compute $\varphi(20)$.
 
         .. ipython:: python
 
@@ -99,14 +99,14 @@ def euler_phi(n: int) -> int:
             phi = galois.euler_phi(n); phi
 
         Find the totatives that are coprime with $n = 20$. The number of totatives of $n$ is
-        $\phi(n)$.
+        $\varphi(n)$.
 
         .. ipython:: python
 
             x = galois.totatives(n); x
             assert len(x) == phi
 
-        For prime $n$, $\phi(n) = n - 1$.
+        For prime $n$, $\varphi(n) = n - 1$.
 
         .. ipython:: python
 
@@ -161,7 +161,7 @@ def carmichael_lambda(n: int) -> int:
         - https://oeis.org/A002322
 
     Examples:
-        The Carmichael $\lambda(n)$ function and Euler $\phi(n)$ function are often equal. However,
+        The Carmichael $\lambda(n)$ function and Euler $\varphi(n)$ function are often equal. However,
         there are notable exceptions.
 
         .. ipython:: python
@@ -169,8 +169,8 @@ def carmichael_lambda(n: int) -> int:
             [galois.euler_phi(n) for n in range(1, 20)]
             [galois.carmichael_lambda(n) for n in range(1, 20)]
 
-        For prime $n$, $\phi(n) = \lambda(n) = n - 1$. And for most composite $n$,
-        $\phi(n) = \lambda(n) < n - 1$.
+        For prime $n$, $\varphi(n) = \lambda(n) = n - 1$. And for most composite $n$,
+        $\varphi(n) = \lambda(n) < n - 1$.
 
         .. ipython:: python
 
@@ -185,7 +185,7 @@ def carmichael_lambda(n: int) -> int:
 
             galois.is_cyclic(n)
 
-        When $\phi(n) \ne \lambda(n)$, the multiplicative group $(\mathbb{Z}/n\mathbb{Z}){^\times}$ is
+        When $\varphi(n) \ne \lambda(n)$, the multiplicative group $(\mathbb{Z}/n\mathbb{Z}){^\times}$ is
         not cyclic. See :func:`~galois.is_cyclic`.
 
         .. ipython:: python
@@ -243,9 +243,9 @@ def is_cyclic(n: int) -> bool:
         The multiplicative group $(\mathbb{Z}/n\mathbb{Z}){^\times}$ is the set of positive integers
         $1 \le a < n$ that are coprime with $n$. $(\mathbb{Z}/n\mathbb{Z}){^\times}$ being cyclic
         means that some primitive root of $n$, or generator, $g$ can generate the group
-        $\{1, g, g^2, \dots, g^{\phi(n)-1}\}$, where $\phi(n)$ is Euler's totient function and calculates
+        $\{1, g, g^2, \dots, g^{\varphi(n)-1}\}$, where $\varphi(n)$ is Euler's totient function and calculates
         the order of the group. If $(\mathbb{Z}/n\mathbb{Z}){^\times}$ is cyclic, the number of primitive roots
-        is found by $\phi(\phi(n))$.
+        is found by $\varphi(\varphi(n))$.
 
         $(\mathbb{Z}/n\mathbb{Z}){^\times}$ is *cyclic* if and only if $n$ is 2, 4, $p^k$,
         or $2p^k$, where $p$ is an odd prime and $k$ is a positive integer.
@@ -263,7 +263,7 @@ def is_cyclic(n: int) -> bool:
                     n = 14
                     Znx = galois.totatives(n); Znx
 
-                The Euler totient $\phi(n)$ function counts the totatives of $n$, which is equivalent to
+                The Euler totient $\varphi(n)$ function counts the totatives of $n$, which is equivalent to
                 the order of $(\mathbb{Z}/n\mathbb{Z}){^\times}$.
 
                 .. ipython:: python
@@ -347,7 +347,7 @@ def is_cyclic(n: int) -> bool:
                     galois.is_cyclic(n)
 
                 A primitive element is a generator of the multiplicative group
-                $\mathrm{GF}(p)^{\times} = \{1, 2, \dots, p-1\} = \{1, g, g^2, \dots, g^{\phi(n)-1}\}$.
+                $\mathrm{GF}(p)^{\times} = \{1, 2, \dots, p-1\} = \{1, g, g^2, \dots, g^{\varphi(n)-1}\}$.
 
                 .. ipython:: python
 
@@ -355,7 +355,7 @@ def is_cyclic(n: int) -> bool:
                     galois.primitive_root(n)
                     GF.primitive_element
 
-                The number of primitive roots/elements is $\phi(\phi(n))$.
+                The number of primitive roots/elements is $\varphi(\varphi(n))$.
 
                 .. ipython:: python
 
@@ -423,11 +423,11 @@ def primitive_root(
 
         Alternatively said, $g$ is a primitive root modulo $n$ if and only if $g$ is a generator of
         the multiplicative group of integers modulo $n$
-        $(\mathbb{Z}/n\mathbb{Z}){^\times} = \{1, g, g^2, \dots, g^{\phi(n)-1}\}$, where $\phi(n)$ is
+        $(\mathbb{Z}/n\mathbb{Z}){^\times} = \{1, g, g^2, \dots, g^{\varphi(n)-1}\}$, where $\varphi(n)$ is
         the order of the group.
 
         If $(\mathbb{Z}/n\mathbb{Z}){^\times}$ is cyclic, the number of primitive roots modulo $n$ is
-        given by $\phi(\phi(n))$.
+        given by $\varphi(\varphi(n))$.
 
     References:
         - Shoup, V. Searching for primitive roots in finite fields.
@@ -449,7 +449,7 @@ def primitive_root(
                     n = 14
                     Znx = galois.totatives(n); Znx
 
-                The Euler totient $\phi(n)$ function counts the totatives of $n$, which is equivalent to
+                The Euler totient $\varphi(n)$ function counts the totatives of $n$, which is equivalent to
                 the order of $(\mathbb{Z}/n\mathbb{Z}){^\times}$.
 
                 .. ipython:: python
@@ -597,11 +597,11 @@ def primitive_roots(
 
         Alternatively said, $g$ is a primitive root modulo $n$ if and only if $g$ is a generator of
         the multiplicative group of integers modulo $n$
-        $(\mathbb{Z}/n\mathbb{Z}){^\times} = \{1, g, g^2, \dots, g^{\phi(n)-1}\}$, where $\phi(n)$ is
+        $(\mathbb{Z}/n\mathbb{Z}){^\times} = \{1, g, g^2, \dots, g^{\varphi(n)-1}\}$, where $\varphi(n)$ is
         the order of the group.
 
         If $(\mathbb{Z}/n\mathbb{Z}){^\times}$ is cyclic, the number of primitive roots modulo $n$ is
-        given by $\phi(\phi(n))$.
+        given by $\varphi(\varphi(n))$.
 
     References:
         - Shoup, V. Searching for primitive roots in finite fields.
@@ -743,12 +743,12 @@ def is_primitive_root(g: int, n: int) -> bool:
         Alternatively said, $g$ is a primitive root modulo $n$ if and only if $g$ is a generator of
         the multiplicative group of integers modulo $n$,
 
-        $$(\mathbb{Z}/n\mathbb{Z}){^\times} = \{1, g, g^2, \dots, g^{\phi(n)-1}\}$$
+        $$(\mathbb{Z}/n\mathbb{Z}){^\times} = \{1, g, g^2, \dots, g^{\varphi(n)-1}\}$$
 
-        where $\phi(n)$ is order of the group.
+        where $\varphi(n)$ is order of the group.
 
         If $(\mathbb{Z}/n\mathbb{Z}){^\times}$ is cyclic, the number of primitive roots modulo $n$ is
-        given by $\phi(\phi(n))$.
+        given by $\varphi(\varphi(n))$.
 
     Examples:
         .. ipython:: python
