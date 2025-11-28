@@ -77,7 +77,7 @@ coefficient as the most-significant digit and zero-degree coefficient as the lea
     GF(17)
     GF("x^2 + 2x + 2")
     # Integer/polynomial equivalence
-    p = 3; p**2 + 2*p + 2 == 17
+    p = 3; assert p**2 + 2*p + 2 == 17
 
 .. _poly-repr:
 
@@ -103,7 +103,7 @@ This is useful, however it can become cluttered for large arrays.
     GF(17)
     GF("x^2 + 2x + 2")
     # Integer/polynomial equivalence
-    p = 3; p**2 + 2*p + 2 == 17
+    p = 3; assert p**2 + 2*p + 2 == 17
 
 .. tip::
 

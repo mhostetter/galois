@@ -139,7 +139,7 @@ def egcd(a, b):
                     a, b = 12, 16
                     gcd, s, t = galois.egcd(a, b)
                     gcd, s, t
-                    a*s + b*t == gcd
+                    assert a*s + b*t == gcd
 
             .. md-tab-item:: Polynomials
 
@@ -160,7 +160,7 @@ def egcd(a, b):
                     b = f1 * f3
                     gcd, s, t = galois.egcd(a, b)
                     gcd, s, t
-                    a*s + b*t == gcd
+                    assert a*s + b*t == gcd
 
     Group:
         number-theory-divisibility
@@ -432,7 +432,7 @@ def crt(remainders, moduli):
 
                     for i in range(len(a)):
                         ai = x % m[i]
-                        print(ai, ai == a[i])
+                        assert ai == a[i]
 
             .. md-tab-item:: Polynomials
 
@@ -460,7 +460,7 @@ def crt(remainders, moduli):
 
                     for i in range(len(a)):
                         ai = x % m[i]
-                        print(ai, ai == a[i])
+                        assert ai == a[i]
 
     Group:
         number-theory-congruences

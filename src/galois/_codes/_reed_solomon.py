@@ -912,8 +912,8 @@ class ReedSolomon(_CyclicCode):
 
                 rs = galois.ReedSolomon(255, 223); rs
                 rs.alpha
-                rs.roots[0] == rs.alpha ** rs.c
-                rs.alpha.multiplicative_order() == rs.n
+                assert rs.roots[0] == rs.alpha ** rs.c
+                assert rs.alpha.multiplicative_order() == rs.n
 
             Construct a non-primitive $\textrm{RS}(85, 65)$ code over $\mathrm{GF}(2^8)$.
 
@@ -921,8 +921,8 @@ class ReedSolomon(_CyclicCode):
 
                 rs = galois.ReedSolomon(85, 65, field=galois.GF(2**8)); rs
                 rs.alpha
-                rs.roots[0] == rs.alpha ** rs.c
-                rs.alpha.multiplicative_order() == rs.n
+                assert rs.roots[0] == rs.alpha ** rs.c
+                assert rs.alpha.multiplicative_order() == rs.n
 
         Group:
             Polynomials
@@ -946,7 +946,7 @@ class ReedSolomon(_CyclicCode):
 
                 rs = galois.ReedSolomon(15, 9); rs
                 rs.c
-                rs.roots[0] == rs.alpha ** rs.c
+                assert rs.roots[0] == rs.alpha ** rs.c
                 rs.generator_poly
 
             Construct a narrow-sense $\textrm{RS}(15, 9)$ code over $\mathrm{GF}(2^4)$
@@ -957,7 +957,7 @@ class ReedSolomon(_CyclicCode):
 
                 rs = galois.ReedSolomon(15, 9, c=3); rs
                 rs.c
-                rs.roots[0] == rs.alpha ** rs.c
+                assert rs.roots[0] == rs.alpha ** rs.c
                 rs.generator_poly
         """
         return self._c
@@ -1029,16 +1029,16 @@ class ReedSolomon(_CyclicCode):
             .. ipython:: python
 
                 rs = galois.ReedSolomon(255, 223); rs
-                rs.is_primitive
-                rs.n == rs.field.order - 1
+                assert rs.is_primitive
+                assert rs.n == rs.field.order - 1
 
             Construct a non-primitive $\textrm{RS}(85, 65)$ code over $\mathrm{GF}(2^8)$.
 
             .. ipython:: python
 
                 rs = galois.ReedSolomon(85, 65, field=galois.GF(2**8)); rs
-                rs.is_primitive
-                rs.n == rs.field.order - 1
+                assert not rs.is_primitive
+                assert not rs.n == rs.field.order - 1
         """
         return self._is_primitive
 
@@ -1055,8 +1055,8 @@ class ReedSolomon(_CyclicCode):
             .. ipython:: python
 
                 rs = galois.ReedSolomon(15, 9); rs
-                rs.is_narrow_sense
-                rs.c == 1
+                assert rs.is_narrow_sense
+                assert rs.c == 1
                 rs.generator_poly
                 rs.roots
 
@@ -1067,8 +1067,8 @@ class ReedSolomon(_CyclicCode):
             .. ipython:: python
 
                 rs = galois.ReedSolomon(15, 9, c=3); rs
-                rs.is_narrow_sense
-                rs.c == 1
+                assert not rs.is_narrow_sense
+                assert not rs.c == 1
                 rs.generator_poly
                 rs.roots
         """
@@ -1085,7 +1085,7 @@ class ReedSolomon(_CyclicCode):
             .. ipython:: python
 
                 rs = galois.ReedSolomon(13, 9, field=galois.GF(3**3)); rs
-                rs.is_systematic
+                assert rs.is_systematic
                 rs.G
 
             Construct a non-primitive $\textrm{RS}(13, 9)$ non-systematic code over $\mathrm{GF}(3^3)$.
@@ -1093,7 +1093,7 @@ class ReedSolomon(_CyclicCode):
             .. ipython:: python
 
                 rs = galois.ReedSolomon(13, 9, field=galois.GF(3**3), systematic=False); rs
-                rs.is_systematic
+                assert not rs.is_systematic
                 rs.G
                 rs.generator_poly
         """,

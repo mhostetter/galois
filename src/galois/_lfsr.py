@@ -602,7 +602,7 @@ class FLFSR(_LFSR):
                 feedback_poly = galois.primitive_poly(7, 4).reverse(); feedback_poly
                 lfsr = galois.FLFSR(feedback_poly); lfsr
                 lfsr.feedback_poly
-                lfsr.feedback_poly == lfsr.characteristic_poly.reverse()
+                assert lfsr.feedback_poly == lfsr.characteristic_poly.reverse()
 
         Group:
             Polynomials
@@ -626,7 +626,7 @@ class FLFSR(_LFSR):
                 feedback_poly = galois.primitive_poly(7, 4).reverse(); feedback_poly
                 lfsr = galois.FLFSR(feedback_poly); lfsr
                 lfsr.characteristic_poly
-                lfsr.characteristic_poly == lfsr.feedback_poly.reverse()
+                assert lfsr.characteristic_poly == lfsr.feedback_poly.reverse()
 
         Group:
             Polynomials
@@ -1238,7 +1238,7 @@ class GLFSR(_LFSR):
                 feedback_poly = galois.primitive_poly(7, 4).reverse(); feedback_poly
                 lfsr = galois.GLFSR(feedback_poly); lfsr
                 lfsr.feedback_poly
-                lfsr.feedback_poly == lfsr.characteristic_poly.reverse()
+                assert lfsr.feedback_poly == lfsr.characteristic_poly.reverse()
 
         Group:
             Polynomials
@@ -1262,7 +1262,7 @@ class GLFSR(_LFSR):
                 feedback_poly = galois.primitive_poly(7, 4).reverse(); feedback_poly
                 lfsr = galois.GLFSR(feedback_poly); lfsr
                 lfsr.characteristic_poly
-                lfsr.characteristic_poly == lfsr.feedback_poly.reverse()
+                assert lfsr.characteristic_poly == lfsr.feedback_poly.reverse()
 
         Group:
             Polynomials

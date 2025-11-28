@@ -232,7 +232,7 @@ def primitive_element(irreducible_poly: Poly, method: Literal["min", "max", "ran
             g = galois.primitive_element(f); g
             # Convert the polynomial over GF(7) into an element of GF(7^5)
             g = GF(int(g)); g
-            g.multiplicative_order() == GF.order - 1
+            assert g.multiplicative_order() == GF.order - 1
 
         Find the largest primitive representative polynomial for the degree-5 extension of
         $\mathrm{GF}(7)$ with irreducible polynomial $f(x)$.
@@ -242,7 +242,7 @@ def primitive_element(irreducible_poly: Poly, method: Literal["min", "max", "ran
             g = galois.primitive_element(f, method="max"); g
             # Convert the polynomial over GF(7) into an element of GF(7^5)
             g = GF(int(g)); g
-            g.multiplicative_order() == GF.order - 1
+            assert g.multiplicative_order() == GF.order - 1
 
         Find a random primitive representative polynomial for the degree-5 extension of
         $\mathrm{GF}(7)$ with irreducible polynomial $f(x)$.
@@ -252,7 +252,7 @@ def primitive_element(irreducible_poly: Poly, method: Literal["min", "max", "ran
             g = galois.primitive_element(f, method="random"); g
             # Convert the polynomial over GF(7) into an element of GF(7^5)
             g = GF(int(g)); g
-            g.multiplicative_order() == GF.order - 1
+            assert g.multiplicative_order() == GF.order - 1
             @suppress
             GF.repr()
 
@@ -363,7 +363,7 @@ def primitive_elements(irreducible_poly: Poly) -> list[Poly]:
         .. ipython:: python
 
             phi = galois.euler_phi(3**4 - 1); phi
-            len(g) == phi
+            assert len(g) == phi
 
         Shows that each representative polynomial corresponds to an element of multiplicative
         order $q^m - 1$ in $\mathrm{GF}(3^4)$.
@@ -372,7 +372,7 @@ def primitive_elements(irreducible_poly: Poly) -> list[Poly]:
 
             # Convert the polynomials over GF(3) into elements of GF(3^4)
             g = GF([int(gi) for gi in g]); g
-            np.all(g.multiplicative_order() == GF.order - 1)
+            assert np.all(g.multiplicative_order() == GF.order - 1)
             @suppress
             GF.repr()
 
