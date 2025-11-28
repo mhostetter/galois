@@ -37,6 +37,7 @@ from ._codes import *  # Needs monkey patching before importing
 from ._lfsr import *
 from ._math import *
 from ._modular import *
+from ._primitive_root import *
 from ._ntt import *
 from ._options import *
 from ._polymorphic import *

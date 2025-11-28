@@ -11,9 +11,9 @@ from typing import Type, overload
 from typing_extensions import Literal
 
 from .._helper import export, verify_isinstance
-from .._modular import is_primitive_root, primitive_root
 from .._polys import Poly, conway_poly
 from .._prime import factors
+from .._primitive_root import is_primitive_root, primitive_root
 from ..typing import PolyLike
 from ._array import FieldArray
 from ._gf2 import GF2
