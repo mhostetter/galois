@@ -1,10 +1,12 @@
-sphinx < 6.1
+sphinx == 8.2.3
 sphinx-immaterial == 0.13.8
-myst-parser
-sphinx-design
-sphinx-last-updated-by-git
-sphinx-math-dollar
-ipykernel
-myst-nb
-pickleshare
+# For some reason, if the below versions aren't specified, the dependency resolution takes 18 minutes in CI.
+myst-parser == 4.0.1
+sphinx-design  == 0.6.1
+sphinx-last-updated-by-git == 0.3.8
+sphinx-math-dollar == 1.2.1
+ipykernel == 6.29.5
+ipympl
+myst-nb == 1.2.0
+pickleshare == 0.7.5  # Needed by ipykernel
 packaging  # For version parsing in docs build
