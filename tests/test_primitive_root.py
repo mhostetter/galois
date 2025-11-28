@@ -1,5 +1,5 @@
 """
-A pytest module to test modular arithmetic functions.
+A pytest module to test primitive root functions.
 """
 
 import math
