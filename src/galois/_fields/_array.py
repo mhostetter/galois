@@ -2142,7 +2142,7 @@ def _minimal_poly_element(a: FieldArray) -> Poly:
         m = field.degree
 
         # Frobenius conjugates: {a, a^p, a^{p^2}, ..., a^{p^{m-1}}}
-        exponents = p ** np.arange(0, m, dtype=int)
+        exponents = p ** np.arange(0, m, dtype=field.dtypes[-1])
         conjugates = a**exponents
 
         # Remove duplicates (subfield elements have smaller orbits)
