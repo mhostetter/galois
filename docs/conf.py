@@ -31,6 +31,7 @@ setattr(builtins, "__sphinx_build__", True)
 
 import numpy
 import sphinx
+import sphinx.roles
 
 import galois
 
@@ -113,8 +114,10 @@ rst_prolog = """
    :class: highlight
 """
 
-# Sets the default role of `content` to :python:`content`, which uses the custom Python syntax highlighting inline literal
+# Sets the default role of `content` to :python:`content`, which uses the custom Python syntax highlighting inline
+# literal
 default_role = "python"
+highlight_language = "python"
 
 html_title = "galois"
 html_favicon = "../logo/galois-favicon-color.png"
@@ -546,6 +549,9 @@ def monkey_patch_parse_see_also():
 
 
 def setup(app):
+    # Register the "python" role so default_role finds it *without* complaining
+    app.add_role("python", sphinx.roles.code_role)
+
     monkey_patch_parse_see_also()
     app.connect("autodoc-skip-member", autodoc_skip_member)
     app.connect("autodoc-process-bases", autodoc_process_bases)
