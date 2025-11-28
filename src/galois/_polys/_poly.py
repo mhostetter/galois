@@ -382,7 +382,7 @@ class Poly:
                 f = galois.Poly.Int(186535908, field=GF); f
                 int(f)
                 # The polynomial/integer equivalence
-                int(f) == 13*GF.order**3 + 117
+                assert int(f) == 13*GF.order**3 + 117
 
             Construct a polynomial over $\mathrm{GF}(2)$ from its binary string.
 
@@ -991,7 +991,7 @@ class Poly:
                 GF = galois.GF(7)
                 f = galois.Poly([3, 0, 5, 2], field=GF); f
                 int(f)
-                int(f) == 3*GF.order**3 + 5*GF.order**1 + 2*GF.order**0
+                assert int(f) == 3*GF.order**3 + 5*GF.order**1 + 2*GF.order**0
         """
         return self.__index__()
 
@@ -1118,9 +1118,9 @@ class Poly:
 
                 a = galois.Poly([3, 0, 5], field=galois.GF(7)); a
                 b = galois.Poly([3, 0, 5], field=galois.GF(7)); b
-                a == b
+                assert a == b
                 # They are still two distinct objects, however
-                a is b
+                assert a is not b
 
             Compare two polynomials with the same coefficients but over different fields.
 
@@ -1128,7 +1128,7 @@ class Poly:
 
                 a = galois.Poly([3, 0, 5], field=galois.GF(7)); a
                 b = galois.Poly([3, 0, 5], field=galois.GF(7**2)); b
-                a == b
+                assert a != b
 
             Comparison with :obj:`~galois.typing.PolyLike` objects is allowed for convenience.
 
@@ -1136,10 +1136,10 @@ class Poly:
 
                 GF = galois.GF(7)
                 a = galois.Poly([3, 0, 2], field=GF); a
-                a == GF([3, 0, 2])
-                a == [3, 0, 2]
-                a == "3x^2 + 2"
-                a == 3*7**2 + 2
+                assert a == GF([3, 0, 2])
+                assert a == [3, 0, 2]
+                assert a == "3x^2 + 2"
+                assert a == 3*7**2 + 2
         """
         # Coerce to a polynomial object
         if not isinstance(other, (Poly, Array)):

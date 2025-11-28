@@ -983,8 +983,8 @@ class BCH(_CyclicCode):
 
                 bch = galois.BCH(15, 7); bch
                 bch.alpha
-                bch.roots[0] == bch.alpha ** bch.c
-                bch.alpha.multiplicative_order() == bch.n
+                assert bch.roots[0] == bch.alpha ** bch.c
+                assert bch.alpha.multiplicative_order() == bch.n
 
             Construct a non-primitive $\textrm{BCH}(13, 7)$ code over $\mathrm{GF}(3)$.
 
@@ -992,8 +992,8 @@ class BCH(_CyclicCode):
 
                 bch = galois.BCH(13, 7, field=galois.GF(3)); bch
                 bch.alpha
-                bch.roots[0] == bch.alpha ** bch.c
-                bch.alpha.multiplicative_order() == bch.n
+                assert bch.roots[0] == bch.alpha ** bch.c
+                assert bch.alpha.multiplicative_order() == bch.n
 
         Group:
             Polynomials
@@ -1017,7 +1017,7 @@ class BCH(_CyclicCode):
 
                 bch = galois.BCH(15, 7); bch
                 bch.c
-                bch.roots[0] == bch.alpha ** bch.c
+                assert bch.roots[0] == bch.alpha ** bch.c
 
             Construct a binary non-narrow-sense $\textrm{BCH}(15, 7)$ code with first consecutive root
             $\alpha^3$. Notice the design distance of this code is only 3.
@@ -1026,7 +1026,7 @@ class BCH(_CyclicCode):
 
                 bch = galois.BCH(15, 7, c=3); bch
                 bch.c
-                bch.roots[0] == bch.alpha ** bch.c
+                assert bch.roots[0] == bch.alpha ** bch.c
 
         Group:
             Polynomials
@@ -1103,16 +1103,16 @@ class BCH(_CyclicCode):
             .. ipython:: python
 
                 bch = galois.BCH(15, 7); bch
-                bch.is_primitive
-                bch.n == bch.extension_field.order - 1
+                assert bch.is_primitive
+                assert bch.n == bch.extension_field.order - 1
 
             Construct a non-primitive $\textrm{BCH}(13, 7)$ code over $\mathrm{GF}(3)$.
 
             .. ipython:: python
 
                 bch = galois.BCH(13, 7, field=galois.GF(3)); bch
-                bch.is_primitive
-                bch.n == bch.extension_field.order - 1
+                assert not bch.is_primitive
+                assert not bch.n == bch.extension_field.order - 1
         """
         return self._is_primitive
 
@@ -1129,8 +1129,8 @@ class BCH(_CyclicCode):
             .. ipython:: python
 
                 bch = galois.BCH(15, 7); bch
-                bch.is_narrow_sense
-                bch.c == 1
+                assert bch.is_narrow_sense
+                assert bch.c == 1
                 bch.generator_poly
                 bch.roots
 
@@ -1140,8 +1140,8 @@ class BCH(_CyclicCode):
             .. ipython:: python
 
                 bch = galois.BCH(15, 7, c=3); bch
-                bch.is_narrow_sense
-                bch.c == 1
+                assert not bch.is_narrow_sense
+                assert not bch.c == 1
                 bch.generator_poly
                 bch.roots
         """
@@ -1158,7 +1158,7 @@ class BCH(_CyclicCode):
             .. ipython:: python
 
                 bch = galois.BCH(13, 4, field=galois.GF(3)); bch
-                bch.is_systematic
+                assert bch.is_systematic
                 bch.G
 
             Construct a non-primitive $\textrm{BCH}(13, 4)$ non-systematic code over $\mathrm{GF}(3)$.
@@ -1166,7 +1166,7 @@ class BCH(_CyclicCode):
             .. ipython:: python
 
                 bch = galois.BCH(13, 4, field=galois.GF(3), systematic=False); bch
-                bch.is_systematic
+                assert not bch.is_systematic
                 bch.G
                 bch.generator_poly
         """,
