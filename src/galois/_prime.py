@@ -821,7 +821,7 @@ def factors(n: int) -> tuple[list[int], list[int]]:
     try:
         p, e, n = PrimeFactorsDatabase().fetch(n)
         if n == 1:
-            return p, e
+            return _merge_factors(p, e)
         # Else, there still may be a residual composite
         # Although, we're probably not powerful enough to factor it...
     except LookupError:
@@ -831,7 +831,7 @@ def factors(n: int) -> tuple[list[int], list[int]]:
     if is_prime(n):
         p.append(n)
         e.append(1)
-        return p, e
+        return _merge_factors(p, e)
 
     # Step 2: Test if n is a perfect power. The base may be composite.
     base, exponent = perfect_power(n)
@@ -840,7 +840,7 @@ def factors(n: int) -> tuple[list[int], list[int]]:
         ee = [eei * exponent for eei in ee]
         p.extend(pp)
         e.extend(ee)
-        return p, e
+        return _merge_factors(p, e)
 
     # Step 3: Perform trial division up to medium-sized primes.
     pp, ee, n = trial_division(n, 10_000_000)
@@ -875,7 +875,20 @@ def factors(n: int) -> tuple[list[int], list[int]]:
         p.append(n)
         e.append(1)
 
-    return p, e
+    return _merge_factors(p, e)
+
+
+def _merge_factors(p: list[int], e: list[int]) -> tuple[list[int], list[int]]:
+    """
+    Merges duplicate prime factors and sums their exponents.
+    """
+    merged: dict[int, int] = {}
+    for pi, ei in zip(p, e):
+        merged[pi] = merged.get(pi, 0) + ei
+    primes = sorted(merged.keys())
+    exponents = [merged[pi] for pi in primes]
+
+    return primes, exponents
 
 
 @export
