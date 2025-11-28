@@ -200,35 +200,88 @@ def _euler_phi(n: int) -> int:
 @export
 def carmichael_lambda(n: int) -> int:
     r"""
-    Finds the smallest positive integer $m$ such that $a^m \equiv 1\ (\textrm{mod}\ n)$ for
-    every integer $a$ in $[1, n)$ that is coprime to $n$.
+    Finds the smallest positive integer $m$ such that $a^m \equiv 1 \pmod{n}$ for every integer
+    $a$ in $[1, n)$ that is coprime to $n$.
 
     Arguments:
         n: A positive integer.
 
     Returns:
-        The smallest positive integer $m$ such that $a^m \equiv 1\ (\textrm{mod}\ n)$ for
-        every $a$ in $[1, n)$ that is coprime to $n$.
+        The Carmichael function $\lambda(n)$, i.e., the smallest positive integer $m$ such that
+        $a^m \equiv 1 \pmod{n}$ for every integer $a$ with $1 \le a < n$ and $\gcd(a, n) = 1$.
 
     See Also:
         euler_phi, totatives, is_cyclic
 
     Notes:
-        This function implements the Carmichael function $\lambda(n)$.
+        The Carmichael function $\lambda(n)$ is defined as the least positive integer $m$ such that
+
+        $$
+        a^m \equiv 1 \pmod{n}
+        $$
+
+        for all integers $a$ with $\gcd(a, n) = 1$. In group-theoretic terms, if
+        $(\mathbb{Z}/n\mathbb{Z})^\times$ denotes the multiplicative group of units modulo $n$,
+        then $\lambda(n)$ is the **exponent** of this group:
+
+        $$
+        \lambda(n) = \min\{ m \ge 1 : g^m = 1 \text{ for all } g \in (\mathbb{Z}/n\mathbb{Z})^\times \}.
+        $$
+
+        This function is closely related to Euler's totient function $\varphi(n)$:
+
+        - One always has $\lambda(n) \mid \varphi(n)$.
+        - If $(\mathbb{Z}/n\mathbb{Z})^\times$ is cyclic, then $\lambda(n) = \varphi(n)$, and there exists a
+          generator (a primitive root modulo $n$).
+        - If $(\mathbb{Z}/n\mathbb{Z})^\times$ is not cyclic, then $\lambda(n) < \varphi(n)$, and no single element
+          generates all units.
+
+        The Carmichael function can be computed from the prime factorization
+
+        $$
+        n = p_1^{e_1} p_2^{e_2} \cdots p_k^{e_k}
+        $$
+
+        as follows. First, compute $\lambda(p_i^{e_i})$ for each prime power; then
+
+        $$
+        \lambda(n) = \operatorname{lcm}\big(\lambda(p_1^{e_1}), \dots, \lambda(p_k^{e_k})\big).
+        $$
+
+        For each prime power $p^e$:
+
+        - If $p$ is odd or $(p = 2$ and $e \le 2)$, then
+
+          $$
+          \lambda(p^e) = \varphi(p^e) = p^{e - 1}(p - 1).
+          $$
+
+        - If $p = 2$ and $e \ge 3$, then
+
+          $$
+          \lambda(2^e) = 2^{e - 2} = \frac{\varphi(2^e)}{2}.
+          $$
+
+        This implementation uses the above formulas:
+        it computes $\lambda(p^e)$ from $\varphi(p^e)$, with the factor-of-two adjustment for
+        $2^e$ when $e > 2$, and then returns the least common multiple of the resulting values.
+
+        The special case $n = 1$ is defined by convention as $\lambda(1) = 1$, which is consistent with the view
+        that $\mathbb{Z}/1\mathbb{Z}$ has a trivial (one-element) multiplicative structure.
 
     References:
         - https://oeis.org/A002322
 
     Examples:
-        The Carmichael $\lambda(n)$ function and Euler $\varphi(n)$ function are often equal. However,
-        there are notable exceptions.
+        The Carmichael $\lambda(n)$ function and Euler $\varphi(n)$ function are often equal.
+        However, there are notable exceptions.
 
         .. ipython:: python
 
             [galois.euler_phi(n) for n in range(1, 20)]
             [galois.carmichael_lambda(n) for n in range(1, 20)]
 
-        For prime $n$, $\varphi(n) = \lambda(n) = n - 1$. And for most composite $n$,
+        For prime $n$, $\varphi(n) = \lambda(n) = n - 1$. And for many composite $n$,
         $\varphi(n) = \lambda(n) < n - 1$.
 
         .. ipython:: python
@@ -244,8 +297,8 @@ def carmichael_lambda(n: int) -> int:
 
             galois.is_cyclic(n)
 
-        When $\varphi(n) \ne \lambda(n)$, the multiplicative group $(\mathbb{Z}/n\mathbb{Z}){^\times}$ is
-        not cyclic. See :func:`~galois.is_cyclic`.
+        When $\varphi(n) \ne \lambda(n)$, the multiplicative group $(\mathbb{Z}/n\mathbb{Z})^\times$
+        is not cyclic. See :func:`~galois.is_cyclic`.
 
         .. ipython:: python
 
@@ -268,13 +321,16 @@ def carmichael_lambda(n: int) -> int:
         raise ValueError(f"Argument 'n' must be a positive integer, not {n}.")
 
     if n == 1:
+        # By convention, λ(1) = 1.
         return 1
 
     p, e = factors(n)
 
     lambdas = []
     for pi, ei in zip(p, e):
-        # Carmichael function for prime powers
+        # Carmichael function for prime powers:
+        #   - λ(p^e) = φ(p^e) for odd p or for 2^e with e <= 2
+        #   - λ(2^e) = φ(2^e)/2 for e > 2
         if pi == 2 and ei > 2:
             l = euler_phi(pi**ei) // 2
         else:
