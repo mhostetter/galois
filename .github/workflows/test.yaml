@@ -9,6 +9,9 @@ on:
     branches:
       - main
       - 'release/*'
+  schedule:
+    # Every night at 03:00 UTC
+    - cron: '0 3 * * *'
 
 # Cancel any in-progress runs on new pushes to the same branch/PR
 concurrency:
