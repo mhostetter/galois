@@ -444,14 +444,14 @@ def _GF_extension(
             # primitive polynomials.
             verify_element = False
     else:
-        irreducible_poly_ = Poly._PolyLike(irreducible_poly_, field=prime_subfield)
+        irreducible_poly_ = Poly.Like(irreducible_poly_, field=prime_subfield)
 
     # Get default primitive element
     if alpha is None:
         alpha = primitive_element(irreducible_poly_)
         verify_element = False
     else:
-        alpha = Poly._PolyLike(alpha, field=prime_subfield)
+        alpha = Poly.Like(alpha, field=prime_subfield)
 
     # Check polynomial fields and degrees
     if not irreducible_poly_.field.order == p:

@@ -117,7 +117,7 @@ def is_normal_element(element: Poly, irreducible_poly: Poly) -> bool:
     field = irreducible_poly.field
 
     # Convert element into a Poly object over the same base field as irreducible_poly
-    element = Poly._PolyLike(element, field=field)
+    element = Poly.Like(element, field=field)
 
     if element.field is not irreducible_poly.field:
         raise ValueError(
