@@ -1946,6 +1946,15 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         """
         return self._display("str", separator=" ")
 
+    def __format__(self, format_spec: str) -> str:
+        """
+        Formats the array using either the `__repr__` or `__str__` methods depending on the format specification.
+        """
+        if format_spec == "!r":
+            return repr(self)
+        else:
+            return str(self)
+
     def _display(self, mode: Literal["repr", "str"], separator=", ") -> str:
         # View the array as an ndarray so that the scalar -> 0-D array conversion in __array_finalize__() for
         # Galois field arrays isn't continually invoked. This improves performance slightly.
