@@ -126,10 +126,32 @@ class Poly:
         else:
             self._type = "dense"
 
+    ###############################################################################
+    # Alternate constructors
+    ###############################################################################
+
     @classmethod
-    def _PolyLike(cls, poly_like: PolyLike, field: Type[Array] | None = None) -> Self:
-        """
-        A private alternate constructor that converts a poly-like object into a polynomial, given a finite field.
+    def Like(cls, poly_like: PolyLike, field: Type[Array] | None = None) -> Self:
+        r"""
+        Constructs a polynomial over $\mathrm{GF}(p^m)$ from a :obj:`~galois.typing.PolyLike` object.
+
+        Arguments:
+            poly_like: A poly-like object.
+            field: The Galois field $\mathrm{GF}(p^m)$ the polynomial is over. The default is `None` which
+                corresponds to :obj:`~galois.GF2`.
+
+        Returns:
+            The polynomial $f(x)$.
+
+        Examples:
+            Construct a polynomial over $\mathrm{GF}(2)$ from a poly-like object.
+
+            .. ipython:: python
+
+                galois.Poly.Like(13)
+                galois.Poly.Like("x^3 + x^2 + 1")
+                galois.Poly.Like([1, 1, 0, 1])
+                galois.Poly.Like(galois.Poly([1, 1, 0, 1]))
         """
         if isinstance(poly_like, int):
             poly = Poly.Int(poly_like, field=field)
@@ -146,10 +168,6 @@ class Poly:
             )
 
         return poly
-
-    ###############################################################################
-    # Alternate constructors
-    ###############################################################################
 
     @classmethod
     def Zero(cls, field: Type[Array] | None = None) -> Self:
@@ -1146,7 +1164,7 @@ class Poly:
             field = self.field
         else:
             field = None
-        other = Poly._PolyLike(other, field=field)
+        other = Poly.Like(other, field=field)
 
         return (
             self.field is other.field
