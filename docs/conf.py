@@ -15,6 +15,7 @@ import inspect
 import os
 import re
 import sys
+import typing
 
 sys.path.insert(0, os.path.abspath("."))
 sys.path.insert(0, os.path.abspath(".."))
@@ -548,11 +549,26 @@ def monkey_patch_parse_see_also():
     sphinx.ext.napoleon.GoogleDocstring._parse_see_also_section = _parse_see_also_section
 
 
+T = typing.TypeVar("T")
+
+
+class NDArray(typing.Generic[T]):
+    pass
+
+
+def monkey_patch_numpy_typing_ndarray():
+    import numpy.typing
+
+    NDArray.__module__ = "numpy.typing"
+    numpy.typing.NDArray = NDArray
+
+
 def setup(app):
     # Register the "python" role so default_role finds it *without* complaining
     app.add_role("python", sphinx.roles.code_role)
 
     monkey_patch_parse_see_also()
+    monkey_patch_numpy_typing_ndarray()
     app.connect("autodoc-skip-member", autodoc_skip_member)
     app.connect("autodoc-process-bases", autodoc_process_bases)
     app.connect("autodoc-process-signature", autodoc_process_signature)
