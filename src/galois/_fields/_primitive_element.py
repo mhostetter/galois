@@ -18,8 +18,18 @@ from ..typing import PolyLike
 @export
 def is_primitive_element(element: PolyLike, irreducible_poly: Poly) -> bool:
     r"""
-    Determines if a polynomial $g(x)$ represents a primitive element of the Galois field
-    $\mathrm{GF}(q^m)$ defined by a degree-$m$ irreducible polynomial $f(x)$ over $\mathrm{GF}(q)$.
+    Determines whether an element of the extension field $\mathrm{GF}(q^m)$ is primitive.
+
+    Let $f(x)$ be a degree-$m$ irreducible polynomial over $\mathrm{GF}(q)$ and let $\alpha$ denote
+    the residue class of $x$ in the quotient ring
+
+    $$
+    \mathrm{GF}(q^m) \cong \mathrm{GF}(q)[x] / (f(x)).
+    $$
+
+    Every field element can be written uniquely as $g(\alpha)$ with $\deg g < m$. This function
+    determines whether the element represented by the input polynomial $g(x)$ has multiplicative
+    order $q^m - 1$, i.e., generates $\mathrm{GF}(q^m)^\times$.
 
     Arguments:
         element:
@@ -41,22 +51,6 @@ def is_primitive_element(element: PolyLike, irreducible_poly: Poly) -> bool:
         otherwise `False`.
 
     Notes:
-        Let $f(x)$ be a degree-$m$ irreducible polynomial over $\mathrm{GF}(q)$ and let $\alpha$
-        denote the residue class of $x$ in the quotient ring
-
-        $$
-        \mathrm{GF}(q^m) \cong \mathrm{GF}(q)[x] / (f(x)).
-        $$
-
-        Every element of $\mathrm{GF}(q^m)$ can be written uniquely as $g(\alpha)$, where
-        $g(x)$ is a polynomial over $\mathrm{GF}(q)$ with $\deg g < m$.
-
-        The multiplicative group $\mathrm{GF}(q^m)^\times$ is cyclic of order
-
-        $$
-        N = q^m - 1.
-        $$
-
         An element $g(\alpha)$ is **primitive** if it generates the entire multiplicative group, i.e.,
         its multiplicative order is exactly $N$.
 
@@ -115,7 +109,6 @@ def is_primitive_element(element: PolyLike, irreducible_poly: Poly) -> bool:
     Group:
         galois-fields-primitive-elements
     """
-    verify_isinstance(irreducible_poly, Poly)
     field = irreducible_poly.field
 
     # Convert element into a Poly object over the same base field as irreducible_poly
@@ -175,11 +168,18 @@ def _is_primitive_element(element: Poly, irreducible_poly: Poly) -> bool:
 @export
 def primitive_element(irreducible_poly: Poly, method: Literal["min", "max", "random"] = "min") -> Poly:
     r"""
-    Finds a polynomial $g(x)$ over $\mathrm{GF}(q)$ whose residue class modulo $f(x)$ is a primitive
-    element of the Galois field $\mathrm{GF}(q^m)$ defined by the degree-$m$ irreducible polynomial
-    $f(x)$ over $\mathrm{GF}(q)$.
+    Finds a primitive element of the extension field $\mathrm{GF}(q^m)$ defined by an
+    irreducible polynomial.
 
-    A primitive element generates the multiplicative group $\mathrm{GF}(q^m)^\times$, which has order $q^m - 1$.
+    Let $f(x)$ be a degree-$m$ irreducible polynomial over $\mathrm{GF}(q)$ and let
+
+    $$
+    \mathrm{GF}(q^m) \cong \mathrm{GF}(q)[x] / (f(x)).
+    $$
+
+    This function searches for a polynomial $g(x)$ over $\mathrm{GF}(q)$ with $\deg g < m$ whose
+    residue class modulo $f(x)$ is primitive, i.e., generates the multiplicative group
+    $\mathrm{GF}(q^m)^\times$ of order $q^m - 1$.
 
     Arguments:
         irreducible_poly:
@@ -205,8 +205,8 @@ def primitive_element(irreducible_poly: Poly, method: Literal["min", "max", "ran
         degree less than $m$ via the usual base-$q$ expansion. Each such polynomial $g(x)$
         represents a unique residue class $g(\alpha)$ in $\mathrm{GF}(q)[x] / (f(x))$.
 
-        Constant polynomials (integers $0, 1, \dots, q - 1$) represent elements of the prime
-        subfield $\mathrm{GF}(q)$ and can never be primitive in $\mathrm{GF}(q^m)$ for $m > 1$,
+        Constant polynomials (integers $0, 1, \dots, q - 1$) represent elements of the base
+        field $\mathrm{GF}(q)$ and can never be primitive in $\mathrm{GF}(q^m)$ for $m > 1$,
         since their multiplicative orders divide $q - 1$.
 
         Therefore, this function searches over integers in the range $[q, q^m - 1]$, which
@@ -303,9 +303,18 @@ def primitive_element(irreducible_poly: Poly, method: Literal["min", "max", "ran
 @export
 def primitive_elements(irreducible_poly: Poly) -> list[Poly]:
     r"""
-    Finds all polynomials $g(x)$ over $\mathrm{GF}(q)$ whose residue classes modulo $f(x)$ are
-    primitive elements of the Galois field $\mathrm{GF}(q^m)$ defined by the degree-$m$
-    irreducible polynomial $f(x)$ over $\mathrm{GF}(q)$.
+    Enumerates all primitive elements of the extension field $\mathrm{GF}(q^m)$ defined by an
+    irreducible polynomial.
+
+    Let $f(x)$ be a degree-$m$ irreducible polynomial over $\mathrm{GF}(q)$ and let
+
+    $$
+    \mathrm{GF}(q^m) \cong \mathrm{GF}(q)[x] / (f(x)).
+    $$
+
+    This function returns all polynomials $g(x)$ over $\mathrm{GF}(q)$ with $\deg g < m$ whose
+    residue classes modulo $f(x)$ are primitive generators of the multiplicative group
+    $\mathrm{GF}(q^m)^\times$.
 
     Arguments:
         irreducible_poly:
