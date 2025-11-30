@@ -11,60 +11,62 @@ from typing_extensions import Literal
 
 from .._helper import export, verify_isinstance
 from .._polys import Poly
+from ..typing import PolyLike
 
 
 @export
-def is_normal_element(element: Poly, irreducible_poly: Poly) -> bool:
+def is_normal_element(element: PolyLike, irreducible_poly: Poly) -> bool:
     r"""
-    Determines if a polynomial $g(x)$ represents a normal element of the finite field
-    $\mathrm{GF}(p^m)$ defined by a degree-$m$ irreducible polynomial $f(x)$ over the
-    prime field $\mathrm{GF}(p)$.
+    Determines whether an element of the extension field $\mathrm{GF}(q^m)$ is normal.
+
+    Let $f(x)$ be a degree-$m$ irreducible polynomial over $\mathrm{GF}(q)$ and let $\alpha$ denote
+    the residue class of $x$ in the quotient
+
+    $$
+    \mathrm{GF}(q^m) \cong \mathrm{GF}(q)[x] / (f(x)).
+    $$
+
+    Every field element can be written uniquely as $g(\alpha)$ with $\deg g < m$. This function
+    determines whether the element represented by the input polynomial $g(x)$ is normal, i.e.,
+    whether its Frobenius conjugates
+    $\{g(\alpha), g(\alpha)^q, \dots, g(\alpha)^{q^{m-1}}\}$ form a basis of $\mathrm{GF}(q^m)$
+    as a vector space over $\mathrm{GF}(q)$.
 
     Arguments:
         element:
-            A polynomial $g(x)$ over $\mathrm{GF}(p)$ with degree less than $m$. This may be any
+            A polynomial $g(x)$ over $\mathrm{GF}(q)$ with degree less than $m$. This may be any
             :obj:`~galois.typing.PolyLike` and will be converted to a :class:`~galois.Poly` over the same field
             as `irreducible_poly`. The corresponding field element is the residue class
-            $g(\alpha)$ in $\mathrm{GF}(p)[x] / (f(x))$, where $\alpha$ is the image of $x$ modulo
+            $g(\alpha)$ in $\mathrm{GF}(q)[x] / (f(x))$, where $\alpha$ is the image of $x$ modulo
             $f(x)$.
         irreducible_poly:
-            The degree-$m$ irreducible polynomial $f(x)$ over the prime field $\mathrm{GF}(p)$
-            that defines the extension field
+            The degree-$m$ irreducible polynomial $f(x)$ over $\mathrm{GF}(q)$ that defines the
+            extension field
 
             $$
-            \mathrm{GF}(p^m) \cong \mathrm{GF}(p)[x] / (f(x)).
+            \mathrm{GF}(q^m) \cong \mathrm{GF}(q)[x] / (f(x)).
             $$
 
     Returns:
-        `True` if the residue class $g(\alpha)$ is a normal element of $\mathrm{GF}(p^m)$ over
-        $\mathrm{GF}(p)$.
+        `True` if the residue class $g(\alpha)$ is a normal element of $\mathrm{GF}(q^m)$ over
+        $\mathrm{GF}(q)$.
 
     Notes:
-        Let $f(x)$ be a degree-$m$ irreducible polynomial over the prime field $\mathrm{GF}(p)$
-        and let $\alpha$ denote the residue class of $x$ in the quotient ring
-
-        $$
-        \mathrm{GF}(p^m) \cong \mathrm{GF}(p)[x] / (f(x)).
-        $$
-
-        Every element of $\mathrm{GF}(p^m)$ can be written uniquely as $g(\alpha)$, where
-        $g(x)$ is a polynomial over $\mathrm{GF}(p)$ with $\deg g < m$.
-
-        The field $\mathrm{GF}(p^m)$ is an $m$-dimensional vector space over $\mathrm{GF}(p)$.
-        An element $a \in \mathrm{GF}(p^m)$ is **normal** (over $\mathrm{GF}(p)$) if its
+        The field $\mathrm{GF}(q^m)$ is an $m$-dimensional vector space over $\mathrm{GF}(q)$.
+        An element $a \in \mathrm{GF}(q^m)$ is **normal** (over $\mathrm{GF}(q)$) if its
         Frobenius conjugates
 
         $$
-        \{a, a^p, a^{p^2}, \dots, a^{p^{m-1}}\}
+        \{a, a^q, a^{q^2}, \dots, a^{q^{m-1}}\}
         $$
 
-        form a basis of $\mathrm{GF}(p^m)$ as a vector space over $\mathrm{GF}(p)$.
+        form a basis of $\mathrm{GF}(q^m)$ as a vector space over $\mathrm{GF}(q)$.
 
         Equivalently, an element $a = g(\alpha)$ is normal if and only if its Frobenius conjugates
-        are linearly independent over $\mathrm{GF}(p)$, i.e., the only solution
+        are linearly independent over $\mathrm{GF}(q)$, i.e., the only solution
 
         $$
-        \sum_{i=0}^{m-1} c_i a^{p^i} = 0, \quad c_i \in \mathrm{GF}(p),
+        \sum_{i=0}^{m-1} c_i a^{q^i} = 0, \quad c_i \in \mathrm{GF}(q),
         $$
 
         is $c_0 = \dots = c_{m-1} = 0$.
@@ -74,22 +76,22 @@ def is_normal_element(element: Poly, irreducible_poly: Poly) -> bool:
         1. Compute the Frobenius conjugates of $a$:
 
            $$
-           a^{p^0}, a^{p^1}, \dots, a^{p^{m-1}}.
+           a^{q^0}, a^{q^1}, \dots, a^{q^{m-1}}.
            $$
 
-        2. Express each conjugate as a polynomial over $\mathrm{GF}(p)$ of degree less than $m$:
+        2. Express each conjugate as a polynomial over $\mathrm{GF}(q)$ of degree less than $m$:
 
            $$
-           a^{p^i} \leftrightarrow \sum_{j=0}^{m-1} c_{i,j} \alpha^j.
+           a^{q^i} \leftrightarrow \sum_{j=0}^{m-1} c_{i,j} \alpha^j.
            $$
 
            The coefficient vector $(c_{i,0}, \dots, c_{i,m-1})$ is the coordinate vector of
-           $a^{p^i}$ in the power basis $\{1, \alpha, \dots, \alpha^{m-1}\}$.
+           $a^{q^i}$ in the power basis $\{1, \alpha, \dots, \alpha^{m-1}\}$.
 
-        3. Form the $m \times m$ matrix over $\mathrm{GF}(p)$ whose columns are these coordinate
+        3. Form the $m \times m$ matrix over $\mathrm{GF}(q)$ whose columns are these coordinate
            vectors. The element is normal if and only if this matrix has full rank $m$.
 
-        In this implementation, exponentiation in $\mathrm{GF}(p^m)$ is performed via polynomial
+        In this implementation, exponentiation in $\mathrm{GF}(q^m)$ is performed via polynomial
         exponentiation modulo `irreducible_poly` using the built-in `pow()`, and coefficient
         vectors are obtained from the polynomial representatives of the Frobenius conjugates.
 
@@ -113,7 +115,6 @@ def is_normal_element(element: Poly, irreducible_poly: Poly) -> bool:
     Group:
         galois-fields-normal-elements
     """
-    verify_isinstance(irreducible_poly, Poly)
     field = irreducible_poly.field
 
     # Convert element into a Poly object over the same base field as irreducible_poly
@@ -123,11 +124,6 @@ def is_normal_element(element: Poly, irreducible_poly: Poly) -> bool:
         raise ValueError(
             f"Arguments 'element' and 'irreducible_poly' must be over the same field, "
             f"not {element.field.name} and {irreducible_poly.field.name}."
-        )
-    if not field.is_prime_field:
-        raise ValueError(
-            f"Normality in this function is defined for extensions GF(p^m) over GF(p); "
-            f"the base field {field.name} is not a prime field."
         )
     if not element.degree < irreducible_poly.degree:
         raise ValueError(
@@ -149,40 +145,40 @@ def _is_normal_element(element: Poly, irreducible_poly: Poly) -> bool:
 
     Arguments:
         element:
-            A polynomial $g(x)$ over $\mathrm{GF}(p)$ with $\deg g < m$.
+            A polynomial $g(x)$ over $\mathrm{GF}(q)$ with $\deg g < m$.
         irreducible_poly:
             The irreducible polynomial $f(x)$ defining the field
-            $\mathrm{GF}(p^m) \cong \mathrm{GF}(p)[x] / (f(x))$.
+            $\mathrm{GF}(q^m) \cong \mathrm{GF}(q)[x] / (f(x))$.
 
     Returns:
-        `True` if the residue class of $g(x)$ modulo $f(x)$ is normal over $\mathrm{GF}(p)$,
+        `True` if the residue class of $g(x)$ modulo $f(x)$ is normal over $\mathrm{GF}(q)$,
         otherwise `False`.
     """
     GF = irreducible_poly.field
-    p = GF.characteristic
+    q = GF.order
     m = irreducible_poly.degree
 
-    # Build the m x m matrix whose j-th column is the coordinate vector (over GF(p)) of a^{p^j}
+    # Build the m x m matrix whose j-th column is the coordinate vector (over GF(q)) of a^{q^j}
     # in the power basis {1, α, ..., α^{m-1}}, where a = g(α).
     M = GF.Zeros((m, m))
 
-    # a^{p^0}, a^{p^1}, ..., a^{p^{m-1}}
+    # a^{q^0}, a^{q^1}, ..., a^{q^{m-1}}
     a_power = element
     for j in range(m):
-        # Reduce modulo f(x) to get representative of a^{p^j}
+        # Reduce modulo f(x) to get representative of a^{q^j}
         a_power = Poly(a_power.coeffs, field=GF)  # Ensure canonical Poly type
         a_power = a_power % irreducible_poly
 
         # Extract coefficients c_0, ..., c_{m-1} in a fixed order (descending powers).
-        # Poly.coefficients(m, order="desc") returns a length-m vector in GF(p).
+        # Poly.coefficients(m, order="desc") returns a length-m vector in GF(q).
         coeffs = a_power.coefficients(m, order="desc")
         M[:, j] = coeffs
 
-        # Next Frobenius power: a_power <- a_power^p (in GF(p^m))
-        a_power = pow(a_power, p, irreducible_poly)
+        # Next Frobenius power: a_power <- a_power^q (in GF(q^m))
+        a_power = pow(a_power, q, irreducible_poly)
 
-    # For small p, treating entries as reals preserves linear-independence tests in practice,
-    # since GF(p)-dependencies imply R-dependencies for these 0,1,...,p-1 coefficients.
+    # Treating entries as reals preserves linear-independence tests in practice:
+    # any GF(q)-linear dependency among these 0,1,...,q-1 coefficients induces an R-dependency.
     rank = np.linalg.matrix_rank(M)
 
     return rank == m
@@ -191,17 +187,27 @@ def _is_normal_element(element: Poly, irreducible_poly: Poly) -> bool:
 @export
 def normal_element(irreducible_poly: Poly, method: Literal["min", "max", "random"] = "min") -> Poly:
     r"""
-    Finds a polynomial $g(x)$ over $\mathrm{GF}(p)$ whose residue class modulo $f(x)$ is a normal
-    element of the finite field $\mathrm{GF}(p^m)$ defined by the degree-$m$ irreducible polynomial
-    $f(x)$ over the prime field $\mathrm{GF}(p)$.
+    Finds a normal element of the extension field $\mathrm{GF}(q^m)$ defined by an
+    irreducible polynomial.
+
+    Let $f(x)$ be a degree-$m$ irreducible polynomial over $\mathrm{GF}(q)$ and let
+
+    $$
+    \mathrm{GF}(q^m) \cong \mathrm{GF}(q)[x] / (f(x)).
+    $$
+
+    This function searches for a polynomial $g(x)$ over $\mathrm{GF}(q)$ with $\deg g < m$ whose
+    residue class modulo $f(x)$ is normal, i.e., whose Frobenius conjugates
+    $\{g(\alpha), g(\alpha)^q, \dots, g(\alpha)^{q^{m-1}}\}$ form a basis of $\mathrm{GF}(q^m)$
+    over $\mathrm{GF}(q)$.
 
     Arguments:
         irreducible_poly:
-            The degree-$m$ irreducible polynomial $f(x)$ over the prime field $\mathrm{GF}(p)$
-            that defines the extension field
+            The degree-$m$ irreducible polynomial $f(x)$ over $\mathrm{GF}(q)$ that defines the
+            extension field
 
             $$
-            \mathrm{GF}(p^m) \cong \mathrm{GF}(p)[x] / (f(x)).
+            \mathrm{GF}(q^m) \cong \mathrm{GF}(q)[x] / (f(x)).
             $$
         method:
             The search method for finding a normal representative polynomial. Choices are:
@@ -211,19 +217,19 @@ def normal_element(irreducible_poly: Poly, method: Literal["min", "max", "random
             - `"random"`: Return a random normal representative.
 
     Returns:
-        A polynomial $g(x)$ over $\mathrm{GF}(p)$ with degree less than $m$ such that its residue
-        class modulo $f(x)$ is a normal element of $\mathrm{GF}(p^m)$ over $\mathrm{GF}(p)$.
+        A polynomial $g(x)$ over $\mathrm{GF}(q)$ with degree less than $m$ such that its residue
+        class modulo $f(x)$ is a normal element of $\mathrm{GF}(q^m)$ over $\mathrm{GF}(q)$.
 
     Notes:
-        Integers in the range $[0, p^m - 1]$ correspond to polynomials over $\mathrm{GF}(p)$ with
-        degree less than $m$ via the usual base-$p$ expansion. Each such polynomial $g(x)$
-        represents a unique residue class $g(\alpha)$ in $\mathrm{GF}(p)[x] / (f(x))$.
+        Integers in the range $[0, q^m - 1]$ correspond to polynomials over $\mathrm{GF}(q)$ with
+        degree less than $m$ via the usual base-$q$ expansion. Each such polynomial $g(x)$
+        represents a unique residue class $g(\alpha)$ in $\mathrm{GF}(q)[x] / (f(x))$.
 
-        Constant polynomials (integers $0, 1, \dots, p - 1$) represent elements of the base field
-        $\mathrm{GF}(p)$ and are never normal in $\mathrm{GF}(p^m)$ for $m > 1$, since their
+        Constant polynomials (integers $0, 1, \dots, q - 1$) represent elements of the base field
+        $\mathrm{GF}(q)$ and are never normal in $\mathrm{GF}(q^m)$ for $m > 1$, since their
         Frobenius conjugates do not span the $m$-dimensional extension space.
 
-        Therefore, this function searches over integers in the range $[p, p^m - 1]$, which
+        Therefore, this function searches over integers in the range $[q, q^m - 1]$, which
         correspond to non-constant polynomials $g(x)$ of degree at most $m - 1$.
 
     See Also:
@@ -262,20 +268,15 @@ def normal_element(irreducible_poly: Poly, method: Literal["min", "max", "random
             f"Argument 'irreducible_poly' must be irreducible, "
             f"{irreducible_poly} is reducible over {irreducible_poly.field.name}."
         )
-    if not field.is_prime_field:
-        raise ValueError(
-            f"Normal elements in this function are defined for extensions GF(p^m) over GF(p); "
-            f"the base field {field.name} is not a prime field."
-        )
     if method not in ["min", "max", "random"]:
         raise ValueError(f"Argument 'method' must be in ['min', 'max', 'random'], not {method!r}.")
 
-    p = field.order  # For prime fields, order == characteristic
+    q = field.order
     m = irreducible_poly.degree
 
-    # Skip constants 0..p-1 (elements of GF(p)), which cannot be normal in GF(p^m) for m > 1
-    start = p
-    stop = p**m
+    # Skip constants 0..q-1 (elements of GF(q)), which cannot be normal in GF(q^m) for m > 1
+    start = q
+    stop = q**m
 
     if method == "min":
         for integer in range(start, stop):
@@ -294,31 +295,38 @@ def normal_element(irreducible_poly: Poly, method: Literal["min", "max", "random
             if _is_normal_element(element, irreducible_poly):
                 return element
 
-    raise RuntimeError(f"No normal elements in GF({p}^{m}) were found with irreducible polynomial {irreducible_poly}.")
+    raise RuntimeError(f"No normal elements in GF({q}^{m}) were found with irreducible polynomial {irreducible_poly}.")
 
 
 @export
 def normal_elements(irreducible_poly: Poly) -> list[Poly]:
     r"""
-    Finds all polynomials $g(x)$ over $\mathrm{GF}(p)$ whose residue classes modulo $f(x)$ are
-    normal elements of the finite field $\mathrm{GF}(p^m)$ defined by the degree-$m$
-    irreducible polynomial $f(x)$ over the prime field $\mathrm{GF}(p)$.
+    Enumerates all normal elements of the extension field $\mathrm{GF}(q^m)$ defined by an
+    irreducible polynomial.
+
+    Let $f(x)$ be a degree-$m$ irreducible polynomial over $\mathrm{GF}(q)$ and let
+
+    $$
+    \mathrm{GF}(q^m) \cong \mathrm{GF}(q)[x] / (f(x)).
+    $$
+
+    This function returns all polynomials $g(x)$ over $\mathrm{GF}(q)$ with $\deg g < m$ whose
+    residue classes modulo $f(x)$ are normal elements of $\mathrm{GF}(q^m)$ over $\mathrm{GF}(q)$.
 
     Arguments:
         irreducible_poly:
-            The degree-$m$ irreducible polynomial $f(x)$ over the prime field $\mathrm{GF}(p)$
-            that defines the extension field
+            The degree-$m$ irreducible polynomial $f(x)$ over $\mathrm{GF}(q)$ that defines the
+            extension field
 
             $$
-            \mathrm{GF}(p^m) \cong \mathrm{GF}(p)[x] / (f(x)).
+            \mathrm{GF}(q^m) \cong \mathrm{GF}(q)[x] / (f(x)).
             $$
 
     Returns:
-        List of all polynomials $g(x)$ over $\mathrm{GF}(p)$ with degree less than $m$ whose residue
-        classes modulo $f(x)$ are normal elements of $\mathrm{GF}(p^m)$ over $\mathrm{GF}(p)$.
+        List of all polynomials $g(x)$ over $\mathrm{GF}(q)$ with degree less than $m$ whose residue
+        classes modulo $f(x)$ are normal elements of $\mathrm{GF}(q^m)$ over $\mathrm{GF}(q)$.
 
     Notes:
-        Let $q = p$ and consider the extension field $\mathrm{GF}(q^m)$ over $\mathrm{GF}(q)$.
         The number of normal elements depends only on $(q, m)$ and not on the particular choice
         of irreducible polynomial $f(x)$ used to construct the field.
 
@@ -343,13 +351,13 @@ def normal_elements(irreducible_poly: Poly) -> list[Poly]:
         This function **does not** use the above product formula internally; instead, it enumerates
         normal elements explicitly:
 
-        1. Iterate over integers $n$ in the range $[p, p^m - 1]$, which correspond to non-constant
-           polynomials of degree less than $m$ via the base-$p$ encoding.
+        1. Iterate over integers $n$ in the range $[q, q^m - 1]$, which correspond to non-constant
+           polynomials of degree less than $m$ via the base-$q$ encoding.
         2. Convert each integer to a polynomial $g(x)$ using :meth:`Poly.Int`.
         3. Test whether the residue class of $g(x)$ is normal using :func:`is_normal_element`.
         4. Collect all such $g(x)$.
 
-        For large fields, this enumeration is expensive ($O(p^m)$ normality tests). For many
+        For large fields, this enumeration is expensive ($O(q^m)$ normality tests). For many
         applications, it is preferable to use :func:`normal_element` to obtain a single normal
         element efficiently via a (typically fast) randomized search.
 
@@ -384,19 +392,14 @@ def normal_elements(irreducible_poly: Poly) -> list[Poly]:
             f"Argument 'irreducible_poly' must be irreducible, "
             f"{irreducible_poly} is reducible over {irreducible_poly.field.name}."
         )
-    if not field.is_prime_field:
-        raise ValueError(
-            f"Normal elements in this function are defined for extensions GF(p^m) over GF(p); "
-            f"the base field {field.name} is not a prime field."
-        )
 
-    p = field.order  # For prime fields, order == characteristic
+    q = field.order
     m = irreducible_poly.degree
 
     elements: list[Poly] = []
 
-    # Iterate over all non-constant representative polynomials g(x) (integers p..p^m-1)
-    for integer in range(p, p**m):
+    # Iterate over all non-constant representative polynomials g(x) (integers q..q^m-1)
+    for integer in range(q, q**m):
         element = Poly.Int(integer, field=field)
         if _is_normal_element(element, irreducible_poly):
             elements.append(element)
