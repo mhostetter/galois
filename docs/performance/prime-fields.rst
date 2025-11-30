@@ -49,7 +49,7 @@ Explicit calculation performance
 
 This section tests :obj:`galois` when using the `"jit-calculate"` compilation mode. For finite fields with order greater
 than $2^{20}$, :obj:`galois` will use explicit arithmetic calculation by default rather than lookup tables. *Even in these cases*,
-:obj:`galois` is faster than NumPy!
+:obj:`galois` is faster than NumPy.
 
 Below are examples computing 10 million multiplications in the prime field $\mathrm{GF}(2097169)$.
 
