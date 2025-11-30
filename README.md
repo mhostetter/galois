@@ -24,7 +24,7 @@ The user creates a [`FieldArray`](https://mhostetter.github.io/galois/latest/api
 [`FieldArray`](https://mhostetter.github.io/galois/latest/api/galois.FieldArray/) `x` is operated on like any other NumPy array except
 all arithmetic is performed in $\mathrm{GF}(p^m)$, not $\mathbb{R}$.
 
-Internally, the finite field arithmetic is implemented by replacing [NumPy ufuncs](https://numpy.org/doc/stable/reference/ufuncs.html).
+Internally, the finite field arithmetic is implemented by replacing [NumPy ufuncs](https://numpy.org/doc/stable/reference/ufuncs.html) with specialized versions.
 The new ufuncs are written in pure Python and [just-in-time compiled](https://numba.pydata.org/numba-doc/dev/user/vectorize.html) with
 [Numba](https://numba.pydata.org/). The ufuncs can be configured to use either lookup tables (for speed) or explicit calculation (for memory savings).
 
@@ -33,8 +33,8 @@ The new ufuncs are written in pure Python and [just-in-time compiled](https://nu
 
 ## Features
 
-- Supports all [Galois fields](https://mhostetter.github.io/galois/latest/api/galois.GF/) $\mathrm{GF}(p^m)$, even arbitrarily large fields!
-- [**Faster**](https://mhostetter.github.io/galois/latest/performance/prime-fields/) than native NumPy! `GF(x) * GF(y)` is faster than `(x * y) % p` for $\mathrm{GF}(p)$.
+- Supports all [Galois fields](https://mhostetter.github.io/galois/latest/api/galois.GF/) $\mathrm{GF}(p^m)$, including arbitrarily large fields.
+- [**Faster**](https://mhostetter.github.io/galois/latest/performance/prime-fields/) than native NumPy. `GF(x) * GF(y)` is often faster than `(x * y) % p` for $\mathrm{GF}(p)$.
 - Seamless integration with NumPy -- normal NumPy functions work on [`FieldArray`](https://mhostetter.github.io/galois/latest/api/galois.FieldArray/)s.
 - Linear algebra over finite fields using normal [`np.linalg`](https://mhostetter.github.io/galois/latest/basic-usage/array-arithmetic/#linear-algebra) functions.
 - Linear transforms over finite fields, such as the FFT with [`np.fft.fft()`](https://mhostetter.github.io/galois/latest/basic-usage/array-arithmetic/#advanced-arithmetic) and the NTT with [`ntt()`](https://mhostetter.github.io/galois/latest/api/galois.ntt/).
@@ -48,9 +48,9 @@ The new ufuncs are written in pure Python and [just-in-time compiled](https://nu
 
 ## Roadmap
 
-- Elliptic curves over finite fields
 - Galois ring arrays
 - GPU support
+- Elliptic curves over finite fields
 
 ## Documentation
 
@@ -58,7 +58,7 @@ The documentation for `galois` is located at https://mhostetter.github.io/galois
 
 ## Getting Started
 
-The [Getting Started](https://mhostetter.github.io/galois/latest/getting-started/) guide is intended to assist the user with installing the
+The [Getting Started](https://mhostetter.github.io/galois/latest/getting-started/) guide is intended to assist users with installing the
 library, creating two example arrays, and performing basic array arithmetic. See [Basic Usage](https://mhostetter.github.io/galois/latest/basic-usage/array-classes/)
 for more detailed discussions and examples.
 
@@ -100,7 +100,8 @@ Galois Field:
 ```
 
 The [`FieldArray`](https://mhostetter.github.io/galois/latest/api/galois.FieldArray/) subclass `GF` is a subclass of
-`np.ndarray` that performs all arithmetic in the Galois field $\mathrm{GF}(3^5)$, not in $\mathbb{R}$.
+`np.ndarray` that performs all arithmetic in the Galois field $\mathrm{GF}(3^5)$, rather than the real numbers
+$\mathbb{R}$.
 
 ```python
 In [5]: issubclass(GF, galois.FieldArray)
@@ -227,7 +228,7 @@ creation of large finite fields by avoiding the need to factor large integers.
 [SymPy](https://www.sympy.org/en/index.html) is used to generate some test vectors. [Octave](https://www.gnu.org/software/octave/index)
 is used to generate test vectors for forward error correction codes.
 
-This library would not be possible without all of the other libraries mentioned. Thank you to all their developers!
+This library would not be possible without all of the other libraries mentioned. Thank you to all their developers.
 
 ## Citation
 

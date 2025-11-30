@@ -40,7 +40,7 @@ def create_prime_lut() -> dict[tuple[str, str], int]:
     primes = process_appendix_a()
     extra_primes = process_other_primes()
 
-    # There are duplicate entries in these tables and they contain different primes! So we're saving both
+    # There are duplicate entries in these tables and they contain different primes. So we're saving both
     # and figuring out which one is correct at runtime.
     for key, value in extra_primes.items():
         if key in primes:

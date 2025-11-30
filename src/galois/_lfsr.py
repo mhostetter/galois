@@ -734,7 +734,7 @@ class fibonacci_lfsr_step_forward_jit(Function):
 
     Arguments:
         taps: The set of taps T = [-a_1, -a_2, ..., -a_{n-1}, -a_n].
-        state: The state vector [S_0, S_1, ..., S_{n-2}, S_{n-1}]. State will be modified in-place!
+        state: The state vector [S_0, S_1, ..., S_{n-2}, S_{n-1}]. State will be modified in-place.
         steps: The number of output symbols to produce.
 
     Returns:
@@ -796,7 +796,7 @@ class fibonacci_lfsr_step_backward_jit(Function):
 
     Arguments:
         taps: The set of taps T = [-a_1, -a_2, ..., -a_{n-1}, -a_n].
-        state: The state vector [S_0, S_1, ..., S_{n-2}, S_{n-1}]. State will be modified in-place!
+        state: The state vector [S_0, S_1, ..., S_{n-2}, S_{n-1}]. State will be modified in-place.
         steps: The number of output symbols to produce.
 
     Returns:
@@ -1369,7 +1369,7 @@ class galois_lfsr_step_forward_jit(Function):
 
     Arguments:
         taps: The set of taps T = [-a_n, -a_{n-1}, ..., -a_2, -a_1].
-        state: The state vector [S_0, S_1, ..., S_{n-2}, S_{n-1}]. State will be modified in-place!
+        state: The state vector [S_0, S_1, ..., S_{n-2}, S_{n-1}]. State will be modified in-place.
         steps: The number of output symbols to produce.
 
     Returns:
@@ -1433,7 +1433,7 @@ class galois_lfsr_step_backward_jit(Function):
 
     Arguments:
         taps: The set of taps T = [-a_n, -a_{n-1}, ..., -a_2, -a_1].
-        state: The state vector [S_0, S_1, ..., S_{n-2}, S_{n-1}]. State will be modified in-place!
+        state: The state vector [S_0, S_1, ..., S_{n-2}, S_{n-1}]. State will be modified in-place.
         steps: The number of output symbols to produce.
 
     Returns:

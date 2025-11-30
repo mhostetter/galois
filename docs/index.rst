@@ -23,9 +23,10 @@ The :obj:`galois` library is a Python 3 package that extends NumPy arrays to ope
 
 The user creates a :obj:`~galois.FieldArray` subclass using `GF = galois.GF(p**m)`. `GF` is a subclass of :obj:`numpy.ndarray`
 and its constructor `x = GF(array_like)` mimics the signature of :func:`numpy.array`. The :obj:`~galois.FieldArray` `x` is operated
-on like any other NumPy array except all arithmetic is performed in $\mathrm{GF}(p^m)$, not $\mathbb{R}$.
+on like any other NumPy array except all arithmetic is performed in $\mathrm{GF}(p^m)$, rather than the real numbers
+$\mathbb{R}$.
 
-Internally, the finite field arithmetic is implemented by replacing `NumPy ufuncs <https://numpy.org/doc/stable/reference/ufuncs.html>`_.
+Internally, the finite field arithmetic is implemented by replacing `NumPy ufuncs <https://numpy.org/doc/stable/reference/ufuncs.html>`_ with specialized versions.
 The new ufuncs are written in pure Python and `just-in-time compiled <https://numba.pydata.org/numba-doc/dev/user/vectorize.html>`_ with
 `Numba <https://numba.pydata.org/>`_. The ufuncs can be configured to use either lookup tables (for speed) or explicit
 calculation (for memory savings).
@@ -41,8 +42,8 @@ calculation (for memory savings).
 Features
 --------
 
-- Supports all Galois fields $\mathrm{GF}(p^m)$, even arbitrarily large fields!
-- **Faster** than native NumPy! `GF(x) * GF(y)` is faster than `(x * y) % p` for $\mathrm{GF}(p)$.
+- Supports all Galois fields $\mathrm{GF}(p^m)$, including arbitrarily large fields.
+- **Faster** than native NumPy. `GF(x) * GF(y)` is often faster than `(x * y) % p` for $\mathrm{GF}(p)$.
 - Seamless integration with NumPy -- normal NumPy functions work on :obj:`~galois.FieldArray` instances.
 - Linear algebra over finite fields using normal :obj:`numpy.linalg` functions.
 - Linear transforms over finite fields, such as the FFT with :func:`numpy.fft.fft` and the NTT with :func:`~galois.ntt`.
@@ -57,9 +58,9 @@ Features
 Roadmap
 -------
 
-- Elliptic curves over finite fields
 - Galois ring arrays
 - GPU support
+- Elliptic curves over finite fields
 
 Acknowledgements
 ----------------
@@ -80,7 +81,7 @@ creation of large finite fields by avoiding the need to factor large integers.
 `SymPy <https://www.sympy.org/en/index.html>`_ is used to generate some test vectors. `Octave <https://www.gnu.org/software/octave/index>`_
 is used to generate test vectors for forward error correction codes.
 
-This library would not be possible without all of the other libraries mentioned. Thank you to all their developers!
+This library would not be possible without all of the other libraries mentioned. Thank you to all their developers.
 
 Citation
 --------
