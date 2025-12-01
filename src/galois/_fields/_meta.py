@@ -13,6 +13,7 @@ from .._domains._array import ArrayMeta
 from .._modular import totatives
 from .._polys import Poly
 from .._polys._conversions import integer_to_poly, poly_to_str
+from ._normal_element import normal_element as get_normal_element
 from ._normal_element import normal_elements as get_normal_elements
 
 # Obtain forward references
@@ -374,10 +375,15 @@ class FieldArrayMeta(ArrayMeta):
         Order:
             22
         """
-        if cls.is_prime_field:
-            return None
-        else:
-            return cls.normal_elements[0]
+        if not hasattr(cls, "_normal_element"):
+            if cls.is_prime_field:
+                normal_element = None
+            else:
+                # Finding one is faster than selecting the first from the list of all normal elements
+                beta = get_normal_element(cls.irreducible_poly)
+                normal_element = cls.Vector(beta.coefficients(cls.degree))
+            cls._normal_element = normal_element
+        return cls._normal_element.copy()
 
     @property
     def normal_elements(cls) -> FieldArray:
@@ -413,11 +419,11 @@ class FieldArrayMeta(ArrayMeta):
         """
         if not hasattr(cls, "_normal_elements"):
             if cls.is_prime_field:
-                normal_elements = []
+                normal_elements = cls([])
             else:
                 betas = get_normal_elements(cls.irreducible_poly)
                 normal_elements = [cls.Vector(beta.coefficients(cls.degree)) for beta in betas]
-            cls._normal_elements = cls(normal_elements)
+            cls._normal_elements = normal_elements
         return cls._normal_elements.copy()
 
     @property
