@@ -773,7 +773,10 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         T_B_to_C = field.change_of_basis_matrix(from_basis, to_basis)
 
         V_B = self.vector()  # Each row is a vector over GF(p)
+        shape = V_B.shape
+        V_B = V_B.reshape(-1, shape[-1])  # Reshape to 2-D array
         V_C = V_B @ T_B_to_C
+        V_C = V_C.reshape(shape)  # Reshape back to original shape with last dimension m
 
         return field.Vector(V_C)
 
