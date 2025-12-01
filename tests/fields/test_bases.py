@@ -14,7 +14,7 @@ def test_polynomial_basis_power_structure(p, m):
     GF(p^m): polynomial_basis(order="asc") should be (1, α, α^2, ..., α^{m-1})
     for some α = image of x.
     """
-    GF = galois.GF(p**m, repr="poly")
+    GF = galois.GF(p**m)
     basis_asc = GF.polynomial_basis(order="asc")
 
     # Length m
@@ -34,7 +34,7 @@ def test_polynomial_basis_ordering(p, m):
     """
     order="desc" should just reverse order="asc".
     """
-    GF = galois.GF(p**m, repr="poly")
+    GF = galois.GF(p**m)
     basis_asc = GF.polynomial_basis(order="asc")
     basis_desc = GF.polynomial_basis(order="desc")
 
@@ -47,7 +47,7 @@ def test_normal_element_and_basis_are_consistent(p, m):
     For non-prime fields GF(p^m), normal_element should be scalar and
     normal_basis(None) should generate its Frobenius conjugates.
     """
-    GF = galois.GF(p**m, repr="poly")
+    GF = galois.GF(p**m)
     # Only test proper extensions
     if GF.is_prime_field:
         pytest.skip("Normal basis is not defined for prime fields.")
@@ -92,7 +92,7 @@ def test_change_of_basis_matrix_invertibility(p, m):
     Polynomial basis <-> normal basis change of basis matrices
     should be inverses of each other (up to numerical tolerance).
     """
-    GF = galois.GF(p**m, repr="poly")
+    GF = galois.GF(p**m)
     if GF.is_prime_field:
         pytest.skip("Normal basis not defined for prime fields.")
 
@@ -114,7 +114,7 @@ def test_change_of_basis_matrix_maps_known_basis(p, m):
     Check that the change_of_basis_matrix really maps basis vectors correctly:
     coordinates of from_basis in to_basis should be the columns of T.
     """
-    GF = galois.GF(p**m, repr="poly")
+    GF = galois.GF(p**m)
     if GF.is_prime_field:
         pytest.skip("Normal basis not defined for prime fields.")
 
@@ -137,7 +137,7 @@ def test_change_bases_round_trip(p, m):
     """
     Changing bases polynomial -> normal -> polynomial should be identity.
     """
-    GF = galois.GF(p**m, repr="poly")
+    GF = galois.GF(p**m)
     if GF.is_prime_field:
         pytest.skip("Normal basis not defined for prime fields.")
 
@@ -158,7 +158,7 @@ def test_change_bases_preserves_shape(p, m):
     """
     change_bases should act elementwise and preserve the shape of the array.
     """
-    GF = galois.GF(p**m, repr="poly")
+    GF = galois.GF(p**m)
     if GF.is_prime_field:
         pytest.skip("Normal basis not defined for prime fields.")
 
