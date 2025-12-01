@@ -115,6 +115,7 @@ def is_normal_element(element: PolyLike, irreducible_poly: Poly) -> bool:
     Group:
         galois-fields-normal-elements
     """
+    verify_isinstance(irreducible_poly, Poly)
     field = irreducible_poly.field
 
     # Convert element into a Poly object over the same base field as irreducible_poly
