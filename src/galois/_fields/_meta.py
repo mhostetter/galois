@@ -383,7 +383,7 @@ class FieldArrayMeta(ArrayMeta):
                 beta = get_normal_element(cls.irreducible_poly)
                 normal_element = cls.Vector(beta.coefficients(cls.degree))
             cls._normal_element = normal_element
-        return cls._normal_element.copy()
+        return cls._normal_element
 
     @property
     def normal_elements(cls) -> FieldArray:
