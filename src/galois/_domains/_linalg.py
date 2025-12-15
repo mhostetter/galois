@@ -194,56 +194,84 @@ class matmul_jit(Function):
             raise ValueError(
                 f"Operation 'matmul' requires both arrays have dimension at least 1, not {A.ndim}-D and {B.ndim}-D."
             )
-        if not (A.ndim <= 2 and B.ndim <= 2):
-            raise ValueError(
-                "Operation 'matmul' currently only supports matrix multiplication up to 2-D. "
-                "Please open a GitHub issue at https://github.com/mhostetter/galois/issues."
-            )
         dtype = A.dtype
 
         if self.field._is_prime_field:
             return _lapack_linalg(self.field, A, B, np.matmul, out=out)
 
-        prepend, append = False, False
-        if A.ndim == 1:
-            A = A.reshape((1, A.size))
-            prepend = True
-        if B.ndim == 1:
-            B = B.reshape((B.size, 1))
-            append = True
+        # Handle 1-D semantics like np.matmul
+        A_was_vec = A.ndim == 1
+        B_was_vec = B.ndim == 1
+        if A_was_vec:
+            # (k,) -> (1, k), later we may drop the "M" dimension
+            A = A.reshape(1, A.size)
+        if B_was_vec:
+            # (k,) -> (k, 1), later we may drop the "N" dimension
+            B = B.reshape(B.size, 1)
 
-        if not A.shape[-1] == B.shape[-2]:
+        if A.ndim < 2 or B.ndim < 2:
+            # After promoting 1-D to 2-D, both must be at least 2-D.
             raise ValueError(
-                f"Operation 'matmul' requires the last dimension of 'A' to match the second-to-last dimension of 'B', "
-                f"not {A.shape} and {B.shape}."
+                "Operation 'matmul' requires both arrays be at least 1-D. This should not occur after 1-D promotion."
+            )
+        M, K = A.shape[-2], A.shape[-1]
+        K2, N = B.shape[-2], B.shape[-1]
+        if K != K2:
+            raise ValueError(
+                f"Operation 'matmul' requires the last dimension of 'A' to match the "
+                f"second-to-last dimension of 'B', not {A.shape} and {B.shape}."
             )
 
-        # if A.ndim > 2 and B.ndim == 2:
-        #     new_shape = list(A.shape[:-2]) + list(B.shape)
-        #     B = np.broadcast_to(B, new_shape)
-        # if B.ndim > 2 and A.ndim == 2:
-        #     new_shape = list(B.shape[:-2]) + list(A.shape)
-        #     A = np.broadcast_to(A, new_shape)
+        # Broadcast batch dimensions
+        batch_A = A.shape[:-2]
+        batch_B = B.shape[:-2]
+        try:
+            # NumPy >= 1.20
+            batch_shape = np.broadcast_shapes(batch_A, batch_B)
+        except AttributeError:
+            # Fallback for older NumPy
+            batch_shape = np.broadcast(np.empty(batch_A), np.empty(batch_B)).shape
+        A_b = np.broadcast_to(A, batch_shape + (M, K))
+        B_b = np.broadcast_to(B, batch_shape + (K, N))
+
+        # Flatten batch dimensions so the kernel sees (BATCH, M, K) and (BATCH, K, N)
+        if batch_shape:
+            BATCH = int(np.prod(batch_shape))
+        else:
+            BATCH = 1
+            batch_shape = ()  # Make sure this is a tuple for later
+        A_flat = A_b.reshape(BATCH, M, K)
+        B_flat = B_b.reshape(BATCH, K, N)
 
         if self.field.ufunc_mode != "python-calculate":
-            C = self.jit(A.astype(np.int64), B.astype(np.int64))
-            C = C.astype(dtype)
+            C_flat = self.jit(A_flat.astype(np.int64), B_flat.astype(np.int64))
+            C_flat = C_flat.astype(dtype)
         else:
-            C = self.python(A.view(np.ndarray), B.view(np.ndarray))
+            C_flat = self.python(A_flat.view(np.ndarray), B_flat.view(np.ndarray))
+        C = C_flat.reshape(batch_shape + (M, N))
         C = self.field._view(C)
 
-        shape = list(C.shape)
-        if prepend:
-            shape = shape[1:]
-        if append:
-            shape = shape[:-1]
-        C = C.reshape(shape)
+        # Apply np.matmul-style 1-D squeezing rules
+        if A_was_vec and B_was_vec:
+            # (k,) @ (k,) -> scalar with batch dimensions (here usually no batch)
+            final_shape = batch_shape
+        elif A_was_vec and not B_was_vec:
+            # (k,) @ (..., k, N) -> (..., N)
+            final_shape = batch_shape + (N,)
+        elif not A_was_vec and B_was_vec:
+            # (..., M, K) @ (K,) -> (..., M)
+            final_shape = batch_shape + (M,)
+        else:
+            # (..., M, K) @ (..., K, N) -> (..., M, N)
+            final_shape = batch_shape + (M, N)
+        C = C.reshape(final_shape)
 
-        # TODO: Determine a better way to do this
         if out is not None:
-            assert isinstance(out, tuple) and len(out) == 1  # TODO: Why is `out` getting populated as tuple?
-            out = out[0]
-            out[:] = C[:]
+            # NumPy ufuncs pass out as a 1-tuple; galois seems to mirror that.
+            assert isinstance(out, tuple) and len(out) == 1
+            out_arr = out[0]
+            out_arr[...] = C[...]
+            return out_arr
 
         return C
 
@@ -252,21 +280,30 @@ class matmul_jit(Function):
         ADD = self.field._add.ufunc_call_only
         MULTIPLY = self.field._multiply.ufunc_call_only
 
-    _SIGNATURE = numba.types.FunctionType(int64[:, :](int64[:, :], int64[:, :]))
+    _SIGNATURE = numba.types.FunctionType(int64[:, :, :](int64[:, :, :], int64[:, :, :]))
     _PARALLEL = True
 
     @staticmethod
     def implementation(A, B):
-        assert A.ndim == 2 and B.ndim == 2
-        assert A.shape[-1] == B.shape[-2]
+        # A: (BATCH, M, K)
+        # B: (BATCH, K, N)
+        assert A.ndim == 3 and B.ndim == 3
 
-        M, K = A.shape
-        K, N = B.shape
-        C = np.zeros((M, N), dtype=A.dtype)
-        for i in numba.prange(M):
-            for j in numba.prange(N):
-                for k in range(K):
-                    C[i, j] = ADD(C[i, j], MULTIPLY(A[i, k], B[k, j]))
+        BATCH, M, K = A.shape
+        BATCH2, K2, N = B.shape
+        assert BATCH == BATCH2
+        assert K == K2
+
+        C = np.zeros((BATCH, M, N), dtype=A.dtype)
+
+        # Parallelize across batch dimension (and optionally one of M/N if you want)
+        for b in numba.prange(BATCH):
+            for i in range(M):
+                for j in range(N):
+                    acc = 0
+                    for k in range(K):
+                        acc = ADD(acc, MULTIPLY(A[b, i, k], B[b, k, j]))
+                    C[b, i, j] = acc
 
         return C
 
