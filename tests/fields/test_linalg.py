@@ -236,24 +236,26 @@ def test_matmul_2d_2d(field):
     assert array_equal(A @ B, np.matmul(A, B))
 
 
-# def test_matmul_nd_2d(field):
-#     A = field.Random((2,3,4), dtype=dtype)
-#     B = field.Random((4,3), dtype=dtype)
-#     C = A @ B
-#     assert array_equal(C[0,0,0], np.sum(A[0,0,:] * B[:,0]))  # Spot check
-#     assert C.shape == (2,3,3)
-#     assert type(C) is field
-#     assert array_equal(A @ B, np.matmul(A, B))
+def test_matmul_nd_2d(field):
+    dtype = random.choice(field.dtypes)
+    A = field.Random((2, 3, 4), dtype=dtype)
+    B = field.Random((4, 3), dtype=dtype)
+    C = A @ B
+    assert array_equal(C[0, 0, 0], np.sum(A[0, 0, :] * B[:, 0]))  # Spot check
+    assert C.shape == (2, 3, 3)
+    assert type(C) is field
+    assert array_equal(A @ B, np.matmul(A, B))
 
 
-# def test_matmul_nd_nd(field):
-#     A = field.Random((2,3,4), dtype=dtype)
-#     B = field.Random((2,4,3), dtype=dtype)
-#     C = A @ B
-#     assert array_equal(C[0,0,0], np.sum(A[0,0,:] * B[0,:,0]))  # Spot check
-#     assert C.shape == (2,3,3)
-#     assert type(C) is field
-#     assert array_equal(A @ B, np.matmul(A, B))
+def test_matmul_nd_nd(field):
+    dtype = random.choice(field.dtypes)
+    A = field.Random((2, 3, 4), dtype=dtype)
+    B = field.Random((2, 4, 3), dtype=dtype)
+    C = A @ B
+    assert array_equal(C[0, 0, 0], np.sum(A[0, 0, :] * B[0, :, 0]))  # Spot check
+    assert C.shape == (2, 3, 3)
+    assert type(C) is field
+    assert array_equal(A @ B, np.matmul(A, B))
 
 
 def full_rank_matrix(field, n, dtype):
