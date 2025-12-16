@@ -10,7 +10,7 @@ multiplication followed by integer remainder division.
 
 .. important::
 
-    Native NumPy is not computing the correct result! This is not a fair fight!
+    Native NumPy is not computing the correct result. This is not a fair fight!
 
 These are *not* fair comparisons because NumPy is not computing the correct product. However, they are included here to
 provide a performance reference point with native NumPy.
@@ -54,7 +54,7 @@ tables instead of explicitly performing the polynomial multiplication and divisi
 
     In [10]: pp = int(GF.irreducible_poly)
 
-    # This does not produce the correct result!
+    # This does not produce the correct result
     In [11]: %timeit (aa * bb) % pp
     64 ms ± 747 µs per loop (mean ± std. dev. of 7 runs, 10 loops each)
 
@@ -99,7 +99,7 @@ the correct product.
 
     In [10]: pp = int(GF.irreducible_poly)
 
-    # This does not produce the correct result!
+    # This does not produce the correct result
     In [11]: %timeit (aa * bb) % pp
     100 ms ± 718 µs per loop (mean ± std. dev. of 7 runs, 10 loops each)
 
@@ -156,6 +156,6 @@ The :obj:`galois` library is about ~5.5x slower than native NumPy (which isn't c
 
     In [10]: pp = int(GF.irreducible_poly)
 
-    # This does not produce the correct result!
+    # This does not produce the correct result
     In [11]: %timeit (AA @ BB) % pp
     703 µs ± 1.9 µs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)

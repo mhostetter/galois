@@ -10,7 +10,7 @@ tocdepth: 2
 
 ### Changes
 
-- First beta release!
+- First beta release.
 - Fixed PyPI package metadata.
 
 ### Contributors

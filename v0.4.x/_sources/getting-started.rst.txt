@@ -1,9 +1,8 @@
 Getting Started
 ===============
 
-The :doc:`getting-started` guide is intended to assist the user with installing the library, creating two example
-arrays, and performing basic array arithmetic. See :doc:`Basic Usage </basic-usage/array-classes>` for more detailed discussions
-and examples.
+This guide assists users in installing the library, creating example arrays, and performing basic arithmetic.
+See :doc:`Basic Usage </basic-usage/array-classes>` for more detailed discussions and examples.
 
 Install the package
 -------------------

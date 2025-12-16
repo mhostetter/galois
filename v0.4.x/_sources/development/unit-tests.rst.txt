@@ -6,11 +6,11 @@ The :obj:`galois` library uses `pytest <https://docs.pytest.org/en/7.0.x/>`_ for
 Install
 -------
 
-First, `pytest` needs to be installed on your system. Easily install it by installing the development dependencies.
+First, `pytest` needs to be installed on your system. Easily install it by installing the testing dependencies.
 
 .. code-block:: console
 
-   $ python3 -m pip install -r requirements-dev.txt
+   $ python3 -m pip install -r requirements-test.txt
 
 Configuration
 -------------

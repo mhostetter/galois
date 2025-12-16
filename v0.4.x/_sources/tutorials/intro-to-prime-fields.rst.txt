@@ -139,7 +139,7 @@ Multiplicative inverse
 ......................
 
 Division in $\mathrm{GF}(p)$ is a little more difficult. Division can't be as simple as taking $a / b\ (\textrm{mod}\ p)$ because
-many integer divisions do not result in integers! The division $a / b$ can be reformulated into $a b^{-1}$, where $b^{-1}$
+many integer divisions do not result in integers. The division $a / b$ can be reformulated into $a b^{-1}$, where $b^{-1}$
 is the multiplicative inverse of $b$. Let's first learn the multiplicative inverse before returning to division.
 
 `Euclid <https://en.wikipedia.org/wiki/Euclid>`_ discovered an efficient algorithm to solve the `Bézout Identity <https://en.wikipedia.org/wiki/B%C3%A9zout%27s_identity>`_,
