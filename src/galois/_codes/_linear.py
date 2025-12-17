@@ -164,7 +164,7 @@ class _LinearCode:
               array. Valid number of corrections are in $[0, t]$. If a codeword has too many errors and cannot
               be corrected, -1 will be returned.
         """
-        codeword = verify_arraylike(codeword)
+        codeword = verify_arraylike(codeword, dtype=self.field.dtypes[0])
         erasures = verify_arraylike(erasures, optional=True, dtype=bool, shape=codeword.shape)
         verify_literal(output, ["message", "codeword"])
 
