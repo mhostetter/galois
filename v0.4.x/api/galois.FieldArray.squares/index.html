@@ -13445,11 +13445,9 @@ Power</label></div>
 <span class="gp">In [4]: </span><span class="n">y2</span> <span class="o">=</span> <span class="o">-</span><span class="n">y1</span><span class="p">;</span> <span class="n">y2</span>
 <span class="gh">Out[4]: </span><span class="go">GF([0, 1, 6, 7, 2, 3, 4, 5], order=2^3)</span>
 
-<span class="gp">In [5]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">y1</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
-<span class="gh">Out[5]: </span><span class="go">True</span>
+<span class="gp">In [5]: </span><span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">y1</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
 
-<span class="gp">In [6]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">y2</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
-<span class="gh">Out[6]: </span><span class="go">True</span>
+<span class="gp">In [6]: </span><span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">y2</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
@@ -13471,11 +13469,9 @@ Power</label></div>
 <span class="go">GF([          0,           1,     α^2 + α, α^2 + α + 1,           α,</span>
 <span class="go">          α + 1,         α^2,     α^2 + 1], order=2^3)</span>
 
-<span class="gp">In [11]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">y1</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
-<span class="gh">Out[11]: </span><span class="go">True</span>
+<span class="gp">In [11]: </span><span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">y1</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
 
-<span class="gp">In [12]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">y2</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
-<span class="gh">Out[12]: </span><span class="go">True</span>
+<span class="gp">In [12]: </span><span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">y2</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
@@ -13491,11 +13487,9 @@ Power</label></div>
 <span class="gp">In [16]: </span><span class="n">y2</span> <span class="o">=</span> <span class="o">-</span><span class="n">y1</span><span class="p">;</span> <span class="n">y2</span>
 <span class="gh">Out[16]: </span><span class="go">GF([  0,   1, α^4, α^5,   α, α^3, α^2, α^6], order=2^3)</span>
 
-<span class="gp">In [17]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">y1</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
-<span class="gh">Out[17]: </span><span class="go">True</span>
+<span class="gp">In [17]: </span><span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">y1</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
 
-<span class="gp">In [18]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">y2</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
-<span class="gh">Out[18]: </span><span class="go">True</span>
+<span class="gp">In [18]: </span><span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">y2</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
@@ -13520,11 +13514,9 @@ Power</label></div>
 <span class="gp">In [22]: </span><span class="n">y2</span> <span class="o">=</span> <span class="o">-</span><span class="n">y1</span><span class="p">;</span> <span class="n">y2</span>
 <span class="gh">Out[22]: </span><span class="go">GF([ 0, 10,  6,  9,  7,  8], order=11)</span>
 
-<span class="gp">In [23]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">y1</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
-<span class="gh">Out[23]: </span><span class="go">True</span>
+<span class="gp">In [23]: </span><span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">y1</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
 
-<span class="gp">In [24]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">y2</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
-<span class="gh">Out[24]: </span><span class="go">True</span>
+<span class="gp">In [24]: </span><span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">y2</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
@@ -13540,11 +13532,9 @@ Power</label></div>
 <span class="gp">In [28]: </span><span class="n">y2</span> <span class="o">=</span> <span class="o">-</span><span class="n">y1</span><span class="p">;</span> <span class="n">y2</span>
 <span class="gh">Out[28]: </span><span class="go">GF([  0, α^5, α^9, α^6, α^7, α^3], order=11)</span>
 
-<span class="gp">In [29]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">y1</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
-<span class="gh">Out[29]: </span><span class="go">True</span>
+<span class="gp">In [29]: </span><span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">y1</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
 
-<span class="gp">In [30]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">y2</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
-<span class="gh">Out[30]: </span><span class="go">True</span>
+<span class="gp">In [30]: </span><span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">y2</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>

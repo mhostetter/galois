@@ -13480,11 +13480,9 @@ You're not viewing the latest version.
 <span class="go">    [ 0, 29,  2,  9],</span>
 <span class="go">    [ 0,  0, 19,  8]], order=31)</span>
 
-<span class="gp">In [7]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">P</span> <span class="o">@</span> <span class="n">L</span> <span class="o">@</span> <span class="n">U</span><span class="p">)</span>
-<span class="gh">Out[7]: </span><span class="go">True</span>
+<span class="gp">In [7]: </span><span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">P</span> <span class="o">@</span> <span class="n">L</span> <span class="o">@</span> <span class="n">U</span><span class="p">)</span>
 
-<span class="gp">In [8]: </span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">P</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">A</span><span class="p">,</span> <span class="n">L</span> <span class="o">@</span> <span class="n">U</span><span class="p">)</span>
-<span class="gh">Out[8]: </span><span class="go">True</span>
+<span class="gp">In [8]: </span><span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">P</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">A</span><span class="p">,</span> <span class="n">L</span> <span class="o">@</span> <span class="n">U</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </dd></dl>
