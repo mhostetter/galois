@@ -20,6 +20,7 @@ concurrency:
 
 permissions:
   contents: read
+  id-token: write
 
 jobs:
   wait-on-wheel:
@@ -87,9 +88,9 @@ jobs:
         run: python3 -m pytest -n auto --cov=galois --cov-report=xml tests/
 
       - name: Upload coverage report
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
-          version: v0.7.3
+          use_oidc: true
           fail_ci_if_error: false
           verbose: true
 
