@@ -1487,7 +1487,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
                 L, U = A.lu_decompose()
                 L
                 U
-                np.array_equal(A, L @ U)
+                assert np.array_equal(A, L @ U)
 
         Group:
             Linear algebra
@@ -1523,8 +1523,8 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
                 P
                 L
                 U
-                np.array_equal(A, P @ L @ U)
-                np.array_equal(P.T @ A, L @ U)
+                assert np.array_equal(A, P @ L @ U)
+                assert np.array_equal(P.T @ A, L @ U)
 
         Group:
             Linear algebra
@@ -2151,13 +2151,13 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
                 alpha = GF.primitive_element; alpha
                 x = GF.Random(10, low=1); x
                 i = x.log(); i
-                np.array_equal(alpha ** i, x)
+                assert np.array_equal(alpha ** i, x)
 
             With the default argument, :func:`numpy.log` and :func:`~FieldArray.log` are equivalent.
 
             .. ipython:: python
 
-                np.array_equal(np.log(x), x.log())
+                assert np.array_equal(np.log(x), x.log())
 
             Compute the logarithm of $x$ with a different base $\beta$, which is another primitive element
             of the field.
@@ -2166,7 +2166,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
                 beta = GF.primitive_elements[-1]; beta
                 i = x.log(beta); i
-                np.array_equal(beta ** i, x)
+                assert np.array_equal(beta ** i, x)
 
             Compute the logarithm of a single finite field element base all of the primitive elements of the field.
 
@@ -2175,7 +2175,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
                 x = GF.Random(low=1); x
                 bases = GF.primitive_elements
                 i = x.log(bases); i
-                np.all(bases ** i == x)
+                assert np.all(bases ** i == x)
         """
         x = self
         field = type(self)

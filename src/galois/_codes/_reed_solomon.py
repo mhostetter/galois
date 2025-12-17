@@ -95,14 +95,14 @@ class ReedSolomon(_CyclicCode):
             # Corrupt the first symbol in the codeword
             c[0] ^= 13; c
             dec_m = rs.decode(c); dec_m
-            np.array_equal(dec_m, m)
+            assert np.array_equal(dec_m, m)
 
         Instruct the decoder to return the number of corrected symbol errors.
 
         .. ipython:: python
 
             dec_m, N = rs.decode(c, errors=True); dec_m, N
-            np.array_equal(dec_m, m)
+            assert np.array_equal(dec_m, m)
 
     Group:
         fec
@@ -525,14 +525,14 @@ class ReedSolomon(_CyclicCode):
                     .. ipython:: python
 
                         d = rs.decode(c); d
-                        np.array_equal(d, m)
+                        assert np.array_equal(d, m)
 
                     Decode the codeword, outputting the number of corrected errors, and recover the message.
 
                     .. ipython:: python
 
                         d, e = rs.decode(c, errors=True); d, e
-                        np.array_equal(d, m)
+                        assert np.array_equal(d, m)
 
                 .. md-tab-item:: Vector (shortened)
 
@@ -557,14 +557,14 @@ class ReedSolomon(_CyclicCode):
                     .. ipython:: python
 
                         d = rs.decode(c); d
-                        np.array_equal(d, m)
+                        assert np.array_equal(d, m)
 
                     Decode the codeword, outputting the number of corrected errors, and recover the message.
 
                     .. ipython:: python
 
                         d, e = rs.decode(c, errors=True); d, e
-                        np.array_equal(d, m)
+                        assert np.array_equal(d, m)
 
                 .. md-tab-item:: Matrix
 
@@ -592,14 +592,14 @@ class ReedSolomon(_CyclicCode):
                     .. ipython:: python
 
                         d = rs.decode(c); d
-                        np.array_equal(d, m)
+                        assert np.array_equal(d, m)
 
                     Decode the codeword, outputting the number of corrected errors, and recover the message.
 
                     .. ipython:: python
 
                         d, e = rs.decode(c, errors=True); d, e
-                        np.array_equal(d, m)
+                        assert np.array_equal(d, m)
 
                 .. md-tab-item:: Matrix (shortened)
 
@@ -627,14 +627,14 @@ class ReedSolomon(_CyclicCode):
                     .. ipython:: python
 
                         d = rs.decode(c); d
-                        np.array_equal(d, m)
+                        assert np.array_equal(d, m)
 
                     Decode the codeword, outputting the number of corrected errors, and recover the message.
 
                     .. ipython:: python
 
                         d, e = rs.decode(c, errors=True); d, e
-                        np.array_equal(d, m)
+                        assert np.array_equal(d, m)
 
                 .. md-tab-item:: Matrix (erasures)
 
@@ -665,7 +665,7 @@ class ReedSolomon(_CyclicCode):
                     .. ipython:: python
 
                         d = rs.decode(c, erasures=erasures); d
-                        np.array_equal(d, m)
+                        assert np.array_equal(d, m)
 
                     Decode the codeword, outputting the number of corrected errors, and recover the message. Notice
                     that zero unknown errors were corrected, since all errors were provided as erasures.
@@ -673,7 +673,7 @@ class ReedSolomon(_CyclicCode):
                     .. ipython:: python
 
                         d, e = rs.decode(c, erasures=erasures, errors=True); d, e
-                        np.array_equal(d, m)
+                        assert np.array_equal(d, m)
         """,
     )
     def decode(self, codeword, erasures=None, output="message", errors=False):

@@ -1578,7 +1578,7 @@ def berlekamp_massey(sequence, output="characteristic"):
             lfsr = galois.berlekamp_massey(y, output="fibonacci")
             print(lfsr)
             z = lfsr.step(y.size); z
-            np.array_equal(y, z)
+            assert np.array_equal(y, z)
 
         Use the Berlekamp-Massey algorithm to return equivalent Galois LFSR that reproduces the sequence.
 
@@ -1587,7 +1587,7 @@ def berlekamp_massey(sequence, output="characteristic"):
             lfsr = galois.berlekamp_massey(y, output="galois")
             print(lfsr)
             z = lfsr.step(y.size); z
-            np.array_equal(y, z)
+            assert np.array_equal(y, z)
 
     Group:
         linear-sequences

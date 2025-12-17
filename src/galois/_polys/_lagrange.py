@@ -60,7 +60,7 @@ def lagrange_poly(x: Array, y: Array) -> Poly:
 
         .. ipython:: python
 
-            np.array_equal(L(x), y)
+            assert np.array_equal(L(x), y)
 
     Group:
         polys-interpolating

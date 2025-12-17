@@ -432,7 +432,7 @@ Expand any section for more details.
         A = GF([[14, 21, 14, 28], [24, 22, 23, 23], [16, 30, 26, 18], [4, 23, 18, 3]]); A
         b = GF([15, 11, 6, 29]); b
         x = np.linalg.solve(A, b)
-        np.array_equal(A @ x, b)
+        assert np.array_equal(A @ x, b)
 
 .. example:: Matrix inverse: `np.linalg.inv(A)`
     :collapsible:
