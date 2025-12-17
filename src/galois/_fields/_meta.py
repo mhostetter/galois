@@ -447,8 +447,8 @@ class FieldArrayMeta(ArrayMeta):
                 x = GF.squares; x
                 y1 = np.sqrt(x); y1
                 y2 = -y1; y2
-                np.array_equal(y1 ** 2, x)
-                np.array_equal(y2 ** 2, x)
+                assert np.array_equal(y1 ** 2, x)
+                assert np.array_equal(y2 ** 2, x)
 
             In fields with characteristic greater than 2, exactly half of the nonzero elements are squares
             (with two unique square roots).
@@ -459,8 +459,8 @@ class FieldArrayMeta(ArrayMeta):
                 x = GF.squares; x
                 y1 = np.sqrt(x); y1
                 y2 = -y1; y2
-                np.array_equal(y1 ** 2, x)
-                np.array_equal(y2 ** 2, x)
+                assert np.array_equal(y1 ** 2, x)
+                assert np.array_equal(y2 ** 2, x)
 
         Group:
             Elements
