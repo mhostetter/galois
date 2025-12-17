@@ -43,17 +43,21 @@ Install the local folder using the `-e` or `--editable` flag.
 
     $ python3 -m pip install -e galois/
 
-Install the `dev` dependencies
-------------------------------
+Install the development dependencies
+------------------------------------
 
 The development dependencies include packages for linting and unit testing.
-These dependencies are stored in `requirements-dev.txt`.
+These dependencies are stored in `requirements-lint.txt` and `requirements-test.txt`.
 
-.. literalinclude:: ../../requirements-dev.txt
-   :caption: requirements-dev.txt
+.. literalinclude:: ../../requirements-lint.txt
+   :caption: requirements-lint.txt
+
+.. literalinclude:: ../../requirements-test.txt
+   :caption: requirements-test.txt
 
 Install the development dependencies by passing `-r` to `pip install`.
 
 .. code-block:: console
 
-   $ python3 -m pip install -r requirements-dev.txt
+   $ python3 -m pip install -r requirements-lint.txt
+   $ python3 -m pip install -r requirements-test.txt

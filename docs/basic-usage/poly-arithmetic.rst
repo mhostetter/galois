@@ -269,7 +269,7 @@ Polynomial objects also work on several special arithmetic operations. Expand an
         g
         d, s, t = galois.egcd(f, g)
         d, s, t
-        f*s + g*t == d
+        assert f*s + g*t == d
 
     See :func:`~galois.egcd` for more details.
 

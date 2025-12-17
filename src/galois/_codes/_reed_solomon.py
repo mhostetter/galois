@@ -7,6 +7,7 @@ from __future__ import annotations
 from typing import Type, overload
 
 import numpy as np
+import numpy.typing as npt
 from typing_extensions import Literal
 
 from .._fields import Field, FieldArray
@@ -21,24 +22,56 @@ from ._cyclic import _CyclicCode
 @export
 class ReedSolomon(_CyclicCode):
     r"""
-    A general $\textrm{RS}(n, k)$ code over $\mathrm{GF}(q)$.
+    A general $\mathrm{RS}(n, k)$ code over $\mathrm{GF}(q)$.
 
-    A $\textrm{RS}(n, k)$ code is a $[n, k, n - k + 1]_q$ linear block code with codeword size $n$,
-    message size $k$, minimum distance $d = n - k + 1$, and symbols taken from an alphabet of size
-    $q$.
+    A $\mathrm{RS}(n, k)$ code is a maximum-distance separable (MDS) $[n, k, n - k + 1]_q$ linear block code of
+    length $n$, dimension $k$, and minimum distance $d = n - k + 1$, with symbols drawn from $\mathrm{GF}(q)$.
+    Reed-Solomon codes achieve the largest possible minimum distance for any $q$-ary linear block code with the
+    same length and dimension.
 
     .. info::
         :title: Shortened codes
 
-        To create the shortened $\textrm{RS}(n-s, k-s)$ code, construct the full-sized
-        $\textrm{RS}(n, k)$ code and then pass $k-s$ symbols into :func:`encode` and $n-s$ symbols
-        into :func:`decode()`. Shortened codes are only applicable for systematic codes.
+        To create the shortened $\mathrm{RS}(n - s, k - s)$ code, construct the full-length $\mathrm{RS}(n, k)$ code,
+        pass only the first $(k - s)$ message symbols to :func:`encode`, and provide only the first $(n - s)$
+        received symbols to :func:`decode`. This produces the standard shortened RS construction.
 
-    A Reed-Solomon code is a cyclic code over $\mathrm{GF}(q)$ with generator polynomial $g(x)$. The
-    generator polynomial has $d-1$ roots $\alpha^c, \dots, \alpha^{c+d-2}$. The element $\alpha$ is
-    a primitive $n$-th root of unity in $\mathrm{GF}(q)$.
+    Reed-Solomon codes admit two mathematically equivalent interpretations: the BCH (cyclic, root-based)
+    formulation and the polynomial evaluation formulation. This implementation follows the BCH construction,
+    which realizes RS codes as cyclic codes whose generator polynomials are specified by a consecutive set of
+    roots in an extension field.
 
-    $$g(x) = (x - \alpha^c) \dots (x - \alpha^{c+d-2})$$
+    **BCH (cyclic) construction.**
+    Assume $n \mid (q - 1)$, so that $\mathrm{GF}(q)$ contains a primitive $n$-th root of unity. Let
+    $\alpha \in \mathrm{GF}(q)$ be such an element. A Reed-Solomon code of designed distance $d = n - k + 1$
+    and starting exponent $c$ is the cyclic code whose generator polynomial has the consecutive roots
+
+    $$
+    \alpha^c,\ \alpha^{c+1},\ \ldots,\ \alpha^{c + (d - 2)}.
+    $$
+
+    Because all these roots lie in $\mathrm{GF}(q)$ itself (in contrast to BCH codes in general, which require
+    $\mathrm{GF}(q^m)$), the generator polynomial is simply the product of linear factors:
+
+    $$
+    g(x) = (x - \alpha^c)\, (x - \alpha^{c+1}) \cdots (x - \alpha^{c + d - 2}).
+    $$
+
+    The resulting cyclic code has length $n$, generator degree $\deg g(x) = n - k$, and therefore dimension
+    $k = n - \deg g(x)$. Its minimum distance satisfies $d = n - k + 1$, i.e., the code is MDS.
+
+    **Evaluation-code interpretation (equivalent).**
+    For completeness: RS codes may also be defined by evaluating a message polynomial
+    $m(x) = m_0 + m_1 x + \cdots + m_{k-1} x^{k-1}$ at a set of $n$ distinct points in $\mathrm{GF}(q)$, typically
+    $\{\alpha^0, \alpha^1, \ldots, \alpha^{n-1}\}$. In this viewpoint,
+
+    $$
+    (\, m(\alpha^0), m(\alpha^1), \ldots, m(\alpha^{n-1}) \,) \in \mathrm{GF}(q)^n
+    $$
+
+    is the codeword corresponding to $m(x)$. Choosing the evaluation points as consecutive powers of a primitive
+    element yields a cyclic RS code whose generator matches the BCH construction above. Thus the BCH formulation
+    used here is fully consistent with the general algebraic interpretation of Reed-Solomon codes.
 
     Examples:
         Construct a $\textrm{RS}(15, 9)$ code.
@@ -62,14 +95,14 @@ class ReedSolomon(_CyclicCode):
             # Corrupt the first symbol in the codeword
             c[0] ^= 13; c
             dec_m = rs.decode(c); dec_m
-            np.array_equal(dec_m, m)
+            assert np.array_equal(dec_m, m)
 
         Instruct the decoder to return the number of corrected symbol errors.
 
         .. ipython:: python
 
             dec_m, N = rs.decode(c, errors=True); dec_m, N
-            np.array_equal(dec_m, m)
+            assert np.array_equal(dec_m, m)
 
     Group:
         fec
@@ -436,6 +469,7 @@ class ReedSolomon(_CyclicCode):
     def decode(
         self,
         codeword: ArrayLike,
+        erasures: npt.NDArray | None = None,
         output: Literal["message", "codeword"] = "message",
         errors: Literal[False] = False,
     ) -> FieldArray: ...
@@ -444,6 +478,7 @@ class ReedSolomon(_CyclicCode):
     def decode(
         self,
         codeword: ArrayLike,
+        erasures: npt.NDArray | None = None,
         output: Literal["message", "codeword"] = "message",
         errors: Literal[True] = True,
     ) -> tuple[FieldArray, int | np.ndarray]: ...
@@ -490,14 +525,14 @@ class ReedSolomon(_CyclicCode):
                     .. ipython:: python
 
                         d = rs.decode(c); d
-                        np.array_equal(d, m)
+                        assert np.array_equal(d, m)
 
-                    Decode the codeword, specifying the number of corrected errors, and recover the message.
+                    Decode the codeword, outputting the number of corrected errors, and recover the message.
 
                     .. ipython:: python
 
                         d, e = rs.decode(c, errors=True); d, e
-                        np.array_equal(d, m)
+                        assert np.array_equal(d, m)
 
                 .. md-tab-item:: Vector (shortened)
 
@@ -522,14 +557,14 @@ class ReedSolomon(_CyclicCode):
                     .. ipython:: python
 
                         d = rs.decode(c); d
-                        np.array_equal(d, m)
+                        assert np.array_equal(d, m)
 
-                    Decode the codeword, specifying the number of corrected errors, and recover the message.
+                    Decode the codeword, outputting the number of corrected errors, and recover the message.
 
                     .. ipython:: python
 
                         d, e = rs.decode(c, errors=True); d, e
-                        np.array_equal(d, m)
+                        assert np.array_equal(d, m)
 
                 .. md-tab-item:: Matrix
 
@@ -557,14 +592,14 @@ class ReedSolomon(_CyclicCode):
                     .. ipython:: python
 
                         d = rs.decode(c); d
-                        np.array_equal(d, m)
+                        assert np.array_equal(d, m)
 
-                    Decode the codeword, specifying the number of corrected errors, and recover the message.
+                    Decode the codeword, outputting the number of corrected errors, and recover the message.
 
                     .. ipython:: python
 
                         d, e = rs.decode(c, errors=True); d, e
-                        np.array_equal(d, m)
+                        assert np.array_equal(d, m)
 
                 .. md-tab-item:: Matrix (shortened)
 
@@ -592,22 +627,61 @@ class ReedSolomon(_CyclicCode):
                     .. ipython:: python
 
                         d = rs.decode(c); d
-                        np.array_equal(d, m)
+                        assert np.array_equal(d, m)
 
-                    Decode the codeword, specifying the number of corrected errors, and recover the message.
+                    Decode the codeword, outputting the number of corrected errors, and recover the message.
 
                     .. ipython:: python
 
                         d, e = rs.decode(c, errors=True); d, e
-                        np.array_equal(d, m)
+                        assert np.array_equal(d, m)
+
+                .. md-tab-item:: Matrix (erasures)
+
+                    Encode a matrix of three messages using the $\textrm{RS}(15, 9)$ code.
+
+                    .. ipython:: python
+
+                        rs = galois.ReedSolomon(15, 9)
+                        GF = rs.field
+                        m = GF.Random((3, rs.k)); m
+                        c = rs.encode(m); c
+
+                    Corrupt the codeword. Add one error to the first codeword, two to the second, and $d - 1$ to the
+                    third.
+
+                    .. ipython:: python
+
+                        erasures = np.zeros(c.shape, dtype=bool)
+                        erasures[0,0:1] = True
+                        erasures[1,0:2] = True
+                        erasures[2,0:rs.d - 1] = True
+
+                        c[erasures] += GF.Random(np.sum(erasures), low=1)
+                        c
+
+                    Decode the codeword using known error locations (erasures) and recover the message.
+
+                    .. ipython:: python
+
+                        d = rs.decode(c, erasures=erasures); d
+                        assert np.array_equal(d, m)
+
+                    Decode the codeword, outputting the number of corrected errors, and recover the message. Notice
+                    that zero unknown errors were corrected, since all errors were provided as erasures.
+
+                    .. ipython:: python
+
+                        d, e = rs.decode(c, erasures=erasures, errors=True); d, e
+                        assert np.array_equal(d, m)
         """,
     )
-    def decode(self, codeword, output="message", errors=False):
-        return super().decode(codeword, output=output, errors=errors)
+    def decode(self, codeword, erasures=None, output="message", errors=False):
+        return super().decode(codeword, erasures=erasures, output=output, errors=errors)
 
-    def _decode_codeword(self, codeword: FieldArray) -> tuple[FieldArray, np.ndarray]:
+    def _decode_codeword(self, codeword: FieldArray, erasures: npt.NDArray | None) -> tuple[FieldArray, np.ndarray]:
         func = reed_solomon_decode_jit(self.field, self.field)
-        dec_codeword, N_errors = func(codeword, self.n, int(self.alpha), self.c, self.roots)
+        dec_codeword, N_errors = func(codeword, erasures, self.n, int(self.alpha), self.c, self.roots)
         dec_codeword = dec_codeword.view(self.field)
         return dec_codeword, N_errors
 
@@ -637,6 +711,7 @@ class ReedSolomon(_CyclicCode):
     def field(self) -> Type[FieldArray]:
         return super().field
 
+    @property
     @extend_docstring(
         _CyclicCode.n,
         {},
@@ -657,10 +732,10 @@ class ReedSolomon(_CyclicCode):
                 rs.n
         """,
     )
-    @property
     def n(self) -> int:
         return super().n
 
+    @property
     @extend_docstring(
         _CyclicCode.k,
         {},
@@ -681,10 +756,10 @@ class ReedSolomon(_CyclicCode):
                 rs.k
         """,
     )
-    @property
     def k(self) -> int:
         return super().k
 
+    @property
     @extend_docstring(
         _CyclicCode.d,
         {},
@@ -705,10 +780,10 @@ class ReedSolomon(_CyclicCode):
                 rs.d
         """,
     )
-    @property
     def d(self) -> int:
         return super().d
 
+    @property
     @extend_docstring(
         _CyclicCode.t,
         {},
@@ -729,10 +804,10 @@ class ReedSolomon(_CyclicCode):
                 rs.t
         """,
     )
-    @property
     def t(self) -> int:
         return super().t
 
+    @property
     @extend_docstring(
         _CyclicCode.generator_poly,
         {},
@@ -761,10 +836,10 @@ class ReedSolomon(_CyclicCode):
                 rs.generator_poly(rs.roots)
         """,
     )
-    @property
     def generator_poly(self) -> Poly:
         return super().generator_poly
 
+    @property
     @extend_docstring(
         _CyclicCode.parity_check_poly,
         {},
@@ -787,10 +862,10 @@ class ReedSolomon(_CyclicCode):
                 rs.H
         """,
     )
-    @property
     def parity_check_poly(self) -> Poly:
         return super().parity_check_poly
 
+    @property
     @extend_docstring(
         _CyclicCode.roots,
         {},
@@ -821,7 +896,6 @@ class ReedSolomon(_CyclicCode):
                 rs.generator_poly(rs.roots)
         """,
     )
-    @property
     def roots(self) -> FieldArray:
         return super().roots
 
@@ -838,8 +912,8 @@ class ReedSolomon(_CyclicCode):
 
                 rs = galois.ReedSolomon(255, 223); rs
                 rs.alpha
-                rs.roots[0] == rs.alpha ** rs.c
-                rs.alpha.multiplicative_order() == rs.n
+                assert rs.roots[0] == rs.alpha ** rs.c
+                assert rs.alpha.multiplicative_order() == rs.n
 
             Construct a non-primitive $\textrm{RS}(85, 65)$ code over $\mathrm{GF}(2^8)$.
 
@@ -847,8 +921,8 @@ class ReedSolomon(_CyclicCode):
 
                 rs = galois.ReedSolomon(85, 65, field=galois.GF(2**8)); rs
                 rs.alpha
-                rs.roots[0] == rs.alpha ** rs.c
-                rs.alpha.multiplicative_order() == rs.n
+                assert rs.roots[0] == rs.alpha ** rs.c
+                assert rs.alpha.multiplicative_order() == rs.n
 
         Group:
             Polynomials
@@ -872,7 +946,7 @@ class ReedSolomon(_CyclicCode):
 
                 rs = galois.ReedSolomon(15, 9); rs
                 rs.c
-                rs.roots[0] == rs.alpha ** rs.c
+                assert rs.roots[0] == rs.alpha ** rs.c
                 rs.generator_poly
 
             Construct a narrow-sense $\textrm{RS}(15, 9)$ code over $\mathrm{GF}(2^4)$
@@ -883,11 +957,12 @@ class ReedSolomon(_CyclicCode):
 
                 rs = galois.ReedSolomon(15, 9, c=3); rs
                 rs.c
-                rs.roots[0] == rs.alpha ** rs.c
+                assert rs.roots[0] == rs.alpha ** rs.c
                 rs.generator_poly
         """
         return self._c
 
+    @property
     @extend_docstring(
         _CyclicCode.G,
         {},
@@ -914,10 +989,10 @@ class ReedSolomon(_CyclicCode):
                 rs.generator_poly
         """,
     )
-    @property
     def G(self) -> FieldArray:
         return super().G
 
+    @property
     @extend_docstring(
         _CyclicCode.H,
         {},
@@ -940,7 +1015,6 @@ class ReedSolomon(_CyclicCode):
                 rs.parity_check_poly
         """,
     )
-    @property
     def H(self) -> FieldArray:
         return super().H
 
@@ -955,16 +1029,16 @@ class ReedSolomon(_CyclicCode):
             .. ipython:: python
 
                 rs = galois.ReedSolomon(255, 223); rs
-                rs.is_primitive
-                rs.n == rs.field.order - 1
+                assert rs.is_primitive
+                assert rs.n == rs.field.order - 1
 
             Construct a non-primitive $\textrm{RS}(85, 65)$ code over $\mathrm{GF}(2^8)$.
 
             .. ipython:: python
 
                 rs = galois.ReedSolomon(85, 65, field=galois.GF(2**8)); rs
-                rs.is_primitive
-                rs.n == rs.field.order - 1
+                assert not rs.is_primitive
+                assert not rs.n == rs.field.order - 1
         """
         return self._is_primitive
 
@@ -981,8 +1055,8 @@ class ReedSolomon(_CyclicCode):
             .. ipython:: python
 
                 rs = galois.ReedSolomon(15, 9); rs
-                rs.is_narrow_sense
-                rs.c == 1
+                assert rs.is_narrow_sense
+                assert rs.c == 1
                 rs.generator_poly
                 rs.roots
 
@@ -993,13 +1067,14 @@ class ReedSolomon(_CyclicCode):
             .. ipython:: python
 
                 rs = galois.ReedSolomon(15, 9, c=3); rs
-                rs.is_narrow_sense
-                rs.c == 1
+                assert not rs.is_narrow_sense
+                assert not rs.c == 1
                 rs.generator_poly
                 rs.roots
         """
         return self._is_narrow_sense
 
+    @property
     @extend_docstring(
         _CyclicCode.is_systematic,
         {},
@@ -1010,7 +1085,7 @@ class ReedSolomon(_CyclicCode):
             .. ipython:: python
 
                 rs = galois.ReedSolomon(13, 9, field=galois.GF(3**3)); rs
-                rs.is_systematic
+                assert rs.is_systematic
                 rs.G
 
             Construct a non-primitive $\textrm{RS}(13, 9)$ non-systematic code over $\mathrm{GF}(3^3)$.
@@ -1018,12 +1093,11 @@ class ReedSolomon(_CyclicCode):
             .. ipython:: python
 
                 rs = galois.ReedSolomon(13, 9, field=galois.GF(3**3), systematic=False); rs
-                rs.is_systematic
+                assert not rs.is_systematic
                 rs.G
                 rs.generator_poly
         """,
     )
-    @property
     def is_systematic(self) -> bool:
         return super().is_systematic
 

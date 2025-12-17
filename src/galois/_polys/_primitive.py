@@ -54,18 +54,18 @@ def is_primitive(f: Poly) -> bool:
         .. ipython:: python
 
             f = galois.conway_poly(2, 8); f
-            f.is_primitive()
+            assert f.is_primitive()
 
             f = galois.conway_poly(3, 5); f
-            f.is_primitive()
+            assert f.is_primitive()
 
         The irreducible polynomial of $\mathrm{GF}(2^8)$ for AES is not primitive.
 
         .. ipython:: python
 
             f = galois.Poly.Degrees([8, 4, 3, 1, 0]); f
-            f.is_irreducible()
-            f.is_primitive()
+            assert f.is_irreducible()
+            assert not f.is_primitive()
     """
     if f.degree == 0:
         # Over fields, f(x) = 0 is the zero element of GF(p^m)[x] and f(x) = c are the units of GF(p^m)[x].
@@ -191,9 +191,9 @@ def primitive_poly(
 
             GF = galois.GF(7)
             f = galois.primitive_poly(7, 5, method="random"); f
-            f.is_primitive()
+            assert f.is_primitive()
             g = f * GF(3); g
-            g.is_primitive()
+            assert g.is_primitive()
 
     Group:
         polys-primitive

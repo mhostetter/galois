@@ -11,9 +11,9 @@ from typing import Type, overload
 from typing_extensions import Literal
 
 from .._helper import export, verify_isinstance
-from .._modular import is_primitive_root, primitive_root
 from .._polys import Poly, conway_poly
 from .._prime import factors
+from .._primitive_root import is_primitive_root, primitive_root
 from ..typing import PolyLike
 from ._array import FieldArray
 from ._gf2 import GF2
@@ -444,14 +444,14 @@ def _GF_extension(
             # primitive polynomials.
             verify_element = False
     else:
-        irreducible_poly_ = Poly._PolyLike(irreducible_poly_, field=prime_subfield)
+        irreducible_poly_ = Poly.Like(irreducible_poly_, field=prime_subfield)
 
     # Get default primitive element
     if alpha is None:
         alpha = primitive_element(irreducible_poly_)
         verify_element = False
     else:
-        alpha = Poly._PolyLike(alpha, field=prime_subfield)
+        alpha = Poly.Like(alpha, field=prime_subfield)
 
     # Check polynomial fields and degrees
     if not irreducible_poly_.field.order == p:

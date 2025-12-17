@@ -91,7 +91,7 @@ def gcd(a, b):
         return int_gcd(a, b)
     if isinstance(a, Poly) and isinstance(b, Poly):
         return poly_gcd(a, b)
-    raise TypeError(f"Arguments `a` and `b` must both be either int or galois.Poly, not {type(a)} and {type(b)}.")
+    raise TypeError(f"Arguments 'a' and 'b' must both be either int or galois.Poly, not {type(a)} and {type(b)}.")
 
 
 @overload
@@ -139,7 +139,7 @@ def egcd(a, b):
                     a, b = 12, 16
                     gcd, s, t = galois.egcd(a, b)
                     gcd, s, t
-                    a*s + b*t == gcd
+                    assert a*s + b*t == gcd
 
             .. md-tab-item:: Polynomials
 
@@ -160,7 +160,7 @@ def egcd(a, b):
                     b = f1 * f3
                     gcd, s, t = galois.egcd(a, b)
                     gcd, s, t
-                    a*s + b*t == gcd
+                    assert a*s + b*t == gcd
 
     Group:
         number-theory-divisibility
@@ -169,7 +169,7 @@ def egcd(a, b):
         return int_egcd(a, b)
     if isinstance(a, Poly) and isinstance(b, Poly):
         return poly_egcd(a, b)
-    raise TypeError(f"Arguments `a` and `b` must both be either int or galois.Poly, not {type(a)} and {type(b)}.")
+    raise TypeError(f"Arguments 'a' and 'b' must both be either int or galois.Poly, not {type(a)} and {type(b)}.")
 
 
 @overload
@@ -432,7 +432,7 @@ def crt(remainders, moduli):
 
                     for i in range(len(a)):
                         ai = x % m[i]
-                        print(ai, ai == a[i])
+                        assert ai == a[i]
 
             .. md-tab-item:: Polynomials
 
@@ -460,7 +460,7 @@ def crt(remainders, moduli):
 
                     for i in range(len(a)):
                         ai = x % m[i]
-                        print(ai, ai == a[i])
+                        assert ai == a[i]
 
     Group:
         number-theory-congruences
@@ -690,8 +690,8 @@ def is_square_free(value):
 
                 .. ipython:: python
 
-                    galois.is_square_free(10)
-                    galois.is_square_free(18)
+                    assert galois.is_square_free(10)
+                    assert not galois.is_square_free(18)
 
             .. md-tab-item:: Polynomials
 
@@ -707,8 +707,8 @@ def is_square_free(value):
 
                 .. ipython:: python
 
-                    galois.is_square_free(f1 * f2)
-                    galois.is_square_free(f1**2 * f2)
+                    assert galois.is_square_free(f1 * f2)
+                    assert not galois.is_square_free(f1**2 * f2)
 
     Group:
         primes-tests

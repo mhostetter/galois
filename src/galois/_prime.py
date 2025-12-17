@@ -256,7 +256,7 @@ def random_prime(bits: int, seed: int | None = None) -> int:
         .. ipython:: python
 
             p = galois.random_prime(1024, seed=1); p
-            galois.is_prime(p)
+            assert galois.is_prime(p)
 
         Verify that $p$ is prime using the OpenSSL library.
 
@@ -366,7 +366,7 @@ def mersenne_exponents(n: int | None = None) -> list[int]:
 
             # Select one Merseene exponent and compute its Mersenne prime
             p = 2**e[-1] - 1; p
-            galois.is_prime(p)
+            assert galois.is_prime(p)
 
     Group:
         primes-generation
@@ -406,7 +406,7 @@ def mersenne_primes(n: int | None = None) -> list[int]:
 
             # List all Mersenne primes up to 2000 bits
             p = galois.mersenne_primes(2000); p
-            galois.is_prime(p[-1])
+            assert galois.is_prime(p[-1])
 
     Group:
         primes-generation
@@ -821,7 +821,7 @@ def factors(n: int) -> tuple[list[int], list[int]]:
     try:
         p, e, n = PrimeFactorsDatabase().fetch(n)
         if n == 1:
-            return p, e
+            return _merge_factors(p, e)
         # Else, there still may be a residual composite
         # Although, we're probably not powerful enough to factor it...
     except LookupError:
@@ -831,7 +831,7 @@ def factors(n: int) -> tuple[list[int], list[int]]:
     if is_prime(n):
         p.append(n)
         e.append(1)
-        return p, e
+        return _merge_factors(p, e)
 
     # Step 2: Test if n is a perfect power. The base may be composite.
     base, exponent = perfect_power(n)
@@ -840,7 +840,7 @@ def factors(n: int) -> tuple[list[int], list[int]]:
         ee = [eei * exponent for eei in ee]
         p.extend(pp)
         e.extend(ee)
-        return p, e
+        return _merge_factors(p, e)
 
     # Step 3: Perform trial division up to medium-sized primes.
     pp, ee, n = trial_division(n, 10_000_000)
@@ -875,7 +875,20 @@ def factors(n: int) -> tuple[list[int], list[int]]:
         p.append(n)
         e.append(1)
 
-    return p, e
+    return _merge_factors(p, e)
+
+
+def _merge_factors(p: list[int], e: list[int]) -> tuple[list[int], list[int]]:
+    """
+    Merges duplicate prime factors and sums their exponents.
+    """
+    merged: dict[int, int] = {}
+    for pi, ei in zip(p, e):
+        merged[pi] = merged.get(pi, 0) + ei
+    primes = sorted(merged.keys())
+    exponents = [merged[pi] for pi in primes]
+
+    return primes, exponents
 
 
 @export
@@ -901,7 +914,7 @@ def perfect_power(n: int) -> tuple[int, int]:
 
             n = 13
             galois.perfect_power(n)
-            galois.is_perfect_power(n)
+            assert not galois.is_perfect_power(n)
 
         Products of primes are not perfect powers.
 
@@ -909,7 +922,7 @@ def perfect_power(n: int) -> tuple[int, int]:
 
             n = 5 * 7
             galois.perfect_power(n)
-            galois.is_perfect_power(n)
+            assert not galois.is_perfect_power(n)
 
         Products of prime powers where the GCD of the exponents is 1 are not perfect powers.
 
@@ -917,7 +930,7 @@ def perfect_power(n: int) -> tuple[int, int]:
 
             n = 2 * 3 * 5**3
             galois.perfect_power(n)
-            galois.is_perfect_power(n)
+            assert not galois.is_perfect_power(n)
 
         Products of prime powers where the GCD of the exponents is greater than 1 are perfect powers.
 
@@ -925,7 +938,7 @@ def perfect_power(n: int) -> tuple[int, int]:
 
             n = 2**2 * 3**2 * 5**4
             galois.perfect_power(n)
-            galois.is_perfect_power(n)
+            assert galois.is_perfect_power(n)
 
         Negative integers can be perfect powers if they can be factored with an odd exponent.
 
@@ -933,7 +946,7 @@ def perfect_power(n: int) -> tuple[int, int]:
 
             n = -64
             galois.perfect_power(n)
-            galois.is_perfect_power(n)
+            assert galois.is_perfect_power(n)
 
         Negative integers that are only factored with an even exponent are not perfect powers.
 
@@ -941,7 +954,7 @@ def perfect_power(n: int) -> tuple[int, int]:
 
             n = -100
             galois.perfect_power(n)
-            galois.is_perfect_power(n)
+            assert not galois.is_perfect_power(n)
 
     Group:
         factorization-specific
@@ -1235,7 +1248,7 @@ def pollard_rho(n: int, c: int = 1) -> int:
         factorization-specific
     """
     verify_isinstance(n, int)
-    verify_isinstance(c, int, optional=True)
+    verify_isinstance(c, int)
 
     if not n > 1:
         raise ValueError(f"Argument 'n' must be greater than 1, not {n}.")
@@ -1250,7 +1263,7 @@ def pollard_rho(n: int, c: int = 1) -> int:
     while d == 1:
         a = f(a)
         b = f(f(b))
-        d = math.gcd(a - b, n)
+        d = math.gcd(abs(a - b), n)
 
     if d == n:
         raise RuntimeError(
@@ -1411,14 +1424,14 @@ def is_prime(n: int) -> bool:
     Examples:
         .. ipython:: python
 
-            galois.is_prime(13)
-            galois.is_prime(15)
+            assert galois.is_prime(13)
+            assert not galois.is_prime(15)
 
         The algorithm is also efficient on very large $n$.
 
         .. ipython:: python
 
-            galois.is_prime(1000000000000000035000061)
+            assert galois.is_prime(1000000000000000035000061)
 
     Group:
         primes-tests
@@ -1462,8 +1475,8 @@ def is_composite(n: int) -> bool:
     Examples:
         .. ipython:: python
 
-            galois.is_composite(13)
-            galois.is_composite(15)
+            assert not galois.is_composite(13)
+            assert galois.is_composite(15)
 
     Group:
         primes-tests
@@ -1497,9 +1510,9 @@ def is_prime_power(n: int) -> bool:
     Examples:
         .. ipython:: python
 
-            galois.is_prime_power(8)
-            galois.is_prime_power(6)
-            galois.is_prime_power(1)
+            assert galois.is_prime_power(8)
+            assert not galois.is_prime_power(6)
+            assert not galois.is_prime_power(1)
 
     Group:
         primes-tests
@@ -1538,42 +1551,42 @@ def is_perfect_power(n: int) -> bool:
         .. ipython:: python
 
             galois.perfect_power(13)
-            galois.is_perfect_power(13)
+            assert not galois.is_perfect_power(13)
 
         Products of primes are not perfect powers.
 
         .. ipython:: python
 
             galois.perfect_power(5*7)
-            galois.is_perfect_power(5*7)
+            assert not galois.is_perfect_power(5*7)
 
         Products of prime powers where the GCD of the exponents is 1 are not perfect powers.
 
         .. ipython:: python
 
             galois.perfect_power(2 * 3 * 5**3)
-            galois.is_perfect_power(2 * 3 * 5**3)
+            assert not galois.is_perfect_power(2 * 3 * 5**3)
 
         Products of prime powers where the GCD of the exponents is greater than 1 are perfect powers.
 
         .. ipython:: python
 
             galois.perfect_power(2**2 * 3**2 * 5**4)
-            galois.is_perfect_power(2**2 * 3**2 * 5**4)
+            assert galois.is_perfect_power(2**2 * 3**2 * 5**4)
 
         Negative integers can be perfect powers if they can be factored with an odd exponent.
 
         .. ipython:: python
 
             galois.perfect_power(-64)
-            galois.is_perfect_power(-64)
+            assert galois.is_perfect_power(-64)
 
         Negative integers that are only factored with an even exponent are not perfect powers.
 
         .. ipython:: python
 
             galois.perfect_power(-100)
-            galois.is_perfect_power(-100)
+            assert not galois.is_perfect_power(-100)
 
     Group:
         primes-tests
@@ -1631,10 +1644,10 @@ def is_smooth(n: int, B: int) -> bool:
     Examples:
         .. ipython:: python
 
-            galois.is_smooth(2**10, 2)
-            galois.is_smooth(10, 5)
-            galois.is_smooth(12, 5)
-            galois.is_smooth(60**2, 5)
+            assert galois.is_smooth(2**10, 2)
+            assert galois.is_smooth(10, 5)
+            assert galois.is_smooth(12, 5)
+            assert galois.is_smooth(60**2, 5)
 
     Group:
         primes-tests
@@ -1690,8 +1703,8 @@ def is_powersmooth(n: int, B: int) -> bool:
 
         .. ipython:: python
 
-            galois.is_smooth(2**4 * 3**2 * 5, 5)
-            galois.is_powersmooth(2**4 * 3**2 * 5, 5)
+            assert galois.is_smooth(2**4 * 3**2 * 5, 5)
+            assert not galois.is_powersmooth(2**4 * 3**2 * 5, 5)
 
     Group:
         primes-tests

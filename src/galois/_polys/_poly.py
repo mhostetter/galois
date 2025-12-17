@@ -126,10 +126,32 @@ class Poly:
         else:
             self._type = "dense"
 
+    ###############################################################################
+    # Alternate constructors
+    ###############################################################################
+
     @classmethod
-    def _PolyLike(cls, poly_like: PolyLike, field: Type[Array] | None = None) -> Self:
-        """
-        A private alternate constructor that converts a poly-like object into a polynomial, given a finite field.
+    def Like(cls, poly_like: PolyLike, field: Type[Array] | None = None) -> Self:
+        r"""
+        Constructs a polynomial over $\mathrm{GF}(p^m)$ from a :obj:`~galois.typing.PolyLike` object.
+
+        Arguments:
+            poly_like: A poly-like object.
+            field: The Galois field $\mathrm{GF}(p^m)$ the polynomial is over. The default is `None` which
+                corresponds to :obj:`~galois.GF2`.
+
+        Returns:
+            The polynomial $f(x)$.
+
+        Examples:
+            Construct a polynomial over $\mathrm{GF}(2)$ from a poly-like object.
+
+            .. ipython:: python
+
+                galois.Poly.Like(13)
+                galois.Poly.Like("x^3 + x^2 + 1")
+                galois.Poly.Like([1, 1, 0, 1])
+                galois.Poly.Like(galois.Poly([1, 1, 0, 1]))
         """
         if isinstance(poly_like, int):
             poly = Poly.Int(poly_like, field=field)
@@ -146,10 +168,6 @@ class Poly:
             )
 
         return poly
-
-    ###############################################################################
-    # Alternate constructors
-    ###############################################################################
 
     @classmethod
     def Zero(cls, field: Type[Array] | None = None) -> Self:
@@ -382,7 +400,7 @@ class Poly:
                 f = galois.Poly.Int(186535908, field=GF); f
                 int(f)
                 # The polynomial/integer equivalence
-                int(f) == 13*GF.order**3 + 117
+                assert int(f) == 13*GF.order**3 + 117
 
             Construct a polynomial over $\mathrm{GF}(2)$ from its binary string.
 
@@ -991,7 +1009,7 @@ class Poly:
                 GF = galois.GF(7)
                 f = galois.Poly([3, 0, 5, 2], field=GF); f
                 int(f)
-                int(f) == 3*GF.order**3 + 5*GF.order**1 + 2*GF.order**0
+                assert int(f) == 3*GF.order**3 + 5*GF.order**1 + 2*GF.order**0
         """
         return self.__index__()
 
@@ -1118,9 +1136,9 @@ class Poly:
 
                 a = galois.Poly([3, 0, 5], field=galois.GF(7)); a
                 b = galois.Poly([3, 0, 5], field=galois.GF(7)); b
-                a == b
+                assert a == b
                 # They are still two distinct objects, however
-                a is b
+                assert a is not b
 
             Compare two polynomials with the same coefficients but over different fields.
 
@@ -1128,7 +1146,7 @@ class Poly:
 
                 a = galois.Poly([3, 0, 5], field=galois.GF(7)); a
                 b = galois.Poly([3, 0, 5], field=galois.GF(7**2)); b
-                a == b
+                assert a != b
 
             Comparison with :obj:`~galois.typing.PolyLike` objects is allowed for convenience.
 
@@ -1136,17 +1154,17 @@ class Poly:
 
                 GF = galois.GF(7)
                 a = galois.Poly([3, 0, 2], field=GF); a
-                a == GF([3, 0, 2])
-                a == [3, 0, 2]
-                a == "3x^2 + 2"
-                a == 3*7**2 + 2
+                assert a == GF([3, 0, 2])
+                assert a == [3, 0, 2]
+                assert a == "3x^2 + 2"
+                assert a == 3*7**2 + 2
         """
         # Coerce to a polynomial object
         if not isinstance(other, (Poly, Array)):
             field = self.field
         else:
             field = None
-        other = Poly._PolyLike(other, field=field)
+        other = Poly.Like(other, field=field)
 
         return (
             self.field is other.field
@@ -1616,7 +1634,7 @@ class Poly:
 
                 GF = galois.GF(7)
                 p = galois.Poly([1, 0, 4, 5], field=GF); p
-                p.is_monic
+                assert p.is_monic
 
             A non-monic polynomial over $\mathrm{GF}(7)$.
 
@@ -1624,7 +1642,7 @@ class Poly:
 
                 GF = galois.GF(7)
                 p = galois.Poly([3, 0, 4, 5], field=GF); p
-                p.is_monic
+                assert not p.is_monic
         """
         return bool(self.nonzero_coeffs[0] == 1)
 

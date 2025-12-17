@@ -81,7 +81,7 @@ finite field, call `.view(np.ndarray)` to *view* it back to a NumPy array.
 
    x_np = np.array([213, 167, 4, 214, 209], dtype=int); x_np
    x = x_np.view(GF); x
-   # Modifying x does modify x_np!
+   # Modifying x does modify x_np
    x[0] = 0; x_np
 
 Classmethods
@@ -235,11 +235,11 @@ from the function. Most notably, :func:`numpy.copy` defaults `subok` to `False`.
 .. ipython:: python
 
    x
-   # Returns np.ndarray!
+   # Returns np.ndarray
    np.copy(x)
    np.copy(x, subok=True)
 
-The :func:`numpy.ndarray.copy` method will, however, return a subclass. Be mindful of the `subok` keyword argument!
+The :func:`numpy.ndarray.copy` method will, however, return a subclass. Be mindful of the `subok` keyword argument.
 
 .. ipython:: python
 

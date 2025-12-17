@@ -5,20 +5,27 @@ on:
     tags:
       - v*
 
+permissions:
+  contents: write
+
 jobs:
   build:
     name: Build the package
     uses: ./.github/workflows/build.yaml
+    secrets: inherit
 
   docs:
     name: Build the docs
     uses: ./.github/workflows/docs.yaml
+    secrets: inherit
 
   release:
     name: Create GitHub release
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0  # Fetch all commits and tags
           ref: ${{ github.ref }}
@@ -63,7 +70,7 @@ jobs:
           path: dist/
 
       - name: Publish to TestPyPI
-        uses: pypa/gh-action-pypi-publish@v1.4.2
+        uses: pypa/gh-action-pypi-publish@v1.13.0
         with:
           user: __token__
           password: ${{ secrets.TEST_PYPI_API_TOKEN }}
@@ -72,7 +79,7 @@ jobs:
           verbose: true
 
       - name: Publish to PyPI
-        uses: pypa/gh-action-pypi-publish@v1.4.2
+        uses: pypa/gh-action-pypi-publish@v1.13.0
         with:
           user: __token__
           password: ${{ secrets.PYPI_API_TOKEN }}

@@ -11,11 +11,11 @@
 } */
 
 /* [data-md-color-scheme="slate"] .md-header {
-  background-color: #344FA1;
+  background-color: var(--md-primary-fg-color);
 }
 
 [data-md-color-scheme="slate"] .md-tabs {
-  background-color: #344FA1;
+  background-color: var(--md-primary-fg-color);
 } */
 
 /* @media screen and (max-width: 76.1875em) */
@@ -79,7 +79,7 @@
 }
 
 /* Change the "class" and "property" label colors. */
-.md-typeset dl.objdesc>dt .property {
+.md-typeset dl.objdesc>dt .property .k {
   color: var(--md-code-hl-constant-color);
   font-style: italic;
 }

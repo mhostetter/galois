@@ -69,7 +69,7 @@ def is_irreducible(f: Poly) -> bool:
             # f(x) has no roots in GF(2), a necessary but not sufficient condition of being irreducible
             f.roots()
 
-            f.is_irreducible()
+            assert f.is_irreducible()
 
         .. ipython:: python
 
@@ -77,7 +77,7 @@ def is_irreducible(f: Poly) -> bool:
             h = galois.irreducible_poly(2**4, 3, method="random"); h
             f = g * h; f
 
-            f.is_irreducible()
+            assert not f.is_irreducible()
     """
 
     if f.degree == 0:
@@ -202,9 +202,9 @@ def irreducible_poly(
 
             GF = galois.GF(7)
             f = galois.irreducible_poly(7, 5, method="random"); f
-            f.is_irreducible()
+            assert f.is_irreducible()
             g = f * GF(3); g
-            g.is_irreducible()
+            assert g.is_irreducible()
 
     Group:
         polys-irreducible

@@ -15,6 +15,7 @@ import inspect
 import os
 import re
 import sys
+import typing
 
 sys.path.insert(0, os.path.abspath("."))
 sys.path.insert(0, os.path.abspath(".."))
@@ -31,6 +32,7 @@ setattr(builtins, "__sphinx_build__", True)
 
 import numpy
 import sphinx
+import sphinx.roles
 
 import galois
 
@@ -102,6 +104,9 @@ html_static_path = ["_static"]
 html_css_files = [
     "extra.css",
 ]
+html_js_files = [
+    ('galois-overrides.js', {'loading_method': 'async'})
+]
 
 # Define a custom inline Python syntax highlighting literal
 rst_prolog = """
@@ -110,8 +115,10 @@ rst_prolog = """
    :class: highlight
 """
 
-# Sets the default role of `content` to :python:`content`, which uses the custom Python syntax highlighting inline literal
+# Sets the default role of `content` to :python:`content`, which uses the custom Python syntax highlighting inline
+# literal
 default_role = "python"
+highlight_language = "python"
 
 html_title = "galois"
 html_favicon = "../logo/galois-favicon-color.png"
@@ -448,57 +455,53 @@ def autodoc_process_bases(app, name, obj, options, bases):
         bases.remove(base)
 
 
-# Only during Sphinx builds, monkey-patch the metaclass properties into this class as "class properties". In Python 3.9 and greater,
-# class properties may be created using `@classmethod @property def foo(cls): return "bar"`. In earlier versions, they must be created
-# in the metaclass, however Sphinx cannot find or document them. Adding this workaround allows Sphinx to document them.
+def fieldarraymeta_attrgetter(obj, name, *default):
+    """
+    Autodoc attr-getter for field *classes* (instances of FieldArrayMeta).
 
+    This lets autodoc/python-apigen see metaclass-defined descriptors
+    (class properties, etc.) as documentable members of the field class,
+    without evaluating them.
+    """
+    meta = type(obj)  # FieldArrayMeta or subclass
 
-def classproperty(obj):
-    ret = classmethod(obj)
-    ret.__doc__ = obj.__doc__
-    return ret
+    # 1) Special-case "__dict__": return a mapping that merges the class dict
+    #    with selected descriptors from the metaclass, so member *enumeration*
+    #    sees them.
+    if name == "__dict__":
+        # Start with the normal class dict
+        d: dict[str, object] = dict(vars(obj))  # mappingproxy -> plain dict
 
+        # Merge in metaclass descriptors as if they were class attributes
+        for cls in meta.__mro__:
+            for attr_name, value in cls.__dict__.items():
+                if attr_name.startswith("_"):
+                    continue  # skip private/dunder
+                if attr_name in d:
+                    continue  # don't override real class attributes
 
-ArrayMeta_properties = [
-    member for member in dir(galois.Array) if inspect.isdatadescriptor(getattr(type(galois.Array), member, None))
-]
-for p in ArrayMeta_properties:
-    # Fetch the class properties from the private metaclasses
-    ArrayMeta_property = getattr(galois._domains._meta.ArrayMeta, p)
+                # Only pull in data descriptors (properties, classproperties, etc.)
+                if inspect.isdatadescriptor(value):
+                    d[attr_name] = value
 
-    # Temporarily delete the class properties from the private metaclasses
-    delattr(galois._domains._meta.ArrayMeta, p)
+        return d
 
-    # Add a Python 3.9 style class property to the public class
-    setattr(galois.Array, p, classproperty(ArrayMeta_property))
+    # 2) For normal attribute lookup: if it's a data descriptor on the metaclass,
+    #    return the descriptor itself (possibly wrapped as a "class property").
+    for cls in meta.__mro__:
+        d = cls.__dict__
+        if name in d:
+            value = d[name]
+            if inspect.isdatadescriptor(value):
+                return value
 
-    # Add back the class properties to the private metaclasses
-    setattr(galois._domains._meta.ArrayMeta, p, ArrayMeta_property)
-
-
-FieldArrayMeta_properties = [
-    member
-    for member in dir(galois.FieldArray)
-    if inspect.isdatadescriptor(getattr(type(galois.FieldArray), member, None))
-]
-for p in FieldArrayMeta_properties:
-    # Fetch the class properties from the private metaclasses
-    if p in ArrayMeta_properties:
-        ArrayMeta_property = getattr(galois._domains._meta.ArrayMeta, p)
-    FieldArrayMeta_property = getattr(galois._fields._meta.FieldArrayMeta, p)
-
-    # Temporarily delete the class properties from the private metaclasses
-    if p in ArrayMeta_properties:
-        delattr(galois._domains._meta.ArrayMeta, p)
-    delattr(galois._fields._meta.FieldArrayMeta, p)
-
-    # Add a Python 3.9 style class property to the public class
-    setattr(galois.FieldArray, p, classproperty(FieldArrayMeta_property))
-
-    # Add back the class properties to the private metaclasses
-    if p in ArrayMeta_properties:
-        setattr(galois._domains._meta.ArrayMeta, p, ArrayMeta_property)
-    setattr(galois._fields._meta.FieldArrayMeta, p, FieldArrayMeta_property)
+    # 3) Otherwise, fall back to normal getattr on the class object.
+    try:
+        return getattr(obj, name)
+    except AttributeError:
+        if default:
+            return default[0]
+        raise
 
 
 def autodoc_process_signature(app, what, name, obj, options, signature, return_annotation):
@@ -546,8 +549,30 @@ def monkey_patch_parse_see_also():
     sphinx.ext.napoleon.GoogleDocstring._parse_see_also_section = _parse_see_also_section
 
 
+T = typing.TypeVar("T")
+
+
+class NDArray(typing.Generic[T]):
+    pass
+
+
+def monkey_patch_numpy_typing_ndarray():
+    import numpy.typing
+
+    NDArray.__module__ = "numpy.typing"
+    numpy.typing.NDArray = NDArray
+
+
 def setup(app):
+    # Register the "python" role so default_role finds it *without* complaining
+    app.add_role("python", sphinx.roles.code_role)
+
     monkey_patch_parse_see_also()
+    monkey_patch_numpy_typing_ndarray()
     app.connect("autodoc-skip-member", autodoc_skip_member)
     app.connect("autodoc-process-bases", autodoc_process_bases)
     app.connect("autodoc-process-signature", autodoc_process_signature)
+
+    app.add_autodoc_attrgetter(galois._fields._meta.FieldArrayMeta, fieldarraymeta_attrgetter)
+    app.add_autodoc_attrgetter(galois._domains._meta.ArrayMeta, fieldarraymeta_attrgetter)
+    app.add_js_file("galois-overrides.js", loading_method="blocking")

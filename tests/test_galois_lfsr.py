@@ -37,8 +37,8 @@ def test_from_taps():
     GF = galois.GF(7)
     T = GF([1, 2, 3, 4])
     lfsr = galois.GLFSR.Taps(T)
-    assert lfsr.characteristic_poly == galois.Poly([1, -4, -3, -2, -1], field=GF)
-    assert lfsr.feedback_poly == galois.Poly([-1, -2, -3, -4, 1], field=GF)
+    assert lfsr.characteristic_poly == galois.Poly([1, -1, -2, -3, -4], field=GF)
+    assert lfsr.feedback_poly == galois.Poly([-4, -3, -2, -1, 1], field=GF)
 
 
 def test_str():
