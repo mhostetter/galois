@@ -91,7 +91,7 @@ def gcd(a, b):
         return int_gcd(a, b)
     if isinstance(a, Poly) and isinstance(b, Poly):
         return poly_gcd(a, b)
-    raise TypeError(f"Arguments `a` and `b` must both be either int or galois.Poly, not {type(a)} and {type(b)}.")
+    raise TypeError(f"Arguments 'a' and 'b' must both be either int or galois.Poly, not {type(a)} and {type(b)}.")
 
 
 @overload
@@ -169,7 +169,7 @@ def egcd(a, b):
         return int_egcd(a, b)
     if isinstance(a, Poly) and isinstance(b, Poly):
         return poly_egcd(a, b)
-    raise TypeError(f"Arguments `a` and `b` must both be either int or galois.Poly, not {type(a)} and {type(b)}.")
+    raise TypeError(f"Arguments 'a' and 'b' must both be either int or galois.Poly, not {type(a)} and {type(b)}.")
 
 
 @overload

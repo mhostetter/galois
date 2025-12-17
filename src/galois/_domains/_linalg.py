@@ -153,7 +153,7 @@ class inner_jit(Function):
             return a * b
         if not a.shape[-1] == b.shape[-1]:
             raise ValueError(
-                f"Operation 'inner' requires `a` and `b` to have the same last dimension, not {a.shape} and {b.shape}."
+                f"Operation 'inner' requires 'a' and 'b' to have the same last dimension, not {a.shape} and {b.shape}."
             )
 
         return np.sum(a * b, axis=-1)

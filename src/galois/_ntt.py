@@ -110,7 +110,7 @@ def ntt(
     """
     verify_isinstance(x, (tuple, list, np.ndarray, FieldArray))
     if isinstance(x, FieldArray) and not type(x).is_prime_field:
-        raise ValueError(f"If argument `x` is a FieldArray, it must be a prime field, not {type(x)}.")
+        raise ValueError(f"If argument 'x' is a FieldArray, it must be a prime field, not {type(x)}.")
 
     if modulus is None and isinstance(x, FieldArray):
         modulus = type(x).characteristic
@@ -228,7 +228,7 @@ def intt(
     """
     verify_isinstance(X, (tuple, list, np.ndarray, FieldArray))
     if isinstance(X, FieldArray) and not type(X).is_prime_field:
-        raise ValueError(f"If argument `X` is a FieldArray, it must be a prime field, not {type(X)}.")
+        raise ValueError(f"If argument 'X' is a FieldArray, it must be a prime field, not {type(X)}.")
 
     if modulus is None and isinstance(X, FieldArray):
         modulus = type(X).characteristic
