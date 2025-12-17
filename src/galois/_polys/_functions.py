@@ -12,7 +12,7 @@ def gcd(a: Poly, b: Poly) -> Poly:
     This function is wrapped and documented in `_polymorphic.gcd()`.
     """
     if not a.field is b.field:
-        raise ValueError(f"Polynomials `a` and `b` must be over the same Galois field, not {a.field} and {b.field}.")
+        raise ValueError(f"Polynomials 'a' and 'b' must be over the same Galois field, not {a.field} and {b.field}.")
 
     r2, r1 = a, b
     while r1 != 0:
@@ -31,7 +31,7 @@ def egcd(a: Poly, b: Poly) -> tuple[Poly, Poly, Poly]:
     This function is wrapped and documented in `_polymorphic.egcd()`.
     """
     if not a.field is b.field:
-        raise ValueError(f"Polynomials `a` and `b` must be over the same Galois field, not {a.field} and {b.field}.")
+        raise ValueError(f"Polynomials 'a' and 'b' must be over the same Galois field, not {a.field} and {b.field}.")
 
     field = a.field
     zero = Poly([0], field=field)

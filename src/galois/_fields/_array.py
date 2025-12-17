@@ -420,7 +420,8 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         x = x.view(np.ndarray)  # Convert into an integer array
         if not x.shape[-1] == degree:
             raise ValueError(
-                f"The last dimension of `array` must be the field extension dimension {cls.degree}, not {x.shape[-1]}."
+                f"Argument 'array' must have last dimension equal to the field extension dimension {cls.degree}, "
+                f"not {x.shape[-1]}."
             )
 
         degrees = np.arange(degree - 1, -1, -1, dtype=dtype)
