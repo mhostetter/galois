@@ -777,29 +777,29 @@ class Poly:
             where $m_i$ is the multiplicity of root $r_i$ and $d = \sum_{i=1}^{k} m_i$.
 
             The Galois field elements can be represented as
-            $\mathrm{GF}(p^m) = \{0, 1, \alpha, \alpha^2, \dots, \alpha^{p^m-2}\}$, where $\alpha$ is a
+            $\mathrm{GF}(p^m) = \{0, 1, g, g^2, \dots, g^{p^m-2}\}$, where $g$ is a
             primitive element of $\mathrm{GF}(p^m)$.
 
             0 is a root of $f(x)$ if $a_0 = 0$. 1 is a root of $f(x)$ if
             $\sum_{j=0}^{d} a_j = 0$. The remaining elements of $\mathrm{GF}(p^m)$ are powers of
-            $\alpha$. The following equations calculate $f(\alpha^i)$, where $\alpha^i$ is a
-            root of $f(x)$ if $f(\alpha^i) = 0$.
+            $g$. The following equations calculate $f(g^i)$, where $g^i$ is a
+            root of $f(x)$ if $f(g^i) = 0$.
 
             $$
-            f(\alpha^i)
-            &= a_{d}(\alpha^i)^{d} + \dots + a_1(\alpha^i) + a_0 \\
+            f(g^i)
+            &= a_{d}(g^i)^{d} + \dots + a_1(g^i) + a_0 \\
             &\overset{\Delta}{=} \lambda_{i,d} + \dots + \lambda_{i,1} + \lambda_{i,0} \\
             &= \sum_{j=0}^{d} \lambda_{i,j}
             $$
 
-            The next power of $\alpha$ can be easily calculated from the previous calculation.
+            The next power of $g$ can be easily calculated from the previous calculation.
 
             $$
-            f(\alpha^{i+1})
-            &= a_{d}(\alpha^{i+1})^{d} + \dots + a_1(\alpha^{i+1}) + a_0 \\
-            &= a_{d}(\alpha^i)^{d}\alpha^d + \dots + a_1(\alpha^i)\alpha + a_0 \\
-            &= \lambda_{i,d}\alpha^d + \dots + \lambda_{i,1}\alpha + \lambda_{i,0} \\
-            &= \sum_{j=0}^{d} \lambda_{i,j}\alpha^j
+            f(g^{i+1})
+            &= a_{d}(g^{i+1})^{d} + \dots + a_1(g^{i+1}) + a_0 \\
+            &= a_{d}(g^i)^{d}g^d + \dots + a_1(g^i)g + a_0 \\
+            &= \lambda_{i,d}g^d + \dots + \lambda_{i,1}g + \lambda_{i,0} \\
+            &= \sum_{j=0}^{d} \lambda_{i,j}g^j
             $$
 
         Examples:
