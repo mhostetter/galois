@@ -62,70 +62,84 @@ def GF(
     Creates a :obj:`~galois.FieldArray` subclass for $\mathrm{GF}(p^m)$.
 
     Arguments:
-        order: The order $p^m$ of the field $\mathrm{GF}(p^m)$. The order must be a prime power.
-        characteristic: The characteristic $p$ of the field $\mathrm{GF}(p^m)$. The characteristic must
-            be prime.
-        degree: The degree $m$ of the field $\mathrm{GF}(p^m)$. The degree must be a positive integer.
-        irreducible_poly: Optionally specify an irreducible polynomial of degree $m$ over $\mathrm{GF}(p)$
-            that defines the finite field arithmetic. The default is `None` which uses the Conway polynomial
-            $C_{p,m}$, see :func:`~galois.conway_poly`.
-        primitive_element: Optionally specify a primitive element of the field. This value is used when building the
-            exponential and logarithm lookup tables and as the base of :obj:`numpy.log`. A primitive element is a
-            generator of the multiplicative group of the field.
+        order:
+            The order $p^m$ of the field $\mathrm{GF}(p^m)$. The order must be a prime power.
+        characteristic:
+            The characteristic $p$ of the field $\mathrm{GF}(p^m)$. The characteristic must be prime.
+        degree:
+            The degree $m$ of the field $\mathrm{GF}(p^m)$. The degree must be a positive integer.
+        irreducible_poly:
+            Optionally specify an irreducible polynomial $p(x)$ of degree $m$ over $\mathrm{GF}(p)$
+            that defines the extension field
 
-            For prime fields $\mathrm{GF}(p)$, the primitive element must be an integer and is a primitive root
-            modulo $p$. The default is `None` which uses :func:`~galois.primitive_root`.
+            $$
+            \mathrm{GF}(p^m) \cong \mathrm{GF}(p)[x] / (p(x)).
+            $$
 
-            For extension fields $\mathrm{GF}(p^m)$, the primitive element is a polynomial of degree less than
-            $m$ over $\mathrm{GF}(p)$. The default is `None` which uses :func:`~galois.primitive_element`.
-        verify: Indicates whether to verify that the user-provided irreducible polynomial is in fact irreducible and
-            that the user-provided primitive element is in fact a generator of the multiplicative group.
-            The default is `True`.
+            The default is `None`, which uses the Conway polynomial $p(x) = C_{p,m}$, see
+            :func:`~galois.conway_poly`.
 
-            For large fields and irreducible polynomials that are already known to be irreducible (which may take a
-            while to verify), this argument may be set to `False`.
+        primitive_element:
+            Optionally specify a primitive element $g$ of the field. A primitive element is a
+            generator of the multiplicative group $\mathrm{GF}(p^m)^\times$ and is used when building
+            exponential and logarithm lookup tables.
 
-            The default irreducible polynomial and primitive element are never verified because they are already known
-            to be irreducible and a multiplicative generator, respectively.
-        compile: The ufunc calculation mode. This can be modified after class construction with the
-            :func:`~galois.FieldArray.compile` method. See :doc:`/basic-usage/compilation-modes` for a further
-            discussion.
+            For prime fields $\mathrm{GF}(p)$, the primitive element must be an integer and is a
+            primitive root modulo $p$. The default is `None`, which uses
+            :func:`~galois.primitive_root`.
 
-            - `None` (default): For a newly created :obj:`~galois.FieldArray` subclass, `None` corresponds to
-              `"auto"`. If the :obj:`~galois.FieldArray` subclass already exists, `None` does not modify its current
-              compilation mode.
-            - `"auto"`: Selects `"jit-lookup"` for fields with order less than $2^{20}$, `"jit-calculate"` for
-              larger fields, and `"python-calculate"` for fields whose elements cannot be represented with
-              :obj:`numpy.int64`.
-            - `"jit-lookup"`: JIT compiles arithmetic ufuncs to use Zech log, log, and anti-log lookup tables for
-              efficient computation. In the few cases where explicit calculation is faster than table lookup, explicit
-              calculation is used.
-            - `"jit-calculate"`: JIT compiles arithmetic ufuncs to use explicit calculation. The `"jit-calculate"`
-              mode is designed for large fields that cannot or should not store lookup tables in RAM. Generally, the
-              `"jit-calculate"` mode is slower than `"jit-lookup"`.
-            - `"python-calculate"`: Uses pure-Python ufuncs with explicit calculation. This is intended for fields
-              whose elements cannot be represented with :obj:`numpy.int64` and instead use :obj:`numpy.object_`
-              with Python :obj:`int` (which has arbitrary precision). However, this mode can be used for any
-              field, enabling the code to run without Numba JIT compilation.
+            For extension fields $\mathrm{GF}(p^m)$, the primitive element may be specified by a
+            polynomial representative $g(x)$ over $\mathrm{GF}(p)$ with $\deg g < m$. The default is
+            `None`, which uses :func:`~galois.primitive_element`.
 
-        repr: The field element representation. This can be modified after class construction with the
-            :func:`~galois.FieldArray.repr` method. See :doc:`/basic-usage/element-representation` for a further
-            discussion.
+        verify:
+            Indicates whether to verify that a user-provided irreducible polynomial is in fact
+            irreducible and that a user-provided primitive element is a generator of the
+            multiplicative group. The default is `True`.
 
-            - `None` (default): For a newly created :obj:`~galois.FieldArray` subclass, `None` corresponds to `"int"`.
-              If the :obj:`~galois.FieldArray` subclass already exists, `None` does not modify its current element
-              representation.
-            - `"int"`: Sets the element representation to the :ref:`integer representation <int-repr>`.
-            - `"poly"`: Sets the element representation to the :ref:`polynomial representation <poly-repr>`.
-            - `"power"`: Sets the element representation to the :ref:`power representation <power-repr>`.
+            For large fields and irreducible polynomials that are already known to be valid (which
+            may take a while to verify), this argument may be set to `False`.
+
+            The default irreducible polynomial and primitive element are not re-verified, since they
+            are already known to be irreducible and multiplicative generators, respectively.
+
+        compile:
+            The ufunc calculation mode. This can be modified after class construction with the
+            :func:`~galois.FieldArray.compile` method. See
+            :doc:`/basic-usage/compilation-modes` for a further discussion.
+
+            - `None` (default): For a newly created :obj:`~galois.FieldArray` subclass, `None`
+              corresponds to `"auto"`. If the subclass already exists, `None` does not modify its
+              current compilation mode.
+            - `"auto"`: Selects `"jit-lookup"` for fields with order less than $2^{20}$,
+              `"jit-calculate"` for larger fields, and `"python-calculate"` for fields whose elements
+              cannot be represented with :obj:`numpy.int64`.
+            - `"jit-lookup"`: JIT compiles arithmetic ufuncs to use Zech log, log, and anti-log lookup
+              tables for efficient computation.
+            - `"jit-calculate"`: JIT compiles arithmetic ufuncs to use explicit calculation. This mode
+              is designed for large fields that cannot or should not store lookup tables in RAM.
+            - `"python-calculate"`: Uses pure-Python ufuncs with explicit calculation, intended for
+              fields whose elements use :obj:`numpy.object_`.
+
+        repr:
+            The field element representation. This can be modified after class construction with the
+            :func:`~galois.FieldArray.repr` method. See
+            :doc:`/basic-usage/element-representation` for further discussion.
+
+            - `None` (default): For a newly created :obj:`~galois.FieldArray` subclass, `None`
+              corresponds to `"int"`. If the subclass already exists, `None` does not modify its
+              current element representation.
+            - `"int"`: Integer representation.
+            - `"poly"`: Polynomial representation in $\alpha = x \bmod p(x)$.
+            - `"power"`: Power representation in a primitive element $g$.
 
     Returns:
         A :obj:`~galois.FieldArray` subclass for $\mathrm{GF}(p^m)$.
 
     Notes:
-        :obj:`~galois.FieldArray` subclasses of the same type (order, irreducible polynomial, and primitive element)
-        are singletons. So, calling this class factory with arguments that correspond to the same subclass will return
-        the same class object.
+        :obj:`~galois.FieldArray` subclasses of the same type (order, irreducible polynomial, and
+        primitive element) are singletons. Calling this factory with equivalent arguments will
+        return the same class object.
 
     Examples:
         Create a :obj:`~galois.FieldArray` subclass for each type of finite field.
@@ -152,8 +166,8 @@ def GF(
 
             .. md-tab-item:: GF(2^m)
 
-                Construct a binary extension field. Notice the default irreducible polynomial is primitive and
-                $x$ is a primitive element.
+                Construct a binary extension field. Notice the default irreducible polynomial is
+                primitive and $\alpha := x \bmod p(x)$ is a primitive element.
 
                 .. ipython:: python
 
@@ -162,37 +176,40 @@ def GF(
 
             .. md-tab-item:: GF(p^m)
 
-                Construct a prime extension field. Notice the default irreducible polynomial is primitive and $x$
-                is a primitive element.
+                Construct a prime extension field. Notice the default irreducible polynomial is
+                primitive and $\alpha := x \bmod p(x)$ is a primitive element.
 
                 .. ipython:: python
 
                     GF = galois.GF(3**5)
                     print(GF.properties)
 
-        Create a :obj:`~galois.FieldArray` subclass for extension fields and specify their irreducible polynomials.
+        Create a :obj:`~galois.FieldArray` subclass for extension fields and specify their
+        irreducible polynomials.
 
         .. md-tab-set::
 
             .. md-tab-item:: GF(2^m)
 
-                Construct the $\mathrm{GF}(2^8)$ field that is used in AES. Notice the irreducible polynomial
-                is not primitive and $x$ is not a primitive element.
+                Construct the $\mathrm{GF}(2^8)$ field used in AES. Notice the irreducible polynomial
+                is not primitive and $\alpha := x \bmod p(x)$ is not a primitive element.
 
                 .. ipython:: python
 
                     GF = galois.GF(2**8, irreducible_poly="x^8 + x^4 + x^3 + x + 1")
                     print(GF.properties)
+                    assert GF("a").multiplicative_order() != GF.order - 1
 
             .. md-tab-item:: GF(p^m)
 
-                Construct $\mathrm{GF}(3^5)$ with an irreducible, but not primitive, polynomial. Notice that
-                $x$ is not a primitive element.
+                Construct $\mathrm{GF}(3^5)$ with an irreducible, but not primitive, polynomial.
+                Notice that $\alpha := x \bmod p(x)$ is not a primitive element.
 
                 .. ipython:: python
 
                     GF = galois.GF(3**5, irreducible_poly="x^5 + 2x + 2")
                     print(GF.properties)
+                    assert GF("a").multiplicative_order() != GF.order - 1
 
         Finite fields with arbitrarily large orders are supported.
 
@@ -282,7 +299,7 @@ def GF(
             )
         field = _GF_prime(
             characteristic,
-            alpha=primitive_element,
+            g=primitive_element,
             verify=verify,
             compile=compile,
             repr=repr,
@@ -292,7 +309,7 @@ def GF(
             characteristic,
             degree,
             irreducible_poly_=irreducible_poly,
-            alpha=primitive_element,
+            g=primitive_element,
             verify=verify,
             compile=compile,
             repr=repr,
@@ -363,7 +380,7 @@ def Field(
 
 def _GF_prime(
     p: int,
-    alpha: int | None = None,
+    g: int | None = None,
     verify: bool = True,
     compile: Literal["auto", "jit-lookup", "jit-calculate", "python-calculate"] | None = None,
     repr: Literal["int", "poly", "power"] | None = None,
@@ -372,16 +389,16 @@ def _GF_prime(
     Class factory for prime fields GF(p).
     """
     # Get default primitive element
-    if alpha is None:
-        alpha = primitive_root(p)
+    if g is None:
+        g = primitive_root(p)
 
     # Check primitive element range
-    if not 0 < alpha < p:
-        raise ValueError(f"Argument 'primitive_element' must be non-zero in the field 0 < x < {p}, not {alpha}.")
+    if not 0 < g < p:
+        raise ValueError(f"Argument 'primitive_element' must be non-zero in the field 0 < x < {p}, not {g}.")
 
     # If the requested field has already been constructed, return it
-    name = f"FieldArray_{p}_{alpha}"
-    key = (p, alpha)
+    name = f"FieldArray_{p}_{g}"
+    key = (p, g)
     if key in _GF_prime._classes:
         field = _GF_prime._classes[key]
         if compile is not None:
@@ -390,8 +407,8 @@ def _GF_prime(
             field.repr(repr)
         return field
 
-    if verify and not is_primitive_root(alpha, p):
-        raise ValueError(f"Argument 'primitive_element' must be a primitive root modulo {p}, {alpha} is not.")
+    if verify and not is_primitive_root(g, p):
+        raise ValueError(f"Argument 'primitive_element' must be a primitive root modulo {p}, {g} is not.")
 
     if p == 2:
         field = GF2
@@ -405,8 +422,8 @@ def _GF_prime(
                 "characteristic": p,
                 "degree": 1,
                 "order": p,
-                "irreducible_poly_int": 2 * p - alpha,  # f(x) = x - e
-                "primitive_element": alpha,
+                "irreducible_poly_int": 2 * p - g,  # f(x) = x - e
+                "primitive_element": g,
             },
         )
 
@@ -433,7 +450,7 @@ def _GF_extension(
     p: int,
     m: int,
     irreducible_poly_: PolyLike | None = None,
-    alpha: PolyLike | None = None,
+    g: PolyLike | None = None,
     verify: bool = True,
     compile: Literal["auto", "jit-lookup", "jit-calculate", "python-calculate"] | None = None,
     repr: Literal["int", "poly", "power"] | None = None,
@@ -451,8 +468,8 @@ def _GF_extension(
         irreducible_poly_ = conway_poly(p, m)
         is_primitive_poly = True
         verify_poly = False  # We don't need to verify Conway polynomials are irreducible
-        if alpha is None:
-            alpha = Poly.Identity(prime_subfield)
+        if g is None:
+            g = Poly.Identity(prime_subfield)
             # We know `g(x) = x` is a primitive element of the Conway polynomial because Conway polynomials are
             # primitive polynomials.
             verify_element = False
@@ -460,11 +477,11 @@ def _GF_extension(
         irreducible_poly_ = Poly.Like(irreducible_poly_, field=prime_subfield)
 
     # Get default primitive element
-    if alpha is None:
-        alpha = primitive_element(irreducible_poly_)
+    if g is None:
+        g = primitive_element(irreducible_poly_)
         verify_element = False
     else:
-        alpha = Poly.Like(alpha, field=prime_subfield)
+        g = Poly.Like(g, field=prime_subfield)
 
     # Check polynomial fields and degrees
     if not irreducible_poly_.field.order == p:
@@ -473,16 +490,16 @@ def _GF_extension(
         )
     if not irreducible_poly_.degree == m:
         raise ValueError(f"Argument 'irreducible_poly' must have degree equal to {m}, not {irreducible_poly_.degree}.")
-    if not alpha.field.order == p:
+    if not g.field.order == p:
         raise ValueError(
-            f"Argument 'primitive_element' must be a polynomial over {prime_subfield.name}, not {alpha.field.name}."
+            f"Argument 'primitive_element' must be a polynomial over {prime_subfield.name}, not {g.field.name}."
         )
-    if not alpha.degree < m:
-        raise ValueError(f"Argument 'primitive_element' must have degree strictly less than {m}, not {alpha.degree}.")
+    if not g.degree < m:
+        raise ValueError(f"Argument 'primitive_element' must have degree strictly less than {m}, not {g.degree}.")
 
     # If the requested field has already been constructed, return it
-    name = f"FieldArray_{p}_{m}_{int(alpha)}_{int(irreducible_poly_)}"
-    key = (p, m, int(alpha), int(irreducible_poly_))
+    name = f"FieldArray_{p}_{m}_{int(g)}_{int(irreducible_poly_)}"
+    key = (p, m, int(g), int(irreducible_poly_))
     if key in _GF_extension._classes:
         field = _GF_extension._classes[key]
         if compile is not None:
@@ -493,8 +510,8 @@ def _GF_extension(
 
     if verify_poly and not irreducible_poly_.is_irreducible():
         raise ValueError(f"Argument 'irreducible_poly' must be irreducible, {irreducible_poly_} is not.")
-    if verify_element and not is_primitive_element(alpha, irreducible_poly_):
-        raise ValueError(f"Argument 'primitive_element' must be a multiplicative generator of {name}, {alpha} is not.")
+    if verify_element and not is_primitive_element(g, irreducible_poly_):
+        raise ValueError(f"Argument 'primitive_element' must be a multiplicative generator of {name}, {g} is not.")
 
     ufunc_mixin = UFuncMixin_2_m if p == 2 else UFuncMixin_p_m
 
@@ -508,7 +525,7 @@ def _GF_extension(
             "degree": m,
             "order": p**m,
             "irreducible_poly_int": int(irreducible_poly_),
-            "primitive_element": int(alpha),
+            "primitive_element": int(g),
             "prime_subfield": prime_subfield,
         },
     )

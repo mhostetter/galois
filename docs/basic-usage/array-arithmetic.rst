@@ -168,24 +168,24 @@ Expand any section for more details.
 .. example:: Logarithm: `np.log(x)` or `x.log()`
     :collapsible:
 
-    Compute the logarithm base $\alpha$, the primitive element of the field.
+    Compute the logarithm base $g$, the primitive element of the field.
 
     .. ipython-with-reprs:: int,poly,power
 
         y
         z = np.log(y); z
-        alpha = GF.primitive_element; alpha
-        alpha ** z == y
+        g = GF.primitive_element; g
+        g ** z == y
 
-    Compute the logarithm base $\beta$, a different primitive element of the field. See :func:`FieldArray.log`
+    Compute the logarithm base $g_2$, a different primitive element of the field. See :func:`FieldArray.log`
     for more details.
 
     .. ipython-with-reprs:: int,poly,power
 
         y
-        beta = GF.primitive_elements[-1]; beta
-        z = y.log(beta); z
-        beta ** z == y
+        g2 = GF.primitive_elements[-1]; g2
+        z = y.log(g2); z
+        g2 ** z == y
 
 .. example:: Kronecker product: `np.kron(a, b)`
     :collapsible:

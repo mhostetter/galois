@@ -8,7 +8,7 @@ the finite field $\mathrm{GF}(3^5)$.
 
    GF = galois.GF(3**5)
    print(GF.properties)
-   alpha = GF.primitive_element; alpha
+   g = GF.primitive_element; g
 
 Create a scalar
 ---------------
@@ -20,8 +20,8 @@ the primitive element to a scalar power.
 .. ipython-with-reprs:: int,poly,power
 
    GF(17)
-   GF("x^2 + 2x + 2")
-   alpha ** 222
+   GF("a^2 + 2a + 2")
+   g ** 222
 
 Create a new array
 ------------------
@@ -35,21 +35,23 @@ A finite field array may also be created by exponentiating the primitive element
 .. ipython-with-reprs:: int,poly,power
 
    GF([17, 4, 148, 205])
-   GF([["x^2 + 2x + 2", 4], ["x^4 + 2x^3 + x^2 + x + 1", 205]])
-   alpha ** np.array([[222, 69], [54, 24]])
+   GF([["a^2 + 2a + 2", 4], ["a^4 + 2a^3 + a^2 + a + 1", 205]])
+   g ** np.array([[222, 69], [54, 24]])
 
 Polynomial coefficients
 .......................
 
 Rather than strings, the polynomial coefficients may be passed into `GF`'s constructor as length-$m$ vectors using
-the :func:`~galois.FieldArray.Vector` classmethod.
+the :func:`~galois.FieldArray.Vector` class method. The coefficients are in decreasing degree order,
+$\{a_{m-1}, a_{m-2}, \dots, a_1, a_0\}$.
 
 .. ipython-with-reprs:: int,poly,power
 
    GF.Vector([[0, 0, 1, 2, 2], [0, 0, 0, 1, 1]])
 
-The :func:`~galois.FieldArray.vector` method is the opposite operation. It converts extension field elements from $\mathrm{GF}(p^m)$
-into length-$m$ vectors over $\mathrm{GF}(p)$.
+The :func:`~galois.FieldArray.vector` method is the opposite operation. It converts extension field elements from
+$\mathrm{GF}(p^m)$ into length-$m$ coefficient vectors over $\mathrm{GF}(p)$. The coefficients are in decreasing
+degree order, $\{a_{m-1}, a_{m-2}, \dots, a_1, a_0\}$.
 
 .. ipython-with-reprs:: int,poly,power
 
@@ -84,15 +86,15 @@ finite field, call `.view(np.ndarray)` to *view* it back to a NumPy array.
    # Modifying x does modify x_np
    x[0] = 0; x_np
 
-Classmethods
-------------
+Class methods
+-------------
 
-Several classmethods are provided in :obj:`~galois.FieldArray` to assist with creating arrays.
+Several class methods are provided in :obj:`~galois.FieldArray` to assist with creating arrays.
 
 Constant arrays
 ...............
 
-The :func:`~galois.FieldArray.Zeros` and :func:`~galois.FieldArray.Ones` classmethods provide constant arrays that are
+The :func:`~galois.FieldArray.Zeros` and :func:`~galois.FieldArray.Ones` class methods provide constant arrays that are
 useful for initializing empty arrays.
 
 .. ipython-with-reprs:: int,poly,power
@@ -110,7 +112,7 @@ useful for initializing empty arrays.
 Ordered arrays
 ..............
 
-The :func:`~galois.FieldArray.Range` classmethod produces a range of elements similar to :func:`numpy.arange`. The integer `start`
+The :func:`~galois.FieldArray.Range` class method produces a range of elements similar to :func:`numpy.arange`. The integer `start`
 and `stop` values are the :ref:`integer representation <int-repr>` of the polynomial field elements.
 
 .. ipython-with-reprs:: int,poly,power
@@ -121,7 +123,7 @@ and `stop` values are the :ref:`integer representation <int-repr>` of the polyno
 Random arrays
 .............
 
-The :func:`~galois.FieldArray.Random` classmethod provides a random array of the specified shape. This is convenient
+The :func:`~galois.FieldArray.Random` class method provides a random array of the specified shape. This is convenient
 for testing. The integer `low` and `high` values are the :ref:`integer representation <int-repr>` of
 the polynomial field elements.
 

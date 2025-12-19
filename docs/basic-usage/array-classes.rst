@@ -7,8 +7,8 @@ The :obj:`galois` library subclasses :obj:`~numpy.ndarray` to provide arithmetic
 -------------------------------
 
 The main abstract base class is :obj:`~galois.Array`. It has two abstract subclasses: :obj:`~galois.FieldArray` and
-:obj:`~galois.RingArray` (future). None of these abstract classes may be instantiated directly. Instead, specific
-subclasses for $\mathrm{GF}(p^m)$ and $\mathrm{GR}(p^e, m)$ are created at runtime with :func:`~galois.GF`
+:obj:`~galois.RingArray` (future). None of these abstract classes may be instantiated directly. Instead, concrete
+subclasses for $\mathrm{GF}(p^m)$ and $\mathrm{GR}(p^e, m)$ are created at runtime using :func:`~galois.GF`
 and :func:`~galois.GR` (future).
 
 :obj:`~galois.FieldArray` subclasses
@@ -25,17 +25,17 @@ A :obj:`~galois.FieldArray` subclass is created using the class factory function
     :title: Speed up creation of large finite field classes
     :collapsible:
 
-    For very large finite fields, the :obj:`~galois.FieldArray` subclass creation time can be reduced by explicitly specifying
-    $p$ and $m$. This eliminates the need to factor the order $p^m$.
+    For very large finite fields, you can reduce :obj:`~galois.FieldArray`` subclass creation time by explicitly
+    specifying $p$ and $m$. This eliminates the need to factor the order $p^m$.
 
     .. ipython:: python
 
         GF = galois.GF(2, 100)
         print(GF.properties)
 
-    Furthermore, if you already know the desired irreducible polynomial is irreducible and the primitive element is a generator of
-    the multiplicative group, you can specify `verify=False` to skip the verification step. This eliminates the need to factor
-    $p^m - 1$.
+    Furthermore, if you already know that the specified irreducible polynomial is valid and that the primitive element
+    generates the multiplicative group, you can specify `verify=False`` to skip the verification step.
+    This eliminates the need to factor $p^m - 1$.
 
     .. ipython:: python
 
@@ -55,19 +55,22 @@ The `GF` class is a subclass of :obj:`~galois.FieldArray` and a subclasses of :o
 Class singletons
 ................
 
-:obj:`~galois.FieldArray` subclasses of the same type (order, irreducible polynomial, and primitive element) are singletons.
+:obj:`~galois.FieldArray` subclasses of the same type (order, irreducible polynomial, and primitive element)
+are singletons.
 
-Here is the creation (twice) of the field $\mathrm{GF}(3^5)$ defined with the default irreducible
-polynomial $x^5 + 2x + 1$. They *are* the same class (a singleton), not just equivalent classes.
+Below is the creation (twice) of the field $\mathrm{GF}(3^5)$ defined using the default irreducible
+polynomial $p(x) = x^5 + 2x + 1$. They *are* the same class (a singleton), not just equivalent classes.
 
 .. ipython:: python
 
     galois.GF(3**5) is galois.GF(3**5)
 
-The expense of class creation is incurred only once. So, subsequent calls of `galois.GF(3**5)` are extremely inexpensive.
+The expense of class creation is incurred only once. So, subsequent calls of `galois.GF(3**5)` are extremely
+inexpensive.
 
-However, the field $\mathrm{GF}(3^5)$ defined with irreducible polynomial $x^5 + x^2 + x + 2$, while isomorphic to the
-first field, has different arithmetic. As such, :func:`~galois.GF` returns a unique :obj:`~galois.FieldArray` subclass.
+However, the field $\mathrm{GF}(3^5)$ defined with irreducible polynomial $p(x) = x^5 + x^2 + x + 2$, while isomorphic
+to the first field, uses a different internal arithmetic representation. As such, :func:`~galois.GF` returns a unique
+:obj:`~galois.FieldArray` subclass.
 
 .. ipython:: python
 
@@ -76,9 +79,9 @@ first field, has different arithmetic. As such, :func:`~galois.GF` returns a uni
 Methods and properties
 ......................
 
-All of the methods and properties related to $\mathrm{GF}(p^m)$, not one of its arrays, are documented as class methods
-and class properties in :obj:`~galois.FieldArray`. For example, the irreducible polynomial of the finite field is accessed
-with :obj:`~galois.FieldArray.irreducible_poly`.
+All methods and properties related to the finite field $\mathrm{GF}(p^m)$ itself (rather than to individual arrays)
+are documented as class methods and class properties in :obj:`~galois.FieldArray`. For example, the irreducible
+polynomial of the finite field is accessed with :obj:`~galois.FieldArray.irreducible_poly`.
 
 .. ipython:: python
 
@@ -87,7 +90,7 @@ with :obj:`~galois.FieldArray.irreducible_poly`.
 :obj:`~galois.FieldArray` instances
 -----------------------------------
 
-A :obj:`~galois.FieldArray` instance is created using `GF`'s constructor.
+A :obj:`~galois.FieldArray` instance is created using the `GF` class constructor.
 
 .. ipython-with-reprs:: int,poly,power
 
@@ -112,8 +115,8 @@ The :obj:`~galois.FieldArray` subclass is easily recovered from a :obj:`~galois.
 Constructors
 ............
 
-Several classmethods are defined in :obj:`~galois.FieldArray` that function as alternate constructors. By convention,
-alternate constructors use `PascalCase` while other classmethods use `snake_case`.
+Several class methods are defined in :obj:`~galois.FieldArray` that serve as alternate constructors. By convention,
+alternate constructors use `PascalCase` while other class methods use `snake_case`.
 
 For example, to generate a random array of given shape call :func:`~galois.FieldArray.Random`.
 
@@ -130,8 +133,9 @@ Or, create an identity matrix using :func:`~galois.FieldArray.Identity`.
 Methods
 .......
 
-All of the methods that act on :obj:`~galois.FieldArray` instances are documented as instance methods in :obj:`~galois.FieldArray`.
-For example, the multiplicative order of each finite field element is calculated using :func:`~galois.FieldArray.multiplicative_order`.
+All methods that operate on :obj:`~galois.FieldArray` instances are documented as instance methods of
+:obj:`~galois.FieldArray`. For example, the multiplicative order of each finite field element is calculated using
+:func:`~galois.FieldArray.multiplicative_order`.
 
 .. ipython:: python
 
