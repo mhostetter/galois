@@ -115,3 +115,13 @@ def test_is_primitive_poly():
     poly = galois.conway_poly(3, 101)
     GF = galois.GF(3**101, irreducible_poly=poly, primitive_element="x", verify=False)
     assert GF.is_primitive_poly
+
+
+def test_is_isomorphic():
+    GF1 = galois.GF(2**8, irreducible_poly="x^8 + x^4 + x^3 + x^2 + 1")
+    GF2 = galois.GF(2**8, irreducible_poly="x^8 + x^4 + x^3 + x + 1")
+
+    # assert GF1 is GF1
+    assert GF1 is not GF2
+    assert GF1.is_isomorphic(GF1)
+    assert GF1.is_isomorphic(GF2)
