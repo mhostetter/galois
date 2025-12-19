@@ -548,6 +548,30 @@ class FieldArrayMeta(ArrayMeta):
         """
         return cls._degree > 1
 
+    def is_isomorphic(cls, other: Type[FieldArray]) -> bool:
+        r"""
+        Determines whether two finite fields are isomorphic.
+
+        Notes:
+            Two finite fields $\mathrm{GF}(p^m)$ and $\mathrm{GF}(q^n)$ are isomorphic if and only if
+            $p = q$ and $m = n$. Equivalently, finite fields are isomorphic if and only if they have
+            the same order.
+
+        Examples:
+            .. ipython:: python
+
+                GF1 = galois.GF(2**8, irreducible_poly="x^8 + x^4 + x^3 + x^2 + 1")
+                GF2 = galois.GF(2**8, irreducible_poly="x^8 + x^4 + x^3 + x + 1")
+
+                assert GF1 is not GF2
+                assert GF1.is_isomorphic(GF2)
+        """
+        return (
+            isinstance(other, FieldArrayMeta)
+            and cls.characteristic == other.characteristic
+            and cls.degree == other.degree
+        )
+
     @property
     def prime_subfield(cls) -> Type[FieldArray]:
         r"""
