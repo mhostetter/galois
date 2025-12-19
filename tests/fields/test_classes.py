@@ -151,3 +151,13 @@ def test_pickle_array(tmp_path):
     with open(tmp_path / "array.pkl", "rb") as f:
         x_loaded = pickle.load(f)
     assert np.array_equal(x, x_loaded)
+
+
+def test_is_isomorphic():
+    GF1 = galois.GF(2**8, irreducible_poly="x^8 + x^4 + x^3 + x^2 + 1")
+    GF2 = galois.GF(2**8, irreducible_poly="x^8 + x^4 + x^3 + x + 1")
+
+    # assert GF1 is GF1
+    assert GF1 is not GF2
+    assert GF1.is_isomorphic(GF1)
+    assert GF1.is_isomorphic(GF2)
