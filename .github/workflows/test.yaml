@@ -102,7 +102,7 @@ jobs:
       matrix:
         os: [ubuntu-22.04, windows-2022]
         # Old Numba versions only have binaries for Linux and Windows
-        python-version: [3.7, 3.8, 3.9, '3.10', 3.11, 3.12, 3.13]
+        python-version: [3.7, 3.8, 3.9, '3.10', 3.11, 3.12, 3.13, 3.14]
       fail-fast: false
     runs-on: ${{ matrix.os }}
     steps:
@@ -156,7 +156,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-22.04, macos-14, windows-2022]
-        python-version: [3.7, 3.8, 3.9, '3.10', 3.11, 3.12, 3.13]
+        python-version: [3.7, 3.8, 3.9, '3.10', 3.11, 3.12, 3.13, 3.14]
         # https://github.com/actions/runner-images/issues/9770#issuecomment-2085623315
         exclude:  # Python < v3.9 not supported on Apple Silicon ARM64 (MacOS 14)
           - python-version: "3.7"
