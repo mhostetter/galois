@@ -603,13 +603,13 @@ class log_brute_force(_lookup.log_ufunc):
         MULTIPLY = self.field._multiply.ufunc
 
     @staticmethod
-    def calculate(beta: int, alpha: int) -> int:  # pragma: no cover
+    def calculate(beta: int, g: int) -> int:  # pragma: no cover
         """
         beta is an element of GF(p^m)
-        alpha is a primitive element of GF(p^m)
+        g is a primitive element of GF(p^m)
 
-        i = log(beta, alpha)
-        beta = alpha^i
+        i = log(beta, g)
+        beta = g^i
         """
         if beta == 0:
             raise ArithmeticError("Cannot compute the discrete logarithm of 0 in a Galois field.")
@@ -618,7 +618,7 @@ class log_brute_force(_lookup.log_ufunc):
         for i in range(0, ORDER - 1):
             if c == beta:
                 return i
-            c = MULTIPLY(c, alpha)
+            c = MULTIPLY(c, g)
 
         raise ArithmeticError("The specified logarithm base is not a primitive element of the Galois field.")
 
@@ -635,11 +635,11 @@ class log_pollard_rho(_lookup.log_ufunc):
         set_helper_globals(self.field)
 
     @staticmethod
-    def calculate(beta: int, alpha: int) -> int:  # pragma: no cover
+    def calculate(beta: int, g: int) -> int:  # pragma: no cover
         """
         beta is an element of GF(p^m)
-        alpha is a primitive element of GF(p^m)
-        Compute x = log_alpha(beta)
+        g is a primitive element of GF(p^m)
+        Compute x = log_g(beta)
 
         Algorithm 3.60 from https://cacr.uwaterloo.ca/hac/about/chap3.pdf
         """
@@ -657,7 +657,7 @@ class log_pollard_rho(_lookup.log_ufunc):
                 return MULTIPLY(beta, x)
             if x % 3 == 2:
                 return MULTIPLY(x, x)
-            return MULTIPLY(alpha, x)
+            return MULTIPLY(g, x)
 
         def compute_a(a, x):
             # Equation 3.3
@@ -692,7 +692,7 @@ class log_pollard_rho(_lookup.log_ufunc):
                 a0 += 1
                 b0 += 1
                 x0 = MULTIPLY(x0, beta)
-                x0 = MULTIPLY(x0, alpha)
+                x0 = MULTIPLY(x0, g)
                 xi, ai, bi = x0, a0, b0
                 x2i, a2i, b2i = xi, ai, bi
 
@@ -719,12 +719,12 @@ class log_pohlig_hellman(_lookup.log_ufunc):
         MULTIPLICITIES = np.array(MULTIPLICITIES, dtype=DTYPE)
 
     @staticmethod
-    def calculate(beta: int, alpha: int) -> int:  # pragma: no cover
+    def calculate(beta: int, g: int) -> int:  # pragma: no cover
         """
         beta is an element of GF(p^m)
-        alpha is a primitive element of GF(p^m)
+        g is a primitive element of GF(p^m)
         The n = p1^e1 * ... * pr^er prime factorization is required
-        Compute x = log_alpha(beta)
+        Compute x = log_g(beta)
 
         Algorithm 3.63 from https://cacr.uwaterloo.ca/hac/about/chap3.pdf
         """
@@ -741,13 +741,13 @@ class log_pohlig_hellman(_lookup.log_ufunc):
             e = MULTIPLICITIES[i]
             m[i] = q**e
             gamma = 1
-            alpha_bar = POWER(alpha, n // q)
+            g_bar = POWER(g, n // q)
             l_prev = 0  # Starts as l_i-1
             q_prev = 0  # Starts as q^(-1)
             for j in range(e):
-                gamma = MULTIPLY(gamma, POWER(alpha, l_prev * q_prev))
+                gamma = MULTIPLY(gamma, POWER(g, l_prev * q_prev))
                 beta_bar = POWER(MULTIPLY(beta, RECIPROCAL(gamma)), n // (q ** (j + 1)))
-                l = BRUTE_FORCE_LOG(beta_bar, alpha_bar)
+                l = BRUTE_FORCE_LOG(beta_bar, g_bar)
                 x[i] += l * q**j
                 l_prev = l
                 q_prev = q**j

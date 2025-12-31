@@ -35,7 +35,7 @@ Element representation
 ----------------------
 
 As with :obj:`~galois.FieldArray` instances, the finite field element representation of the polynomial coefficients may be changed
-by setting the `repr` keyword argument of :func:`~galois.GF` or using the :func:`~galois.FieldArray.repr` classmethod.
+by setting the `repr` keyword argument of :func:`~galois.GF` or using the :func:`~galois.FieldArray.repr` class method.
 
 .. ipython:: python
 
@@ -57,8 +57,9 @@ See :doc:`element-representation` for more details.
 Alternate constructors
 ----------------------
 
-There are several additional ways to create a polynomial. These alternate constructors are included as classmethods in :obj:`~galois.Poly`.
-By convention, alternate constructors use `PascalCase` while other classmethods use `snake_case`.
+There are several additional ways to create a polynomial. These alternate constructors are included as class methods
+in :obj:`~galois.Poly`. By convention, alternate constructors use `PascalCase` while other class methods use
+`snake_case`.
 
 Create a polynomial by specifying its non-zero degrees and coefficients using :func:`~galois.Poly.Degrees`.
 
@@ -108,7 +109,7 @@ Create a polynomial from its roots using :func:`~galois.Poly.Roots`.
    f = galois.Poly.Roots([137, 22, 51], field=GF); f
    f.roots()
 
-The :func:`~galois.Poly.Zero`, :func:`~galois.Poly.One`, and :func:`~galois.Poly.Identity` classmethods create common,
+The :func:`~galois.Poly.Zero`, :func:`~galois.Poly.One`, and :func:`~galois.Poly.Identity` class methods create common,
 simple polynomials. They are included for convenience.
 
 .. ipython:: python

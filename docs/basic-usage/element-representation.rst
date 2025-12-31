@@ -30,7 +30,7 @@ The current element representation is accessed with the :obj:`~galois.FieldArray
 
     GF.element_repr
 
-The element representation can be temporarily changed using the :func:`~galois.FieldArray.repr` classmethod as a context manager.
+The element representation can be temporarily changed using the :func:`~galois.FieldArray.repr` class method as a context manager.
 
 .. ipython:: python
 
@@ -41,7 +41,7 @@ The element representation can be temporarily changed using the :func:`~galois.F
     # Outside the context manager, x prints using the previous representation
     print(x)
 
-The element representation can be permanently changed using the :func:`~galois.FieldArray.repr` classmethod (not as a context manager).
+The element representation can be permanently changed using the :func:`~galois.FieldArray.repr` class method (not as a context manager).
 
 .. ipython:: python
 
@@ -116,7 +116,7 @@ This is useful, however it can become cluttered for large arrays.
 Power representation
 --------------------
 
-The power representation displays all finite field elements as powers of the field's primitive element $\alpha$.
+The power representation displays all finite field elements as powers of the field's primitive element $g$.
 
 .. slow-performance::
 
@@ -125,7 +125,7 @@ The power representation displays all finite field elements as powers of the fie
     take a while. However, when using :ref:`lookup tables <lookup-tables>` this representation is just as fast as
     the others.
 
-In prime fields, the elements are displayed as $\{0, 1, \alpha, \alpha^2, \dots, \alpha^{p-2}\}$.
+In prime fields, the elements are displayed as $\{0, 1, g, g^2, \dots, g^{p-2}\}$.
 
 .. ipython:: python
 
@@ -135,10 +135,10 @@ In prime fields, the elements are displayed as $\{0, 1, \alpha, \alpha^2, \dots,
 .. ipython:: python
 
     GF.repr("int");
-    alpha = GF.primitive_element; alpha
-    alpha ** 23
+    g = GF.primitive_element; g
+    g ** 23
 
-In extension fields, the elements are displayed as $\{0, 1, \alpha, \alpha^2, \dots, \alpha^{p^m-2}\}$.
+In extension fields, the elements are displayed as $\{0, 1, g, g^2, \dots, g^{p^m-2}\}$.
 
 .. ipython:: python
 
@@ -148,8 +148,8 @@ In extension fields, the elements are displayed as $\{0, 1, \alpha, \alpha^2, \d
 .. ipython:: python
 
     GF.repr("int");
-    alpha = GF.primitive_element; alpha
-    alpha ** 222
+    g = GF.primitive_element; g
+    g ** 222
 
 Vector representation
 ---------------------
@@ -162,18 +162,18 @@ The vector representation is accessed using the :func:`~galois.FieldArray.vector
 .. ipython:: python
 
     GF = galois.GF(3**5, repr="poly")
-    GF("x^2 + 2x + 2")
-    GF("x^2 + 2x + 2").vector()
+    GF("a^2 + 2a + 2")
+    GF("a^2 + 2a + 2").vector()
 
 An N-D array over $\mathrm{GF}(p^m)$ is converted to a (N + 1)-D array over $\mathrm{GF}(p)$ with the added dimension having
 size $m$. The first value of the vector is the highest-degree coefficient.
 
 .. ipython:: python
 
-    GF(["x^2 + 2x + 2", "2x^4 + x"])
-    GF(["x^2 + 2x + 2", "2x^4 + x"]).vector()
+    GF(["a^2 + 2a + 2", "2a^4 + a"])
+    GF(["a^2 + 2a + 2", "2a^4 + a"]).vector()
 
-Arrays can be created from the vector representation using the :func:`~galois.FieldArray.Vector` classmethod.
+Arrays can be created from the vector representation using the :func:`~galois.FieldArray.Vector` class method.
 
 .. ipython:: python
 
@@ -212,7 +212,8 @@ The readability is improved by increasing the line width using :func:`numpy.set_
 Representation comparisons
 --------------------------
 
-For any finite field, each of the four element representations can be easily compared using the :func:`~galois.FieldArray.repr_table` classmethod.
+For any finite field, each of the four element representations can be easily compared using the
+:func:`~galois.FieldArray.repr_table` class method.
 
 .. ipython:: python
 
