@@ -2,12 +2,9 @@ name: Docs
 
 on:
   push:
-    branches:
-      - 'release/*'
+    branches: [develop]
   pull_request:
-    branches:
-      - main
-      - 'release/*'
+    branches: [main, develop]
   workflow_call:
   workflow_dispatch:
     inputs:
@@ -99,17 +96,13 @@ jobs:
           workflow_dispatch_tag = os.environ.get("WORKFLOW_DISPATCH_TAG")
           print("workflow_dispatch_tag:", workflow_dispatch_tag)
 
-          if github_event_name == "push" and github_ref.startswith("refs/heads/release/"):
-              name = "v" + github_ref.split("refs/heads/release/")[1]
-              print("name 1:", name)
+          if github_event_name == "push" and github_ref == "refs/heads/develop":
+              name = "dev"
           elif github_event_name == "push" and github_ref.startswith("refs/tags/"):
               name = github_ref.split("refs/tags/")[1]
-              print("name 2:", name)
           elif github_event_name == "workflow_dispatch":
               name = workflow_dispatch_tag
-              print("name 3:", name)
           else:
-              print("name 4:")
               raise RuntimeError
 
           with open(os.environ["GITHUB_OUTPUT"], "a") as f:

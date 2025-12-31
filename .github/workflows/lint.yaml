@@ -2,13 +2,9 @@ name: Lint
 
 on:
   push:
-    branches:
-      - main
-      - 'release/*'
+    branches: [main, develop]
   pull_request:
-    branches:
-      - main
-      - 'release/*'
+    branches: [main, develop]
 
 permissions:
   contents: read
