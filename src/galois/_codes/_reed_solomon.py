@@ -217,7 +217,7 @@ class ReedSolomon(_CyclicCode):
         # TODO: Do this?? How to standardize G and H?
         self._H = np.power.outer(roots, np.arange(n - 1, -1, -1, dtype=field.dtypes[-1]))
 
-    def __str__(self) -> str:
+    def __repr__(self) -> str:
         r"""
         A terse representation of the Reed-Solomon code.
 
@@ -238,7 +238,7 @@ class ReedSolomon(_CyclicCode):
         """
         return f"<Reed-Solomon Code: [{self.n}, {self.k}, {self.d}] over {self.field.name}>"
 
-    def __repr__(self) -> str:
+    def __str__(self) -> str:
         r"""
         A formatted string with relevant properties of the Reed-Solomon code.
 

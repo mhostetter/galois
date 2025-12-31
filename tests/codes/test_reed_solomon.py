@@ -43,15 +43,15 @@ def test_exceptions():
         galois.ReedSolomon(15, 7, field=galois.GF(2**2))
 
 
-def test_str():
-    rs = galois.ReedSolomon(15, 11)
-    assert str(rs) == "<Reed-Solomon Code: [15, 11, 5] over GF(2^4)>"
-
-
 def test_repr():
     rs = galois.ReedSolomon(15, 11)
+    assert repr(rs) == "<Reed-Solomon Code: [15, 11, 5] over GF(2^4)>"
+
+
+def test_str():
+    rs = galois.ReedSolomon(15, 11)
     assert (
-        repr(rs)
+        str(rs)
         == "Reed-Solomon Code:\n  [n, k, d]: [15, 11, 5]\n  field: GF(2^4)\n  generator_poly: x^4 + 13x^3 + 12x^2 + 8x + 7\n  is_primitive: True\n  is_narrow_sense: True\n  is_systematic: True"
     )
 

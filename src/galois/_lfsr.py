@@ -360,7 +360,7 @@ class FLFSR(_LFSR):
         """
         return super().Taps(taps, state=state)
 
-    def __str__(self) -> str:
+    def __repr__(self) -> str:
         """
         A terse representation of the Fibonacci LFSR.
 
@@ -374,7 +374,7 @@ class FLFSR(_LFSR):
         with printoptions(coeffs="asc"):
             return f"<Fibonacci LFSR: f(x) = {self.feedback_poly} over {self.field.name}>"
 
-    def __repr__(self) -> str:
+    def __str__(self) -> str:
         """
         A formatted string of relevant properties of the Fibonacci LFSR.
 
@@ -1029,7 +1029,7 @@ class GLFSR(_LFSR):
         """
         return super().Taps(taps, state=state)
 
-    def __str__(self) -> str:
+    def __repr__(self) -> str:
         """
         A terse representation of the Galois LFSR.
 
@@ -1043,7 +1043,7 @@ class GLFSR(_LFSR):
         with printoptions(coeffs="asc"):
             return f"<Galois LFSR: f(x) = {self.feedback_poly} over {self.field.name}>"
 
-    def __repr__(self) -> str:
+    def __str__(self) -> str:
         """
         A formatted string of relevant properties of the Galois LFSR.
 

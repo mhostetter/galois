@@ -239,7 +239,7 @@ class BCH(_CyclicCode):
 
         super().__init__(n, k, d, generator_poly, roots, systematic)
 
-    def __str__(self) -> str:
+    def __repr__(self) -> str:
         r"""
         A terse representation of the BCH code.
 
@@ -267,7 +267,7 @@ class BCH(_CyclicCode):
         """
         return f"<BCH Code: [{self.n}, {self.k}, {self.d}] over {self.field.name}>"
 
-    def __repr__(self) -> str:
+    def __str__(self) -> str:
         r"""
         A formatted string with relevant properties of the BCH code.
 
