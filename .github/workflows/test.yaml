@@ -2,13 +2,9 @@ name: Test
 
 on:
   push:
-    branches:
-      - main
-      - 'release/*'
+    branches: [main, develop]
   pull_request:
-    branches:
-      - main
-      - 'release/*'
+    branches: [main, develop]
   schedule:
     # Every night at 03:00 UTC
     - cron: '0 3 * * *'
