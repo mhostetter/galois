@@ -311,7 +311,6 @@ class FunctionMixin(np.ndarray, metaclass=ArrayMeta):
         np.round,
         np.fix,
         np.gradient,
-        np.trapz,
         np.i0,
         np.sinc,
         np.angle,
@@ -323,6 +322,11 @@ class FunctionMixin(np.ndarray, metaclass=ArrayMeta):
         np.lib.scimath.logn,
         np.cross,
     ]
+
+    if np.lib.NumpyVersion(np.__version__) < "2.4.0":
+        _UNSUPPORTED_FUNCTIONS.append(np.trapz)
+    else:
+        _UNSUPPORTED_FUNCTIONS.append(np.trapezoid)
 
     _FUNCTIONS_REQUIRING_VIEW = [
         np.concatenate,

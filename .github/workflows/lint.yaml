@@ -10,11 +10,6 @@ on:
       - main
       - 'release/*'
 
-# Cancel any in-progress runs on new pushes to the same branch/PR
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 permissions:
   contents: read
 

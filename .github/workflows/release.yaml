@@ -49,14 +49,14 @@ jobs:
           git log --oneline ${{ steps.previous.outputs.version }}..${{ steps.current.outputs.version }} >> release_notes.md
 
       - name: Create GitHub release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.current.outputs.version }}
-          release_name: galois ${{ steps.current.outputs.version }}
+          name: galois ${{ steps.current.outputs.version }}
           body_path: release_notes.md
           draft: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   publish:
     name: Publish on PyPI
@@ -74,8 +74,8 @@ jobs:
         with:
           user: __token__
           password: ${{ secrets.TEST_PYPI_API_TOKEN }}
-          repository_url: https://test.pypi.org/legacy/
-          packages_dir: dist/
+          repository-url: https://test.pypi.org/legacy/
+          packages-dir: dist/
           verbose: true
 
       - name: Publish to PyPI
@@ -83,5 +83,5 @@ jobs:
         with:
           user: __token__
           password: ${{ secrets.PYPI_API_TOKEN }}
-          packages_dir: dist/
+          packages-dir: dist/
           verbose: true
