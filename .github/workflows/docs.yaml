@@ -123,41 +123,58 @@ jobs:
       - name: Update versions.json file
         shell: python
         run: |
-          from packaging.version import Version
           import json
-          import pathlib
           import os
+          import pathlib
+          import re
+          from packaging.version import Version, InvalidVersion
 
-          # Determine the version folders
           cwd = pathlib.Path.cwd()
-          versions = sorted((item.name for item in cwd.iterdir() if item.is_dir() and not item.name.startswith(".")), reverse=True)
-          print(versions)
 
-          # Remove "latest" from list of versions
-          if "latest" in versions:
-            versions.remove("latest")
-            os.system("rm latest")
+          # Gather top-level folders (ignore dotfolders)
+          folders = [p.name for p in cwd.iterdir() if p.is_dir() and not p.name.startswith(".")]
+          print("folders:", folders)
 
-          # Sort versions, ignoring the initial 'v'
-          def sort_version(version: str):
-            if "x" in version:
-              version = version.replace("x", "1000")
-            return Version(version[1:])  # strip leading 'v'
-          versions = sorted(versions, key=sort_version, reverse=True)
+          # Remove "latest" symlink if present (we will recreate it)
+          if "latest" in folders:
+              folders.remove("latest")
+              os.system("rm -f latest")
 
+          # Identify release folders like v0.4.9, v1.2.3, v0.5.0rc1, etc.
+          # Keep it simple: must start with 'v' and be parseable by packaging.version
+          releases = []
+          others = []
+
+          for name in folders:
+              if name.startswith("v"):
+                  try:
+                      Version(name[1:])  # strip leading 'v'
+                      releases.append(name)
+                  except InvalidVersion:
+                      others.append(name)
+              else:
+                  others.append(name)
+
+          # Sort releases newest -> oldest
+          releases.sort(key=lambda s: Version(s[1:]), reverse=True)
+
+          # Build versions.json entries
           list_of_dicts = []
+
+          # Optionally include "dev" first (if present)
+          if "dev" in others:
+              list_of_dicts.append({"version": "dev", "title": "dev", "aliases": []})
+
           latest = None
-          for version in versions:
-            title = version
-            aliases = []
-            if "x" in version:
-              title += " (pre-release)"
-            elif latest is None:
-              latest = version
-              aliases = ["latest"]
-              os.system(f"ln -s {version} latest")
-            list_of_dicts.append({"version": version, "title": title, "aliases": aliases})
-          print(list_of_dicts)
+          for v in releases:
+              aliases = []
+              if latest is None:
+                  latest = v
+                  aliases = ["latest"]
+                  os.system(f"ln -s {v} latest")
+              list_of_dicts.append({"version": v, "title": v, "aliases": aliases})
+
+          print("versions.json:", list_of_dicts)
 
           with (cwd / "versions.json").open("w") as f:
               json.dump(list_of_dicts, f, indent=4)
