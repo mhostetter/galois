@@ -8,7 +8,7 @@ tocdepth: 2
 
 ### Breaking changes
 
-- …
+- Deprecated `galois.Field()` for removal in v0.5.0. ([#633](https://github.com/mhostetter/galois/issues/633))
 
 ### Features
 

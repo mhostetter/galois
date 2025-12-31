@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import sys
 import types
+import warnings
 from typing import Type, overload
 
 from typing_extensions import Literal
@@ -333,11 +334,21 @@ def Field(
     repr=None,
 ):
     """
-    Alias of :func:`~galois.GF`.
+    Deprecated alias of :func:`~galois.GF`.
+
+    .. deprecated:: 0.4.10
+       Use :func:`~galois.GF` instead. This alias will be removed in 0.5.0.
 
     Group:
         galois-fields
     """
+
+    warnings.warn(
+        "galois.Field() is deprecated and will be removed in 0.5.0; use galois.GF() instead.",
+        category=DeprecationWarning,
+        stacklevel=2,
+    )
+
     return GF(
         *args,
         irreducible_poly=irreducible_poly,
