@@ -8,15 +8,17 @@
       <a href="https://pypi.org/project/galois"><img src="https://img.shields.io/pypi/v/galois"></a>
       <a href="https://pypi.org/project/galois"><img src="https://img.shields.io/pypi/pyversions/galois"></a>
       <a href="https://pypi.org/project/galois"><img src="https://img.shields.io/pypi/wheel/galois"></a>
+   </div>
+   <div align=center>
       <a href="https://pypistats.org/packages/galois"><img src="https://img.shields.io/pypi/dm/galois"></a>
       <a href="https://pypi.org/project/galois"><img src="https://img.shields.io/pypi/l/galois"></a>
+      <a href="https://twitter.com/galois_py"><img src="https://img.shields.io/static/v1?label=follow&message=@galois_py&color=blue&logo=twitter"></a>
    </div>
    <div align=center>
       <a href="https://github.com/mhostetter/galois/actions/workflows/lint.yaml"><img src="https://github.com/mhostetter/galois/actions/workflows/lint.yaml/badge.svg?branch=main"></a>
       <a href="https://github.com/mhostetter/galois/actions/workflows/build.yaml"><img src="https://github.com/mhostetter/galois/actions/workflows/build.yaml/badge.svg?branch=main"></a>
       <a href="https://github.com/mhostetter/galois/actions/workflows/test.yaml"><img src="https://github.com/mhostetter/galois/actions/workflows/test.yaml/badge.svg?branch=main"></a>
       <a href="https://codecov.io/gh/mhostetter/galois"><img src="https://codecov.io/gh/mhostetter/galois/branch/main/graph/badge.svg?token=3FJML79ZUK"></a>
-      <a href="https://twitter.com/galois_py"><img src="https://img.shields.io/static/v1?label=follow&message=@galois_py&color=blue&logo=twitter"></a>
    </div>
 
 The :obj:`galois` library is a Python 3 package that extends NumPy arrays to operate over finite fields.
