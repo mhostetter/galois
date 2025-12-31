@@ -2,29 +2,27 @@
 tocdepth: 2
 ---
 
-# Unreleased Changes
+# Unreleased
 
-## `develop`
+## Changes currently on `develop`
 
-*Unreleased changes currently on `develop`*
-
-## Breaking changes
+### Breaking changes
 
 - …
 
-## Features
+### Features
 
 - …
 
-## Fixes
+### Fixes
 
 - …
 
-## Performance
+### Performance
 
 - …
 
-## Documentation
+### Documentation
 
 - …
 
