@@ -16,7 +16,7 @@ tocdepth: 2
 
 ### Fixes
 
-- …
+- Fixed bug where `FieldArray` instances couldn't be unpickled if the `FieldArray` class had not yet be created. ([#639](https://github.com/mhostetter/galois/pull/639))
 
 ### Performance
 
@@ -28,4 +28,5 @@ tocdepth: 2
 
 ### Contributors
 
+- Frank Yellin ([@fyellin](https://github.com/fyellin))
 - Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
