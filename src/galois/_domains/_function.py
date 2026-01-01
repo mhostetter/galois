@@ -10,6 +10,7 @@ from typing import TYPE_CHECKING, Callable, Type
 
 import numba
 import numpy as np
+import numpy.typing as npt
 from numba import int64
 
 from .._helper import verify_isinstance
@@ -197,7 +198,7 @@ class fft_jit(Function):
         if self.field.ufunc_mode != "python-calculate":
             # NOTE: Performing x.astype() returns a copy of x, which is necessary to prevent modifying the original
             #       array in-place
-            y = self.jit(x.astype(np.int64), np.int64(omega), np.array(factors, dtype=np.int64))
+            y = self.jit(x.astype(np.int64), np.int64(omega), factors)
             y = y.astype(dtype)
         else:
             # NOTE: Make a copy of x to prevent modifying the original array in-place
@@ -212,16 +213,20 @@ class fft_jit(Function):
 
     @staticmethod
     @functools.lru_cache(None)
-    def _prime_factors(length: int) -> tuple[int, ...]:
+    def _prime_factors(length: int) -> npt.NDArray[np.int64]:
         """
         Returns the prime factors of `length` with multiplicity, e.g. 176 → (2,2,2,2,11).
         """
         if length == 1:
-            return ()
+            factors = []
         else:
             primes, multiplicities = _factors(length)
             factors = [prime for prime, multiplicity in zip(primes, multiplicities) for _ in range(multiplicity)]
-            return tuple(factors)
+
+        factors = np.array(factors, dtype=np.int64)
+        factors.flags.writeable = False  # Make it read-only for safety, since we will reuse it
+
+        return factors
 
     def set_globals(self):
         global ADD, SUBTRACT, MULTIPLY, POWER
@@ -234,7 +239,7 @@ class fft_jit(Function):
         int64[:](
             int64[:],
             int64,
-            int64[:],
+            numba.types.Array(int64, 1, "C", readonly=True),  # Tell Numba that this is a read-only array
         )
     )
 
@@ -292,6 +297,9 @@ class fft_jit(Function):
 
             and a running twiddle value `twiddle` is updated by multiplying by `twiddle_step` in the same
             order as the original reference implementation.
+
+        References:
+            - https://dsp-book.narod.ru/FFTBB/0270_PDF_C15.pdf
         """
         # Ensure a contiguous working buffer (important for predictable reshapes)
         in_buffer = np.ascontiguousarray(array)
@@ -304,7 +312,10 @@ class fft_jit(Function):
 
         # The reference implementation consumes radices from the end.
         # (This affects how reshapes map onto the conceptual decomposition.)
-        for r in factors[::-1]:
+        for index in range(len(factors)):
+            # NOTE: Micro-optimization to iterate through factors in reversed order, ~index evaluates to -index-1.
+            r = factors[~index]  # Current radix
+
             q = N // (m * r)  # Number of blocks at this stage
             # Invariant: N == m * r * q
 
