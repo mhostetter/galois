@@ -4,7 +4,6 @@ A module that defines the metaclass for the abstract base class FieldArray.
 
 from __future__ import annotations
 
-import copyreg
 from typing import TYPE_CHECKING, Type
 
 import numpy as np
@@ -747,31 +746,3 @@ class FieldArrayMeta(ArrayMeta):
             32
         """
         return super().default_ufunc_mode
-
-
-def _pickle_field_array_meta(field: FieldArrayMeta):
-    """Pickle a Field by arranging to call GF() with the appropriate arguments for
-    generating the Field at runtime."""
-    fixed_args = (field.characteristic, field.degree)
-    kwargs = {
-        "primitive_element": int(field.primitive_element),
-        # The field already exists, so we don't need to verify it.
-        "verify": False,
-        "compile": field.ufunc_mode,
-        "repr": field.element_repr,
-    }
-    if field.degree > 1:
-        kwargs["irreducible_poly"] = field.irreducible_poly.coeffs.tolist()
-    # We would like to call GF directly, but pickle cannot call a function that expects
-    # keyword arguments. So we go through a helper function.
-    return _unpickle_field_array_meta, (fixed_args, kwargs)
-
-
-def _unpickle_field_array_meta(fixed_args, kwargs):
-    """Call GF() with the arguments we are given to create a Galois Field."""
-    from galois import GF  # noqa: PLC0415
-
-    return GF(*fixed_args, **kwargs)
-
-
-copyreg.pickle(FieldArrayMeta, _pickle_field_array_meta)
