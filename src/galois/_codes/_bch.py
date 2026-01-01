@@ -13,7 +13,7 @@ from numba import types as nb_types
 from typing_extensions import Literal
 
 from .._domains._function import Function
-from .._fields import GF2, Field, FieldArray
+from .._fields import GF, GF2, FieldArray
 from .._helper import export, extend_docstring, verify_isinstance, verify_issubclass
 from .._lfsr import berlekamp_massey_jit
 from .._math import ilog
@@ -21,6 +21,7 @@ from .._polys import Poly, matlab_primitive_poly
 from .._polys._dense import evaluate_elementwise_jit, roots_jit
 from ..typing import ArrayLike, ElementLike
 from ._cyclic import _CyclicCode
+
 
 
 @export
@@ -206,7 +207,7 @@ class BCH(_CyclicCode):
             m = ilog(n, q) + 1
             assert q ** (m - 1) < n + 1 <= q**m
             irreducible_poly = matlab_primitive_poly(q, m)
-            extension_field = Field(q**m, irreducible_poly=irreducible_poly)
+            extension_field = GF(q**m, irreducible_poly=irreducible_poly)
 
         if alpha is None:
             alpha = extension_field.primitive_root_of_unity(n)
