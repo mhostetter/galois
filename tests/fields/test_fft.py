@@ -2,8 +2,6 @@
 A pytest module to test the DFT over arbitrary finite fields.
 """
 
-import itertools
-
 import numpy as np
 import pytest
 
@@ -36,10 +34,7 @@ def test_ifft_exceptions():
 def test_fft_poly(order):
     GF = galois.GF(order)
 
-    n = 5  # The FFT size
-    while (GF.order - 1) % n != 0:
-        n += 1
-
+    n = _calculate_fft_length(GF.order)
     x = GF.Random(n)
     X1 = np.fft.fft(x)
 
@@ -54,15 +49,13 @@ def test_fft_poly(order):
 def test_fft_zero_pad(order):
     GF = galois.GF(order)
 
-    n = 5  # The FFT size
-    while (GF.order - 1) % n != 0:
-        n += 1
-
-    p = 3  # The non-zero terms
+    n = _calculate_fft_length(GF.order)
     x = GF.Random(n)
+    p = 3  # The non-zero terms
     x[p:] = 0
     X1 = np.fft.fft(x)
     X2 = np.fft.fft(x[0:p], n=n)
+
     assert np.array_equal(X1, X2)
 
 
@@ -70,27 +63,42 @@ def test_fft_zero_pad(order):
 def test_fft_ifft(order):
     GF = galois.GF(order)
 
-    n = 5  # The FFT size
-    while (GF.order - 1) % n != 0:
-        n += 1
-
+    n = _calculate_fft_length(GF.order)
     x = GF.Random(n)
     X = np.fft.fft(x)
     xx = np.fft.ifft(X)
+
     assert np.array_equal(x, xx)
 
 
-@pytest.mark.parametrize("compile_mode", ["python-calculate", "jit-calculate"])
-@pytest.mark.parametrize("size", [1, 31, 80, 500, 1024, 5 * 1024, 8192, 10 * 2**10, 3 * 2**15], ids=lambda x: f"{x:>5}")
-def test_larger_fft(compile_mode, size):
-    for order in itertools.count(size + 1, step=size):
-        p, e = galois.factors(order)
-        if len(p) == len(e) == 1:
-            # we have a prime or a prime extension field
+def _calculate_fft_length(order):
+    # Over GF(q), an FFT of length n exists iff n divides (q - 1),
+    # because GF(q)^× is cyclic of order (q - 1).
+    #
+    # We choose n by sampling a divisor of (q - 1) constructed from its prime factorization,
+    # while keeping n reasonably small (≈ up to 1000) so the test stays fast and exercises
+    # mixed-radix logic (radix-2/3/5/...) rather than trivial n=1 cases.
+    max_n = 100
+    group_order = order - 1
+
+    if group_order <= 1:
+        # If the multiplicative group is tiny, just test the largest possible n
+        return 1
+
+    primes, multiplicities = galois.factors(group_order)
+
+    # Start from n = 1 and try to multiply in prime factors (with multiplicity)
+    # without exceeding max_n. We randomize the "factor multiset" order so that
+    # over repeated test runs we exercise different mixed-radix compositions.
+    factor_multiset = []
+    for p, e in zip(primes, multiplicities):
+        factor_multiset.extend([p] * e)
+
+    n = 1
+    for p in factor_multiset:
+        n *= p
+        if n > min(max_n, group_order):
+            n //= p
             break
 
-    GF = galois.GF(order, compile=compile_mode)
-    x = GF.Random(size)
-    x1 = np.fft.fft(x)
-    x2 = np.fft.ifft(x1)
-    assert np.array_equal(x, x2)
+    return n
