@@ -10,9 +10,10 @@ from typing import TYPE_CHECKING, Callable, Type
 
 import numba
 import numpy as np
-from numba import int64, types
+from numba import int64
 
 from .._helper import verify_isinstance
+from .._prime import factors as _factors
 from ._meta import ArrayMeta
 
 if TYPE_CHECKING:
@@ -183,18 +184,24 @@ class fft_jit(Function):
 
         if n is None:
             n = x.size
-        x = np.append(x, np.zeros(n - x.size, dtype=x.dtype))
+        elif n < x.size:
+            x = x[:n]
+        elif n > x.size:
+            x = np.append(x, self.field.Zeros(n - x.size))
 
-        omega = self.field.primitive_root_of_unity(x.size)
+        omega = self.field.primitive_root_of_unity(n)
         if self._direction == "backward":
             omega = omega**-1
-        factors = self._get_prime_factors(n)
+        factors = self._prime_factors(n)
 
         if self.field.ufunc_mode != "python-calculate":
-            y = self.jit(x.astype(np.int64), np.int64(omega), factors)
+            # NOTE: Performing x.astype() returns a copy of x, which is necessary to prevent modifying the original
+            #       array in-place
+            y = self.jit(x.astype(np.int64), np.int64(omega), np.array(factors, dtype=np.int64))
             y = y.astype(dtype)
         else:
-            y = self.python(x.view(np.ndarray), int(omega), factors)
+            # NOTE: Make a copy of x to prevent modifying the original array in-place
+            y = self.python(x.view(np.ndarray).copy(), int(omega), factors)
         y = self.field._view(y)
 
         # Scale the transform such that x = IDFT(DFT(x))
@@ -205,16 +212,16 @@ class fft_jit(Function):
 
     @staticmethod
     @functools.lru_cache(None)
-    def _get_prime_factors(N) -> np.ndarray:
-        "returns the prime factors of N as an int64 numpy array."
-        import galois  # noqa
-
-        if N == 1:
-            return np.int64([])
-        primes, counts = galois.factors(N)
-        array = np.int64([prime for prime, count in zip(primes, counts) for _ in range(count)])
-        array.flags.writeable = False  # Make it read-only for safety, since we will reuse it.
-        return array
+    def _prime_factors(length: int) -> tuple[int, ...]:
+        """
+        Returns the prime factors of `length` with multiplicity, e.g. 176 → (2,2,2,2,11).
+        """
+        if length == 1:
+            return ()
+        else:
+            primes, multiplicities = _factors(length)
+            factors = [prime for prime, multiplicity in zip(primes, multiplicities) for _ in range(multiplicity)]
+            return tuple(factors)
 
     def set_globals(self):
         global ADD, SUBTRACT, MULTIPLY, POWER
@@ -223,60 +230,147 @@ class fft_jit(Function):
         MULTIPLY = self.field._multiply.ufunc_call_only
         POWER = self.field._power.ufunc_call_only
 
-    # Make sure that numba knows that the third argument is read-only
     _SIGNATURE = numba.types.FunctionType(
         int64[:](
             int64[:],
             int64,
-            # Tell numba that the third argument is a read-only array
-            types.Array(types.int64, 1, "C", readonly=True),
+            int64[:],
         )
     )
 
     @staticmethod
     def implementation(array, omega, factors):
-        """Adapted from https://dsp-book.narod.ru/FFTBB/0270_PDF_C15.pdf"""
-        B = 1
-        in_array = np.ascontiguousarray(array)
-        out_array = np.empty_like(in_array)
-        for index in range(len(factors)):
-            if out_array is array:
-                # don't overwrite the initial input array.
-                out_array = np.empty_like(in_array)
-            F = factors[~index]
-            Q = array.size // (B * F)
-            omega_bf = POWER(omega, Q)  # omega ** (B * F)
-            # At this point, in_array contains Q * F subarrays of size B, where
-            # each subarray is the FFT of the corresponding elements in the original
-            # array. We join these subarrays in groups of F, so that out_array contains
-            # Q subarrays of size F * B, each subarray the FFT of the corresponding
-            # elements in the original array.
-            #
-            # This process is simplified by viewing in_array and out_array as 3-d.
-            in_array_3d = in_array.reshape((F, Q, B))
-            out_array_3d = out_array.reshape((Q, F, B))
-            z = 1
-            if F == 2:
-                for b in range(B):
-                    for q in range(Q):
-                        left = in_array_3d[0, q, b]
-                        right = MULTIPLY(in_array_3d[1, q, b], z)
-                        out_array_3d[q, 0, b] = ADD(left, right)
-                        out_array_3d[q, 1, b] = SUBTRACT(left, right)
-                    z = MULTIPLY(z, omega_bf)
+        """
+        Compute the (mixed-radix) FFT of `array` using an iterative Cooley-Tukey style algorithm.
+
+        This routine is written to operate over an abstract algebraic domain (finite fields, rings, etc.)
+        by using the primitive operations `ADD/SUBTRACT/MULTIPLY/POWER` instead of Python arithmetic.
+
+        Arguments:
+            array:
+                1-D input of length N.
+            omega:
+                A primitive N-th root of unity in the domain (so omega**N = 1, and no smaller positive
+                power equals 1).
+            factors:
+                A factorization of N into small radices (e.g., for N = 2**k, factors = [2, 2, ..., 2]).
+                The algorithm consumes these radices from the end (reverse order), which matches the
+                indexing/layout used in the referenced implementation.
+
+        Returns:
+            The FFT of the input, same shape/dtype as `array` (1-D).
+
+        Notes:
+            The algorithm proceeds in stages. At each stage with radix `r`:
+
+                - We assume we already have many independent FFTs of length `m` (initially m = 1).
+                - We "stitch" groups of `r` such FFTs together to form FFTs of length `m*r`.
+
+            Let:
+                N = len(array)
+                r = radix for this stage
+                m = current block length (FFT size already computed per block)
+                q = N / (m*r) = number of blocks after grouping
+
+            We view the data as 3-D to make the grouping explicit:
+
+                in_view  has shape (r, q, m)
+                out_view has shape (q, r, m)
+
+            For each fixed (qi, b) pair we combine `r` values:
+
+                x_k = in_view[k, qi, b],   k = 0..r-1
+
+            into `r` outputs stored as:
+
+                out_view[qi, f, b],        f = 0..r-1
+
+            The combination uses twiddle factors derived from omega. In this implementation,
+            the twiddle “step” for the stage is:
+
+                twiddle_step = omega^( N / (m*r) ) = omega^q
+
+            and a running twiddle value `twiddle` is updated by multiplying by `twiddle_step` in the same
+            order as the original reference implementation.
+        """
+        # Ensure a contiguous working buffer (important for predictable reshapes)
+        in_buffer = np.ascontiguousarray(array)
+
+        # Allocate the second buffer once and ping-pong between them each stage
+        out_buffer = np.empty_like(in_buffer)
+
+        N = in_buffer.size  # Total FFT size
+        m = 1  # Size of FFT blocks already computed
+
+        # The reference implementation consumes radices from the end.
+        # (This affects how reshapes map onto the conceptual decomposition.)
+        for r in factors[::-1]:
+            q = N // (m * r)  # Number of blocks at this stage
+            # Invariant: N == m * r * q
+
+            twiddle = 1  # Running twiddle factor (advances by omega^q each step)
+            twiddle_step = POWER(omega, q)  # Twiddle step for this stage: omega^(N / (m*r)) = omega^q
+
+            # Reinterpret the flat buffers as 3-D views to express the Cooley–Tukey grouping:
+            #   in_view[k, qi, b]  : k-th subblock (0..r-1), within block qi, at offset b
+            #   out_view[qi, f, b] : output f (0..r-1) for block qi, at offset b
+            in_view = in_buffer.reshape((r, q, m))
+            out_view = out_buffer.reshape((q, r, m))
+
+            # Note:
+            #     Although the twiddle factor mathematically depends only on the output index f
+            #     (twiddle = omega^(q * f)), we advance it imperatively here to match the memory
+            #     layout induced by the reshape (r, q, m) → (q, r, m). The update schedule is
+            #     therefore tied to the loop nesting and must not be reordered.
+
+            if r == 2:
+                # Radix-2 "butterfly":
+                #   y0 = x0 + twiddle * x1
+                #   y1 = x0 - twiddle * x1
+                #
+                # The running `twiddle` is advanced by `twiddle_step` in the same nested-loop
+                # order as the reference implementation.
+                for b in range(m):
+                    for qi in range(q):
+                        x0 = in_view[0, qi, b]
+                        x1 = MULTIPLY(in_view[1, qi, b], twiddle)
+
+                        out_view[qi, 0, b] = ADD(x0, x1)
+                        out_view[qi, 1, b] = SUBTRACT(x0, x1)
+
+                    twiddle = MULTIPLY(twiddle, twiddle_step)
+
             else:
-                for f in range(F):
-                    for b in range(B):
-                        for q in range(Q):
-                            # We use Horner's rule to evaluate the polynomial.
-                            temp = in_array_3d[F - 1, q, b]
-                            for fx in range(F - 2, -1, -1):  # from F-2 down to 0 inclusive
-                                temp = ADD(MULTIPLY(temp, z), in_array_3d[fx, q, b])
-                            out_array_3d[q, f, b] = temp
-                        z = MULTIPLY(z, omega_bf)
-            B = B * F
-            in_array, out_array = out_array, in_array
-        return in_array.ravel()
+                # General radix-r combine.
+                #
+                # For each (qi, b) we have r inputs: x_0..x_{r-1}.
+                # Each output is computed by evaluating a polynomial in twiddle:
+                #
+                #   y = x_0 + x_1 * twiddle + x_2 * twiddle^2 + ... + x_{r-1} * twiddle^{r-1}
+                #
+                # This is evaluated using Horner's rule (minimizes multiplications):
+                #
+                #   (((x_{r-1} * twiddle + x_{r-2}) * twiddle + x_{r-3}) ... * twiddle + x_0)
+                #
+                # The running `twiddle` is advanced by `twiddle_step` in the same nested-loop
+                # order as the reference implementation.
+                for f in range(r):
+                    for b in range(m):
+                        for qi in range(q):
+                            acc = in_view[r - 1, qi, b]
+                            for k in range(r - 2, -1, -1):
+                                acc = ADD(MULTIPLY(acc, twiddle), in_view[k, qi, b])
+                            out_view[qi, f, b] = acc
+
+                        twiddle = MULTIPLY(twiddle, twiddle_step)
+
+            # After this stage, block FFT size grows by `r`
+            m *= r
+
+            # Ping-pong buffers: next stage reads from what we just wrote
+            in_buffer, out_buffer = out_buffer, in_buffer
+
+        return in_buffer.ravel()
 
 
 class ifft_jit(fft_jit):
