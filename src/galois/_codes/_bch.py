@@ -23,7 +23,6 @@ from ..typing import ArrayLike, ElementLike
 from ._cyclic import _CyclicCode
 
 
-
 @export
 class BCH(_CyclicCode):
     r"""
