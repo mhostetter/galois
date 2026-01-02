@@ -21,7 +21,7 @@ def test_pickle_field_array_in_same_interpreter(order, tmp_path):
     # Write the pickle artifact
     pkl_path = tmp_path / "field_array.pkl"
     with pkl_path.open("wb") as f:
-        pickle.dump(x, f, protocol=pickle.HIGHEST_PROTOCOL)
+        pickle.dump(x, f)
 
     # Read the pickle artifact
     with pkl_path.open("rb") as f:
@@ -39,7 +39,7 @@ def test_pickle_field_array_in_new_interpreter(order, tmp_path):
     # Write the pickle artifact
     pkl_path = tmp_path / "field_array.pkl"
     with pkl_path.open("wb") as f:
-        pickle.dump(x, f, protocol=pickle.HIGHEST_PROTOCOL)
+        pickle.dump(x, f)
 
     # Capture "expected" in a representation that is easy to embed as Python literals.
     # Use integers of the underlying representation, not repr(x).
