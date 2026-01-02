@@ -12,7 +12,7 @@ tocdepth: 2
 
 ### Features
 
-- …
+- Improved FFT speed (~1.6x speedup) in `np.fft.fft()` with mixed-radix Cooley-Tukey algorithm. ([#620](https://github.com/mhostetter/galois/pull/620))
 
 ### Fixes
 
@@ -28,4 +28,5 @@ tocdepth: 2
 
 ### Contributors
 
+- Frank Yellin ([@fyellin](https://github.com/fyellin))
 - Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
