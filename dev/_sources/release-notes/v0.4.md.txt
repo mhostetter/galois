@@ -106,7 +106,7 @@ tocdepth: 2
 
 ### Contributors
 
-- [@fyellin](https://github.com/fyellin)
+- Frank Yellin ([@fyellin](https://github.com/fyellin))
 - [@rafaelha](https://github.com/rafaelha)
 - Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
 
@@ -121,7 +121,7 @@ tocdepth: 2
 
 ### Contributors
 
-- [@fyellin](https://github.com/fyellin)
+- Frank Yellin ([@fyellin](https://github.com/fyellin))
 - Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
 
 ## v0.4.8

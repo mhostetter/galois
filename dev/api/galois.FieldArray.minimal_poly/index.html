@@ -13615,10 +13615,10 @@ Power</label></div>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="mi">5</span><span class="p">)</span>
 
 <span class="gp">In [2]: </span><span class="n">a</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">();</span> <span class="n">a</span>
-<span class="gh">Out[2]: </span><span class="go">GF(200, order=3^5)</span>
+<span class="gh">Out[2]: </span><span class="go">GF(168, order=3^5)</span>
 
 <span class="gp">In [3]: </span><span class="n">poly</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">minimal_poly</span><span class="p">();</span> <span class="n">poly</span>
-<span class="gh">Out[3]: </span><span class="go">Poly(x^5 + 2x^3 + 2x^2 + 2x + 1, GF(3))</span>
+<span class="gh">Out[3]: </span><span class="go">Poly(x^5 + x^4 + 2x^3 + 1, GF(3))</span>
 
 <span class="go"># The minimal polynomial annihilates a</span>
 <span class="gp">In [4]: </span><span class="n">poly</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">GF</span><span class="p">)</span>
@@ -13634,10 +13634,10 @@ Power</label></div>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [6]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="mi">5</span><span class="p">,</span> <span class="nb">repr</span><span class="o">=</span><span class="s2">&quot;poly&quot;</span><span class="p">)</span>
 
 <span class="gp">In [7]: </span><span class="n">a</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">();</span> <span class="n">a</span>
-<span class="gh">Out[7]: </span><span class="go">GF(α^3 + 2α, order=3^5)</span>
+<span class="gh">Out[7]: </span><span class="go">GF(α^4 + α^2, order=3^5)</span>
 
 <span class="gp">In [8]: </span><span class="n">poly</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">minimal_poly</span><span class="p">();</span> <span class="n">poly</span>
-<span class="gh">Out[8]: </span><span class="go">Poly(x^5 + x^3 + 2x^2 + 2x + 1, GF(3))</span>
+<span class="gh">Out[8]: </span><span class="go">Poly(x^5 + 2x^4 + x^3 + x^2 + x + 2, GF(3))</span>
 
 <span class="go"># The minimal polynomial annihilates a</span>
 <span class="gp">In [9]: </span><span class="n">poly</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">GF</span><span class="p">)</span>
@@ -13653,10 +13653,10 @@ Power</label></div>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [11]: </span><span class="n">GF</span> <span class="o">=</span> <span class="n">galois</span><span class="o">.</span><span class="n">GF</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="mi">5</span><span class="p">,</span> <span class="nb">repr</span><span class="o">=</span><span class="s2">&quot;power&quot;</span><span class="p">)</span>
 
 <span class="gp">In [12]: </span><span class="n">a</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">();</span> <span class="n">a</span>
-<span class="gh">Out[12]: </span><span class="go">GF(α^131, order=3^5)</span>
+<span class="gh">Out[12]: </span><span class="go">GF(α^223, order=3^5)</span>
 
 <span class="gp">In [13]: </span><span class="n">poly</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">minimal_poly</span><span class="p">();</span> <span class="n">poly</span>
-<span class="gh">Out[13]: </span><span class="go">Poly(x^5 + 2x^4 + 2x^3 + 2x + 1, GF(3))</span>
+<span class="gh">Out[13]: </span><span class="go">Poly(x^5 + 2x^2 + x + 1, GF(3))</span>
 
 <span class="go"># The minimal polynomial annihilates a</span>
 <span class="gp">In [14]: </span><span class="n">poly</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">GF</span><span class="p">)</span>
@@ -13682,12 +13682,12 @@ Power</label></div>
 
 <span class="gp">In [17]: </span><span class="n">A</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">));</span> <span class="n">A</span>
 <span class="gh">Out[17]: </span>
-<span class="go">GF([[2, 3, 0],</span>
-<span class="go">    [5, 0, 0],</span>
-<span class="go">    [2, 8, 8]], order=3^2)</span>
+<span class="go">GF([[1, 6, 1],</span>
+<span class="go">    [0, 2, 8],</span>
+<span class="go">    [4, 0, 8]], order=3^2)</span>
 
 <span class="gp">In [18]: </span><span class="n">poly</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">minimal_poly</span><span class="p">();</span> <span class="n">poly</span>
-<span class="gh">Out[18]: </span><span class="go">Poly(x^3 + 5x^2 + 3x + 8, GF(3^2))</span>
+<span class="gh">Out[18]: </span><span class="go">Poly(x^3 + 4x^2 + 7x + 7, GF(3^2))</span>
 
 <span class="go"># The minimal polynomial annihilates the matrix</span>
 <span class="gp">In [19]: </span><span class="n">poly</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">elementwise</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -13707,12 +13707,12 @@ Power</label></div>
 
 <span class="gp">In [22]: </span><span class="n">A</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">));</span> <span class="n">A</span>
 <span class="gh">Out[22]: </span>
-<span class="go">GF([[     1,      0, 2α + 2],</span>
-<span class="go">    [ α + 1,  α + 1, 2α + 2],</span>
-<span class="go">    [2α + 1,      α,  α + 1]], order=3^2)</span>
+<span class="go">GF([[     2,      0,      1],</span>
+<span class="go">    [     α,  α + 1, 2α + 2],</span>
+<span class="go">    [ α + 2,      0,      1]], order=3^2)</span>
 
 <span class="gp">In [23]: </span><span class="n">poly</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">minimal_poly</span><span class="p">();</span> <span class="n">poly</span>
-<span class="gh">Out[23]: </span><span class="go">Poly(x^3 + (α)x^2 + (2)x + (2α + 1), GF(3^2))</span>
+<span class="gh">Out[23]: </span><span class="go">Poly(x^3 + (2α + 2)x^2 + (2α)x + (2α + 1), GF(3^2))</span>
 
 <span class="go"># The minimal polynomial annihilates the matrix</span>
 <span class="gp">In [24]: </span><span class="n">poly</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">elementwise</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -13732,12 +13732,12 @@ Power</label></div>
 
 <span class="gp">In [27]: </span><span class="n">A</span> <span class="o">=</span> <span class="n">GF</span><span class="o">.</span><span class="n">Random</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">));</span> <span class="n">A</span>
 <span class="gh">Out[27]: </span>
-<span class="go">GF([[  1, α^6, α^6],</span>
-<span class="go">    [  0, α^3, α^5],</span>
-<span class="go">    [α^6, α^2, α^4]], order=3^2)</span>
+<span class="go">GF([[α^7, α^6, α^5],</span>
+<span class="go">    [α^6, α^7, α^6],</span>
+<span class="go">    [  1, α^6, α^7]], order=3^2)</span>
 
 <span class="gp">In [28]: </span><span class="n">poly</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">minimal_poly</span><span class="p">();</span> <span class="n">poly</span>
-<span class="gh">Out[28]: </span><span class="go">Poly(x^3 + (α^7)x^2 + (α^3)x + α^4, GF(3^2))</span>
+<span class="gh">Out[28]: </span><span class="go">Poly(x^3 + (α^7)x + α^7, GF(3^2))</span>
 
 <span class="go"># The minimal polynomial annihilates the matrix</span>
 <span class="gp">In [29]: </span><span class="n">poly</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">elementwise</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
