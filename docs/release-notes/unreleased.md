@@ -12,7 +12,7 @@ tocdepth: 2
 
 ### Features
 
-- …
+- Make `FieldArray` subclasses hashable based on their properties. ([#639](https://github.com/mhostetter/galois/pull/639))
 
 ### Fixes
 

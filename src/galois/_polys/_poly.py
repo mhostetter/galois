@@ -1014,7 +1014,7 @@ class Poly:
         return self.__index__()
 
     def __hash__(self):
-        t = (self.field.order, *self.nonzero_degrees.tolist(), *self.nonzero_coeffs.tolist())
+        t = (hash(self.field), hash(tuple(self.nonzero_degrees.tolist())), hash(tuple(self.nonzero_coeffs.tolist())))
         return hash(t)
 
     @overload
