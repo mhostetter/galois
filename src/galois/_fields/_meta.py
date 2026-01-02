@@ -51,6 +51,10 @@ class FieldArrayMeta(ArrayMeta):
         cls._name = f"GF({cls._order_str})"
         cls._long_name = f"GF({cls._order_str}, primitive_element={cls._primitive_element_str!r}, irreducible_poly={cls._irreducible_poly_str!r})"
 
+    def __hash__(cls):
+        t = (cls.characteristic, cls.degree, cls._irreducible_poly_int, int(cls._primitive_element))
+        return hash(t)
+
     def __repr__(cls) -> str:
         if cls.order == 0:
             # This is not a runtime-created subclass, so return the base class name.
