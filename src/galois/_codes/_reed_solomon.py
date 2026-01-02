@@ -10,7 +10,7 @@ import numpy as np
 import numpy.typing as npt
 from typing_extensions import Literal
 
-from .._fields import Field, FieldArray
+from .._fields import FieldArray, GF
 from .._helper import export, extend_docstring, verify_isinstance, verify_issubclass
 from .._math import ilog
 from .._polys import Poly, matlab_primitive_poly
@@ -182,7 +182,7 @@ class ReedSolomon(_CyclicCode):
             m = ilog(n, q) + 1
             assert q ** (m - 1) < n + 1 <= q**m
             irreducible_poly = matlab_primitive_poly(q, m)
-            field = Field(q**m, irreducible_poly=irreducible_poly)
+            field = GF(q**m, irreducible_poly=irreducible_poly)
 
         if alpha is None:
             alpha = field.primitive_root_of_unity(n)

@@ -6,7 +6,7 @@ from __future__ import annotations
 
 import numpy as np
 
-from ._fields import Field, FieldArray
+from ._fields import FieldArray, GF
 from ._helper import export, verify_isinstance
 from ._prime import is_prime
 from .typing import ArrayLike
@@ -265,7 +265,7 @@ def _ntt(x, size=None, modulus=None, forward=True, scaled=True):
             f"Argument 'modulus' must be at least the max value of the input which is {np.max(x)}, not {modulus}."
         )
 
-    field = Field(modulus)  # The prime field GF(p)
+    field = GF(modulus)  # The prime field GF(p)
 
     x = field(x)
     if forward:
