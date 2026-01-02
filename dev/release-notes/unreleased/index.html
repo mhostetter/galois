@@ -13417,11 +13417,12 @@ You're not viewing the latest version.
 </ul>
 <h3 id="features">Features<a class="headerlink" href="#features" title="Link to this heading">¶</a></h3>
 <ul class="simple">
+<li><p>Make <code class="docutils literal notranslate"><span class="pre">FieldArray</span></code> subclasses hashable based on their properties. (<a class="reference external" href="https://github.com/mhostetter/galois/pull/639">#639</a>)</p></li>
 <li><p>Improved FFT speed (~1.6x speedup) in <code class="docutils literal notranslate"><span class="pre">np.fft.fft()</span></code> with mixed-radix Cooley-Tukey algorithm. (<a class="reference external" href="https://github.com/mhostetter/galois/pull/620">#620</a>)</p></li>
 </ul>
 <h3 id="fixes">Fixes<a class="headerlink" href="#fixes" title="Link to this heading">¶</a></h3>
 <ul class="simple">
-<li><p>…</p></li>
+<li><p>Fixed bug where <code class="docutils literal notranslate"><span class="pre">FieldArray</span></code> instances couldn’t be unpickled if the <code class="docutils literal notranslate"><span class="pre">FieldArray</span></code> class had not yet be created. (<a class="reference external" href="https://github.com/mhostetter/galois/pull/639">#639</a>)</p></li>
 </ul>
 <h3 id="performance">Performance<a class="headerlink" href="#performance" title="Link to this heading">¶</a></h3>
 <ul class="simple">
