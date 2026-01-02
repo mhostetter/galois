@@ -7,13 +7,32 @@ import pickle
 import subprocess
 import sys
 
+import numpy as np
 import pytest
 
 import galois
 
 
 @pytest.mark.parametrize("order", [3, 3**2])
-def test_pickle_field_array_in_fresh_interpreter(order, tmp_path):
+def test_pickle_field_array_in_same_interpreter(order, tmp_path):
+    GF = galois.GF(order)
+    x = GF.Random(10)
+
+    # Write the pickle artifact
+    pkl_path = tmp_path / "field_array.pkl"
+    with pkl_path.open("wb") as f:
+        pickle.dump(x, f, protocol=pickle.HIGHEST_PROTOCOL)
+
+    # Read the pickle artifact
+    with pkl_path.open("rb") as f:
+        x2 = pickle.load(f)
+
+    assert type(x) is type(x2)
+    assert np.array_equal(x, x2)
+
+
+@pytest.mark.parametrize("order", [3, 3**2])
+def test_pickle_field_array_in_new_interpreter(order, tmp_path):
     GF = galois.GF(order)
     x = GF.Random(10)
 
@@ -24,8 +43,9 @@ def test_pickle_field_array_in_fresh_interpreter(order, tmp_path):
 
     # Capture "expected" in a representation that is easy to embed as Python literals.
     # Use integers of the underlying representation, not repr(x).
-    expected_values = str(x)
+    expected_hash = hash(type(x))
     expected_properties = type(x).properties
+    expected_values = x.tolist()
 
     # Run a fresh interpreter that ONLY imports galois and unpickles.
     code = f"""
@@ -36,8 +56,9 @@ import galois
 with open(r"{pkl_path}", "rb") as f:
     x2 = pickle.load(f)
 
+assert hash(type(x2)) == {expected_hash}
 assert type(x2).properties == {expected_properties!r}
-assert str(x2) == {expected_values!r}
+assert x2.tolist() == {expected_values!r}
 """
 
     env = os.environ.copy()
