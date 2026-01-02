@@ -13,6 +13,7 @@ tocdepth: 2
 ### Features
 
 - Make `FieldArray` subclasses hashable based on their properties. ([#639](https://github.com/mhostetter/galois/pull/639))
+- Improved FFT speed (~1.6x speedup) in `np.fft.fft()` with mixed-radix Cooley-Tukey algorithm. ([#620](https://github.com/mhostetter/galois/pull/620))
 
 ### Fixes
 
