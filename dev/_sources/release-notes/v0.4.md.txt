@@ -156,3 +156,25 @@ tocdepth: 2
 
 - Iyán Méndez Veiga ([@iyanmv](https://github.com/iyanmv))
 - Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
+
+## v0.4.10
+
+*Released January 1, 2026*
+
+### Breaking changes
+
+- Deprecated `galois.Field()` for removal in v0.5.0. ([#633](https://github.com/mhostetter/galois/issues/633))
+
+### Features
+
+- Make `FieldArray` subclasses hashable based on their properties. ([#639](https://github.com/mhostetter/galois/pull/639))
+- Improved FFT speed (~1.6x speedup) in `np.fft.fft()` with mixed-radix Cooley-Tukey algorithm. ([#620](https://github.com/mhostetter/galois/pull/620))
+
+### Fixes
+
+- Fixed bug where `FieldArray` instances couldn't be unpickled if the `FieldArray` class had not yet be created. ([#639](https://github.com/mhostetter/galois/pull/639))
+
+### Contributors
+
+- Frank Yellin ([@fyellin](https://github.com/fyellin))
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
