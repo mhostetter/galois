@@ -2,6 +2,13 @@
 A pytest module to test polynomial test (is_blank) method and properties.
 """
 
+import galois
+
+
+def test_is_zero():
+    assert galois.Poly.Zero().is_zero
+    assert not galois.Poly.One().is_zero
+
 
 def test_is_monic(poly_is_monic):
     X, Z = poly_is_monic["X"], poly_is_monic["Z"]

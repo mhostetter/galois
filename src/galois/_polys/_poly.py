@@ -1623,6 +1623,19 @@ class Poly:
         return self._nonzero_degrees.copy()
 
     @property
+    def is_zero(self) -> bool:
+        r"""
+        Returns whether the polynomial is the zero polynomial $f(x) = 0$.
+
+        Examples:
+            .. ipython:: python
+
+                assert galois.Poly.Zero().is_zero
+                assert not galois.Poly.One().is_zero
+        """
+        return bool(self.degree == 0 and self.coeffs[0] == 0)
+
+    @property
     def is_monic(self) -> bool:
         r"""
         Returns whether the polynomial is monic, meaning its highest-degree coefficient is one.
