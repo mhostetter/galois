@@ -12,7 +12,7 @@ tocdepth: 2
 
 ### Features
 
-- …
+- Add `Poly.is_zero` convenience property.
 
 ### Fixes
 
