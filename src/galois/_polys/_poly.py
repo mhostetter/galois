@@ -1649,6 +1649,19 @@ class Poly:
         return bool(self.degree == 0 and self.coeffs[0] == 1)
 
     @property
+    def is_constant(self) -> bool:
+        r"""
+        Returns whether the polynomial has degree 0.
+
+        Examples:
+            .. ipython:: python
+
+                assert galois.Poly([5], field=galois.GF(7)).is_constant
+                assert not galois.Poly.Identity().is_constant
+        """
+        return bool(self.degree == 0)
+
+    @property
     def is_monic(self) -> bool:
         r"""
         Returns whether the polynomial is monic, meaning its highest-degree coefficient is one.
