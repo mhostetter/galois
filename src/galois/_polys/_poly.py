@@ -1636,6 +1636,19 @@ class Poly:
         return bool(self.degree == 0 and self.coeffs[0] == 0)
 
     @property
+    def is_one(self) -> bool:
+        r"""
+        Returns whether the polynomial is the one polynomial $f(x) = 1$.
+
+        Examples:
+            .. ipython:: python
+
+                assert galois.Poly.One().is_one
+                assert not galois.Poly.Identity().is_one
+        """
+        return bool(self.degree == 0 and self.coeffs[0] == 1)
+
+    @property
     def is_monic(self) -> bool:
         r"""
         Returns whether the polynomial is monic, meaning its highest-degree coefficient is one.

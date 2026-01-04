@@ -10,6 +10,11 @@ def test_is_zero():
     assert not galois.Poly.One().is_zero
 
 
+def test_is_one():
+    assert galois.Poly.One().is_one
+    assert not galois.Poly.Identity().is_one
+
+
 def test_is_monic(poly_is_monic):
     X, Z = poly_is_monic["X"], poly_is_monic["Z"]
     for x, z in zip(X, Z):
