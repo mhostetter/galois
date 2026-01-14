@@ -11,7 +11,7 @@ import numpy.typing as npt
 from typing_extensions import Literal
 
 from .._fields import FieldArray
-from .._helper import verify_arraylike, verify_isinstance, verify_literal
+from .._verify import verify_arraylike, verify_isinstance, verify_literal
 from ..typing import ArrayLike
 
 

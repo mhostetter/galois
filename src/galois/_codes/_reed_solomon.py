@@ -11,9 +11,10 @@ import numpy.typing as npt
 from typing_extensions import Literal
 
 from .._fields import Field, FieldArray
-from .._helper import export, extend_docstring, verify_isinstance, verify_issubclass
+from .._helper import export, extend_docstring
 from .._math import ilog
 from .._polys import Poly, matlab_primitive_poly
+from .._verify import verify_isinstance, verify_issubclass
 from ..typing import ArrayLike, ElementLike
 from ._bch import bch_decode_jit
 from ._cyclic import _CyclicCode

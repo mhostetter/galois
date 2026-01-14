@@ -7,9 +7,10 @@ from __future__ import annotations
 import functools
 import math
 
-from ._helper import export, verify_isinstance
+from ._helper import export
 from ._math import lcm
 from ._prime import factors
+from ._verify import verify_isinstance
 
 
 @export

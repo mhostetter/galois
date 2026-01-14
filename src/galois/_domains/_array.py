@@ -13,7 +13,8 @@ import numpy as np
 import numpy.typing as npt
 from typing_extensions import Literal, Self
 
-from .._helper import export, verify_isinstance, verify_literal
+from .._helper import export
+from .._verify import verify_isinstance, verify_literal
 from ..typing import ArrayLike, DTypeLike, ElementLike, IterableLike, ShapeLike
 from ._function import FunctionMixin
 from ._linalg import LinalgFunctionMixin
