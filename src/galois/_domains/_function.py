@@ -13,8 +13,8 @@ import numpy as np
 import numpy.typing as npt
 from numba import int64
 
-from .._helper import verify_isinstance
 from .._prime import factors as _factors
+from .._verify import verify_isinstance
 from ._meta import ArrayMeta
 
 if TYPE_CHECKING:

@@ -8,10 +8,11 @@ import random
 
 from typing_extensions import Literal
 
-from .._helper import export, verify_isinstance
+from .._helper import export
 from .._modular import totatives
 from .._polys import Poly
 from .._prime import factors
+from .._verify import verify_isinstance
 from ..typing import PolyLike
 
 

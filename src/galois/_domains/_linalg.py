@@ -11,7 +11,7 @@ import numba
 import numpy as np
 from numba import int64
 
-from .._helper import verify_isinstance
+from .._verify import verify_isinstance
 from ._function import Function, FunctionMixin
 
 if TYPE_CHECKING:

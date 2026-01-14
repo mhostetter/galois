@@ -10,7 +10,8 @@ import numpy as np
 from typing_extensions import Literal, Self
 
 from .._domains import Array, _factory
-from .._helper import export, verify_isinstance, verify_issubclass
+from .._helper import export
+from .._verify import verify_isinstance, verify_issubclass
 from ..typing import ArrayLike, ElementLike, PolyLike
 from . import _binary, _dense, _sparse
 from ._conversions import (

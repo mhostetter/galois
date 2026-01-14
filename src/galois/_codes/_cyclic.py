@@ -11,9 +11,10 @@ import numpy.typing as npt
 from typing_extensions import Literal
 
 from .._fields import FieldArray
-from .._helper import extend_docstring, verify_isinstance
+from .._helper import extend_docstring
 from .._polys import Poly
 from .._polys._dense import divmod_jit
+from .._verify import verify_isinstance
 from ..typing import ArrayLike
 from ._linear import _LinearCode
 

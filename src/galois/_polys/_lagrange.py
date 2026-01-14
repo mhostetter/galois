@@ -10,7 +10,8 @@ from numba import int64
 
 from .._domains import Array
 from .._domains._function import Function
-from .._helper import export, verify_isinstance
+from .._helper import export
+from .._verify import verify_isinstance
 from ._dense import add_jit, floordiv_jit
 from ._poly import Poly
 

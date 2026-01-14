@@ -10,8 +10,9 @@ from typing import Iterator
 from typing_extensions import Literal
 
 from .._domains import _factory
-from .._helper import export, method_of, verify_isinstance
+from .._helper import export, method_of
 from .._prime import factors, is_prime, is_prime_power
+from .._verify import verify_isinstance
 from ._irreducible import is_irreducible
 from ._poly import Poly
 from ._search import (

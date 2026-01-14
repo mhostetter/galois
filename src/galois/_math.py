@@ -8,7 +8,8 @@ from __future__ import annotations
 import math
 import sys
 
-from ._helper import export, verify_isinstance
+from ._helper import export
+from ._verify import verify_isinstance
 
 ###############################################################################
 # Divisibility
