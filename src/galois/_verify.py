@@ -17,9 +17,24 @@ def _argument_names():
     Finds the source code argument names from the function that called a verification function.
     """
     frame = inspect.currentframe()
-    frame = inspect.getouterframes(frame)[2]  # function() -> verify() -> _argument_name()
-    string = inspect.getframeinfo(frame[0]).code_context[0].strip()
-    args = string[string.find("(") + 1 : -1].split(",")
+    if frame is None:
+        return ("<argument>",)
+
+    outer_frames = inspect.getouterframes(frame)
+    if len(outer_frames) < 3:
+        return ("<argument>",)
+
+    frame_info = inspect.getframeinfo(outer_frames[2].frame)  # function() -> verify() -> _argument_name()
+    if not frame_info.code_context:
+        return ("<argument>",)
+
+    string = "".join(frame_info.code_context).strip()
+    start = string.find("(")
+    end = string.rfind(")")
+    if start == -1 or end == -1 or end <= start:
+        return ("<argument>",)
+
+    args = string[start + 1 : end].split(",")
     args = [arg.strip() for arg in args]  # Strip leading/trailing whitespace
     # args = [arg.split("=")[0].strip() for arg in args]  # Remove default values and strip whitespace
     return tuple(args)
@@ -102,7 +117,7 @@ def verify_issubclass(argument, types, optional=False):
     Verifies that the argument is a subclass of the type(s).
     """
     if optional and argument is None:
-        return
+        return argument
 
     # Need this try/except because issubclass(instance, (classes,)) will itself raise a TypeError.
     # Instead, we'd like to raise our own TypeError.
@@ -112,12 +127,7 @@ def verify_issubclass(argument, types, optional=False):
         valid = False
 
     if not valid:
-        frame = inspect.currentframe()
-        frame = inspect.getouterframes(frame)[1]
-        string = inspect.getframeinfo(frame[0]).code_context[0].strip()
-        args = string[string.find("(") + 1 : -1].split(",")
-        argument_name = args[0]
-        raise TypeError(f"Argument {argument_name!r} must be a subclass of {types}, not {type(type(argument))}.")
+        raise TypeError(f"Argument {_argument_names()[0]!r} must be a subclass of {types}, not {type(argument)}.")
 
 
 def verify_literal(
@@ -169,8 +179,10 @@ def verify_scalar(
     if isinstance(x, np.ndarray) and x.ndim > 0:
         raise TypeError(f"Argument {_argument_names()[0]!r} must be a scalar, not an array.")
 
+    is_integer = isinstance(x, builtins.int) or (accept_numpy and isinstance(x, np.integer))
+
     if int:
-        if not (isinstance(x, builtins.int) or (accept_numpy and np.issubdtype(x, np.integer))):
+        if not is_integer:
             raise TypeError(f"Argument {_argument_names()[0]!r} must be an int, not {type(x)}.")
     if float:
         if not (isinstance(x, (builtins.int, builtins.float)) or (accept_numpy and np.issubdtype(x, np.floating))):
@@ -183,10 +195,10 @@ def verify_scalar(
             raise TypeError(f"Argument {_argument_names()[0]!r} must be an int or float or complex, not {type(x)}.")
 
     if real:
-        if isinstance(x, builtins.complex):
+        if np.iscomplexobj(x) and not np.isrealobj(x):
             raise ValueError(f"Argument {_argument_names()[0]!r} must be real, not complex.")
     if imaginary:
-        if not isinstance(x, builtins.complex):
+        if not np.iscomplexobj(x):
             raise ValueError(f"Argument {_argument_names()[0]!r} must be complex, not real.")
 
     if negative:
@@ -199,13 +211,19 @@ def verify_scalar(
         if x <= 0:
             raise ValueError(f"Argument {_argument_names()[0]!r} must be positive, not {x}.")
     if even:
+        if not is_integer:
+            raise TypeError(f"Argument {_argument_names()[0]!r} must be an int to be even, not {type(x)}.")
         if x % 2 != 0:
             raise ValueError(f"Argument {_argument_names()[0]!r} must be even, not {x}.")
     if odd:
+        if not is_integer:
+            raise TypeError(f"Argument {_argument_names()[0]!r} must be an int to be odd, not {type(x)}.")
         if x % 2 == 0:
             raise ValueError(f"Argument {_argument_names()[0]!r} must be odd, not {x}.")
     if power_of_two:
-        if not (x & (x - 1) == 0):
+        if not is_integer:
+            raise TypeError(f"Argument {_argument_names()[0]!r} must be an int to be a power of two, not {type(x)}.")
+        if x <= 0 or not (x & (x - 1) == 0):
             raise ValueError(f"Argument {_argument_names()[0]!r} must be a power of two, not {x}.")
 
     if inclusive_min is not None:
@@ -292,7 +310,7 @@ def verify_arraylike(
     sizes: tuple | list | None = None,
     size_multiple: int | None = None,
     shape: tuple[int, ...] | None = None,
-) -> npt.NDArray:
+) -> npt.NDArray | None:
     """
     Converts the argument to a NumPy array and verifies the conditions.
     """
@@ -358,7 +376,7 @@ def verify_arraylike(
             raise ValueError(f"Argument {_argument_names()[0]!r} must have {size} elements, not {x.size}.")
     if sizes is not None:
         if not x.size in sizes:
-            raise ValueError(f"Argument {_argument_names()[0]!r} must have on of {sizes} elements, not {x.size}.")
+            raise ValueError(f"Argument {_argument_names()[0]!r} must have one of {sizes} elements, not {x.size}.")
     if size_multiple is not None:
         if not x.size % size_multiple == 0:
             raise ValueError(
