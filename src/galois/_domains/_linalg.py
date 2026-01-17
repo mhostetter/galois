@@ -177,6 +177,40 @@ class outer_jit(Function):
         return np.multiply.outer(a.ravel(), b.ravel(), out=out)
 
 
+class kron_jit(Function):
+    """
+    Computes the Kronecker product of two arrays.
+
+    References:
+        - https://numpy.org/doc/stable/reference/generated/numpy.kron.html
+    """
+
+    def __call__(self, a: Array, b: Array) -> Array:
+        verify_isinstance(a, self.field)
+        verify_isinstance(b, self.field)
+
+        # Scalar cases
+        if a.ndim == 0 or b.ndim == 0:
+            return a * b
+
+        # Match np.kron behavior: pad leading dims with 1s
+        ndim = max(a.ndim, b.ndim)
+        a_shape = (1,) * (ndim - a.ndim) + a.shape
+        b_shape = (1,) * (ndim - b.ndim) + b.shape
+
+        # Interleave dimensions: (a0,1,a1,1,...) and (1,b0,1,b1,...)
+        a_interleaved = tuple(x for d in a_shape for x in (d, 1))
+        b_interleaved = tuple(x for d in b_shape for x in (1, d))
+
+        a_reshaped = a.reshape(a_interleaved)
+        b_reshaped = b.reshape(b_interleaved)
+
+        product = a_reshaped * b_reshaped
+        result_shape = tuple(np.multiply(a_shape, b_shape))
+
+        return product.reshape(result_shape)
+
+
 class matmul_jit(Function):
     """
     Computes the matrix multiplication of two matrices.
@@ -566,6 +600,7 @@ class LinalgFunctionMixin(FunctionMixin):
             np.vdot: "_vdot",
             np.inner: "_inner",
             np.outer: "_outer",
+            np.kron: "_kron",
             # np.tensordot: "_tensordot",
             np.linalg.det: "_det",
             np.linalg.matrix_rank: "_matrix_rank",
@@ -578,6 +613,7 @@ class LinalgFunctionMixin(FunctionMixin):
     _vdot: Function
     _inner: Function
     _outer: Function
+    _kron: Function
     _det: Function
     _matrix_rank: Function
     _solve: Function
@@ -589,6 +625,7 @@ class LinalgFunctionMixin(FunctionMixin):
         cls._vdot = vdot_jit(cls)
         cls._inner = inner_jit(cls)
         cls._outer = outer_jit(cls)
+        cls._kron = kron_jit(cls)
         cls._det = det_jit(cls)
         cls._matrix_rank = matrix_rank_jit(cls)
         cls._solve = solve_jit(cls)

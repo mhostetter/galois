@@ -187,6 +187,19 @@ Expand any section for more details.
         z = y.log(beta); z
         beta ** z == y
 
+.. example:: Kronecker product: `np.kron(a, b)`
+    :collapsible:
+
+    The Kronecker product is supported via :func:`numpy.kron`, and it uses finite field arithmetic for
+    :obj:`~galois.FieldArray` inputs.
+
+    .. ipython:: python
+
+        GF = galois.GF(7)
+        a = GF([1, 2])
+        b = GF([3, 4, 5])
+        np.kron(a, b)
+
 Ufunc methods
 -------------
 

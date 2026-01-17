@@ -178,6 +178,34 @@ def test_outer_nd_nd(field):
     assert array_equal(c, np.multiply.outer(a.ravel(), b.ravel()))
 
 
+def test_kron_vector_vector(field):
+    dtype = random.choice(field.dtypes)
+    a = field.Random(2, dtype=dtype)
+    b = field.Random(3, dtype=dtype)
+    c = np.kron(a, b)
+    assert type(c) is field
+    assert c.dtype == dtype
+    assert array_equal(c, np.multiply.outer(a, b).reshape(a.size * b.size))
+
+
+def test_kron_matrix_vector(field):
+    dtype = random.choice(field.dtypes)
+    A = field.Random((2, 3), dtype=dtype)
+    b = field.Random(2, dtype=dtype)
+    c = np.kron(A, b)
+
+    ndim = max(A.ndim, b.ndim)
+    a_shape = (1,) * (ndim - A.ndim) + A.shape
+    b_shape = (1,) * (ndim - b.ndim) + b.shape
+    expected = (A.reshape(a_shape + (1,) * ndim) * b.reshape((1,) * ndim + b_shape)).reshape(
+        tuple(np.multiply(a_shape, b_shape))
+    )
+
+    assert type(c) is field
+    assert c.dtype == dtype
+    assert array_equal(c, expected)
+
+
 def test_matmul_scalar(field):
     dtype = random.choice(field.dtypes)
     A = field.Random((3, 3), dtype=dtype)
