@@ -158,3 +158,46 @@ def test_ilog(ilog):
         assert galois.ilog(x, b) == z
 
     assert galois.ilog(10, 10) == 1
+
+
+def test_int_to_base_q_exceptions():
+    with pytest.raises(TypeError):
+        galois.int_to_base_q(10.0, 2)
+    with pytest.raises(TypeError):
+        galois.int_to_base_q(10, 2.0)
+    with pytest.raises(ValueError):
+        galois.int_to_base_q(-1, 2)
+    with pytest.raises(ValueError):
+        galois.int_to_base_q(10, 1)
+    with pytest.raises(ValueError):
+        galois.int_to_base_q(10, 2, order="up")
+
+
+def test_base_q_to_int_exceptions():
+    with pytest.raises(TypeError):
+        galois.base_q_to_int("1010", 2)
+    with pytest.raises(TypeError):
+        galois.base_q_to_int([1.0, 0.0], 2)
+    with pytest.raises(ValueError):
+        galois.base_q_to_int([], 2)
+    with pytest.raises(ValueError):
+        galois.base_q_to_int([-1, 0], 2)
+    with pytest.raises(ValueError):
+        galois.base_q_to_int([2, 0], 2)
+    with pytest.raises(ValueError):
+        galois.base_q_to_int([1, 0], 2, order="up")
+
+
+def test_base_q_round_trip():
+    assert galois.int_to_base_q(0, 5) == [0]
+    assert galois.base_q_to_int([0], 5) == 0
+
+    digits_desc = galois.int_to_base_q(125, 5)
+    digits_asc = galois.int_to_base_q(125, 5, order="asc")
+    assert digits_desc == [1, 0, 0, 0]
+    assert digits_asc == [0, 0, 0, 1]
+    assert galois.base_q_to_int(digits_desc, 5) == 125
+    assert galois.base_q_to_int(digits_asc, 5, order="asc") == 125
+
+    assert galois.int_to_base_q(13, 2) == [1, 1, 0, 1]
+    assert galois.base_q_to_int([1, 1, 0, 1], 2) == 13
