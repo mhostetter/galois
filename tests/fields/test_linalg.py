@@ -83,6 +83,43 @@ def test_dot_tensor_vector(field):
     assert array_equal(C, np.sum(A * b, axis=-1))
 
 
+def test_dot_vector_tensor(field):
+    dtype = random.choice(field.dtypes)
+    a = field.Random(4, dtype=dtype)
+    B = field.Random((2, 4, 3), dtype=dtype)
+
+    C = np.dot(a, B)
+    assert type(C) is field
+    assert C.dtype == dtype
+    assert C.shape == (2, 3)
+    assert array_equal(C, np.sum(a.reshape((1, 4, 1)) * B, axis=-2))
+
+
+def test_dot_tensor_tensor(field):
+    dtype = random.choice(field.dtypes)
+    A = field.Random((2, 3, 4), dtype=dtype)
+    B = field.Random((5, 4, 6), dtype=dtype)
+
+    C = np.dot(A, B)
+    assert type(C) is field
+    assert C.dtype == dtype
+    assert C.shape == (2, 3, 5, 6)
+    A_reshaped = A.reshape((2, 3, 1, 4, 1))
+    B_reshaped = B.reshape((1, 1, 5, 4, 6))
+    assert array_equal(C, np.sum(A_reshaped * B_reshaped, axis=-2))
+
+
+def test_dot_out(field):
+    dtype = random.choice(field.dtypes)
+    A = field.Random((3, 4), dtype=dtype)
+    B = field.Random((4, 2), dtype=dtype)
+    out = field.Zeros((3, 2), dtype=dtype)
+
+    C = np.dot(A, B, out=out)
+    assert C is out
+    assert array_equal(C, A @ B)
+
+
 def test_vdot_exceptions():
     with pytest.raises(TypeError):
         a = galois.GF(2**4).Random(5)
@@ -425,9 +462,6 @@ def test_matrix_inverse_exceptions():
     with pytest.raises(np.linalg.LinAlgError):
         A = GF.Random(5)
         np.linalg.inv(A)
-    with pytest.raises(np.linalg.LinAlgError):
-        A = GF.Random((2, 2, 2))
-        np.linalg.inv(A)
 
 
 def test_matrix_inverse(field_matrix_inverse):
@@ -440,13 +474,22 @@ def test_matrix_inverse(field_matrix_inverse):
         assert type(z) is GF
 
 
+def test_matrix_inverse_batch(field):
+    dtype = random.choice(field.dtypes)
+    A = field.Random((2, 3, 3), dtype=dtype)
+    A[0] = full_rank_matrix(field, 3, dtype)
+    A[1] = full_rank_matrix(field, 3, dtype)
+    A_inv = np.linalg.inv(A)
+
+    identity = field.Identity(3, dtype=dtype)
+    assert array_equal(A[0] @ A_inv[0], identity)
+    assert array_equal(A[1] @ A_inv[1], identity)
+
+
 def test_matrix_determinant_exceptions():
     GF = galois.GF(2**8)
     with pytest.raises(np.linalg.LinAlgError):
         A = GF.Random(5)
-        np.linalg.det(A)
-    with pytest.raises(np.linalg.LinAlgError):
-        A = GF.Random((2, 2, 2))
         np.linalg.det(A)
 
 
@@ -460,6 +503,14 @@ def test_matrix_determinant(field_matrix_determinant):
         assert type(z) is GF
 
 
+def test_matrix_determinant_batch(field):
+    dtype = random.choice(field.dtypes)
+    A = field.Random((2, 2, 2), dtype=dtype)
+    dets = np.linalg.det(A)
+    expected = field([np.linalg.det(A[0]), np.linalg.det(A[1])], dtype=dtype)
+    assert array_equal(dets, expected)
+
+
 def test_matrix_solve_exceptions():
     GF = galois.GF(2**8)
     with pytest.raises(TypeError):
@@ -469,10 +520,6 @@ def test_matrix_solve_exceptions():
     with pytest.raises(np.linalg.LinAlgError):
         A = GF.Random((2, 3))
         b = GF.Random(3)
-        np.linalg.solve(A, b)
-    with pytest.raises(np.linalg.LinAlgError):
-        A = GF.Random((2, 2))
-        b = GF.Random((2, 2, 2))
         np.linalg.solve(A, b)
     with pytest.raises(np.linalg.LinAlgError):
         A = GF.Random((2, 2))
@@ -494,6 +541,35 @@ def test_matrix_solve(field_matrix_solve):
         z = np.linalg.solve(x, y)
         assert np.array_equal(z, z_truth)
         assert type(z) is GF
+
+
+def test_matrix_solve_batch_vector(field):
+    dtype = random.choice(field.dtypes)
+    A = field.Random((2, 3, 3), dtype=dtype)
+    A[0] = full_rank_matrix(field, 3, dtype)
+    A[1] = full_rank_matrix(field, 3, dtype)
+    b = field.Random((2, 3), dtype=dtype)
+    x = np.linalg.solve(A, b)
+    assert array_equal(np.sum(A * x[:, None, :], axis=-1), b)
+
+
+def test_matrix_solve_batch_matrix(field):
+    dtype = random.choice(field.dtypes)
+    A = field.Random((2, 3, 3), dtype=dtype)
+    A[0] = full_rank_matrix(field, 3, dtype)
+    A[1] = full_rank_matrix(field, 3, dtype)
+    b = field.Random((2, 3, 2), dtype=dtype)
+    x = np.linalg.solve(A, b)
+    assert array_equal(A @ x, b)
+
+
+def test_matrix_rank_batch(field):
+    dtype = random.choice(field.dtypes)
+    A = field.Random((2, 3, 3), dtype=dtype)
+    A[0] = full_rank_matrix(field, 3, dtype)
+    A[1] = field.Zeros((3, 3), dtype=dtype)
+    ranks = np.linalg.matrix_rank(A)
+    assert np.array_equal(ranks, [3, 0])
 
 
 def test_row_space_exceptions():
