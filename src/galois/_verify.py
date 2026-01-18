@@ -130,6 +130,18 @@ def verify_issubclass(argument, types, optional=False):
         raise TypeError(f"Argument {_argument_names()[0]!r} must be a subclass of {types}, not {type(argument)}.")
 
 
+def verify_same_types(*args):
+    """
+    Verifies that all arguments are of the same type.
+    """
+    first_type = type(args[0])
+    for i, arg in enumerate(args[1:], start=1):
+        if not isinstance(arg, first_type):
+            raise TypeError(
+                f"Arguments {_argument_names()} must be of the same type, but argument {_argument_names()[i]!r} is of type {type(arg)!r} while argument {_argument_names()[0]!r} is of type {first_type!r}."
+            )
+
+
 def verify_literal(
     arg: Any,
     literals: Any,
@@ -310,6 +322,7 @@ def verify_arraylike(
     sizes: tuple | list | None = None,
     size_multiple: int | None = None,
     shape: tuple[int, ...] | None = None,
+    square: bool | None = None,
 ) -> npt.NDArray | None:
     """
     Converts the argument to a NumPy array and verifies the conditions.
@@ -318,6 +331,77 @@ def verify_arraylike(
         return x
 
     x = np.asarray(x, dtype=dtype)
+
+    verify_ndarray(
+        x,
+        dtype=dtype,
+        # Data types
+        int=int,
+        float=float,
+        complex=complex,
+        # Value constraints
+        real=real,
+        imaginary=imaginary,
+        negative=negative,
+        non_negative=non_negative,
+        positive=positive,
+        inclusive_min=inclusive_min,
+        inclusive_max=inclusive_max,
+        exclusive_min=exclusive_min,
+        exclusive_max=exclusive_max,
+        # Dimension and size constraints
+        atleast_1d=atleast_1d,
+        atleast_2d=atleast_2d,
+        atleast_3d=atleast_3d,
+        ndim=ndim,
+        size=size,
+        sizes=sizes,
+        size_multiple=size_multiple,
+        shape=shape,
+        square=square,
+    )
+
+    return x
+
+
+def verify_ndarray(
+    x: npt.NDArray,
+    # Array type
+    subclass: type = np.ndarray,
+    dtype: npt.DTypeLike | None = None,
+    # Data types
+    int: bool = False,
+    float: bool = False,
+    complex: bool = False,
+    # Value constraints
+    real: bool = False,
+    imaginary: bool = False,
+    negative: bool = False,
+    non_negative: bool = False,
+    positive: bool = False,
+    inclusive_min: float | None = None,
+    inclusive_max: float | None = None,
+    exclusive_min: float | None = None,
+    exclusive_max: float | None = None,
+    # Dimension and size constraints
+    atleast_1d: bool = False,
+    atleast_2d: bool = False,
+    atleast_3d: bool = False,
+    ndim: int | None = None,
+    size: int | None = None,
+    sizes: tuple | list | None = None,
+    size_multiple: int | None = None,
+    shape: tuple[int, ...] | None = None,
+    square: bool | None = None,
+):
+    """
+    Verifies that the argument is a NumPy ndarray and satisfies the conditions.
+    """
+    verify_isinstance(x, subclass)
+
+    if dtype:
+        if x.dtype != np.dtype(dtype):
+            raise TypeError(f"Argument {_argument_names()[0]!r} must have dtype {dtype}, not {x.dtype}.")
 
     if int:
         if not np.issubdtype(x.dtype, np.integer):
@@ -385,8 +469,11 @@ def verify_arraylike(
     if shape is not None:
         if not x.shape == shape:
             raise ValueError(f"Argument {_argument_names()[0]!r} must have shape {shape}, not {x.shape}.")
-
-    return x
+    if square is not None:
+        if square and not x.shape[0] == x.shape[1]:
+            raise ValueError(f"Argument {_argument_names()[0]!r} must be square, not {x.shape}.")
+        if not square and x.shape[0] == x.shape[1]:
+            raise ValueError(f"Argument {_argument_names()[0]!r} must not be square, not {x.shape}.")
 
 
 def verify_same_shape(
