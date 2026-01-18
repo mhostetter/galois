@@ -16,7 +16,7 @@ def test_is_one():
 
 
 def test_is_constant():
-    assert galois.Poly(5).is_constant
+    assert galois.Poly([5], field=galois.GF(7)).is_constant
     assert not galois.Poly.Identity().is_constant
 
 
