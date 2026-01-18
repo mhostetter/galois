@@ -1722,7 +1722,7 @@ def _root_multiplicity(poly: Poly, root: Array) -> int:
         # If the root is also a root of the derivative, then its a multiple root.
         p = p.derivative()
 
-        if p == 0:
+        if p.is_zero:
             # Cannot test whether p'(root) = 0 because p'(x) = 0. We've exhausted the non-zero derivatives. For
             # any Galois field, taking `characteristic` derivatives results in p'(x) = 0. For a root with multiplicity
             # greater than the field's characteristic, we need factor to the polynomial. Here we factor out
