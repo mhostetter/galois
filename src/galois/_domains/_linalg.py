@@ -378,32 +378,77 @@ class row_reduce_jit(Function):
             raise ValueError(f"Only 2-D matrices can be converted to reduced row echelon form, not {A.ndim}-D.")
 
         ncols = A.shape[1] if ncols is None else ncols
-        A_rre = A.copy()
-        p = 0  # The pivot
+        if not (0 <= ncols <= A.shape[1]):
+            raise ValueError(f"Argument 'ncols' must satisfy 0 <= ncols <= {A.shape[1]}, not {ncols}.")
+        dtype = A.dtype
+
+        if self.field.ufunc_mode != "python-calculate":
+            A_rref, p = self.jit(A.astype(np.int64), np.int64(ncols))
+            A_rref = A_rref.astype(dtype)
+        else:
+            A_rref, p = self.python(A.view(np.ndarray), ncols)
+        A_rref = self.field._view(A_rref)
+        p = int(p)
+
+        return A_rref, p
+
+    def set_globals(self):
+        global ADD, SUBTRACT, MULTIPLY, DIVIDE
+        ADD = self.field._add.ufunc_call_only
+        SUBTRACT = self.field._subtract.ufunc_call_only
+        MULTIPLY = self.field._multiply.ufunc_call_only
+        DIVIDE = self.field._divide.ufunc_call_only
+
+    _SIGNATURE = numba.types.FunctionType(numba.types.Tuple((int64[:, :], int64))(int64[:, :], int64))
+    _PARALLEL = False  # Algorithm is inherently sequential across pivot steps
+
+    @staticmethod
+    def implementation(A, ncols):
+        assert A.ndim == 2
+        M, N = A.shape
+        assert 0 <= ncols <= N
+
+        A_rref = A.copy()
+        p = 0  # pivot row index
 
         for j in range(ncols):
-            # Find a pivot in column `j` at or below row `p`
-            idxs = np.nonzero(A_rre[p:, j])[0]
-            if idxs.size == 0:
+            # Find pivot row i >= p with A_rref[i, j] != 0
+            pivot_row = -1
+            for i in range(p, M):
+                if A_rref[i, j] != 0:
+                    pivot_row = i
+                    break
+            if pivot_row == -1:
                 continue
-            i = p + idxs[0]  # Row with a pivot
 
-            # Swap row `p` and `i`. The pivot is now located at row `p`.
-            A_rre[[p, i], :] = A_rre[[i, p], :]
+            # Swap rows p and pivot_row
+            if pivot_row != p:
+                for k in range(N):
+                    tmp = A_rref[p, k]
+                    A_rref[p, k] = A_rref[pivot_row, k]
+                    A_rref[pivot_row, k] = tmp
 
-            # Force pivot value to be 1
-            A_rre[p, :] /= A_rre[p, j]
+            # Normalize pivot row so pivot becomes 1
+            pivot = A_rref[p, j]
+            for k in range(N):
+                A_rref[p, k] = DIVIDE(A_rref[p, k], pivot)  # pivot is non-zero
 
-            # Force zeros above and below the pivot
-            idxs = np.nonzero(A_rre[:, j])[0].tolist()
-            idxs.remove(p)
-            A_rre[idxs, :] -= np.multiply.outer(A_rre[idxs, j], A_rre[p, :])
+            # Eliminate pivot column in all other rows
+            for r in range(M):
+                if r == p:
+                    continue
+                factor = A_rref[r, j]
+                if factor == 0:
+                    continue
+                for k in range(N):
+                    # row_r -= factor * row_p
+                    A_rref[r, k] = SUBTRACT(A_rref[r, k], MULTIPLY(factor, A_rref[p, k]))
 
             p += 1
-            if p == A_rre.shape[0]:
+            if p == M:
                 break
 
-        return A_rre, p
+        return A_rref, p
 
 
 class lu_decompose_jit(Function):
