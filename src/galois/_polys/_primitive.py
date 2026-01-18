@@ -98,7 +98,7 @@ def is_primitive(f: Poly) -> bool:
         # of q**m - 1.
         h = pow(x, ki, f)
         g = (h - one) % f
-        if g == 0:
+        if g.is_zero:
             return False
 
     return True
