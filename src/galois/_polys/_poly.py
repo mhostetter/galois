@@ -677,6 +677,50 @@ class Poly:
 
         return coeffs
 
+    def lift(self, field: Type[Array]) -> Poly:
+        r"""
+        Returns a polynomial over $\mathrm{GF}(p^m)$ lifted from $\mathrm{GF}(p)$.
+
+        Arguments:
+            field: The extension field $\mathrm{GF}(p^m)$ to lift into. The polynomial must be over the prime
+                subfield $\mathrm{GF}(p)$ of this field.
+
+        Returns:
+            The polynomial $f(x)$ over $\mathrm{GF}(p^m)$.
+
+        Notes:
+            This method embeds coefficients from the prime subfield into the extension field. If `field` is the same
+            as the current field, this method returns `self`.
+
+        Examples:
+            Lift a polynomial over $\mathrm{GF}(7)$ to $\mathrm{GF}(7^2)$.
+
+            .. ipython:: python
+
+                K = galois.GF(7)
+                L = galois.GF(7**2)
+                f = galois.Poly([3, 0, 5, 2], field=K); f
+                f.lift(L)
+        """
+        verify_issubclass(field, Array)
+        if not self.field.is_prime_field:
+            raise ValueError(
+                "Argument 'field' must be an extension field with prime subfield matching the polynomial's field, "
+                f"not a polynomial over {self.field.name}."
+            )
+        if field.prime_subfield is not self.field:
+            raise ValueError(
+                "Argument 'field' must have the same prime subfield as the polynomial, "
+                f"not {field.name} with prime subfield {field.prime_subfield.name}."
+            )
+
+        if field is self.field:
+            return self
+        if self._type == "sparse":
+            return Poly.Degrees(self.nonzero_degrees, self.nonzero_coeffs, field=field)
+        else:
+            return Poly(self.coeffs, field=field)
+
     def reverse(self) -> Poly:
         r"""
         Returns the $d$-th reversal $x^d f(\frac{1}{x})$ of the polynomial $f(x)$ with
