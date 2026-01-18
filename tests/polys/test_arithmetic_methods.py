@@ -19,6 +19,39 @@ def test_reverse(poly_reverse):
         assert type(z.coeffs) is GF
 
 
+def test_lift_exceptions():
+    p = galois.Poly.Random(5)
+    with pytest.raises(TypeError):
+        p.lift(field=7)
+    with pytest.raises(TypeError):
+        p.lift(None)
+
+    GF4 = galois.GF(2**2)
+    p_ext = galois.Poly.Random(5, field=GF4)
+    with pytest.raises(ValueError):
+        p_ext.lift(galois.GF(2**4))
+
+    GF5 = galois.GF(5)
+    with pytest.raises(ValueError):
+        p.lift(GF5)
+
+
+def test_lift():
+    GF = galois.GF(7)
+    GF2 = galois.GF(7**2)
+    p = galois.Poly([3, 0, 5, 2], field=GF)
+
+    q = p.lift(GF2)
+    assert q == galois.Poly([3, 0, 5, 2], field=GF2)
+    assert q.field is GF2
+    assert type(q.coeffs) is GF2
+
+    same = p.lift(GF)
+    assert same == p
+    assert same.field is GF
+    assert type(same.coeffs) is GF
+
+
 def test_roots_exceptions():
     p = galois.Poly.Random(5)
     with pytest.raises(TypeError):
