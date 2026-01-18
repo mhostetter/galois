@@ -7,7 +7,7 @@ from __future__ import annotations
 
 import numpy as np
 
-from .._math import ilog
+from .._math import base_q_to_int, ilog, int_to_base_q
 from .._options import get_printoptions
 
 
@@ -25,20 +25,7 @@ def integer_to_poly(integer: int, order: int, degree: int | None = None) -> list
     """
     Converts the integer representation of the polynomial to its coefficients in descending order.
     """
-    if order == 2:
-        c = [int(bit) for bit in bin(integer)[2:]]
-    else:
-        c = []  # Coefficients in ascending order
-        while integer > 0:
-            q, r = divmod(integer, order)
-            c.append(r)
-            integer = q
-
-        # Ensure the coefficient list is not empty
-        if not c:
-            c = [0]
-
-        c = c[::-1]  # Coefficients in descending order
+    c = int_to_base_q(integer, order, order="desc")
 
     # Set to a fixed degree if requested
     if degree is not None:
@@ -52,15 +39,7 @@ def poly_to_integer(coeffs: list[int], order: int) -> int:
     """
     Converts the polynomial coefficients (descending order) to its integer representation.
     """
-    integer = 0
-    coeffs = coeffs[::-1]  # Coefficients in ascending order
-    factor = 1
-
-    for coeff in coeffs:
-        integer += int(coeff) * factor
-        factor *= order
-
-    return integer
+    return base_q_to_int(coeffs, order, order="desc")
 
 
 def sparse_poly_to_integer(degrees: list[int], coeffs: list[int], order: int) -> int:

@@ -10,10 +10,11 @@ import numpy as np
 from typing_extensions import Literal, Self
 
 from .._domains import Array, _linalg
-from .._helper import export, extend_docstring, verify_isinstance, verify_literal
+from .._helper import export, extend_docstring
 from .._polys import Poly
 from .._polys._conversions import integer_to_poly, poly_to_str, str_to_integer
 from .._prime import divisors
+from .._verify import verify_isinstance, verify_literal
 from ..typing import ArrayLike, DTypeLike, ElementLike, IterableLike, ShapeLike
 from ._meta import FieldArrayMeta
 
@@ -98,7 +99,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
                 GF = galois.GF(3**5)
                 print(GF.properties)
-                alpha = GF.primitive_element; alpha
+                g = GF.primitive_element; g
 
             Create a finite field scalar from its integer representation, polynomial representation,
             or a power of the primitive element.
@@ -107,7 +108,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
                 GF(17)
                 GF("x^2 + 2x + 2")
-                alpha ** 222
+                g ** 222
 
             Create a finite field array from its integer representation, polynomial representation,
             or powers of the primitive element.
@@ -116,7 +117,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
                 GF([17, 4, 148, 205])
                 GF([["x^2 + 2x + 2", 4], ["x^4 + 2x^3 + x^2 + x + 1", 205]])
-                alpha ** np.array([[222, 69], [54, 24]])
+                g ** np.array([[222, 69], [54, 24]])
         """
         # Adding __init__ and not doing anything is done to overwrite the superclass's __init__ docstring
         return
@@ -936,8 +937,8 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
                 GF = galois.GF(3**3)
                 print(GF.properties)
 
-            Generate a representation table for $\mathrm{GF}(3^3)$. Since $x^3 + 2x + 1$ is a primitive
-            polynomial, $x$ is a primitive element of the field. Notice, $\textrm{ord}(x) = 26$.
+            Generate a representation table for $\mathrm{GF}(3^3)$. Since $\alpha^3 + 2\alpha + 1$ is a primitive
+            polynomial, $\alpha$ is a primitive element of the field. Notice, $\textrm{ord}(\alpha) = 26$.
 
             .. ipython:: python
 
@@ -945,20 +946,20 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
                 GF("x").multiplicative_order()
 
             Generate a representation table for $\mathrm{GF}(3^3)$ using a different primitive element
-            $2x^2 + 2x + 2$. Notice, $\textrm{ord}(2x^2 + 2x + 2) = 26$.
+            $2\alpha^2 + 2\alpha + 2$. Notice, $\textrm{ord}(2\alpha^2 + 2\alpha + 2) = 26$.
 
             .. ipython:: python
 
-                print(GF.repr_table("2x^2 + 2x + 2"))
-                GF("2x^2 + 2x + 2").multiplicative_order()
+                print(GF.repr_table("2a^2 + 2a + 2"))
+                GF("2a^2 + 2a + 2").multiplicative_order()
 
-            Generate a representation table for $\mathrm{GF}(3^3)$ using a non-primitive element $x^2$.
-            Notice, $\textrm{ord}(x^2) = 13 \ne 26$.
+            Generate a representation table for $\mathrm{GF}(3^3)$ using a non-primitive element $\alpha^2$.
+            Notice, $\textrm{ord}(\alpha^2) = 13 \ne 26$.
 
             .. ipython:: python
 
-                print(GF.repr_table("x^2"))
-                GF("x^2").multiplicative_order()
+                print(GF.repr_table("a^2"))
+                GF("a^2").multiplicative_order()
 
         Group:
             String representation
@@ -977,8 +978,8 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         if sort != "power":
             idxs = np.argsort(x)
             degrees, x = degrees[idxs], x[idxs]
-        x = np.concatenate((np.atleast_1d(cls(0)), x))  # Add 0 = alpha**-Inf
-        prim = poly_to_str(integer_to_poly(int(element), cls.characteristic))
+        x = np.concatenate((np.atleast_1d(cls(0)), x))  # Add 0 = g**-Inf
+        prim = poly_to_str(integer_to_poly(int(element), cls.characteristic), poly_var="a")
 
         def print_power(power):
             if power is None:
@@ -988,7 +989,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             return f"{prim}^{power}"
 
         def print_poly(x):
-            return poly_to_str(integer_to_poly(int(x), cls.characteristic))
+            return poly_to_str(integer_to_poly(int(x), cls.characteristic), poly_var="a")
 
         def print_vec(x):
             return str(integer_to_poly(int(x), cls.characteristic, degree=cls.degree - 1))
@@ -1019,11 +1020,14 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
                 "\n"
                 + print_power(d).center(N_power)
                 + " "
-                + poly_to_str(integer_to_poly(int(x[i]), cls.characteristic)).center(N_poly)
+                + print_poly(x[i]).center(N_poly)
+                # + poly_to_str(integer_to_poly(int(x[i]), cls.characteristic)).center(N_poly)
                 + " "
-                + str(integer_to_poly(int(x[i]), cls.characteristic, degree=cls.degree - 1)).center(N_vec)
+                + print_vec(x[i]).center(N_vec)
+                # + str(integer_to_poly(int(x[i]), cls.characteristic, degree=cls.degree - 1)).center(N_vec)
                 + " "
-                + cls._print_int(x[i]).center(N_int)
+                + print_int(x[i]).center(N_int)
+                # + cls._print_int(x[i]).center(N_int)
                 + " "
             )
 
@@ -1143,7 +1147,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             $\omega_n^k \ne 1$ for all $1 \le k \lt n$.
 
             In $\mathrm{GF}(p^m)$, a primitive $n$-th root of unity exists when $n$ divides
-            $p^m - 1$. Then, the primitive root is $\omega_n = \alpha^{(p^m - 1)/n}$ where $\alpha$
+            $p^m - 1$. Then, the primitive root is $\omega_n = g^{(p^m - 1)/n}$ where $g$
             is a primitive element of the field.
 
         Examples:
@@ -1206,7 +1210,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             $\omega_n^k \ne 1$ for all $1 \le k \lt n$.
 
             In $\mathrm{GF}(p^m)$, a primitive $n$-th root of unity exists when $n$ divides
-            $p^m - 1$. Then, the primitive root is $\omega_n = \alpha^{(p^m - 1)/n}$ where $\alpha$
+            $p^m - 1$. Then, the primitive root is $\omega_n = g^{(p^m - 1)/n}$ where $g$
             is a primitive element of the field.
 
         Examples:
@@ -1260,13 +1264,30 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         Computes the additive order of each element in $x$.
 
         Returns:
-            An integer array of the additive order of each element in $x$. The return value is a single integer
-            if the input array $x$ is a scalar.
+            An integer array containing the additive order of each element in $x$. If $x$ is a scalar,
+            the return value is a single integer.
 
         Notes:
-            The additive order $a$ of $x$ in $\mathrm{GF}(p^m)$ is the smallest integer $a$
-            such that $x a = 0$. With the exception of 0, the additive order of every element is
-            the finite field's characteristic.
+            The additive group of the finite field $\mathrm{GF}(p^m)$ is an $m$-dimensional vector space
+            over $\mathrm{GF}(p)$ and is therefore isomorphic to $(\mathbb{Z}/p\mathbb{Z})^m$.
+
+            The **additive order** of an element $a \in \mathrm{GF}(p^m)$ is the smallest positive
+            integer $n$ such that
+
+            $$
+            n a = \underbrace{a + a + \cdots + a}_{n\text{ times}} = 0.
+            $$
+
+            Equivalently, the additive order of $a$ is the order of $a$ as an element of the additive
+            group $(\mathrm{GF}(p^m), +)$.
+
+            The additive order satisfies:
+
+            - $\operatorname{ord}(0) = 1$.
+            - Every nonzero element has additive order exactly $p$, the characteristic of the field.
+
+            In particular, the additive order of an element depends only on whether it is zero and
+            not on the extension degree $m$.
 
         Examples:
             Compute the additive order of each element of $\mathrm{GF}(3^2)$.
@@ -1291,27 +1312,41 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
     def multiplicative_order(self) -> int | np.ndarray:
         r"""
-        Computes the multiplicative order $\textrm{ord}(x)$ of each element in $x$.
+        Computes the multiplicative order $\operatorname{ord}(x)$ of each element in $x$.
 
         Returns:
-            An integer array of the multiplicative order of each element in $x$. The return value is a single
-            integer if the input array $x$ is a scalar.
+            An integer array containing the multiplicative order of each element in $x$. If $x$ is a
+            scalar, the return value is a single integer.
 
         Raises:
-            ArithmeticError: If zero is provided as an input. The multiplicative order of 0 is not defined. There is
-                no power of 0 that ever results in 1.
+            ArithmeticError:
+                If zero is provided as an input. The multiplicative order of $0$ is undefined, since
+                no power of $0$ equals $1$.
 
         Notes:
-            The multiplicative order $\textrm{ord}(x) = a$ of $x$ in $\mathrm{GF}(p^m)$ is the
-            smallest power $a$ such that $x^a = 1$. If $a = p^m - 1$, $a$ is said to be a
-            generator of the multiplicative group $\mathrm{GF}(p^m)^\times$.
+            The nonzero elements of the finite field $\mathrm{GF}(p^m)$ form a cyclic multiplicative
+            group $\mathrm{GF}(p^m)^\times$ of order $p^m - 1$.
 
-            Note, :func:`multiplicative_order` should not be confused with :obj:`order`. The former returns the
-            multiplicative order of :obj:`~galois.FieldArray` elements. The latter is a property of the field, namely
-            the finite field's order or size.
+            The **multiplicative order** of a nonzero element $a \in \mathrm{GF}(p^m)$ is the smallest
+            positive integer $n$ such that
+
+            $$
+            a^n = 1.
+            $$
+
+            Equivalently, the multiplicative order of $a$ is the order of $a$ as an element of the
+            group $\mathrm{GF}(p^m)^\times$.
+
+            An element $a$ is a **primitive element** (or **multiplicative generator**) of
+            $\mathrm{GF}(p^m)$ if and only if its multiplicative order is $p^m - 1$.
+
+            Note:
+                The method :func:`multiplicative_order` should not be confused with the property
+                :obj:`order`. The former returns the multiplicative order of field elements, while the
+                latter is a property of the field itself, namely its cardinality $p^m$.
 
         Examples:
-            Compute the multiplicative order of each non-zero element of $\mathrm{GF}(3^2)$.
+            Compute the multiplicative order of each nonzero element of $\mathrm{GF}(3^2)$.
 
             .. ipython-with-reprs:: int,poly,power
 
@@ -1320,8 +1355,8 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
                 order = x.multiplicative_order(); order
                 x ** order
 
-            The elements with $\textrm{ord}(x) = 8$ are multiplicative generators of
-            $\mathrm{GF}(3^2)^\times$, which are also called primitive elements.
+            The elements with $\operatorname{ord}(x) = 8$ are generators of
+            $\mathrm{GF}(3^2)^\times$ and are also called primitive elements.
 
             .. ipython-with-reprs:: int,poly,power
 
@@ -1756,20 +1791,38 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
     def field_trace(self) -> FieldArray:
         r"""
-        Computes the field trace $\mathrm{Tr}_{L / K}(x)$ of the elements of $x$.
+        Computes the field trace $\operatorname{Tr}_{L / K}(x)$ of each element in $x$.
 
         Returns:
-            The field trace of $x$ in the prime subfield $\mathrm{GF}(p)$.
+            The field trace of $x$, with values in the prime subfield $\mathrm{GF}(p)$. The return value
+            has the same shape as $x$.
 
         Notes:
-            The `self` array $x$ is over the extension field $L = \mathrm{GF}(p^m)$. The field trace of
-            $x$ is over the subfield $K = \mathrm{GF}(p)$. In other words,
-            $\mathrm{Tr}_{L / K}(x) : L \rightarrow K$.
+            Let $L = \mathrm{GF}(p^m)$ be an extension field of the base field
+            $K = \mathrm{GF}(p)$. The **field trace** is the map
 
-            For finite fields, since $L$ is a Galois extension of $K$, the field trace of $x$ is
-            defined as a sum of the Galois conjugates of $x$.
+            $$
+            \operatorname{Tr}_{L / K} : L \to K
+            $$
 
-            $$\mathrm{Tr}_{L / K}(x) = \sum_{i=0}^{m-1} x^{p^i}$$
+            defined as the trace of the $K$-linear transformation
+            $a \mapsto xa$ on $L$.
+
+            For finite fields, the extension $L / K$ is Galois with Galois group generated by the
+            Frobenius automorphism $a \mapsto a^p$. Consequently, the field trace admits the explicit
+            formula
+
+            $$
+            \operatorname{Tr}_{L / K}(x) = \sum_{i=0}^{m-1} x^{p^i}.
+            $$
+
+            The field trace is $K$-linear and satisfies:
+
+            - $\operatorname{Tr}_{L / K}(x + y) = \operatorname{Tr}_{L / K}(x) + \operatorname{Tr}_{L / K}(y)$
+            - $\operatorname{Tr}_{L / K}(c x) = c \operatorname{Tr}_{L / K}(x)$ for all $c \in K$
+
+            In particular, $\operatorname{Tr}_{L / K}(x) \in \mathrm{GF}(p)$ for all
+            $x \in \mathrm{GF}(p^m)$.
 
         References:
             - https://en.wikipedia.org/wiki/Field_trace
@@ -1801,20 +1854,40 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
     def field_norm(self) -> FieldArray:
         r"""
-        Computes the field norm $\mathrm{N}_{L / K}(x)$ of the elements of $x$.
+        Computes the field norm $\operatorname{N}_{L / K}(x)$ of each element in $x$.
 
         Returns:
-            The field norm of $x$ in the prime subfield $\mathrm{GF}(p)$.
+            The field norm of $x$, with values in the prime subfield $\mathrm{GF}(p)$. The return value
+            has the same shape as $x$.
 
         Notes:
-            The `self` array $x$ is over the extension field $L = \mathrm{GF}(p^m)$. The field norm of
-            $x$ is over the subfield $K = \mathrm{GF}(p)$. In other words,
-            $\mathrm{N}_{L / K}(x) : L \rightarrow K$.
+            Let $L = \mathrm{GF}(p^m)$ be an extension field of the base field
+            $K = \mathrm{GF}(p)$. The **field norm** is the map
 
-            For finite fields, since $L$ is a Galois extension of $K$, the field norm of $x$ is
-            defined as a product of the Galois conjugates of $x$.
+            $$
+            \operatorname{N}_{L / K} : L \to K
+            $$
 
-            $$\mathrm{N}_{L / K}(x) = \prod_{i=0}^{m-1} x^{p^i} = x^{(p^m - 1) / (p - 1)}$$
+            defined as the determinant of the $K$-linear transformation
+            $a \mapsto xa$ on $L$.
+
+            For finite fields, the extension $L / K$ is Galois with Galois group generated by the
+            Frobenius automorphism $a \mapsto a^p$. Consequently, the field norm admits the explicit
+            formula
+
+            $$
+            \operatorname{N}_{L / K}(x)
+            = \prod_{i=0}^{m-1} x^{p^i}
+            = x^{(p^m - 1)/(p - 1)}.
+            $$
+
+            The field norm is multiplicative and satisfies:
+
+            - $\operatorname{N}_{L / K}(x y) = \operatorname{N}_{L / K}(x)\operatorname{N}_{L / K}(y)$
+            - $\operatorname{N}_{L / K}(x) = 0$ if and only if $x = 0$
+
+            In particular, for $x \neq 0$, the norm lies in the multiplicative group
+            $\mathrm{GF}(p)^\times$.
 
         References:
             - https://en.wikipedia.org/wiki/Field_norm
@@ -2143,16 +2216,16 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             shape obeys NumPy broadcasting rules.
 
         Examples:
-            Compute the logarithm of $x$ with default base $\alpha$, which is the specified primitive
+            Compute the logarithm of $x$ with default base $g$, which is the specified primitive
             element of the field.
 
             .. ipython-with-reprs:: int,poly,power
 
                 GF = galois.GF(3**5)
-                alpha = GF.primitive_element; alpha
+                g = GF.primitive_element; g
                 x = GF.Random(10, low=1); x
                 i = x.log(); i
-                assert np.array_equal(alpha ** i, x)
+                assert np.array_equal(g ** i, x)
 
             With the default argument, :func:`numpy.log` and :func:`~FieldArray.log` are equivalent.
 
@@ -2160,14 +2233,14 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
                 assert np.array_equal(np.log(x), x.log())
 
-            Compute the logarithm of $x$ with a different base $\beta$, which is another primitive element
+            Compute the logarithm of $x$ with a different base $g_2$, which is another primitive element
             of the field.
 
             .. ipython-with-reprs:: int,poly,power
 
-                beta = GF.primitive_elements[-1]; beta
-                i = x.log(beta); i
-                assert np.array_equal(beta ** i, x)
+                g_2 = GF.primitive_elements[-1]; g_2
+                i = x.log(g_2); i
+                assert np.array_equal(g_2 ** i, x)
 
             Compute the logarithm of a single finite field element base all of the primitive elements of the field.
 
@@ -2329,7 +2402,8 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         Prints a single element in the polynomial representation.
         """
         poly = integer_to_poly(int(element), cls.characteristic)
-        poly_var = "α" if cls.primitive_element == cls.characteristic else "x"
+        # poly_var = "α"
+        poly_var = "a"
         s = poly_to_str(poly, poly_var=poly_var)
 
         if cls._element_fixed_width:
@@ -2347,10 +2421,10 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
         if element in [0, 1]:
             s = f"{int(element)}"
         elif element == cls.primitive_element:
-            s = "α"
+            s = "g"
         else:
             power = cls._log.ufunc(element, cls._primitive_element)
-            s = f"α^{power}"
+            s = f"g^{power}"
 
         if cls._element_fixed_width:
             s = s.rjust(cls._element_fixed_width)

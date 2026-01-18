@@ -32,7 +32,7 @@ subclass `GF7` is created using the class factory :func:`~galois.GF`.
 .. info::
 
    In this tutorial, we suggest using the integer representation to display the elements. However, sometimes it is useful to view elements
-   in their power representation $\{0, 1, \alpha, \alpha^2, \dots, \alpha^{p^m - 2}\}$. Switch the display between these two
+   in their power representation $\{0, 1, g, g^2, \dots, g^{p^m - 2}\}$. Switch the display between these two
    representations using the tabbed sections. Note, the polynomial representation is not shown because it is identical to the integer
    representation for prime fields.
 
@@ -44,7 +44,7 @@ Elements
 The elements of the finite field $\mathrm{GF}(p)$ are naturally represented as the integers
 $\{0, 1, \dots, p - 1\}$.
 
-The elements of the finite field are retrieved in a 1-D array using the :func:`~galois.FieldArray.Elements` classmethod.
+The elements of the finite field are retrieved in a 1-D array using the :func:`~galois.FieldArray.Elements` class method.
 
 .. ipython-with-reprs:: int,power
    :name: GF7

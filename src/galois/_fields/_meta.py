@@ -46,8 +46,12 @@ class FieldArrayMeta(ArrayMeta):
         cls._irreducible_poly = Poly.Int(cls._irreducible_poly_int, field=cls._prime_subfield)
 
         # Save string representations that will be used for display
-        cls._primitive_element_str = poly_to_str(integer_to_poly(int(cls._primitive_element), cls._characteristic))
-        cls._irreducible_poly_str = poly_to_str(integer_to_poly(cls._irreducible_poly_int, cls._characteristic))
+        cls._primitive_element_str = poly_to_str(
+            integer_to_poly(int(cls._primitive_element), cls._characteristic), poly_var="a"
+        )
+        cls._irreducible_poly_str = poly_to_str(
+            integer_to_poly(cls._irreducible_poly_int, cls._characteristic), poly_var="x"
+        )
         cls._name = f"GF({cls._order_str})"
         cls._long_name = f"GF({cls._order_str}, primitive_element={cls._primitive_element_str!r}, irreducible_poly={cls._irreducible_poly_str!r})"
 
@@ -92,10 +96,11 @@ class FieldArrayMeta(ArrayMeta):
         string += f"\n  characteristic: {cls.characteristic}"
         string += f"\n  degree: {cls.degree}"
         string += f"\n  order: {cls.order}"
-        string += f"\n  irreducible_poly: {cls._irreducible_poly_str}"
+        string += f"\n  irreducible_poly: p(x) = {cls._irreducible_poly_str} (over GF({cls.characteristic}))"
         string += f"\n  is_primitive_poly: {cls.is_primitive_poly}"
         string += f"\n  primitive_element: {cls._primitive_element_str}"
-
+        if cls.is_extension_field:
+            string += " (a = x mod p(x))"
         return string
 
     @property
@@ -277,9 +282,9 @@ class FieldArrayMeta(ArrayMeta):
         A primitive element of the finite field $\mathrm{GF}(p^m)$.
 
         Notes:
-            A primitive element $\alpha$ is a generator of the multiplicative group
+            A primitive element $g$ is a generator of the multiplicative group
             $\mathrm{GF}(p^m)^\times$, which has order $p^m - 1$. Equivalently, every nonzero
-            field element can be written as $\alpha^k$ for some integer $k$.
+            field element can be written as $g^k$ for some integer $k$.
 
         See Also:
             galois.is_primitive_element
@@ -313,9 +318,9 @@ class FieldArrayMeta(ArrayMeta):
         All primitive elements of the finite field $\mathrm{GF}(p^m)$.
 
         Notes:
-            A primitive element $\alpha$ is a generator of the multiplicative group
+            A primitive element $g$ is a generator of the multiplicative group
             $\mathrm{GF}(p^m)^\times$, which has order $p^m - 1$. Equivalently, every nonzero
-            field element can be written as $\alpha^k$ for some integer $k$.
+            field element can be written as $g^k$ for some integer $k$.
 
         See Also:
             galois.is_primitive_element
@@ -359,8 +364,8 @@ class FieldArrayMeta(ArrayMeta):
             \{\beta, \beta^p, \beta^{p^2}, \dots, \beta^{p^{m-1}}\}
             $$
 
-            form a basis of $\mathrm{GF}(p^m)$ over its base field $\mathrm{GF}(p)$.
-            Prime fields ($m = 1$) have no nontrivial normal elements.
+            form a basis of $\mathrm{GF}(p^m)$ as a vector space over its base field
+            $\mathrm{GF}(p)$. Prime fields ($m = 1$) have no nontrivial normal elements.
 
         See Also:
             galois.is_normal_element
@@ -401,8 +406,8 @@ class FieldArrayMeta(ArrayMeta):
             \{\beta, \beta^p, \beta^{p^2}, \dots, \beta^{p^{m-1}}\}
             $$
 
-            form a basis of $\mathrm{GF}(p^m)$ over its base field $\mathrm{GF}(p)$.
-            Prime fields ($m = 1$) have no nontrivial normal elements.
+            form a basis of $\mathrm{GF}(p^m)$ as a vector space over its base field
+            $\mathrm{GF}(p)$. Prime fields ($m = 1$) have no nontrivial normal elements.
 
         See Also:
             galois.is_normal_element
@@ -542,6 +547,30 @@ class FieldArrayMeta(ArrayMeta):
                 assert galois.GF(7**5).is_extension_field
         """
         return cls._degree > 1
+
+    def is_isomorphic(cls, other: Type[FieldArray]) -> bool:
+        r"""
+        Determines whether two finite fields are isomorphic.
+
+        Notes:
+            Two finite fields $\mathrm{GF}(p^m)$ and $\mathrm{GF}(q^n)$ are isomorphic if and only if
+            $p = q$ and $m = n$. Equivalently, finite fields are isomorphic if and only if they have
+            the same order.
+
+        Examples:
+            .. ipython:: python
+
+                GF1 = galois.GF(2**8, irreducible_poly="x^8 + x^4 + x^3 + x^2 + 1")
+                GF2 = galois.GF(2**8, irreducible_poly="x^8 + x^4 + x^3 + x + 1")
+
+                assert GF1 is not GF2
+                assert GF1.is_isomorphic(GF2)
+        """
+        return (
+            isinstance(other, FieldArrayMeta)
+            and cls.characteristic == other.characteristic
+            and cls.degree == other.degree
+        )
 
     @property
     def prime_subfield(cls) -> Type[FieldArray]:

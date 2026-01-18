@@ -9,8 +9,9 @@ from typing import Iterator, Sequence
 
 from .._databases import ConwayPolyDatabase
 from .._domains import _factory
-from .._helper import export, method_of, verify_isinstance
+from .._helper import export, method_of
 from .._prime import divisors, is_prime
+from .._verify import verify_isinstance
 from ._poly import Poly
 from ._primitive import is_primitive
 

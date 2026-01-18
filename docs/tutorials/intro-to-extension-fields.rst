@@ -35,7 +35,7 @@ The elements of $\mathrm{GF}(p^m)$ are polynomials over $\mathrm{GF}(p)$ with de
 Formally, they are all polynomials $a_{m-1}x^{m-1} + \dots + a_1x^1 +  a_0 \in \mathrm{GF}(p)[x]$. There are
 exactly $p^m$ elements.
 
-The elements of the finite field are retrieved in a 1-D array using the :func:`~galois.FieldArray.Elements` classmethod.
+The elements of the finite field are retrieved in a 1-D array using the :func:`~galois.FieldArray.Elements` class method.
 
 .. ipython-with-reprs:: int,poly,power
    :name: GF9

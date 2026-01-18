@@ -4,7 +4,8 @@ A module containing functions to factor univariate polynomials over finite field
 
 from __future__ import annotations
 
-from .._helper import method_of, verify_isinstance
+from .._helper import method_of
+from .._verify import verify_isinstance
 from ._functions import gcd
 from ._poly import Poly
 

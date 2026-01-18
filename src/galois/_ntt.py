@@ -7,8 +7,9 @@ from __future__ import annotations
 import numpy as np
 
 from ._fields import Field, FieldArray
-from ._helper import export, verify_isinstance
+from ._helper import export
 from ._prime import is_prime
+from ._verify import verify_isinstance
 from .typing import ArrayLike
 
 

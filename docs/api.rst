@@ -20,6 +20,11 @@ Normal elements
 
 .. python-apigen-group:: galois-fields-normal-elements
 
+Vector spaces
+-------------
+
+.. python-apigen-group:: galois-fields-vector-spaces
+
 Polynomials
 ===========
 
