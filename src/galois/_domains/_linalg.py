@@ -11,7 +11,7 @@ import numba
 import numpy as np
 from numba import int64
 
-from .._helper import verify_isinstance
+from .._verify import verify_isinstance
 from ._function import Function, FunctionMixin
 
 if TYPE_CHECKING:
@@ -52,12 +52,12 @@ def _lapack_linalg(field: Type[Array], a: Array, b: Array, function, out=None, n
     a = a.astype(dtype)
     b = b.astype(dtype)
 
+    out_arr = None
+    if out is not None:
+        out_arr = out[0] if isinstance(out, tuple) else out
+
     # Compute result using native NumPy LAPACK/BLAS implementation
-    if function in [np.inner, np.vdot]:
-        # These functions don't have and `out` keyword argument
-        c = function(a, b)
-    else:
-        c = function(a, b, out=out)
+    c = function(a, b)
 
     if dtype in [np.float32, np.float64]:
         # Performing the modulo operation on an int is faster than a float. Convert back to int64 for the time
@@ -71,6 +71,10 @@ def _lapack_linalg(field: Type[Array], a: Array, b: Array, function, out=None, n
         c = field(int(c), dtype=return_dtype)
     else:
         c = field._view(c.astype(return_dtype))
+
+    if out_arr is not None:
+        out_arr[...] = c
+        return out_arr
 
     return c
 
@@ -97,18 +101,34 @@ class dot_jit(Function):
 
         if a.ndim == 0 or b.ndim == 0:
             dot = a * b
-        elif a.ndim == 1 and b.ndim == 1:
-            dot = np.sum(a * b)
-        elif a.ndim == 2 and b.ndim == 2:
-            dot = np.matmul(a, b, out=out)
-        elif a.ndim >= 2 and b.ndim == 1:
-            dot = np.sum(a * b, axis=-1, out=out)
-        # elif a.dnim >= 2 and b.ndim >= 2:
+        elif b.ndim == 1:
+            if a.shape[-1] != b.shape[0]:
+                raise ValueError(
+                    f"Operation 'dot' requires the last dimension of 'a' to match the last dimension of 'b', "
+                    f"not {a.shape} and {b.shape}."
+                )
+            dot = np.sum(a * b, axis=-1)
+        elif a.ndim == 1:
+            if a.shape[0] != b.shape[-2]:
+                raise ValueError(
+                    f"Operation 'dot' requires the last dimension of 'a' to match the second-to-last "
+                    f"dimension of 'b', not {a.shape} and {b.shape}."
+                )
+            a_reshaped = a.reshape((1,) * (b.ndim - 2) + (a.shape[0], 1))
+            dot = np.sum(a_reshaped * b, axis=-2)
         else:
-            raise NotImplementedError(
-                "Currently 'dot' is only supported up to 2-D matrices. "
-                "Please open a GitHub issue at https://github.com/mhostetter/galois/issues."
-            )
+            if a.shape[-1] != b.shape[-2]:
+                raise ValueError(
+                    f"Operation 'dot' requires the last dimension of 'a' to match the second-to-last "
+                    f"dimension of 'b', not {a.shape} and {b.shape}."
+                )
+            a_reshaped = a.reshape(a.shape[:-1] + (1,) * (b.ndim - 2) + (a.shape[-1], 1))
+            b_reshaped = b.reshape((1,) * (a.ndim - 1) + b.shape)
+            dot = np.sum(a_reshaped * b_reshaped, axis=-2)
+
+        if out is not None:
+            out[...] = dot
+            return out
 
         return dot
 
@@ -175,6 +195,40 @@ class outer_jit(Function):
             return _lapack_linalg(self.field, a, b, np.outer, out=out, n_sum=1)
 
         return np.multiply.outer(a.ravel(), b.ravel(), out=out)
+
+
+class kron_jit(Function):
+    """
+    Computes the Kronecker product of two arrays.
+
+    References:
+        - https://numpy.org/doc/stable/reference/generated/numpy.kron.html
+    """
+
+    def __call__(self, a: Array, b: Array) -> Array:
+        verify_isinstance(a, self.field)
+        verify_isinstance(b, self.field)
+
+        # Scalar cases
+        if a.ndim == 0 or b.ndim == 0:
+            return a * b
+
+        # Match np.kron behavior: pad leading dims with 1s
+        ndim = max(a.ndim, b.ndim)
+        a_shape = (1,) * (ndim - a.ndim) + a.shape
+        b_shape = (1,) * (ndim - b.ndim) + b.shape
+
+        # Interleave dimensions: (a0,1,a1,1,...) and (1,b0,1,b1,...)
+        a_interleaved = tuple(x for d in a_shape for x in (d, 1))
+        b_interleaved = tuple(x for d in b_shape for x in (1, d))
+
+        a_reshaped = a.reshape(a_interleaved)
+        b_reshaped = b.reshape(b_interleaved)
+
+        product = a_reshaped * b_reshaped
+        result_shape = tuple(np.multiply(a_shape, b_shape))
+
+        return product.reshape(result_shape)
 
 
 class matmul_jit(Function):
@@ -324,32 +378,77 @@ class row_reduce_jit(Function):
             raise ValueError(f"Only 2-D matrices can be converted to reduced row echelon form, not {A.ndim}-D.")
 
         ncols = A.shape[1] if ncols is None else ncols
-        A_rre = A.copy()
-        p = 0  # The pivot
+        if not (0 <= ncols <= A.shape[1]):
+            raise ValueError(f"Argument 'ncols' must satisfy 0 <= ncols <= {A.shape[1]}, not {ncols}.")
+        dtype = A.dtype
+
+        if self.field.ufunc_mode != "python-calculate":
+            A_rref, p = self.jit(A.astype(np.int64), np.int64(ncols))
+            A_rref = A_rref.astype(dtype)
+        else:
+            A_rref, p = self.python(A.view(np.ndarray), ncols)
+        A_rref = self.field._view(A_rref)
+        p = int(p)
+
+        return A_rref, p
+
+    def set_globals(self):
+        global ADD, SUBTRACT, MULTIPLY, DIVIDE
+        ADD = self.field._add.ufunc_call_only
+        SUBTRACT = self.field._subtract.ufunc_call_only
+        MULTIPLY = self.field._multiply.ufunc_call_only
+        DIVIDE = self.field._divide.ufunc_call_only
+
+    _SIGNATURE = numba.types.FunctionType(numba.types.Tuple((int64[:, :], int64))(int64[:, :], int64))
+    _PARALLEL = False  # Algorithm is inherently sequential across pivot steps
+
+    @staticmethod
+    def implementation(A, ncols):
+        assert A.ndim == 2
+        M, N = A.shape
+        assert 0 <= ncols <= N
+
+        A_rref = A.copy()
+        p = 0  # pivot row index
 
         for j in range(ncols):
-            # Find a pivot in column `j` at or below row `p`
-            idxs = np.nonzero(A_rre[p:, j])[0]
-            if idxs.size == 0:
+            # Find pivot row i >= p with A_rref[i, j] != 0
+            pivot_row = -1
+            for i in range(p, M):
+                if A_rref[i, j] != 0:
+                    pivot_row = i
+                    break
+            if pivot_row == -1:
                 continue
-            i = p + idxs[0]  # Row with a pivot
 
-            # Swap row `p` and `i`. The pivot is now located at row `p`.
-            A_rre[[p, i], :] = A_rre[[i, p], :]
+            # Swap rows p and pivot_row
+            if pivot_row != p:
+                for k in range(N):
+                    tmp = A_rref[p, k]
+                    A_rref[p, k] = A_rref[pivot_row, k]
+                    A_rref[pivot_row, k] = tmp
 
-            # Force pivot value to be 1
-            A_rre[p, :] /= A_rre[p, j]
+            # Normalize pivot row so pivot becomes 1
+            pivot = A_rref[p, j]
+            for k in range(N):
+                A_rref[p, k] = DIVIDE(A_rref[p, k], pivot)  # pivot is non-zero
 
-            # Force zeros above and below the pivot
-            idxs = np.nonzero(A_rre[:, j])[0].tolist()
-            idxs.remove(p)
-            A_rre[idxs, :] -= np.multiply.outer(A_rre[idxs, j], A_rre[p, :])
+            # Eliminate pivot column in all other rows
+            for r in range(M):
+                if r == p:
+                    continue
+                factor = A_rref[r, j]
+                if factor == 0:
+                    continue
+                for k in range(N):
+                    # row_r -= factor * row_p
+                    A_rref[r, k] = SUBTRACT(A_rref[r, k], MULTIPLY(factor, A_rref[p, k]))
 
             p += 1
-            if p == A_rre.shape[0]:
+            if p == M:
                 break
 
-        return A_rre, p
+        return A_rref, p
 
 
 class lu_decompose_jit(Function):
@@ -451,9 +550,19 @@ class det_jit(Function):
 
     def __call__(self, A: Array) -> Array:
         verify_isinstance(A, self.field)
-        if not (A.ndim == 2 and A.shape[0] == A.shape[1]):
+        if A.ndim < 2 or A.shape[-1] != A.shape[-2]:
             raise np.linalg.LinAlgError(f"Argument 'A' must be square, not {A.shape}.")
+        if A.ndim == 2:
+            return self._det_single(A)
 
+        batch_shape = A.shape[:-2]
+        A_flat = A.reshape((-1,) + A.shape[-2:])
+        dets = self.field.Zeros((A_flat.shape[0],), dtype=A.dtype)
+        for idx, A_i in enumerate(A_flat):
+            dets[idx] = self._det_single(A_i)
+        return dets.reshape(batch_shape)
+
+    def _det_single(self, A: Array) -> Array:
         n = A.shape[0]
 
         if n == 2:
@@ -487,10 +596,22 @@ class matrix_rank_jit(Function):
 
     def __call__(self, A: Array) -> int:
         verify_isinstance(A, self.field)
+        if A.ndim < 2:
+            raise np.linalg.LinAlgError(f"Argument 'A' must be at least 2-D, not {A.ndim}-D.")
+        if A.ndim == 2:
+            return self._matrix_rank_single(A)
+
+        batch_shape = A.shape[:-2]
+        A_flat = A.reshape((-1,) + A.shape[-2:])
+        ranks = np.empty((A_flat.shape[0],), dtype=int)
+        for idx, A_i in enumerate(A_flat):
+            ranks[idx] = self._matrix_rank_single(A_i)
+        return ranks.reshape(batch_shape)
+
+    def _matrix_rank_single(self, A: Array) -> int:
         A_rre, _ = row_reduce_jit(self.field)(A)
         rank = np.sum(~np.all(A_rre == 0, axis=1))
-        rank = int(rank)
-        return rank
+        return int(rank)
 
 
 class inv_jit(Function):
@@ -500,9 +621,19 @@ class inv_jit(Function):
 
     def __call__(self, A: Array) -> Array:
         verify_isinstance(A, self.field)
-        if not (A.ndim == 2 and A.shape[0] == A.shape[1]):
+        if A.ndim < 2 or A.shape[-1] != A.shape[-2]:
             raise np.linalg.LinAlgError(f"Argument 'A' must be square, not {A.shape}.")
+        if A.ndim == 2:
+            return self._inv_single(A)
 
+        batch_shape = A.shape[:-2]
+        A_flat = A.reshape((-1,) + A.shape[-2:])
+        invs = self.field.Zeros((A_flat.shape[0],) + A.shape[-2:], dtype=A.dtype)
+        for idx, A_i in enumerate(A_flat):
+            invs[idx] = self._inv_single(A_i)
+        return invs.reshape(batch_shape + A.shape[-2:])
+
+    def _inv_single(self, A: Array) -> Array:
         n = A.shape[0]
         I = self.field.Identity(n, dtype=A.dtype)
 
@@ -533,19 +664,57 @@ class solve_jit(Function):
     def __call__(self, A: Array, b: Array) -> Array:
         verify_isinstance(A, self.field)
         verify_isinstance(b, self.field)
-        if not (A.ndim == 2 and A.shape[0] == A.shape[1]):
+        if A.ndim < 2 or A.shape[-1] != A.shape[-2]:
             raise np.linalg.LinAlgError(f"Argument 'A' must be square, not {A.shape}.")
-        if not b.ndim in [1, 2]:
+
+        m = A.shape[-1]
+        batch_A = A.shape[:-2]
+        b_is_vector = False
+
+        if b.ndim == 1:
+            if b.shape[0] != m:
+                raise np.linalg.LinAlgError(
+                    f"The last dimension of 'A' must equal the first dimension of 'b', not {A.shape} and {b.shape}."
+                )
+            batch_b = ()
+            b_is_vector = True
+            b_reshaped = b.reshape((m,))
+        elif b.ndim >= 2 and b.shape[-2] == m:
+            batch_b = b.shape[:-2]
+            b_reshaped = b
+        elif b.ndim >= 2 and b.shape[-1] == m and b.ndim == A.ndim - 1:
+            batch_b = b.shape[:-1]
+            b_is_vector = True
+            b_reshaped = b
+        else:
             raise np.linalg.LinAlgError(f"Argument 'b' must have dimension equal to 'A' or one less, not {b.ndim}.")
-        if not A.shape[-1] == b.shape[0]:
-            raise np.linalg.LinAlgError(
-                f"The last dimension of 'A' must equal the first dimension of 'b', not {A.shape} and {b.shape}."
-            )
 
-        A_inv = inv_jit(self.field)(A)
-        x = A_inv @ b
+        try:
+            batch_shape = np.broadcast_shapes(batch_A, batch_b)
+        except AttributeError:
+            batch_shape = np.broadcast(np.empty(batch_A), np.empty(batch_b)).shape
 
-        return x
+        A_b = np.broadcast_to(A, batch_shape + (m, m))
+        if b_is_vector:
+            b_b = np.broadcast_to(b_reshaped, batch_shape + (m,))
+            b_flat = b_b.reshape((-1, m))
+        else:
+            b_b = np.broadcast_to(b_reshaped, batch_shape + b_reshaped.shape[-2:])
+            b_flat = b_b.reshape((-1,) + b_reshaped.shape[-2:])
+
+        A_flat = A_b.reshape((-1, m, m))
+        if b_is_vector:
+            x_flat = self.field.Zeros((A_flat.shape[0], m), dtype=A.dtype)
+        else:
+            x_flat = self.field.Zeros((A_flat.shape[0], m, b_reshaped.shape[-1]), dtype=A.dtype)
+
+        for idx, A_i in enumerate(A_flat):
+            A_inv = inv_jit(self.field)(A_i)
+            x_flat[idx] = A_inv @ b_flat[idx]
+
+        if b_is_vector:
+            return x_flat.reshape(batch_shape + (m,))
+        return x_flat.reshape(batch_shape + (m, b_reshaped.shape[-1]))
 
 
 ###############################################################################
@@ -566,6 +735,7 @@ class LinalgFunctionMixin(FunctionMixin):
             np.vdot: "_vdot",
             np.inner: "_inner",
             np.outer: "_outer",
+            np.kron: "_kron",
             # np.tensordot: "_tensordot",
             np.linalg.det: "_det",
             np.linalg.matrix_rank: "_matrix_rank",
@@ -578,6 +748,7 @@ class LinalgFunctionMixin(FunctionMixin):
     _vdot: Function
     _inner: Function
     _outer: Function
+    _kron: Function
     _det: Function
     _matrix_rank: Function
     _solve: Function
@@ -589,6 +760,7 @@ class LinalgFunctionMixin(FunctionMixin):
         cls._vdot = vdot_jit(cls)
         cls._inner = inner_jit(cls)
         cls._outer = outer_jit(cls)
+        cls._kron = kron_jit(cls)
         cls._det = det_jit(cls)
         cls._matrix_rank = matrix_rank_jit(cls)
         cls._solve = solve_jit(cls)

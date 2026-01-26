@@ -44,7 +44,7 @@
 
             const text = (labelNode.textContent || "").trim();
             if (text === "property") {
-                labelNode.textContent = "class property";
+                labelNode.textContent = "classproperty";
             }
         });
 

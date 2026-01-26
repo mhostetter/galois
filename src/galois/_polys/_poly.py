@@ -10,7 +10,8 @@ import numpy as np
 from typing_extensions import Literal, Self
 
 from .._domains import Array, _factory
-from .._helper import export, verify_isinstance, verify_issubclass
+from .._helper import export
+from .._verify import verify_isinstance, verify_issubclass
 from ..typing import ArrayLike, ElementLike, PolyLike
 from . import _binary, _dense, _sparse
 from ._conversions import (
@@ -677,6 +678,50 @@ class Poly:
 
         return coeffs
 
+    def lift(self, field: Type[Array]) -> Poly:
+        r"""
+        Returns a polynomial over $\mathrm{GF}(p^m)$ lifted from $\mathrm{GF}(p)$.
+
+        Arguments:
+            field: The extension field $\mathrm{GF}(p^m)$ to lift into. The polynomial must be over the prime
+                subfield $\mathrm{GF}(p)$ of this field.
+
+        Returns:
+            The polynomial $f(x)$ over $\mathrm{GF}(p^m)$.
+
+        Notes:
+            This method embeds coefficients from the prime subfield into the extension field. If `field` is the same
+            as the current field, this method returns `self`.
+
+        Examples:
+            Lift a polynomial over $\mathrm{GF}(7)$ to $\mathrm{GF}(7^2)$.
+
+            .. ipython:: python
+
+                K = galois.GF(7)
+                L = galois.GF(7**2)
+                f = galois.Poly([3, 0, 5, 2], field=K); f
+                f.lift(L)
+        """
+        verify_issubclass(field, Array)
+        if not self.field.is_prime_field:
+            raise ValueError(
+                "Argument 'field' must be an extension field with prime subfield matching the polynomial's field, "
+                f"not a polynomial over {self.field.name}."
+            )
+        if field.prime_subfield is not self.field:
+            raise ValueError(
+                "Argument 'field' must have the same prime subfield as the polynomial, "
+                f"not {field.name} with prime subfield {field.prime_subfield.name}."
+            )
+
+        if field is self.field:
+            return self
+        if self._type == "sparse":
+            return Poly.Degrees(self.nonzero_degrees, self.nonzero_coeffs, field=field)
+        else:
+            return Poly(self.coeffs, field=field)
+
     def reverse(self) -> Poly:
         r"""
         Returns the $d$-th reversal $x^d f(\frac{1}{x})$ of the polynomial $f(x)$ with
@@ -733,29 +778,29 @@ class Poly:
             where $m_i$ is the multiplicity of root $r_i$ and $d = \sum_{i=1}^{k} m_i$.
 
             The Galois field elements can be represented as
-            $\mathrm{GF}(p^m) = \{0, 1, \alpha, \alpha^2, \dots, \alpha^{p^m-2}\}$, where $\alpha$ is a
+            $\mathrm{GF}(p^m) = \{0, 1, g, g^2, \dots, g^{p^m-2}\}$, where $g$ is a
             primitive element of $\mathrm{GF}(p^m)$.
 
             0 is a root of $f(x)$ if $a_0 = 0$. 1 is a root of $f(x)$ if
             $\sum_{j=0}^{d} a_j = 0$. The remaining elements of $\mathrm{GF}(p^m)$ are powers of
-            $\alpha$. The following equations calculate $f(\alpha^i)$, where $\alpha^i$ is a
-            root of $f(x)$ if $f(\alpha^i) = 0$.
+            $g$. The following equations calculate $f(g^i)$, where $g^i$ is a
+            root of $f(x)$ if $f(g^i) = 0$.
 
             $$
-            f(\alpha^i)
-            &= a_{d}(\alpha^i)^{d} + \dots + a_1(\alpha^i) + a_0 \\
+            f(g^i)
+            &= a_{d}(g^i)^{d} + \dots + a_1(g^i) + a_0 \\
             &\overset{\Delta}{=} \lambda_{i,d} + \dots + \lambda_{i,1} + \lambda_{i,0} \\
             &= \sum_{j=0}^{d} \lambda_{i,j}
             $$
 
-            The next power of $\alpha$ can be easily calculated from the previous calculation.
+            The next power of $g$ can be easily calculated from the previous calculation.
 
             $$
-            f(\alpha^{i+1})
-            &= a_{d}(\alpha^{i+1})^{d} + \dots + a_1(\alpha^{i+1}) + a_0 \\
-            &= a_{d}(\alpha^i)^{d}\alpha^d + \dots + a_1(\alpha^i)\alpha + a_0 \\
-            &= \lambda_{i,d}\alpha^d + \dots + \lambda_{i,1}\alpha + \lambda_{i,0} \\
-            &= \sum_{j=0}^{d} \lambda_{i,j}\alpha^j
+            f(g^{i+1})
+            &= a_{d}(g^{i+1})^{d} + \dots + a_1(g^{i+1}) + a_0 \\
+            &= a_{d}(g^i)^{d}g^d + \dots + a_1(g^i)g + a_0 \\
+            &= \lambda_{i,d}g^d + \dots + \lambda_{i,1}g + \lambda_{i,0} \\
+            &= \sum_{j=0}^{d} \lambda_{i,j}g^j
             $$
 
         Examples:
@@ -1623,6 +1668,45 @@ class Poly:
         return self._nonzero_degrees.copy()
 
     @property
+    def is_zero(self) -> bool:
+        r"""
+        Returns whether the polynomial is the zero polynomial $f(x) = 0$.
+
+        Examples:
+            .. ipython:: python
+
+                assert galois.Poly.Zero().is_zero
+                assert not galois.Poly.One().is_zero
+        """
+        return bool(self.degree == 0 and self.coeffs[0] == 0)
+
+    @property
+    def is_one(self) -> bool:
+        r"""
+        Returns whether the polynomial is the one polynomial $f(x) = 1$.
+
+        Examples:
+            .. ipython:: python
+
+                assert galois.Poly.One().is_one
+                assert not galois.Poly.Identity().is_one
+        """
+        return bool(self.degree == 0 and self.coeffs[0] == 1)
+
+    @property
+    def is_constant(self) -> bool:
+        r"""
+        Returns whether the polynomial has degree 0.
+
+        Examples:
+            .. ipython:: python
+
+                assert galois.Poly([5], field=galois.GF(7)).is_constant
+                assert not galois.Poly.Identity().is_constant
+        """
+        return bool(self.degree == 0)
+
+    @property
     def is_monic(self) -> bool:
         r"""
         Returns whether the polynomial is monic, meaning its highest-degree coefficient is one.
@@ -1683,7 +1767,7 @@ def _root_multiplicity(poly: Poly, root: Array) -> int:
         # If the root is also a root of the derivative, then its a multiple root.
         p = p.derivative()
 
-        if p == 0:
+        if p.is_zero:
             # Cannot test whether p'(root) = 0 because p'(x) = 0. We've exhausted the non-zero derivatives. For
             # any Galois field, taking `characteristic` derivatives results in p'(x) = 0. For a root with multiplicity
             # greater than the field's characteristic, we need factor to the polynomial. Here we factor out
