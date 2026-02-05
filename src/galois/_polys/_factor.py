@@ -348,7 +348,15 @@ def equal_degree_factors(f: Poly, degree: int) -> list[Poly]:
         h = Poly.Random(degree, field=field)
         g = gcd(f, h)
         if g == one:
-            g = pow(h, (q**degree - 1) // 2, f) - one
+            if q & 1 == 1:
+                g = pow(h, (q**degree - 1) // 2, f) - one
+            else:
+                g = h % f
+                exp = g
+                for _ in range(degree*field.degree - 1):
+                    exp = pow(exp, 2, f)
+                    g = (g + exp) % f
+
         tries += 1
         assert tries < 64
         for u in list(factors_):
