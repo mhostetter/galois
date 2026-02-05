@@ -342,13 +342,15 @@ def equal_degree_factors(f: Poly, degree: int) -> list[Poly]:
     r = f.degree // degree
     one = Poly([1], field=field)
 
+    tries = 0
     factors_ = [f]
     while len(factors_) < r:
         h = Poly.Random(degree, field=field)
         g = gcd(f, h)
         if g == one:
             g = pow(h, (q**degree - 1) // 2, f) - one
-        i = 0
+        tries += 1
+        assert tries < 64
         for u in list(factors_):
             if u.degree <= degree:
                 continue
@@ -357,7 +359,7 @@ def equal_degree_factors(f: Poly, degree: int) -> list[Poly]:
                 factors_.remove(u)
                 factors_.append(d)
                 factors_.append(u // d)
-            i += 1
+                tries = 0
 
     # Sort the factors in lexicographical order
     factors_ = sorted(factors_, key=int)
