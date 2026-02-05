@@ -161,6 +161,11 @@ def test_distinct_degree_factors():
     assert f.distinct_degree_factors() == (factors, degrees)
 
 
+def test_equal_degree_factors_even():
+    GF = galois.GF(2, 32)
+    f = galois.Poly(galois.primitive_poly(2, 2).coeffs, field=GF)
+    f.equal_degree_factors(1)
+
 def test_equal_degree_factors_exceptions():
     GF = galois.GF(5)
     a = galois.Poly([1, 0, 2, 1], field=GF)
