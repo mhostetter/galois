@@ -173,6 +173,10 @@ def test_perfect_power():
     assert galois.perfect_power(125) == (5, 3)
     assert galois.perfect_power(216) == (6, 3)
 
+    # Negative integers with odd exponents
+    assert galois.perfect_power(-64) == (-4, 3)
+    assert galois.perfect_power(-729) == (-9, 3)
+
 
 def test_trial_division():
     n = 2**4 * 17**3 * 113 * 15013

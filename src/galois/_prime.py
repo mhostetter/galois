@@ -999,7 +999,7 @@ def _adjust_base_and_exponent(n: int, base: int, exponent: int) -> tuple[int, in
         # Try to convert the even exponent of a factored negative number into the next largest odd power
         while exponent > 2:
             if exponent % 2 == 0:
-                base *= 2
+                base **= 2
                 exponent //= 2
             else:
                 return -base, exponent
