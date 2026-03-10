@@ -310,3 +310,17 @@ def test_miller_rabin_primality_test():
     pseudoprimes = [2047, 3277, 4033, 4681, 8321, 15841, 29341, 42799, 49141, 52633, 65281, 74665, 80581, 85489, 88357, 90751, 104653, 130561, 196093, 220729, 233017, 252601, 253241, 256999, 271951, 280601, 314821, 357761, 390937, 458989, 476971, 486737]  # fmt: skip
     assert [galois.miller_rabin_primality_test(p, a=2) for p in pseudoprimes] == [True] * len(pseudoprimes)
     assert [galois.miller_rabin_primality_test(p, a=3) for p in pseudoprimes] == [False] * len(pseudoprimes)
+
+
+def test_miller_rabin_primality_test_rounds_use_distinct_bases():
+    """
+    Regression test: with default a=2, the second round should test base 3 (the next prime),
+    not base 2 again.
+
+    2047 = 23 * 89 is a strong pseudoprime to base 2 but base 3 is a witness.
+    With rounds=2 and default a=2, the function should catch 2047 on the second round
+    (testing base 3), but the bug causes it to test base 2 twice and miss it.
+    """
+    assert galois.miller_rabin_primality_test(2047, a=2, rounds=1)  # base 2 is a strong liar
+    assert not galois.miller_rabin_primality_test(2047, a=3, rounds=1)  # base 3 is a witness
+    assert not galois.miller_rabin_primality_test(2047, a=2, rounds=2)  # should use bases {2, 3}
