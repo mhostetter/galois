@@ -267,7 +267,7 @@ class power_ufunc(_ufunc.power_ufunc):
             return 0
 
         m = LOG[a]
-        return EXP[(m * b) % (ORDER - 1)]  # TODO: Do b % (ORDER - 1) first? b could be very large and overflow int64
+        return EXP[(m * (b % (ORDER - 1))) % (ORDER - 1)]
 
 
 class log_ufunc(_ufunc.log_ufunc):

@@ -196,6 +196,29 @@ def test_square(field_power):
     assert z.dtype == dtype
 
 
+def test_power_large_exponent():
+    """
+    Regression test for int64 overflow in lookup-table exponentiation.
+
+    In the lookup power function, the index is computed as (m * b) % (ORDER - 1) where
+    m = LOG[a]. When b is large, m * b can overflow int64 before the modulo is applied,
+    producing a wrong result. The correct computation reduces b first:
+    (m * (b % (ORDER - 1))) % (ORDER - 1).
+    """
+    GF = galois.GF(2**8, compile="jit-lookup")  # Small field with lookup tables
+    assert GF.ufunc_mode == "jit-lookup"
+
+    # Pick an element whose discrete log is large to maximize the m * b product.
+    # LOG[primitive_element] = 1, so alpha^254 has LOG value 254 (= ORDER - 2).
+    x = GF.primitive_element**254
+
+    # Exponent fits in int64, but m * b = 254 * 10^17 ≈ 2.5e19 overflows int64 max ≈ 9.2e18
+    big_exp = 10**17
+    small_exp = big_exp % (GF.order - 1)  # Equivalent exponent, no overflow risk
+
+    assert x**big_exp == x**small_exp
+
+
 def test_log(field_log):
     GF, X, Z = field_log["GF"], field_log["X"], field_log["Z"]
     dtype = random.choice(GF.dtypes)
