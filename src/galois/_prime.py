@@ -598,7 +598,10 @@ def miller_rabin_primality_test(n: int, a: int = 2, rounds: int = 1) -> bool:
         r, s = r // 2, s + 1
     assert 2**s * r == n - 1
 
-    for t in range(rounds):
+    initial_a = a
+    bases = (p for p in PRIMES if p != initial_a)
+
+    for _ in range(rounds):
         y = pow(a, r, n)
         if y not in [1, n - 1]:
             j = 0
@@ -611,7 +614,7 @@ def miller_rabin_primality_test(n: int, a: int = 2, rounds: int = 1) -> bool:
             if y != n - 1:
                 return False  # a is a strong witness to the compositness of n
 
-        a = PRIMES[t]
+        a = next(bases)
 
     return True  # n is a probable prime
 
