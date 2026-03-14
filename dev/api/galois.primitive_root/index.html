@@ -42,7 +42,7 @@
         <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
-        <link rel="stylesheet" type="text/css" href="../../_static/sphinx_immaterial_theme.873f183b41f00c04d.min.css?v=ec478d69" />
+        <link rel="stylesheet" type="text/css" href="../../_static/sphinx_immaterial_theme.bce6263fb3090a12c.min.css?v=52e3c156" />
         <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
         <link rel="stylesheet" type="text/css" href="../../_static/extra.css?v=a94d3d25" />
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
@@ -13765,7 +13765,7 @@ which is 4 and not 8.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [16]: </span><span class="n">galois</span><span class="o">.</span><span class="n">primitive_root</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
 <span class="gt">---------------------------------------------------------------------------</span>
 <span class="ne">StopIteration</span><span class="g g-Whitespace">                             </span>Traceback (most recent call last)
-<span class="nn">File /opt/hostedtoolcache/Python/3.13.11/x64/lib/python3.13/site-packages/galois/_primitive_root.py:307,</span> in <span class="ni">primitive_root</span><span class="nt">(n, start, stop, method)</span>
+<span class="nn">File /opt/hostedtoolcache/Python/3.13.12/x64/lib/python3.13/site-packages/galois/_primitive_root.py:307,</span> in <span class="ni">primitive_root</span><span class="nt">(n, start, stop, method)</span>
 <span class="g g-Whitespace">    </span><span class="mi">306</span> <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;min&quot;</span><span class="p">:</span>
 <span class="ne">--&gt; </span><span class="mi">307</span>     <span class="n">root</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">primitive_roots</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="n">stop</span><span class="p">))</span>
 <span class="g g-Whitespace">    </span><span class="mi">308</span> <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;max&quot;</span><span class="p">:</span>
@@ -13778,7 +13778,7 @@ which is 4 and not 8.</p>
 <span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">16</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
 <span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">galois</span><span class="o">.</span><span class="n">primitive_root</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
 
-<span class="nn">File /opt/hostedtoolcache/Python/3.13.11/x64/lib/python3.13/site-packages/galois/_primitive_root.py:315,</span> in <span class="ni">primitive_root</span><span class="nt">(n, start, stop, method)</span>
+<span class="nn">File /opt/hostedtoolcache/Python/3.13.12/x64/lib/python3.13/site-packages/galois/_primitive_root.py:315,</span> in <span class="ni">primitive_root</span><span class="nt">(n, start, stop, method)</span>
 <span class="g g-Whitespace">    </span><span class="mi">312</span>     <span class="k">return</span> <span class="n">root</span>
 <span class="g g-Whitespace">    </span><span class="mi">313</span> <span class="k">except</span> <span class="ne">StopIteration</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
 <span class="g g-Whitespace">    </span><span class="mi">314</span>     <span class="c1"># No primitive root found in the requested range (either non-cyclic group or range too small).</span>
@@ -13804,7 +13804,7 @@ which is 4 and not 8.</p>
 <span class="gh">Out[20]: </span><span class="go">1000000000000000035000054</span>
 
 <span class="gp">In [21]: </span><span class="n">galois</span><span class="o">.</span><span class="n">primitive_root</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;random&quot;</span><span class="p">)</span>
-<span class="gh">Out[21]: </span><span class="go">704053837890180543909525</span>
+<span class="gh">Out[21]: </span><span class="go">674368119704185191554882</span>
 </code></pre></div>
 </div>
 </div>
