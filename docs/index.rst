@@ -62,7 +62,6 @@ Roadmap
 
 - Galois ring arrays
 - GPU support
-- Elliptic curves over finite fields
 
 Acknowledgements
 ----------------

@@ -62,12 +62,12 @@ def test_sparse_poly_to_str():
     GF = galois.GF(2**8)
     with GF.repr("poly"):
         assert galois._polys._conversions.sparse_poly_to_str([0], GF([0])) == "0"
-        assert galois._polys._conversions.sparse_poly_to_str([3, 1, 0], GF([1, 2, 3])) == "x^3 + (α)x + (α + 1)"
+        assert galois._polys._conversions.sparse_poly_to_str([3, 1, 0], GF([1, 2, 3])) == "x^3 + (a)x + (a + 1)"
 
         assert galois._polys._conversions.sparse_poly_to_str([0], GF([0]), poly_var="y") == "0"
         assert (
             galois._polys._conversions.sparse_poly_to_str([3, 1, 0], GF([1, 2, 3]), poly_var="y")
-            == "y^3 + (α)y + (α + 1)"
+            == "y^3 + (a)y + (a + 1)"
         )
 
 

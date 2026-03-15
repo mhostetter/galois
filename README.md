@@ -52,7 +52,6 @@ The new ufuncs are written in pure Python and [just-in-time compiled](https://nu
 
 - Galois ring arrays
 - GPU support
-- Elliptic curves over finite fields
 
 ## Documentation
 

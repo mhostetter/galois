@@ -29,12 +29,12 @@ def test_set_coeffs():
 
     galois.set_printoptions()
     assert galois.get_printoptions()["coeffs"] == "desc"
-    assert str(a) == "α^4 + 2"
+    assert str(a) == "a^4 + 2"
     assert str(f) == "3x^3 + 5x + 2"
 
     galois.set_printoptions(coeffs="asc")
     assert galois.get_printoptions()["coeffs"] == "asc"
-    assert str(a) == "2 + α^4"
+    assert str(a) == "2 + a^4"
     assert str(f) == "2 + 5x + 3x^3"
 
     galois.set_printoptions()
@@ -48,14 +48,14 @@ def test_context_manager():
     galois.set_printoptions()  # Ensure the default options are set
 
     assert galois.get_printoptions()["coeffs"] == "desc"
-    assert str(a) == "α^4 + 2"
+    assert str(a) == "a^4 + 2"
     assert str(f) == "3x^3 + 5x + 2"
 
     with galois.printoptions(coeffs="asc"):
         assert galois.get_printoptions()["coeffs"] == "asc"
-        assert str(a) == "2 + α^4"
+        assert str(a) == "2 + a^4"
         assert str(f) == "2 + 5x + 3x^3"
 
     assert galois.get_printoptions()["coeffs"] == "desc"
-    assert str(a) == "α^4 + 2"
+    assert str(a) == "a^4 + 2"
     assert str(f) == "3x^3 + 5x + 2"

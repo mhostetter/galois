@@ -9,9 +9,10 @@ from typing import Iterator
 
 from typing_extensions import Literal
 
-from ._helper import export, verify_isinstance
+from ._helper import export
 from ._modular import euler_phi, is_cyclic
 from ._prime import factors
+from ._verify import verify_isinstance
 
 
 @export

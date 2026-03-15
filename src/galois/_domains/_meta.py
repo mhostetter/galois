@@ -29,11 +29,11 @@ class ArrayMeta(abc.ABCMeta):
 
     def __init__(cls, name, bases, namespace, **kwargs):
         super().__init__(name, bases, namespace, **kwargs)
-        cls._characteristic: int = kwargs.get("characteristic", 0)
+        cls._characteristic: int = kwargs.get("characteristic", 2)
         cls._degree: int = kwargs.get("degree", 1)
-        cls._order: int = kwargs.get("order", 0)
-        cls._irreducible_poly_int: int = kwargs.get("irreducible_poly_int", 0)
-        cls._primitive_element: int = kwargs.get("primitive_element", 0)
+        cls._order: int = kwargs.get("order", 2)
+        cls._irreducible_poly_int: int = kwargs.get("irreducible_poly_int", 1)
+        cls._primitive_element: int = kwargs.get("primitive_element", 1)
         cls._dtypes = cls._determine_dtypes()
 
         if cls._dtypes == [np.object_]:

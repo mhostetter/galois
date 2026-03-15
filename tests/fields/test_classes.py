@@ -14,21 +14,21 @@ def test_repr_str():
     assert str(GF) == "<class 'galois.GF(7, primitive_element='3', irreducible_poly='x + 4')'>"
 
     GF = galois.GF(2**8)
-    assert repr(GF) == "<class 'galois.GF(2^8, primitive_element='x', irreducible_poly='x^8 + x^4 + x^3 + x^2 + 1')'>"
-    assert str(GF) == "<class 'galois.GF(2^8, primitive_element='x', irreducible_poly='x^8 + x^4 + x^3 + x^2 + 1')'>"
+    assert repr(GF) == "<class 'galois.GF(2^8, primitive_element='a', irreducible_poly='x^8 + x^4 + x^3 + x^2 + 1')'>"
+    assert str(GF) == "<class 'galois.GF(2^8, primitive_element='a', irreducible_poly='x^8 + x^4 + x^3 + x^2 + 1')'>"
 
 
 def test_properties():
     GF = galois.GF(7)
     assert (
         GF.properties
-        == "Galois Field:\n  name: GF(7)\n  characteristic: 7\n  degree: 1\n  order: 7\n  irreducible_poly: x + 4\n  is_primitive_poly: True\n  primitive_element: 3"
+        == "Galois Field:\n  name: GF(7)\n  characteristic: 7\n  degree: 1\n  order: 7\n  irreducible_poly: p(x) = x + 4 (over GF(7))\n  is_primitive_poly: True\n  primitive_element: 3"
     )
 
     GF = galois.GF(2**8)
     assert (
         GF.properties
-        == "Galois Field:\n  name: GF(2^8)\n  characteristic: 2\n  degree: 8\n  order: 256\n  irreducible_poly: x^8 + x^4 + x^3 + x^2 + 1\n  is_primitive_poly: True\n  primitive_element: x"
+        == "Galois Field:\n  name: GF(2^8)\n  characteristic: 2\n  degree: 8\n  order: 256\n  irreducible_poly: p(x) = x^8 + x^4 + x^3 + x^2 + 1 (over GF(2))\n  is_primitive_poly: True\n  primitive_element: a (a = x mod p(x))"
     )
 
 
@@ -115,3 +115,13 @@ def test_is_primitive_poly():
     poly = galois.conway_poly(3, 101)
     GF = galois.GF(3**101, irreducible_poly=poly, primitive_element="x", verify=False)
     assert GF.is_primitive_poly
+
+
+def test_is_isomorphic():
+    GF1 = galois.GF(2**8, irreducible_poly="x^8 + x^4 + x^3 + x^2 + 1")
+    GF2 = galois.GF(2**8, irreducible_poly="x^8 + x^4 + x^3 + x + 1")
+
+    # assert GF1 is GF1
+    assert GF1 is not GF2
+    assert GF1.is_isomorphic(GF1)
+    assert GF1.is_isomorphic(GF2)

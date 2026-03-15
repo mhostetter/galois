@@ -10,7 +10,7 @@ from numba import int64
 
 from .._domains import Array
 from .._domains._function import Function
-from .._helper import verify_isinstance
+from .._verify import verify_isinstance
 
 
 class add_jit(Function):
@@ -477,9 +477,9 @@ class roots_jit(Function):
     def implementation(nonzero_degrees, nonzero_coeffs, primitive_element):  # pragma: no cover
         N = nonzero_degrees.size
         lambda_vector = nonzero_coeffs.copy()
-        alpha_vector = np.zeros(N, dtype=nonzero_coeffs.dtype)
+        g_powers = np.zeros(N, dtype=nonzero_coeffs.dtype)
         for i in range(N):
-            alpha_vector[i] = POWER(primitive_element, nonzero_degrees[i])
+            g_powers[i] = POWER(primitive_element, nonzero_degrees[i])
         degree = np.max(nonzero_degrees)
         roots = []
         powers = []
@@ -497,11 +497,11 @@ class roots_jit(Function):
             roots.append(1)
             powers.append(0)
 
-        # Test if the powers of alpha are roots
+        # Test if the powers of g are roots
         for i in range(1, ORDER - 1):
             _sum = 0
             for j in range(N):
-                lambda_vector[j] = MULTIPLY(lambda_vector[j], alpha_vector[j])
+                lambda_vector[j] = MULTIPLY(lambda_vector[j], g_powers[j])
                 _sum = ADD(_sum, lambda_vector[j])
             if _sum == 0:
                 root = POWER(primitive_element, i)

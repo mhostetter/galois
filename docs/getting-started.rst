@@ -75,8 +75,8 @@ The representation of finite field elements can be set to either the integer (`"
 or power (`"power"`) representation. The default representation is the integer representation since integers are natural when
 working with integer NumPy arrays.
 
-Set the element representation by passing the `repr` keyword argument to :func:`~galois.GF` or by calling the :func:`~galois.FieldArray.repr`
-classmethod. Choose whichever element representation is most convenient.
+Set the element representation by passing the `repr` keyword argument to :func:`~galois.GF` or by calling the
+:func:`~galois.FieldArray.repr` class method. Choose whichever element representation is most convenient.
 
 .. ipython:: python
 

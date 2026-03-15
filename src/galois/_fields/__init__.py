@@ -7,3 +7,4 @@ from ._factory import *
 from ._gf2 import *
 from ._normal_element import *
 from ._primitive_element import *
+from ._vector_space import *

@@ -13,8 +13,9 @@ import random
 import numpy as np
 
 from ._databases import PrimeFactorsDatabase
-from ._helper import export, verify_isinstance
+from ._helper import export
 from ._math import ilog, iroot, isqrt, prod
+from ._verify import verify_isinstance
 
 # Global variables to store the prime lookup table (will generate a larger list after defining the `primes()` function)
 PRIMES = [2, 3, 5, 7]

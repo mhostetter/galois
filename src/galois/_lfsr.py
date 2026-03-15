@@ -14,9 +14,10 @@ from typing_extensions import Literal, Self
 
 from ._domains._function import Function
 from ._fields import FieldArray
-from ._helper import export, verify_isinstance
+from ._helper import export
 from ._options import printoptions
 from ._polys import Poly
+from ._verify import verify_isinstance
 from .typing import ArrayLike
 
 ###############################################################################

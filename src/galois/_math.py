@@ -8,7 +8,11 @@ from __future__ import annotations
 import math
 import sys
 
-from ._helper import export, verify_isinstance
+import numpy as np
+from typing_extensions import Literal
+
+from ._helper import export
+from ._verify import verify_isinstance, verify_literal, verify_scalar
 
 ###############################################################################
 # Divisibility
@@ -223,3 +227,98 @@ def ilog(n: int, b: int) -> int:
         return high
 
     return low
+
+
+@export
+def int_to_base_q(n: int, q: int, order: Literal["desc", "asc"] = "desc") -> list[int]:
+    r"""
+    Converts a non-negative integer to a base-$q$ vector.
+
+    Arguments:
+        n: A non-negative integer to represent in base $q$.
+        q: The base of the radix representation, must be at least 2.
+        order: The order of the powers, either descending (default) or ascending.
+
+    Returns:
+        The base-$q$ vector of digits in the specified power order.
+
+    Notes:
+        The descending order corresponds to powers $q^{d}, \dots, q^0$.
+
+    Examples:
+        .. ipython:: python
+
+            galois.int_to_base_q(125, 5)
+            galois.int_to_base_q(125, 5, order="asc")
+
+    Group:
+        number-theory-integer
+    """
+    verify_isinstance(n, int)
+    verify_isinstance(q, int)
+    verify_literal(order, ["desc", "asc"])
+    if not n >= 0:
+        raise ValueError(f"Argument 'n' must be non-negative, not {n}.")
+    if not q >= 2:
+        raise ValueError(f"Argument 'q' must be at least 2, not {q}.")
+
+    if n == 0:
+        digits = [0]
+    else:
+        digits = []
+        while n > 0:
+            n, r = divmod(n, q)
+            digits.append(int(r))
+
+        if order == "desc":
+            digits = digits[::-1]
+
+    return digits
+
+
+@export
+def base_q_to_int(
+    digits: list[int],
+    q: int,
+    order: Literal["desc", "asc"] = "desc",
+) -> int:
+    r"""
+    Converts a base-$q$ vector to its integer value.
+
+    Arguments:
+        digits: A vector of base-$q$ digits.
+        q: The base of the radix representation, must be at least 2.
+        order: The order of the powers, either descending (default) or ascending.
+
+    Returns:
+        The integer value represented by the base-$q$ vector.
+
+    Examples:
+        .. ipython:: python
+
+            galois.base_q_to_int([1, 0, 0, 0], 5)
+            galois.base_q_to_int([0, 0, 0, 1], 5, order="asc")
+
+    Group:
+        number-theory-integer
+    """
+    verify_isinstance(digits, list)
+    if not len(digits) > 0:
+        raise ValueError("Argument 'digits' must have at least one element.")
+    verify_scalar(q, int=True, inclusive_min=2)
+    verify_literal(order, ["desc", "asc"])
+
+    if order == "desc":
+        digits = digits[::-1]
+
+    integer = 0
+    factor = 1
+    for digit in digits:
+        if not isinstance(digit, (int, np.integer)):
+            raise TypeError(f"All elements of 'digits' must be integers, not {type(digit)}.")
+        if not 0 <= digit < q:
+            raise ValueError(f"All elements of 'digits' must be in the range [0, {q}), not {digit}.")
+        integer += int(digit) * factor
+        factor *= q
+
+    return integer
