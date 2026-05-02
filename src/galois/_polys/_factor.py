@@ -336,8 +336,11 @@ def equal_degree_factors(f: Poly, degree: int) -> list[Poly]:
         )
     if not f.is_square_free():
         raise ValueError(f"The polynomial must be square-free, not {f}.")
+    if not degree >= 1:
+        raise ValueError(f"Argument 'degree' must be positive, not {degree}.")
 
     field = f.field
+    p = field.characteristic
     q = field.order
     r = f.degree // degree
     one = Poly([1], field=field)
@@ -348,17 +351,34 @@ def equal_degree_factors(f: Poly, degree: int) -> list[Poly]:
         h = Poly.Random(degree, field=field)
         g = gcd(f, h)
         if g == one:
-            if q & 1 == 1:
+            if p > 2:
+                # In odd characteristic, use the standard Cantor–Zassenhaus step based on
+                # quadratic residues. This probabilistically separates factors by splitting
+                # the roots into two roughly equal subsets.
                 g = pow(h, (q**degree - 1) // 2, f) - one
             else:
+                # In characteristic 2, the quadratic-residue test is ineffective (every nonzero
+                # element is a square), so it cannot probabilistically split factors.
+                #
+                # Instead, use the absolute trace map, which is a GF(2)-linear function that
+                # partitions elements roughly evenly into two sets. Evaluating this trace on
+                # the roots of f(x) yields a polynomial whose gcd with f(x) produces a
+                # non-trivial factor.
+                #
+                # We compute the trace via repeated Frobenius squaring modulo f(x).
                 g = h % f
                 exp = g
-                for _ in range(degree*field.degree - 1):
+                for _ in range(degree * field.degree - 1):
                     exp = pow(exp, 2, f)
                     g = (g + exp) % f
 
         tries += 1
-        assert tries < 64
+        if tries >= 64:
+            raise RuntimeError(
+                "Failed to find a non-trivial factor after 64 tries. This is likely a bug, "
+                "please report it to the developers."
+            )
+
         for u in list(factors_):
             if u.degree <= degree:
                 continue
