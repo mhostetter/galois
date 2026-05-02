@@ -270,19 +270,21 @@ def distinct_degree_factors(f: Poly) -> tuple[list[Poly], list[int]]:
 
 
 @method_of(Poly)
-def equal_degree_factors(f: Poly, degree: int) -> list[Poly]:
+def equal_degree_factors(f: Poly, degree: int, max_tries: int = 1_000) -> list[Poly]:
     r"""
     Factors the monic, square-free polynomial $f(x)$ of degree $rd$ into a product of $r$
     irreducible factors with degree $d$.
 
     Arguments:
         degree: The degree $d$ of each irreducible factor of $f(x)$.
+        max_tries: The maximum number of attempts to find a non-trivial factor before raising a RuntimeError.
 
     Returns:
         The list of $r$ irreducible factors $\{g_1(x), \dots, g_r(x)\}$ in lexicographical order.
 
     Raises:
         ValueError: If $f(x)$ is not monic, has degree 0, or is not square-free.
+        RuntimeError: If a non-trivial factor cannot be found within the specified number of attempts.
 
     Notes:
         The Equal-Degree Factorization algorithm factors a square-free polynomial $f(x)$ with degree
@@ -373,11 +375,8 @@ def equal_degree_factors(f: Poly, degree: int) -> list[Poly]:
                     g = (g + exp) % f
 
         tries += 1
-        if tries >= 64:
-            raise RuntimeError(
-                "Failed to find a non-trivial factor after 64 tries. This is likely a bug, "
-                "please report it to the developers."
-            )
+        if tries >= max_tries:
+            raise RuntimeError(f"Failed to find a non-trivial factor after {max_tries} tries.")
 
         for u in list(factors_):
             if u.degree <= degree:
