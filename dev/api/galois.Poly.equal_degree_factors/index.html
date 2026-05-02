@@ -6410,6 +6410,18 @@ You're not viewing the latest version.
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#p-max_tries" class="md-nav__link">
+    
+      <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span>
+    
+    <span class="md-ellipsis">
+      <span title="galois.Poly.equal_degree_factors.max_tries (Python parameter) — The maximum number of attempts to find a non-trivial factor before raising a RuntimeError."><span>max_<wbr>tries</span></span>
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -13482,6 +13494,18 @@ You're not viewing the latest version.
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#p-max_tries" class="md-nav__link">
+    
+      <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span>
+    
+    <span class="md-ellipsis">
+      <span title="galois.Poly.equal_degree_factors.max_tries (Python parameter) — The maximum number of attempts to find a non-trivial factor before raising a RuntimeError."><span>max_<wbr>tries</span></span>
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -13554,8 +13578,8 @@ You're not viewing the latest version.
 
 
 <dl class="py method objdesc">
-<dt class="sig sig-object highlight py">
-<span class="sig-prename descclassname"><span class="pre">galois.</span><span class="pre">Poly.</span></span><span class="sig-name descname"><span class="pre">equal_degree_factors</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#p-degree" title="galois.Poly.equal_degree_factors.degree (Python parameter) — The degree $d$ of each irreducible factor of $f(x)$."><span class="n"><span class="pre">degree</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></span></em></span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../galois.Poly/" title="galois._polys._poly.Poly (Python class)"><span class="pre">Poly</span></a><span class="p"><span class="pre">]</span></span></span></span></span></dt>
+<dt class="sig sig-object highlight sig-wrap py">
+<span class="sig-prename descclassname"><span class="pre">galois.</span><span class="pre">Poly.</span></span><span class="sig-name descname"><span class="pre">equal_degree_factors</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#p-degree" title="galois.Poly.equal_degree_factors.degree (Python parameter) — The degree $d$ of each irreducible factor of $f(x)$."><span class="n"><span class="pre">degree</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#p-max_tries" title="galois.Poly.equal_degree_factors.max_tries (Python parameter) — The maximum number of attempts to find a non-trivial factor before raising a RuntimeError."><span class="n"><span class="pre">max_tries</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><code class="code python default_value docutils literal highlight highlight-python"><span class="mi">1000</span></code></em></span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../galois.Poly/" title="galois._polys._poly.Poly (Python class)"><span class="pre">Poly</span></a><span class="p"><span class="pre">]</span></span></span></span></span></dt>
 <dd><p>Factors the monic, square-free polynomial <span class="math notranslate nohighlight">\(f(x)\)</span> of degree <span class="math notranslate nohighlight">\(rd\)</span> into a product of <span class="math notranslate nohighlight">\(r\)</span>
 irreducible factors with degree <span class="math notranslate nohighlight">\(d\)</span>.</p>
 <dl class="field-list simple">
@@ -13563,13 +13587,18 @@ irreducible factors with degree <span class="math notranslate nohighlight">\(d\)
 <dd class="field-odd"><dl class="simple api-field highlight">
 <dt id="p-degree"><span class="n sig-name">degree</span><span class="p">:</span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)">int</a></span></span><a class="headerlink" href="#p-degree" title="Permalink to this definition">¶</a></dt><dd><p>The degree <span class="math notranslate nohighlight">\(d\)</span> of each irreducible factor of <span class="math notranslate nohighlight">\(f(x)\)</span>.</p>
 </dd>
+<dt id="p-max_tries"><span class="n sig-name">max_tries</span><span class="p">:</span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)">int</a></span></span><span class="w"> </span><span class="o">=</span><span class="w"> </span><code class="code python default_value docutils literal highlight highlight-python"><span class="mi">1000</span></code><a class="headerlink" href="#p-max_tries" title="Permalink to this definition">¶</a></dt><dd><p>The maximum number of attempts to find a non-trivial factor before raising a RuntimeError.</p>
+</dd>
 </dl>
 </dd>
 <dt class="field-even" id="returns">Returns<span class="colon">:</span><a class="headerlink" href="#returns" title="Permalink to this headline">¶</a></dt>
 <dd class="field-even"><p>The list of <span class="math notranslate nohighlight">\(r\)</span> irreducible factors <span class="math notranslate nohighlight">\(\{g_1(x), \dots, g_r(x)\}\)</span> in lexicographical order.</p>
 </dd>
 <dt class="field-odd" id="raises">Raises<span class="colon">:</span><a class="headerlink" href="#raises" title="Permalink to this headline">¶</a></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If <span class="math notranslate nohighlight">\(f(x)\)</span> is not monic, has degree 0, or is not square-free.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If <span class="math notranslate nohighlight">\(f(x)\)</span> is not monic, has degree 0, or is not square-free.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.14)"><strong>RuntimeError</strong></a> – If a non-trivial factor cannot be found within the specified number of attempts.</p></li>
+</ul>
 </dd>
 </dl>
 <p class="rubric" id="notes">Notes<a class="headerlink" href="#notes" title="Permalink to this headline">¶</a></p>
