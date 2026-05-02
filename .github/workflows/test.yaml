@@ -14,28 +14,14 @@ permissions:
   id-token: write
 
 jobs:
-  wait-on-wheel:
-    name: Wait for wheel
-    runs-on: ubuntu-latest
-    permissions:
-      checks: read
-    steps:
-      - name: Wait on build.yaml to build the wheel
-        uses: lewagon/wait-on-check-action@v1.3.1
-        with:
-          # When triggered on a pull request, github.sha is a temporary merge commit for the PR. The wait
-          # action must wait on the SHA of the commit that triggered the workflow, which is the HEAD of the
-          # PR branch. https://github.com/lewagon/wait-on-check-action/issues/25#issuecomment-784773361
-          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
-          # NOTE: Fake ternary operator, see https://github.com/actions/runner/issues/409
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          check-name: 'Wheel'
-          allowed-conclusions: success
-          wait-interval: 10
+  build-wheel:
+    name: Build the wheel
+    uses: ./.github/workflows/build.yaml
+    secrets: inherit
 
   test-coverage:
     name: Coverage
-    needs: wait-on-wheel
+    needs: build-wheel
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -53,13 +39,10 @@ jobs:
         run: python3 -m pip install --upgrade pip
 
       - name: Download wheel artifact
-        uses: dawidd6/action-download-artifact@v6
+        uses: actions/download-artifact@v4
         with:
-          workflow: build.yaml
-          workflow_conclusion: success
-          commit: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
-          # NOTE: Fake ternary operator, see https://github.com/actions/runner/issues/409
-          allow_forks: true
+          name: dist
+          path: dist/
 
       # This is needed because Windows terminal cannot expand `pip install galois-*.whl`
       - name: Get wheel file name
@@ -87,7 +70,7 @@ jobs:
 
   test-min:
     name: Min
-    needs: wait-on-wheel
+    needs: build-wheel
     if: ${{ github.event_name == 'pull_request' }}
     strategy:
       matrix:
@@ -113,12 +96,10 @@ jobs:
         run: python3 -m pip install --upgrade pip
 
       - name: Download wheel artifact
-        uses: dawidd6/action-download-artifact@v6
+        uses: actions/download-artifact@v4
         with:
-          workflow: build.yaml
-          workflow_conclusion: success
-          commit: ${{github.event.pull_request.head.sha}}
-          allow_forks: true
+          name: dist
+          path: dist/
 
       # This is needed because Windows terminal cannot expand `pip install galois-*.whl`
       - name: Get wheel file name
@@ -142,7 +123,7 @@ jobs:
 
   test-latest:
     name: Latest
-    needs: wait-on-wheel
+    needs: build-wheel
     if: ${{ github.event_name == 'pull_request' }}
     strategy:
       matrix:
@@ -172,12 +153,10 @@ jobs:
         run: python3 -m pip install --upgrade pip
 
       - name: Download wheel artifact
-        uses: dawidd6/action-download-artifact@v6
+        uses: actions/download-artifact@v4
         with:
-          workflow: build.yaml
-          workflow_conclusion: success
-          commit: ${{github.event.pull_request.head.sha}}
-          allow_forks: true
+          name: dist
+          path: dist/
 
       # This is needed because Windows terminal cannot expand `pip install galois-*.whl`
       - name: Get wheel file name
