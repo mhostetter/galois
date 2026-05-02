@@ -1,0 +1,964 @@
+---
+tocdepth: 2
+---
+
+# v0.0
+
+## v0.0.14
+
+*Released May 7, 2021*
+
+### Breaking changes
+
+- Rename `GFArray.Eye()` to `GFArray.Identity()`.
+- Rename `chinese_remainder_theorem()` to `crt()`.
+
+### Changes
+
+- Lots of performance improvements.
+- Additional linear algebra support.
+- Various bug fixes.
+
+### Contributors
+
+- Baalateja Kataru ([@BK-Modding](https://github.com/BK-Modding))
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
+
+## v0.0.15
+
+*Released May 12, 2021*
+
+### Breaking changes
+
+- Rename `poly_exp_mod()` to `poly_pow()` to mimic the native `pow()` function.
+- Rename `fermat_primality_test()` to `is_prime_fermat()`.
+- Rename `miller_rabin_primality_test()` to `is_prime_miller_rabin()`.
+
+### Changes
+
+- Massive linear algebra speed-ups. (See #88)
+- Massive polynomial speed-ups. (See #88)
+- Various Galois field performance enhancements. (See #92)
+- Support  `np.convolve()` for two Galois field arrays.
+- Allow polynomial arithmetic with Galois field scalars (of the same field). (See #99), e.g.
+
+```python
+>>> GF = galois.GF(3)
+
+>>> p = galois.Poly([1,2,0], field=GF)
+Poly(x^2 + 2x, GF(3))
+
+>>> p * GF(2)
+Poly(2x^2 + x, GF(3))
+```
+
+- Allow creation of 0-degree polynomials from integers. (See #99), e.g.
+
+```python
+>>> p = galois.Poly(1)
+Poly(1, GF(2))
+```
+
+- Add the four Oakley fields from RFC 2409.
+- Speed-up unit tests.
+- Restructure API reference.
+
+### Contributors
+
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
+
+## v0.0.16
+
+*Released May 19, 2021*
+
+### Changes
+
+- Add `Field()` alias of `GF()` class factory.
+- Add finite groups modulo `n` with `Group()` class factory.
+- Add `is_group()`, `is_field()`, `is_prime_field()`, `is_extension_field()`.
+- Add polynomial constructor `Poly.String()`.
+- Add polynomial factorization in `poly_factors()`.
+- Add `np.vdot()` support.
+- Fix PyPI packaging issue from v0.0.15.
+- Fix bug in creation of 0-degree polynomials.
+- Fix bug in `poly_gcd()` not returning monic GCD polynomials.
+
+### Contributors
+
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
+
+## v0.0.17
+
+*Released June 15, 2021*
+
+### Breaking changes
+
+- Rename `FieldMeta` to `FieldClass`.
+- Remove `target` keyword from `FieldClass.compile()` until there is better support for GPUs.
+- Consolidate `verify_irreducible` and `verify_primitive` keyword arguments into `verify` for the `galois.GF()` class factory function.
+- Remove group arrays until there is more complete support.
+
+### Changes
+
+- Speed-up Galois field class creation time.
+- Speed-up JIT compilation time by caching functions.
+- Speed-up `Poly.roots()` by JIT compiling it.
+- Add BCH codes with `galois.BCH`.
+- Add ability to generate irreducible polynomials with `irreducible_poly()` and `irreducible_polys()`.
+- Add ability to generate primitive polynomials with `primitive_poly()` and `primitive_polys()`.
+- Add computation of the minimal polynomial of an element of an extension field with `minimal_poly()`.
+- Add display of arithmetic tables with `FieldClass.arithmetic_table()`.
+- Add display of field element representation table with `FieldClass.repr_table()`.
+- Add Berlekamp-Massey algorithm in `berlekamp_massey()`.
+- Enable ipython tab-completion of Galois field classes.
+- Cleanup API reference page.
+- Add introduction to Galois fields tutorials.
+- Fix bug in `is_primitive()` where some reducible polynomials were marked irreducible.
+- Fix bug in integer<-->polynomial conversions for large binary polynomials.
+- Fix bug in "power" display mode of 0.
+- Other minor bug fixes.
+
+### Contributors
+
+- Dominik Wernberger ([@Werni2A](https://github.com/Werni2A))
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
+
+## v0.0.18
+
+*Released July 6, 2021*
+
+### Breaking changes
+
+- Make API more consistent with software like Matlab and Wolfram:
+  - Rename `galois.prime_factors()` to `galois.factors()`.
+  - Rename `galois.gcd()` to `galois.egcd()` and add `galois.gcd()` for conventional GCD.
+  - Rename `galois.poly_gcd()` to `galois.poly_egcd()` and add `galois.poly_gcd()` for conventional GCD.
+  - Rename `galois.euler_totient()` to `galois.euler_phi()`.
+  - Rename `galois.carmichael()` to `galois.carmichael_lambda()`.
+  - Rename `galois.is_prime_fermat()` to `galois.fermat_primality_test()`.
+  - Rename `galois.is_prime_miller_rabin()` to `galois.miller_rabin_primality_test()`.
+- Rename polynomial search `method` keyword argument values from `["smallest", "largest", "random"]` to `["min", "max", "random"]`.
+
+### Changes
+
+- Clean up `galois` API and `dir()` so only public classes and functions are displayed.
+- Speed-up `galois.is_primitive()` test and search for primitive polynomials in `galois.primitive_poly()`.
+- Speed-up `galois.is_smooth()`.
+- Add Reed-Solomon codes in `galois.ReedSolomon`.
+- Add shortened BCH and Reed-Solomon codes.
+- Add error detection for BCH and Reed-Solomon with the `detect()` method.
+- Add general cyclic linear block code functions.
+- Add Matlab default primitive polynomial with `galois.matlab_primitive_poly()`.
+- Add number theoretic functions:
+  - Add `galois.legendre_symbol()`, `galois.jacobi_symbol()`, `galois.kronecker_symbol()`.
+  - Add `galois.divisors()`, `galois.divisor_sigma()`.
+  - Add `galois.is_composite()`, `galois.is_prime_power()`, `galois.is_perfect_power()`, `galois.is_square_free()`, `galois.is_powersmooth()`.
+  - Add `galois.are_coprime()`.
+- Clean up integer factorization algorithms and add some to public API:
+  - Add `galois.perfect_power()`, `galois.trial_division()`, `galois.pollard_p1()`, `galois.pollard_rho()`.
+- Clean up API reference structure and hierarchy.
+- Fix minor bugs in BCH codes.
+
+### Contributors
+
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
+
+## v0.0.19
+
+*Released August 9, 2021*
+
+### Breaking changes
+
+- Remove unnecessary `is_field()` function. Use `isinstance(x, galois.FieldClass)` or `isinstance(x, galois.FieldArray)` instead.
+- Remove `log_naive()` function. Might be re-added later through `np.log()` on a multiplicative group array.
+- Rename `mode` kwarg in `galois.GF()` to `compile`.
+- Revert `np.copy()` override that always returns a subclass. Now, by default it does not return a subclass. To return a Galois field array, use `x.copy()` or `np.copy(x, subok=True)` instead.
+
+### Changes
+
+- Improve documentation.
+- Improve unit test coverage.
+- Add benchmarking tests.
+- Add initial LFSR implementation.
+- Add `display` kwarg to `galois.GF()` class factory to set the display mode at class-creation time.
+- Add `Poly.reverse()` method.
+- Allow polynomial strings as input to `galois.GF()`. For example, `galois.GF(2**4, irreducible_poly="x^4 + x + 1")`.
+- Enable `np.divmod()` and `np.remainder()` on Galois field arrays. The remainder is always zero, though.
+- Fix bug in `bch_valid_codes()` where repetition codes weren't included.
+- Various minor bug fixes.
+
+### Contributors
+
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
+
+## v0.0.20
+
+*Released August 24, 2021*
+
+### Breaking changes
+
+- Move `poly_gcd()` functionality into `gcd()`.
+- Move `poly_egcd()` functionality into `egcd()`.
+- Move `poly_factors()` functionality into `factors()`.
+
+### Changes
+
+- Fix polynomial factorization algorithms. Previously only parital factorization was implemented.
+- Support generating and testing irreducible and primitive polynomials over extension fields.
+- Support polynomial input to `is_square_free()`.
+- Minor documentation improvements.
+- Pin Numba dependency to <0.54
+
+### Contributors
+
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
+
+## v0.0.21
+
+*Released September 2, 2021*
+
+### Changes
+
+- Fix docstrings and code completion for Python classes that weren't rendering correctly in an IDE.
+- Various documentation improvements.
+
+### Contributors
+
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
+
+## v0.0.22
+
+*Released December 3, 2021*
+
+### Breaking changes
+
+- Random integer generation is handled using [new style](https://numpy.org/doc/stable/reference/random/index.html#random-quick-start) random generators. Now each `.Random()` call will generate a new seed rather than using the NumPy "global" seed used with `np.random.randint()`.
+- Add a `seed=None` keyword argument to `FieldArray.Random()` and `Poly.Random()`. A reproducible script can be constructed like this:
+
+  ```python
+  rng = np.random.default_rng(123456789)
+  x = GF.Random(10, seed=rng)
+  y = GF.Random(10, seed=rng)
+  poly = galois.Poly.Random(5, seed=rng, field=GF)
+  ```
+
+### Changes
+
+- Official support for Python 3.9.
+- Major performance improvements to "large" finite fields (those with `dtype=np.object_`).
+- Minor performance improvements to all finite fields.
+- Add the Number Theoretic Transform (NTT) in `ntt()` and `intt()`.
+- Add the trace of finite field elements in `FieldArray.field_trace()`.
+- Add the norm of finite field elements in `FieldArray.field_norm()`.
+- Support `len()` on `Poly` objects, which returns the length of the coefficient array (polynomial order + 1).
+- Support `x.dot(y)` syntax for the expression `np.dot(x, y)`.
+- Minimum NumPy version bumped to 1.18.4 for [new style](https://numpy.org/doc/stable/reference/random/index.html#random-quick-start) random usage.
+- Various bug fixes.
+
+### Contributors
+
+- Iyán Méndez Veiga ([@iyanmv](https://github.com/iyanmv))
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
+
+## v0.0.23
+
+*Released January 14, 2022*
+
+### Changes
+
+- Add support for Python 3.10.
+- Add support for NumPy 1.21.
+- Add support for Numba 0.55.
+- Add type hints to library API.
+- Add `FieldArray.characteristic_poly()` method to return the characteristic polynomial of a square matrix.
+- Add `Poly.coefficients()` method to return the coefficient array with fixed size and order.
+- Fix bug in `Poly.Degrees()` when duplicate degrees were present.
+- Fix bug in Reed-Solomon decode when `c != 1`.
+- Various other bug fixes.
+
+### Contributors
+
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
+
+## v0.0.24
+
+*Released February 12, 2022*
+
+### Breaking changes
+
+- Move `galois.minimal_poly()` functionality into `FieldArray.minimal_poly()`.
+- Refactor `FieldArray.lup_decompose()` into `FieldArray.plu_decompose()`.
+- Raise `ValueError` instead of returning `None` for `prev_prime(2)`.
+- Return `(n, 1)` from `perfect_power(n)` if `n` is not a perfect power rather than returning `None`.
+
+### Changes
+
+- Compute a finite field element's square root (if it exists) with `np.sqrt()`.
+- Test if finite field elements have a square root with `FieldArray.is_quadratic_residue()`.
+- List which finite field elements are/aren't quadratic residues (have a square root) with `FieldClass.quadratic_residues` and `FieldClass.quadratic_non_residues`.
+- Compute standard vector spaces with `FieldArray.row_space()`, `FieldArray.column_space()`, `FieldArray.left_null_space()`, and `FieldArray.null_space()`.
+- Compute a finite field element's additive and multiplicative orders with `FieldArray.additive_order()` and `FieldArray.multiplicative_order()`.
+- Evaluate polynomials at square matrix inputs using `f(X, elementwise=False)`.
+- Compute the characteristic polynomial of a single element or square matrix with `FieldArray.characteristic_poly()`.
+- Compute the minimal polynomial of a single element with `FieldArray.minimal_poly()`.
+- Compute a Lagrange interpolating polynomial with `lagrange_poly(x, y)`.
+- Support non-square matrix inputs to `FieldArray.lu_decompose()` and `FieldArray.plu_decompose()`.
+- Support polynomial scalar multiplication. Now `p * 3` is valid syntax and represents `p + p + p`.
+- Allow polynomial comparison with integers and field scalars. Now `galois.Poly([0]) == 0` and `galois.Poly([0]) == GF(0)` return `True` rather than raising `TypeError`.
+- Support testing 0-degree polynomials for irreducibility and primitivity.
+- Extend `crt()` to work over non co-prime moduli.
+- Extend `prev_prime()` and `next_prime()` to work over arbitrarily large inputs.
+- Allow negative integer inputs to `primes()`, `is_prime()`, `is_composite()`, `is_prime_power()`, `is_perfect_power()`, `is_square_free()`, `is_smooth()`, and `is_powersmooth()`.
+- Fix various type hinting errors.
+- Various other bug fixes.
+
+### Contributors
+
+- Iyán Méndez Veiga ([@iyanmv](https://github.com/iyanmv))
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
+
+## v0.0.25
+
+*Released March 21, 2022*
+
+### Breaking changes
+
+- Separated `LFSR` into `FLFSR`/`GLFSR` and fixed/redefined terms (feedback poly, characteristic poly, state). ([#285](https://github.com/mhostetter/galois/pull/285))
+- Removed `galois.pow()` and replaced it with the built-in `pow()`. ([#300](https://github.com/mhostetter/galois/pull/300))
+    ```python
+    >>> f = galois.Poly([6, 3, 0, 1], field=galois.GF(7))
+    >>> g = galois.Poly([5, 0, 3], field=galois.GF(7))
+    >>> pow(f, 123456789, g)
+    Poly(6x + 2, GF(7))
+    ```
+- Removed `FieldClass.properties` and replaced with `FieldClass.__str__`. ([#289](https://github.com/mhostetter/galois/issues/289))
+    ```python
+    >>> GF = galois.GF(3**5)
+    >>> print(GF)
+    Galois Field:
+      name: GF(3^5)
+      characteristic: 3
+      degree: 5
+      order: 243
+      irreducible_poly: x^5 + 2x + 1
+      is_primitive_poly: True
+      primitive_element: x
+    ```
+- Differentiated `repr()` and `str()` for *Galois field arrays*, like NumPy. `repr()` displays the finite field's order, but `str()` does not.
+    ```python
+    >>> GF = galois.GF(31, display="power")
+    >>> x = GF([1, 23, 0, 15])
+    >>> x
+    GF([   1, α^27,    0, α^21], order=31)
+    >>> print(x)
+    [   1, α^27,    0, α^21]
+    ```
+- Renamed `Poly.String()` to `Poly.Str()`. Removed `Poly.string` and replaced it with `Poly.__str__`. ([#300](https://github.com/mhostetter/galois/pull/300))
+    ```python
+    >>> f = galois.Poly.Str("x^3 + x + 1"); f
+    Poly(x^3 + x + 1, GF(2))
+    >>> str(f)
+    'x^3 + x + 1'
+    ```
+- Renamed `Poly.Integer()` to `Poly.Int()`. Removed `Poly.integer` and replaced it with `Poly.__int__`. ([#300](https://github.com/mhostetter/galois/pull/300))
+    ```python
+    >>> f = galois.Poly.Int(11); f
+    Poly(x^3 + x + 1, GF(2))
+    >>> int(f)
+    11
+    ```
+
+### Changes
+
+- Fixed bug in Fibonacci/Galois LFSRs where feedback polynomial wasn't interpreted correctly for fields with characteristic greater than 2. ([#299](https://github.com/mhostetter/galois/issues/299))
+- Utilized memoization for expensive search routines (`irreducible_poly()` and `primitive_poly()`) to speed-up subsequent calls. ([#295](https://github.com/mhostetter/galois/issues/295))
+    ```ipython
+    In [2]: %time galois.primitive_poly(7, 4)
+    CPU times: user 675 ms, sys: 6.24 ms, total: 682 ms
+    Wall time: 741 ms
+    Out[2]: Poly(x^4 + x^2 + 3x + 5, GF(7))
+
+    In [3]: %time galois.primitive_poly(7, 4)
+    CPU times: user 30 µs, sys: 0 ns, total: 30 µs
+    Wall time: 31.7 µs
+    Out[3]: Poly(x^4 + x^2 + 3x + 5, GF(7))
+    ```
+- Added support for `bin()`, `oct()`, and `hex()` on `Poly` objects. ([#300](https://github.com/mhostetter/galois/pull/300))
+    ```python
+    >>> f = galois.Poly.Int(11); f
+    Poly(x^3 + x + 1, GF(2))
+    >>> bin(f)
+    '0b1011'
+    >>> oct(f)
+    '0o13'
+    >>> hex(f)
+    '0xb'
+    ```
+- Made *Galois field arrays* display with fixed-width elements, like NumPy. ([#270](https://github.com/mhostetter/galois/pull/270))
+- Achieved speed-up of `repr()` and `str()` on *Galois field arrays* of at least 25x. Achieved a much greater speed-up for large arrays, since now elements converted to `...` are no longer needlessly converted to their string representation. ([#270](https://github.com/mhostetter/galois/pull/270))
+- Overhauled documentation and website. Type hints are now displayed in the API reference. ([#263](https://github.com/mhostetter/galois/pull/263))
+- Various bug fixes.
+
+### Contributors
+
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
+
+## v0.0.26
+
+*Released March 30, 2022*
+
+### Breaking changes
+
+- Removed the `Poly.copy()` method as it was unnecessary. Polynomial objects are immutable. Use `g = f` wherever `g = f.copy()` was previously used. ([#320](https://github.com/mhostetter/galois/pull/320))
+- Disabled true division `f / g` on polynomials since true division was not actually being performed. Use floor division `f // g` moving forward. ([#312](https://github.com/mhostetter/galois/pull/312))
+- Refactored `irreducible_polys()` to return an iterator rather than list. Use `list(irreducible_polys(...))` to obtain the previous output. ([#325](https://github.com/mhostetter/galois/pull/325))
+- Refactored `primitive_polys()` to return an iterator rather than list. Use `list(primitive_polys(...))` to obtain the previous output. ([#325](https://github.com/mhostetter/galois/pull/325))
+- Refactored `primitive_root()` and `primitive_roots()`. ([#325](https://github.com/mhostetter/galois/pull/325))
+    - Added `method` keyword argument and removed `reverse` from `primitive_root()`. Use `primitive_root(..., method="max")` where `primitive_root(..., reverse=True)` was previously used.
+    - Refactored `primitive_roots()` to now return an iterator rather than list. Use `list(primitive_roots(...))` to obtain the previous output.
+- Refactored `primitive_element()` and `primitive_elements()`. ([#325](https://github.com/mhostetter/galois/pull/325))
+    - Added `method` keyword argument to `primitive_element()`.
+    - Removed `start`, `stop`, and `reverse` arguments from both functions.
+- Search functions now raise `RuntimeError` instead of returning `None` when failing to find an answer. This applies to `primitive_root()`, `pollard_p1()`, and `pollard_rho()`. ([#312](https://github.com/mhostetter/galois/pull/312))
+
+### Changes
+
+- The `galois.Poly` class no longer returns subclasses `BinaryPoly`, `DensePoly`, and `SparsePoly`. Instead, only `Poly` classes are returned. The classes otherwise operate the same. ([#320](https://github.com/mhostetter/galois/pull/320))
+- Made *Galois field array* creation much more efficient by avoiding redundant element verification. ([#317](https://github.com/mhostetter/galois/pull/317))
+    - Scalar creation is **625% faster**.
+        ```ipython
+        In [2]: GF = galois.GF(3**5)
+
+        # v0.0.25
+        In [3]: %timeit GF(10)
+        21.2 µs ± 181 ns per loop (mean ± std. dev. of 7 runs, 10,000 loops each)
+
+        # v0.0.26
+        In [3]: %timeit GF(10)
+        2.88 µs ± 8.03 ns per loop (mean ± std. dev. of 7 runs, 100,000 loops each)
+        ```
+    - Nested iterable array creation is **150% faster**.
+        ```ipython
+        # v0.0.25
+        In [4]: %timeit GF([[10, 20], [30, 40]])
+        53.6 µs ± 436 ns per loop (mean ± std. dev. of 7 runs, 10,000 loops each)
+
+        # v0.0.26
+        In [4]: %timeit GF([[10, 20], [30, 40]])
+        20.9 µs ± 11.2 µs per loop (mean ± std. dev. of 7 runs, 10,000 loops each)
+        ```
+    - Nested iterable (with strings) array creation is **25% faster**.
+        ```ipython
+        # v0.0.25
+        In [5]: %timeit GF([[10, "2x^2 + 2"], ["x^3 + x", 40]])
+        67.9 µs ± 910 ns per loop (mean ± std. dev. of 7 runs, 10,000 loops each)
+
+        # v0.0.26
+        In [5]: %timeit GF([[10, "2x^2 + 2"], ["x^3 + x", 40]])
+        54.7 µs ± 16.3 µs per loop (mean ± std. dev. of 7 runs, 10,000 loops each)
+        ```
+- Made array arithmetic **35% faster** by avoiding unnecessary element verification of outputs. ([#309](https://github.com/mhostetter/galois/pull/309))
+    ```ipython
+    In [2]: GF = galois.GF(3**5)
+
+    In [3]: x = GF.Random((10_000), seed=1)
+
+    In [4]: y = GF.Random((10_000), seed=2)
+
+    # v0.0.25
+    In [6]: %timeit x * y
+    39.4 µs ± 237 ns per loop (mean ± std. dev. of 7 runs, 10,000 loops each)
+
+    # v0.0.26
+    In [6]: %timeit x * y
+    28.8 µs ± 172 ns per loop (mean ± std. dev. of 7 runs, 10,000 loops each)
+    ```
+- Made polynomial arithmetic over binary fields **10,900% faster** by making polynomial creation from integers much more efficient. ([#320](https://github.com/mhostetter/galois/pull/320))
+    ```ipython
+    In [5]: f
+    Out[5]: Poly(x^10 + x^9 + x^6 + x^5 + x^3 + x, GF(2))
+
+    In [6]: g
+    Out[6]: Poly(x^10 + x^7 + x^4 + 1, GF(2))
+
+    # v0.0.25
+    In [7]: %timeit f * g
+    283 µs ± 6.31 µs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
+
+    # v0.0.26
+    In [7]: %timeit f * g
+    2.57 µs ± 54.4 ns per loop (mean ± std. dev. of 7 runs, 100,000 loops each)
+    ```
+- JIT-compiled polynomial modular exponentiation. ([#306](https://github.com/mhostetter/galois/pull/306))
+    - Binary fields are **14,225% faster**.
+        ```ipython
+        In [5]: f
+        Out[5]: Poly(x^10 + x^9 + x^6 + x^5 + x^3 + x, GF(2))
+
+        In [6]: g
+        Out[6]: Poly(x^5 + x^2, GF(2))
+
+        # v0.0.25
+        In [7]: %timeit pow(f, 123456789, g)
+        19.2 ms ± 206 µs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+
+        # v0.0.26
+        In [7]: %timeit pow(f, 123456789, g)
+        134 µs ± 2.21 µs per loop (mean ± std. dev. of 7 runs, 10,000 loops each)
+        ```
+    - Other fields are **325% faster**.
+        ```ipython
+        In [6]: f
+        Out[6]: Poly(242x^10 + 216x^9 + 32x^8 + 114x^7 + 230x^6 + 179x^5 + 5x^4 + 124x^3 + 96x^2 + 159x + 77, GF(3^5))
+
+        In [7]: g
+        Out[7]: Poly(183x^5 + 83x^4 + 101x^3 + 203x^2 + 68x + 2, GF(3^5))
+
+        # v0.0.25
+        In [8]: %timeit pow(f, 123456789, g)
+        17.6 ms ± 61.7 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+
+        # v0.0.26
+        In [8]: %timeit pow(f, 123456789, g)
+        4.19 ms ± 11.9 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+        ```
+- Made irreducible and primitive polynomial search routines faster. ([#306](https://github.com/mhostetter/galois/pull/306), [#309](https://github.com/mhostetter/galois/pull/309), [#317](https://github.com/mhostetter/galois/pull/317), [#320](https://github.com/mhostetter/galois/pull/320))
+    - Binary fields are **1,950% faster**.
+        ```ipython
+        # v0.0.25
+        In [2]: %time f = galois.primitive_poly(2, 14)
+        CPU times: user 296 ms, sys: 70.9 ms, total: 367 ms
+        Wall time: 313 ms
+
+        # v0.0.26
+        In [2]: %time f = galois.primitive_poly(2, 14)
+        CPU times: user 14.7 ms, sys: 5.53 ms, total: 20.2 ms
+        Wall time: 15.3 ms
+        ```
+    - Other fields are **400% faster**.
+        ```ipython
+        # v0.0.25
+        In [5]: %time f = galois.primitive_poly(7, 10)
+        CPU times: user 2.22 s, sys: 0 ns, total: 2.22 s
+        Wall time: 2.21 s
+
+        # v0.0.26
+        In [4]: %time f = galois.primitive_poly(7, 10)
+        CPU times: user 442 ms, sys: 0 ns, total: 442 ms
+        Wall time: 439 ms
+        ```
+- Made `FieldArray.Vector()` **100% faster** and `FieldArray.vector()` **25% faster** by making better use of `divmod()` when converting between integer and vector representations. ([#322](https://github.com/mhostetter/galois/pull/322))
+
+### Contributors
+
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
+
+## v0.0.27
+
+*Released April 22, 2022*
+
+### Breaking changes
+
+- Sunsetted support for Python 3.6. This was necessary to support forward references with `from __future__ import annotations` (available in
+  Python 3.7+). That import is required to support the type aliases in the new `galois.typing` subpackage. ([#339](https://github.com/mhostetter/galois/pull/339))
+- Removed the `FieldClass` metaclass from the public API. It was previously included due to an inability of Sphinx to document class
+  properties. In this release, we monkey patched Sphinx to document all classmethods, class properties, and instance methods
+  in `FieldArray` itself. ([#343](https://github.com/mhostetter/galois/pull/343))
+  - Use `issubclass(GF, galois.FieldArray)` anywhere `isinstance(GF, galois.FieldClass)` was previously used.
+  - Annotate with `Type[galois.FieldArray]` anywhere `galois.FieldClass` was previously used.
+
+### Changes
+
+- Added the `galois.typing` subpackage, similar to `np.typing`. It contains type hints for common coercible data types used
+  throughout the library, including `ElementLike`, `ArrayLike`, and `PolyLike`. With these type hints, the annotations are simpler and
+  more clear. ([#339](https://github.com/mhostetter/galois/pull/339))
+- Modified functions to accept coercible data types wherever possible. For example, functions now accept `PolyLike` objects instead
+  of strictly `Poly` instances. ([#339](https://github.com/mhostetter/galois/pull/339))
+- Added `Array` which is an abstract base class of `FieldArray` (and `RingArray` in a future release). ([#336](https://github.com/mhostetter/galois/pull/336))
+- Added support for the DFT over any finite field using `np.fft.fft()` and `np.fft.ifft()`. ([#335](https://github.com/mhostetter/galois/pull/335))
+    ```python
+    >>> x
+    GF([127, 191,  69,  35, 221, 242, 193, 108,  72, 102,  80, 163,  13,  74,
+        218, 159, 207,  12, 159, 129,  92,  71], order=3^5)
+    >>> X = np.fft.fft(x); X
+    GF([ 16,  17,  20, 137,  58, 166, 178,  52,  19, 109, 115,  93,  99, 214,
+        187, 235, 195,  96, 232,  45, 241,  24], order=3^5)
+    >>> np.fft.ifft(X)
+    GF([127, 191,  69,  35, 221, 242, 193, 108,  72, 102,  80, 163,  13,  74,
+        218, 159, 207,  12, 159, 129,  92,  71], order=3^5)
+    ```
+- Implemented the Cooley-Tukey radix-2 $O(N\ \textrm{log}(N))$ algorithm for the NTT and JIT compiled it. ([#333](https://github.com/mhostetter/galois/pull/333))
+    ```ipython
+    In [2]: x = list(range(1, 1024 + 1))
+
+    # v0.0.26
+    In [4]: %timeit X = galois.ntt(x)
+    5.2 ms ± 121 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+
+    # v0.0.27
+    In [4]: %timeit X = galois.ntt(x)
+    695 µs ± 4.56 µs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
+    ```
+- Added the `FieldArray.primitive_root_of_unity()` classmethod. ([#333](https://github.com/mhostetter/galois/pull/333))
+    ```python
+    >>> GF = galois.GF(3**5)
+    >>> GF.primitive_root_of_unity(22)
+    GF(39, order=3^5)
+    ```
+- Added the `FieldArray.primitive_roots_of_unity()` classmethod. ([#333](https://github.com/mhostetter/galois/pull/333))
+    ```python
+    >>> GF = galois.GF(3**5)
+    >>> GF.primitive_roots_of_unity(22)
+    GF([ 14,  39,  44,  59, 109, 114, 136, 200, 206, 226], order=3^5)
+    ```
+- Made 0-th degree coefficients more differentiated when using the polynomial element representation. ([#328](https://github.com/mhostetter/galois/issues/328))
+    ```python
+    # v0.0.26
+    >>> print(f)
+    (α^2 + α + 1)x^4 + (α^3)x + α^3 + 2α^2 + 2α + 2
+    # v0.0.27
+    >>> print(f)
+    (α^2 + α + 1)x^4 + (α^3)x + (α^3 + 2α^2 + 2α + 2)
+    ```
+- Restructured code base for clarity. ([#336](https://github.com/mhostetter/galois/pull/336))
+- Fixed display of overloaded functions in API reference. ([#337](https://github.com/mhostetter/galois/issues/337))
+- Fixed broken "References" sections in API reference. ([#281](https://github.com/mhostetter/galois/issues/281))
+- Fixed other small bugs.
+
+### Contributors
+
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
+
+## v0.0.28
+
+*Released May 11, 2022*
+
+### Changes
+
+- Modified JIT-compiled functions to use explicit calculation *or* lookup tables. Previously, JIT functions only used explicit
+  calculation routines. Now all ufuncs and functions are JIT-compiled once on first invocation, but use the current `ufunc_mode` to
+  determine the arithmetic used. This provides a significant performance boost for fields which use lookup tables by default. The
+  greatest performance improvement can be seen in $\mathrm{GF}(p^m)$ fields. ([#354](https://github.com/mhostetter/galois/pull/354))
+  - Polynomial multiplication is **210% faster**.
+    ```ipython
+    In [2]: GF = galois.GF(7**5)
+
+    In [3]: f = galois.Poly.Random(10, seed=1, field=GF)
+
+    In [4]: g = galois.Poly.Random(5, seed=2, field=GF)
+
+    # v0.0.27
+    In [6]: %timeit f * g
+    168 µs ± 722 ns per loop (mean ± std. dev. of 7 runs, 10,000 loops each)
+
+    # v0.0.28
+    In [6]: %timeit f * g
+    54 µs ± 574 ns per loop (mean ± std. dev. of 7 runs, 10,000 loops each)
+    ```
+  - Polynomial modular exponentiation is **5,310% faster**.
+    ```ipython
+    # v0.0.27
+    In [8]: %timeit pow(f, 123456789, g)
+    5.9 ms ± 9.4 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+
+    # v0.0.28
+    In [8]: %timeit pow(f, 123456789, g)
+    109 µs ± 527 ns per loop (mean ± std. dev. of 7 runs, 10,000 loops each)
+    ```
+  - Matrix multiplication is **6,690% faster**.
+    ```ipython
+    In [9]: A = GF.Random((100, 100), seed=1)
+
+    In [10]: B = GF.Random((100, 100), seed=2)
+
+    # v0.0.27
+    In [12]: %timeit A @ B
+    1.1 s ± 4.76 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)
+
+    # v0.0.28
+    In [12]: %timeit A @ B
+    16.2 ms ± 50.1 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+    ```
+- Simplified `FieldArray` subclasses' `repr()` and `str()`. Since these classes may be displayed in error logs, a concise
+  representation is necessary. ([#350](https://github.com/mhostetter/galois/pull/350))
+  ```python
+  >>> GF = galois.GF(3**5)
+  >>> GF
+  <class 'galois.GF(3^5)'>
+  ```
+- Added back `FieldArray.properties` for a detailed description of the finite field's relevant properties. ([#350](https://github.com/mhostetter/galois/pull/350))
+  ```python
+  >>> GF = galois.GF(3**5)
+  >>> print(GF.properties)
+  Galois Field:
+    name: GF(3^5)
+    characteristic: 3
+    degree: 5
+    order: 243
+    irreducible_poly: x^5 + 2x + 1
+    is_primitive_poly: True
+    primitive_element: x
+  ```
+- Increased code coverage.
+- Various documentation fixes.
+
+### Contributors
+
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
+
+## v0.0.29
+
+*Released May 18, 2022*
+
+### Breaking changes
+
+- Moved `galois.square_free_factorization()` function into `Poly.square_free_factors()` method. ([#362](https://github.com/mhostetter/galois/pull/362))
+- Moved `galois.distinct_degree_factorization()` function into `Poly.distinct_degree_factors()` method. ([#362](https://github.com/mhostetter/galois/pull/362))
+- Moved `galois.equal_degree_factorization()` function into `Poly.equal_degree_factors()` method. ([#362](https://github.com/mhostetter/galois/pull/362))
+- Moved `galois.is_irreducible()` function into `Poly.is_irreducible()` method. This is a method, not property, to indicate it is a computationally expensive operation. ([#362](https://github.com/mhostetter/galois/pull/362))
+- Moved `galois.is_primitive()` function into `Poly.is_primitive()` method. This is a method, not property, to indicate it is a computationally expensive operation. ([#362](https://github.com/mhostetter/galois/pull/362))
+- Moved `galois.is_monic()` function into `Poly.is_monic` property. ([#362](https://github.com/mhostetter/galois/pull/362))
+
+### Changes
+
+- Added `galois.set_printoptions()` function to modify package-wide printing options. This is the equivalent of `np.set_printoptions()`. ([#363](https://github.com/mhostetter/galois/pull/363))
+  ```ipython
+  In [1]: GF = galois.GF(3**5, display="poly")
+
+  In [2]: a = GF([109, 83]); a
+  Out[2]: GF([α^4 + α^3 + 1,       α^4 + 2], order=3^5)
+
+  In [3]: f = galois.Poly([3, 0, 5, 2], field=galois.GF(7)); f
+  Out[3]: Poly(3x^3 + 5x + 2, GF(7))
+
+  In [4]: galois.set_printoptions(coeffs="asc")
+
+  In [5]: a
+  Out[5]: GF([1 + α^3 + α^4,       2 + α^4], order=3^5)
+
+  In [6]: f
+  Out[6]: Poly(2 + 5x + 3x^3, GF(7))
+  ```
+- Added `galois.get_printoptions()` function to return the current package-wide printing options. This is the equivalent of `np.get_printoptions()`. ([#363](https://github.com/mhostetter/galois/pull/363))
+- Added `galois.printoptions()` context manager to modify printing options inside of a `with` statement. This is the equivalent of `np.printoptions()`. ([#363](https://github.com/mhostetter/galois/pull/363))
+- Added a separate `Poly.factors()` method, in addition to the polymorphic `galois.factors()`. ([#362](https://github.com/mhostetter/galois/pull/362))
+- Added a separate `Poly.is_square_free()` method, in addition to the polymorphic `galois.is_square_free()`. This is a method, not property, to indicate it is a computationally expensive operation. ([#362](https://github.com/mhostetter/galois/pull/362))
+- Fixed a bug (believed to be introduced in v0.0.26) where `Poly.degree` occasionally returned `np.int64` instead of `int`. This could cause overflow in certain large integer operations (e.g., computing $q^m$ when determining if a degree-$m$ polynomial over $\mathrm{GF}(q)$ is irreducible). When the integer overflowed, this created erroneous results. ([#360](https://github.com/mhostetter/galois/issues/360), [#361](https://github.com/mhostetter/galois/pull/361))
+- Increased code coverage.
+
+### Contributors
+
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
+
+## v0.0.30
+
+*Released July 12, 2022*
+
+### Changes
+
+- Added support for NumPy 1.22 with Numba 0.55.2. This allows users to upgrade NumPy and avoid recently discovered vulnerabilities [CVE-2021-34141](https://nvd.nist.gov/vuln/detail/CVE-2021-34141), [CVE-2021-41496](https://nvd.nist.gov/vuln/detail/CVE-2021-41496), and [CVE-2021-41495](https://nvd.nist.gov/vuln/detail/CVE-2021-41495). ([#366](https://github.com/mhostetter/galois/pull/366))
+- Made `FieldArray.repr_table()` more compact. ([#367](https://github.com/mhostetter/galois/pull/367))
+  ```ipython
+  In [2]: GF = galois.GF(3**3)
+
+  In [3]: print(GF.repr_table())
+   Power     Polynomial      Vector    Integer
+  ------- --------------- ----------- ---------
+     0           0         [0, 0, 0]      0
+    x^0          1         [0, 0, 1]      1
+    x^1          x         [0, 1, 0]      3
+    x^2         x^2        [1, 0, 0]      9
+    x^3        x + 2       [0, 1, 2]      5
+    x^4       x^2 + 2x     [1, 2, 0]      15
+    x^5     2x^2 + x + 2   [2, 1, 2]      23
+    x^6     x^2 + x + 1    [1, 1, 1]      13
+    x^7     x^2 + 2x + 2   [1, 2, 2]      17
+    x^8       2x^2 + 2     [2, 0, 2]      20
+    x^9        x + 1       [0, 1, 1]      4
+    x^10      x^2 + x      [1, 1, 0]      12
+    x^11    x^2 + x + 2    [1, 1, 2]      14
+    x^12      x^2 + 2      [1, 0, 2]      11
+    x^13         2         [0, 0, 2]      2
+    x^14         2x        [0, 2, 0]      6
+    x^15        2x^2       [2, 0, 0]      18
+    x^16       2x + 1      [0, 2, 1]      7
+    x^17      2x^2 + x     [2, 1, 0]      21
+    x^18    x^2 + 2x + 1   [1, 2, 1]      16
+    x^19   2x^2 + 2x + 2   [2, 2, 2]      26
+    x^20    2x^2 + x + 1   [2, 1, 1]      22
+    x^21      x^2 + 1      [1, 0, 1]      10
+    x^22       2x + 2      [0, 2, 2]      8
+    x^23     2x^2 + 2x     [2, 2, 0]      24
+    x^24   2x^2 + 2x + 1   [2, 2, 1]      25
+    x^25      2x^2 + 1     [2, 0, 1]      19
+  ```
+- Made `FieldArray.arithmetic_table()` more compact. ([#367](https://github.com/mhostetter/galois/pull/367))
+  ```ipython
+  In [2]: GF = galois.GF(13)
+
+  In [3]: print(GF.arithmetic_table("*"))
+  x * y |  0   1   2   3   4   5   6   7   8   9  10  11  12
+  ------|----------------------------------------------------
+      0 |  0   0   0   0   0   0   0   0   0   0   0   0   0
+      1 |  0   1   2   3   4   5   6   7   8   9  10  11  12
+      2 |  0   2   4   6   8  10  12   1   3   5   7   9  11
+      3 |  0   3   6   9  12   2   5   8  11   1   4   7  10
+      4 |  0   4   8  12   3   7  11   2   6  10   1   5   9
+      5 |  0   5  10   2   7  12   4   9   1   6  11   3   8
+      6 |  0   6  12   5  11   4  10   3   9   2   8   1   7
+      7 |  0   7   1   8   2   9   3  10   4  11   5  12   6
+      8 |  0   8   3  11   6   1   9   4  12   7   2  10   5
+      9 |  0   9   5   1  10   6   2  11   7   3  12   8   4
+     10 |  0  10   7   4   1  11   8   5   2  12   9   6   3
+     11 |  0  11   9   7   5   3   1  12  10   8   6   4   2
+     12 |  0  12  11  10   9   8   7   6   5   4   3   2   1
+  ```
+
+### Contributors
+
+- Iyán Méndez Veiga ([@iyanmv](https://github.com/iyanmv))
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
+
+## v0.0.31
+
+*Released July 24, 2022*
+
+### Breaking changes
+
+- Renamed `FieldArray.Elements()` classmethod to `FieldArray.elements` class property. This naming convention is more consistent with `primitive_elements`, `units`, `quadratic_residues`, and `quadratic_non_residues`. ([#373](https://github.com/mhostetter/galois/pull/373))
+  ```python
+  >>> GF = galois.GF(3**2, display="poly")
+  >>> GF.elements
+  GF([     0,      1,      2,      α,  α + 1,  α + 2,     2α, 2α + 1,
+      2α + 2], order=3^2)
+  ```
+- Renamed `BCH.systematic` to `BCH.is_systematic`. ([#376](https://github.com/mhostetter/galois/pull/376))
+- Renamed `ReedSolomon.systematic` to `ReedSolomon.is_systematic`. ([#376](https://github.com/mhostetter/galois/pull/376))
+
+### Changes
+
+- Added support for polynomial composition in `Poly.__call__()`. ([#377](https://github.com/mhostetter/galois/pull/377))
+  ```python
+  >>> GF = galois.GF(3**5)
+  >>> f = galois.Poly([37, 123, 0, 201], field=GF); f
+  Poly(37x^3 + 123x^2 + 201, GF(3^5))
+  >>> g = galois.Poly([55, 0, 1], field=GF); g
+  Poly(55x^2 + 1, GF(3^5))
+  >>> f(g)
+  Poly(77x^6 + 5x^4 + 104x^2 + 1, GF(3^5))
+  ```
+- Added `FieldArray.units` class property. ([#373](https://github.com/mhostetter/galois/pull/373))
+  ```python
+  >>> GF = galois.GF(3**2, display="poly")
+  >>> GF.units
+  GF([     1,      2,      α,  α + 1,  α + 2,     2α, 2α + 1, 2α + 2],
+     order=3^2)
+  ```
+
+### Documentation
+
+- Reworked API reference using Sphinx Immaterial's `python-apigen`. ([#370](https://github.com/mhostetter/galois/pull/370))
+- Shortened website URLs to use directories. [https://galois.readthedocs.io/en/v0.0.30/getting-started.html](https://galois.readthedocs.io/en/v0.0.30/getting-started.html) is converted to [https://galois.readthedocs.io/en/v0.0.31/getting-started/](https://galois.readthedocs.io/en/v0.0.31/getting-started/). ([#370](https://github.com/mhostetter/galois/pull/370))
+
+### Contributors
+
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
+
+## v0.0.32
+
+*Released July 28, 2022*
+
+### Breaking changes
+
+- Changed "quadratic residue" language in Galois fields to "square". This seems to be more canonical. Quadratic residue connotes quadratic residue modulo $p$, which is a square in $\mathrm{GF}(p)$. However, a quadratic residue modulo $p^m$ is *not* a square in $\mathrm{GF}(p^m)$. Hopefully the "square" language is more clear. ([#392](https://github.com/mhostetter/galois/pull/392))
+  - Renamed `FieldArray.is_quadratic_residue` to `FieldArray.is_square`.
+  - Renamed `FieldArray.quadratic_residues` to `FieldArray.squares`.
+  - Renamed `FieldArray.quadratic_non_residues` to `FieldArray.non_squares`.
+
+### Changes
+
+- Added support for Numba 0.56.x. ([#389](https://github.com/mhostetter/galois/pull/389))
+- Added general logarithm base any primitive element in `FieldArray.log()`. ([#385](https://github.com/mhostetter/galois/pull/385))
+  ```python
+  >>> GF = galois.GF(3**5)
+  >>> x = GF.Random(10, low=1); x
+  GF([215, 176,  52,  20, 236,  48, 217, 131,  13,  57], order=3^5)
+  >>> beta = GF.primitive_elements[-1]; beta
+  GF(242, order=3^5)
+  >>> i = x.log(beta); i
+  array([171, 240, 109,  65, 162,  57,  34, 166,  72,  56])
+  >>> np.array_equal(beta ** i, x)
+  True
+  ```
+- Added Pollard-$\rho$ discrete logarithm for certain $\mathrm{GF}(2^m)$ fields. The algorithm is only applicable to fields whose multiplicative group has prime order. It has complexity $O(\sqrt{n})$ compared to $O(n)$ for the brute-force algorithm. In this example, Pollard-$\rho$ is **1650%** faster than brute force. ([#385](https://github.com/mhostetter/galois/pull/385))
+  ```ipython
+  In [3]: GF = galois.GF(2**19, compile="jit-calculate")
+
+  In [4]: galois.is_prime(GF.order - 1)
+  Out[4]: True
+
+  In [5]: x = GF.Random(100, low=1, seed=1)
+
+  # v0.0.31
+  In [6]: %timeit np.log(x)
+  80.3 ms ± 55.8 µs per loop (mean ± std. dev. of 7 runs, 1 loop each)
+
+  # v0.0.32
+  In [6]: %timeit np.log(x)
+  4.59 ms ± 90.5 µs per loop (mean ± std. dev. of 7 runs, 1 loop each)
+  ```
+- Added Pohlig-Hellman discrete logarithm to replace the brute-force search. It has complexity $O(\sum_{i=1}^{r} e_i(\textrm{lg}\ n + \sqrt{p_i}))$ compared to $O(n)$ for the brute-force algorithm. It is especially efficient for fields whose multiplicative group has smooth order. In this example with $p^m - 1$ smooth, Pohlig-Hellman is **~3,000,000%** faster than brute force. ([#387](https://github.com/mhostetter/galois/pull/387))
+  ```ipython
+  In [3]: GF = galois.GF(491954233)
+
+  # The multiplicative group's order is smooth
+  In [4]: galois.factors(GF.order - 1)
+  Out[4]: ([2, 3, 7, 11, 19, 14011], [3, 1, 1, 1, 1, 1])
+
+  In [5]: x = GF.Random(1, low=1, seed=1)
+
+  # v0.0.31
+  In [6]: %timeit np.log(x)
+  1.82 s ± 2.95 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)
+
+  # v0.0.32
+  In [6]: %timeit np.log(x)
+  61.3 µs ± 14.6 µs per loop (mean ± std. dev. of 7 runs, 10,000 loops each)
+  ```
+- Added Itoh-Tsujii inversion algorithm for extension fields, which is **35%** faster than inversion with Fermat's Little Theorem. ([#383](https://github.com/mhostetter/galois/pull/383))
+  ```ipython
+  In [3]: GF = galois.GF(109987**4)
+
+  In [4]: x = GF.Random(100, low=1, seed=1)
+
+  # v0.0.31
+  In [5]: %timeit np.reciprocal(x)
+  646 ms ± 834 µs per loop (mean ± std. dev. of 7 runs, 1 loop each)
+
+  # v0.0.32
+  In [5]: %timeit np.reciprocal(x)
+  479 ms ± 26.9 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)
+  ```
+- Fixed a bug where `FieldArray` subclasses and instances could not be pickled. ([#393](https://github.com/mhostetter/galois/pull/393))
+
+### Contributors
+
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
+
+## v0.0.33
+
+*Released August 26, 2022*
+
+### Breaking changes
+
+- Modified FEC `encode()`, `detect()`, and `decode()` methods to always return `FieldArray` instances, not `np.ndarray`. ([#397](https://github.com/mhostetter/galois/pull/397))
+  - Invoke `.view(np.ndarray)` on the output to convert it back to a NumPy array, if needed.
+
+### Changes
+
+- Added support for `ArrayLike` inputs to FEC `encode()`, `detect()`, and `decode()` methods. ([#397](https://github.com/mhostetter/galois/pull/397))
+- Modified library packaging to use `pyproject.toml` and a `src/` source code folder. ([#404](https://github.com/mhostetter/galois/pull/404))
+
+### Contributors
+
+- Matt Hostetter ([@mhostetter](https://github.com/mhostetter))
