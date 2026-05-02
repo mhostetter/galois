@@ -13276,6 +13276,16 @@ You're not viewing the latest version.
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#v0-4-11" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>v0.<wbr>4.<wbr>11</span>
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -13593,6 +13603,16 @@ You're not viewing the latest version.
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#v0-4-11" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>v0.<wbr>4.<wbr>11</span>
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -13766,6 +13786,21 @@ BLAS implementations, where possible. A 10-100x performance improvement is seen.
 <li><p>Frank Yellin (<a class="reference external" href="https://github.com/fyellin">&#64;fyellin</a>)</p></li>
 <li><p>Matt Hostetter (<a class="reference external" href="https://github.com/mhostetter">&#64;mhostetter</a>)</p></li>
 </ul>
+<h2 id="v0-4-11">v0.4.11<a class="headerlink" href="#v0-4-11" title="Link to this heading">¶</a></h2>
+<p><em>Released May 2, 2026</em></p>
+<h3 id="id20">Fixes<a class="headerlink" href="#id20" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Fixed bug in <code class="docutils literal notranslate"><span class="pre">galois.equal_degree_factors()</span></code> for characteristic 2, causing very slow performance. (<a class="reference external" href="https://github.com/mhostetter/galois/pull/655">#655</a>)</p></li>
+<li><p>Fixed bug in <code class="docutils literal notranslate"><span class="pre">galois.perfect_power()</span></code>. (<a class="reference external" href="https://github.com/mhostetter/galois/pull/656">#656</a>)</p></li>
+<li><p>Fixed bug to prevent <code class="docutils literal notranslate"><span class="pre">int64</span></code> overflow in lookup-table exponentiation. (<a class="reference external" href="https://github.com/mhostetter/galois/pull/656">#656</a>)</p></li>
+<li><p>Fixed bug to use distinct prime bases in <code class="docutils literal notranslate"><span class="pre">galois.miller_rabin_primality_test()</span></code>. (<a class="reference external" href="https://github.com/mhostetter/galois/pull/656">#656</a>)</p></li>
+</ul>
+<h3 id="id21">Contributors<a class="headerlink" href="#id21" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Bas Westerbaan (<a class="reference external" href="https://github.com/bwesterb">&#64;bwesterb</a>)</p></li>
+<li><p>David Hotham (<a class="reference external" href="https://github.com/dimbleby">&#64;dimbleby</a>)</p></li>
+<li><p>Matt Hostetter (<a class="reference external" href="https://github.com/mhostetter">&#64;mhostetter</a>)</p></li>
+</ul>
 
 
 
@@ -13786,7 +13821,7 @@ BLAS implementations, where possible. A 10-100x performance improvement is seen.
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    Jan 02, 2026
+    May 02, 2026
   </span>
 
     
