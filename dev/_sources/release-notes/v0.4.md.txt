@@ -185,7 +185,7 @@ tocdepth: 2
 
 ### Fixes
 
-- Fixed bug in `galois.equal_degree_factors()` for characteristic 2, causing very slow performance. ([#655](https://github.com/mhostetter/galois/pull/655))
+- Fixed bug in `Poly.equal_degree_factors()` for characteristic 2, causing very slow performance. ([#655](https://github.com/mhostetter/galois/pull/655))
 - Fixed bug in `galois.perfect_power()`. ([#656](https://github.com/mhostetter/galois/pull/656))
 - Fixed bug to prevent `int64` overflow in lookup-table exponentiation. ([#656](https://github.com/mhostetter/galois/pull/656))
 - Fixed bug to use distinct prime bases in `galois.miller_rabin_primality_test()`. ([#656](https://github.com/mhostetter/galois/pull/656))
