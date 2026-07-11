@@ -257,9 +257,7 @@ def GF(
         verify_isinstance(characteristic, int)
         verify_isinstance(degree, int)
     elif len(args) == 0:
-        raise TypeError(
-            "Missing required positional argument 'order' or arguments 'characteristic' and 'degree'."
-        )
+        raise TypeError("Missing required positional argument 'order' or arguments 'characteristic' and 'degree'.")
     else:
         assert len(args) > 2
         raise TypeError(
