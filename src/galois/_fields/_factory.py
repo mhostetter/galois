@@ -256,7 +256,12 @@ def GF(
         characteristic, degree = args
         verify_isinstance(characteristic, int)
         verify_isinstance(degree, int)
+    elif len(args) == 0:
+        raise TypeError(
+            "Missing required positional argument 'order' or arguments 'characteristic' and 'degree'."
+        )
     else:
+        assert len(args) > 2
         raise TypeError(
             "Only 'order' or 'characteristic' and 'degree' may be specified as positional arguments. "
             "Other arguments must be specified as keyword arguments."
