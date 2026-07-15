@@ -32,6 +32,7 @@ class UFunc:
 
     _CACHE_CALCULATE = {}  # A cache of compiled ufuncs using explicit calculation
     _CACHE_LOOKUP = {}  # A cache of compiled ufuncs using lookup tables
+    _CACHE_GPU = {}  # A cache of compiled GPU ufuncs using explicit calculation
 
     def __init__(self, field: Type[Array], override=None, always_calculate=False):
         self.field = field
@@ -142,6 +143,34 @@ class UFunc:
                 self._CACHE_LOOKUP[key_1][key_2] = numba.vectorize(["int64(int64, int64)"], nopython=True)(self.lookup)
 
         return self._CACHE_LOOKUP[key_1][key_2]
+
+    @property
+    def gpu_calculate(self):
+        """
+        A GPU ufunc-like callable implemented using explicit calculation.
+
+        Notes:
+            This implementation requires operands in device memory (e.g., CuPy arrays or Numba device arrays).
+            Only the '__call__' method is supported.
+        """
+        if self.override:
+            return self.override
+
+        key_1 = (self.field.characteristic, self.field.degree, int(self.field.irreducible_poly))
+        key_2 = str(self.__class__)
+        self._CACHE_GPU.setdefault(key_1, {})
+
+        if key_2 not in self._CACHE_GPU[key_1]:
+            self.set_calculate_globals()
+
+            if self.type == "unary":
+                ufunc = numba.vectorize(["int64(int64)"], target="cuda")(self.calculate)
+            else:
+                ufunc = numba.vectorize(["int64(int64, int64)"], target="cuda")(self.calculate)
+
+            self._CACHE_GPU[key_1][key_2] = ufunc
+
+        return self._CACHE_GPU[key_1][key_2]
 
     @property
     def python_calculate(self) -> Callable:
