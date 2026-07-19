@@ -2364,6 +2364,9 @@ def _poly_det(A: np.ndarray) -> Poly:
     """
     Computes the determinant of a matrix of `Poly` objects.
     """
+    if A.shape == (1, 1):
+        return A[0, 0]
+
     field = A.flatten()[0].field
 
     if A.shape == (2, 2):
