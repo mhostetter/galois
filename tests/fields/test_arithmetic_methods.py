@@ -98,6 +98,29 @@ def test_minimal_poly_element(field_minimal_poly_element):
         A.minimal_poly()
 
 
+def test_characteristic_minimal_poly_1x1():
+    # A 1x1 matrix [[a]] has characteristic and minimal polynomial x - a. Exercises the
+    # cofactor-expansion base case that previously raised IndexError for 1x1 matrices.
+    fields = [galois.GF(2), galois.GF(5), galois.GF(7), galois.GF(2**4), galois.GF(3**3)]
+    for GF in fields:
+        x = galois.Poly.Identity(GF)
+        for a in GF.elements:
+            A = GF([[a]])
+            c_poly = A.characteristic_poly()
+            m_poly = A.minimal_poly()
+            # det(x*I - [[a]]) = x - a for both the characteristic and minimal polynomial
+            assert c_poly == x - a
+            assert m_poly == x - a
+            assert c_poly.degree == 1 and c_poly.coeffs[0] == GF(1)  # monic, degree 1
+            # Cayley-Hamilton: the matrix is a root of its own characteristic polynomial
+            assert np.array_equal(c_poly(A, elementwise=False), GF.Zeros((1, 1)))
+
+    # The added base case leaves larger matrices unchanged: c(x) = x^2 - tr(A) x + det(A).
+    GF = galois.GF(7)
+    A = GF([[2, 3], [1, 4]])
+    assert A.characteristic_poly() == galois.Poly([1, -np.trace(A), np.linalg.det(A)], field=GF)
+
+
 # def test_minimal_poly_matrix(field_minimal_poly_matrix):
 #     GF, X, Z = field_minimal_poly_matrix["GF"], field_minimal_poly_matrix["X"], field_minimal_poly_matrix["Z"]
 
