@@ -2258,6 +2258,7 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
 
         prefix = "GF(" if mode == "repr" else ""
         order = f"order={field._order_str}" if mode == "repr" else ""
+        bitpacked = ", bitpacked" if mode == "repr" and hasattr(self, "_axis") else ""
         suffix = ")" if mode == "repr" else ""
         formatter = field._formatter(self)
 
@@ -2282,9 +2283,9 @@ class FieldArray(Array, metaclass=FieldArrayMeta):
             last_line_width = len(string[idx:] + ", " + order + suffix)
 
             if last_line_width <= np.get_printoptions()["linewidth"]:
-                output = prefix + string + ", " + order + suffix
+                output = prefix + string + ", " + order + bitpacked + suffix
             else:
-                output = prefix + string + ",\n" + " " * len(prefix) + order + suffix
+                output = prefix + string + ",\n" + " " * len(prefix) + order + bitpacked + suffix
         else:
             output = prefix + string + suffix
 
